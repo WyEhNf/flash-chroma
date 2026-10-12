@@ -105,7 +105,8 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             p for p in eval_img_paths if "kodim" in Path(p).name
         ][:5]
         all_imgs = [io.load_image(p) for p in eval_img_paths]
-        sub_imgs = [io.load_image(p) for p in sub_img_paths]
+        # 2x2 stride (196,608 pixels/image, 1.97M pixels across 10 images) for fast matrix sweep
+        sub_imgs = [io.load_image(p)[::2, ::2].copy() for p in sub_img_paths]
 
         results = {"lattice_routes": [], "non_lattice_routes": [], "cpp_benchmarks": [], "full_eval_spotchecks": []}
 

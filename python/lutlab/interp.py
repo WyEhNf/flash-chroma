@@ -15,10 +15,10 @@ from .io import ONE, Q, SparseLut, axis_tables
 def _prep(rgb: np.ndarray, idx: np.ndarray, frac: np.ndarray, m: int):
     r, g, b = (rgb[:, a].astype(np.intp) for a in range(3))
     sr, sg, sb = m * m, m, 1
-    base = idx[0][r].astype(np.int64) * sr + idx[1][g].astype(np.int64) * sg + idx[2][b].astype(np.int64)
-    fr = frac[0][r].astype(np.int64)
-    fg = frac[1][g].astype(np.int64)
-    fb = frac[2][b].astype(np.int64)
+    base = idx[0][r].astype(np.int32) * sr + idx[1][g].astype(np.int32) * sg + idx[2][b].astype(np.int32)
+    fr = frac[0][r].astype(np.int32)
+    fg = frac[1][g].astype(np.int32)
+    fb = frac[2][b].astype(np.int32)
     return base, fr, fg, fb, (sr, sg, sb)
 
 
@@ -26,15 +26,15 @@ def tetra_index_weights_q(rgb: np.ndarray, idx, frac, m: int):
     """Flat node indices (N,4) and integer Q16 weights (N,4) of the tetra kernel."""
     base, fr, fg, fb, (sr, sg, sb) = _prep(rgb, idx, frac, m)
     F = np.stack([fr, fg, fb], 1)
-    S = np.array([sr, sg, sb], np.int64)
+    S = np.array([sr, sg, sb], np.int32)
     amax = np.argmax(F, 1)
     amin = np.argmin(F, 1)
     f1 = F.max(1)
     f3 = F.min(1)
-    f2 = F.sum(1) - f1 - f3
-    tot = sr + sg + sb
+    f2 = F.sum(1, dtype=np.int32) - f1 - f3
+    tot = np.int32(sr + sg + sb)
     I = np.stack([base, base + S[amax], base + tot - S[amin], base + tot], 1)
-    W = np.stack([ONE - f1, f1 - f2, f2 - f3, f3], 1)
+    W = np.stack([np.int32(ONE) - f1, f1 - f2, f2 - f3, f3], 1)
     return I, W
 
 
@@ -60,7 +60,7 @@ def apply_tetra_q16(s: SparseLut, img: np.ndarray) -> np.ndarray:
     idx, frac = axis_tables(s.grid)
     flat = img.reshape(-1, 3)
     I, W = tetra_index_weights_q(flat, idx, frac, s.m)
-    N = s.nodes.reshape(-1, 3).astype(np.int64)
+    N = s.nodes.reshape(-1, 3).astype(np.int32)
     acc = (
         W[:, 0:1] * N[I[:, 0]]
         + W[:, 1:2] * N[I[:, 1]]
