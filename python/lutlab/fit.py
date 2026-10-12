@@ -249,15 +249,17 @@ def int_refine(x_float: np.ndarray, H, b, sweeps: int = 4) -> np.ndarray:
 # ================================================================ adaptive grid
 def adaptive_grid(T: np.ndarray, m: int, alpha: float = 0.5, expo: float = 0.4) -> np.ndarray:
     """Per-axis knot placement equidistributing |d2 T/dx2|^expo (mixed with uniform)."""
-    Tf = T.astype(np.float32)
     grid = np.empty((3, m))
     for a in range(3):
-        d2 = np.abs(np.diff(Tf, n=2, axis=a))
+        sl = [slice(None, None, 4), slice(None, None, 4), slice(None, None, 4), slice(None)]
+        sl[a] = slice(None)
+        sub = T[tuple(sl)].astype(np.float32)
+        d2 = np.abs(np.diff(sub, n=2, axis=a))
         other = tuple(i for i in range(4) if i != a)
         prof = d2.mean(axis=other)
         prof = np.concatenate([[prof[0]], prof, [prof[-1]]])  # back to 256
         dens = prof ** expo
-        dens = alpha * dens / dens.mean() + (1 - alpha)
+        dens = alpha * dens / (dens.mean() + 1e-8) + (1 - alpha)
         cdf = np.concatenate([[0], np.cumsum((dens[1:] + dens[:-1]) / 2)])
         cdf /= cdf[-1]
         grid[a] = np.interp(np.linspace(0, 1, m), cdf, np.arange(256.0))

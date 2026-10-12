@@ -22,8 +22,8 @@ EXP_DIR = ROOT / "experiments"
 
 def _eval_chain_fast(chain: list[io.SparseLut], imgs: list[np.ndarray], gts: list[np.ndarray], kernel: str = "tetra") -> dict:
     if kernel == "tetra":
-        def pred_fn(img):
-            x = img
+        def pred_fn(batch):
+            x = batch
             for s in chain:
                 x = interp.apply_tetra_q16(s, x)
             return x
@@ -32,8 +32,8 @@ def _eval_chain_fast(chain: list[io.SparseLut], imgs: list[np.ndarray], gts: lis
             np.clip(np.floor(fit_mod.synth_sep(s.nodes.astype(np.float32), s.grid, "hat") + 0.5), 0, 255).astype(np.uint8)
             for s in chain
         ]
-        def pred_fn(img):
-            x = img
+        def pred_fn(batch):
+            x = batch
             for S in stages:
                 x = S[x[..., 0], x[..., 1], x[..., 2]]
             return x
@@ -43,15 +43,16 @@ def _eval_chain_fast(chain: list[io.SparseLut], imgs: list[np.ndarray], gts: lis
 
 
 def _eval_preloaded(pred_fn, imgs: list[np.ndarray], gts: list[np.ndarray]) -> dict:
-    means, p95s, p99s, maxs = [], [], [], []
-    for img, gt in zip(imgs, gts):
-        pred = pred_fn(img)
-        de = metrics.delta_e_map(pred, gt)
-        st = metrics.summarize_delta_e(de)
-        means.append(st["mean"])
-        p95s.append(st["p95"])
-        p99s.append(st["p99"])
-        maxs.append(st["max"])
+    batch_in = np.stack(imgs, axis=0)
+    batch_gt = np.stack(gts, axis=0)
+    batch_pred = pred_fn(batch_in)
+    diff = batch_pred.astype(np.float32) - batch_gt.astype(np.float32)
+    de = np.sqrt(np.sum(diff * diff, axis=-1))  # (B, H, W)
+    flat = de.reshape(len(imgs), -1)
+    means = flat.mean(axis=1)
+    p95s = np.percentile(flat, 95, axis=1)
+    p99s = np.percentile(flat, 99, axis=1)
+    maxs = flat.max(axis=1)
     return {
         "n_images": len(imgs),
         "mean_de": round(float(np.mean(means)), 4),
@@ -59,9 +60,9 @@ def _eval_preloaded(pred_fn, imgs: list[np.ndarray], gts: list[np.ndarray]) -> d
         "mean_p95_de": round(float(np.mean(p95s)), 4),
         "mean_p99_de": round(float(np.mean(p99s)), 4),
         "max_pixel_de": round(float(np.max(maxs)), 4),
-        "pass_rate_mean_le_1_0": round(float(np.mean(np.array(means) <= 1.0)), 4),
-        "pass_rate_mean_le_2_0": round(float(np.mean(np.array(means) <= 2.0)), 4),
-        "pass_rate_p99_le_3_0": round(float(np.mean(np.array(p99s) <= 3.0)), 4),
+        "pass_rate_mean_le_1_0": round(float(np.mean(means <= 1.0)), 4),
+        "pass_rate_mean_le_2_0": round(float(np.mean(means <= 2.0)), 4),
+        "pass_rate_p99_le_3_0": round(float(np.mean(p99s <= 3.0)), 4),
     }
 
 
