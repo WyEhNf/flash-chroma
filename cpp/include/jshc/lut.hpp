@@ -46,7 +46,8 @@ struct SparseLut {
   std::vector<uint8_t> nodes;  // m^3 * 3
 
   // Derived tables built by prepare() for fast, readable lookup:
-  std::vector<RgbaNode> rgba_nodes;  // m^3 padded 4-byte nodes
+  std::vector<RgbaNode> rgba_nodes;  // m^3 padded 4-byte nodes (scalar struct access)
+  std::vector<uint32_t> packed;      // m^3 packed u32 nodes: r | (g << 8) | (b << 16) (SIMD gather)
   int32_t off[3][256];               // pre-multiplied cell offset (idx[a][x] * stride[a])
   int32_t stride[3];                 // {m^2, m, 1}
 
@@ -55,7 +56,15 @@ struct SparseLut {
   void prepare();
 };
 
-enum class Kernel { TetraScalar, TetraAvx2, TetraAsm, TriFloat };
+enum class Kernel {
+  TetraScalar,
+  TetraCppSimd,
+  TetraZigSimd,
+  TetraRustSimd,
+  TetraAvx2,
+  TetraAsm,
+  TriFloat,
+};
 Kernel parse_kernel(const std::string& s);
 const char* kernel_name(Kernel k);
 bool avx2_available();
@@ -70,6 +79,9 @@ void apply_full_chain(const std::vector<const FullLut*>& chain, uint8_t* rgb, si
 
 // Single-LUT portable kernels on a contiguous pixel block.
 void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
+void tetra_cpp_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
+void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
+void tetra_rust_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
 void tetra_avx2(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
 void tetra_asm(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
 void tri_float(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);

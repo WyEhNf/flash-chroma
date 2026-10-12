@@ -114,6 +114,10 @@
 | **1-Stage R14** | $17$ | `14.7 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **20** | **`0.5652`** | **`84.82`** | **`1391.4`** | **$92.24\times$** | **$2653.9\times$** |
 | **1-Stage R14** | $25$ | `46.9 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **20** | **`0.6054`** | **`99.14`** | **`1299.1`** | **$86.11\times$** | **$2477.7\times$** |
 | **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **10** | **`0.9035`** | **`118.65`** | **`870.5`** | **$57.70\times$** | **$1660.2\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_cpp_simd` (`v1.3` C++26 `<simd>`, Generic)** | **20** | **`0.4239`** | **`153.20`** | **`1848.2`** | **$122.98\times$** | **$3538.6\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_cpp_simd` (`v1.3` C++26 `<simd>`, Native)** | **20** | **`0.3082`** | **`114.41`** | **`2530.0`** | **$169.14\times$** | **$4866.9\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_zig_simd` (`v1.3` Zig `@Vector`, Native)** | **20** | **`0.2393`** | **`118.60`** | **`3255.7`** | **$217.84\times$** | **$6267.9\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_rust_simd` (`v1.3` Rust `std::simd`, Native)** | **20** | **`0.3500`** | **`149.42`** | **`2247.4`** | **$148.94\times$** | **$4285.7\times$** |
 
 ### 4.2 关键硬件微架构洞察（用于决赛现场调优）
 
@@ -124,7 +128,10 @@
    - 利用 Lovász 6-四面体剖分下 $H=W^\top W$ 的 **15 点固定偏移 Stencil 定理**、奇偶 R-Slab 两趟无锁并行组装、三通道同步 Jacobi-CG 与单趟 8 色棋盘坐标下降，将 4 级 $256^3$ LUT 到单级自适应 $m^3$ LUT 的完整拟合时间从 Python 的 `1.26 s` 压缩至 **`4.10 ms` ($m=17$) / `5.00 ms` ($m=25$) / `5.84 ms` ($m=33$)**，提速 **$215\times \sim 311\times$**，且 29 图全量 $\Delta E$ 精度完全一致（`mean_dE = 1.0846`）。
 3. **无架构特化、高可维护性纯标准 C++17 版本 (`v1.2-r14-portable-clean`) 的定位**：
    - 在完全禁用 `-march=native`、禁用 `<immintrin.h>` 与内联汇编的前提下，仅凭 `RgbaNode` 4 字节结构体直接访存、代数递推插值与声明式 OpenMP `schedule(dynamic, 1)`，即可在单张图像上达到 **`0.565 ms/img`（`1,391.4 MPix/s`，超满分线 $2654\times$）**，且离线拟合耗时同样保持在 **`4.2 ~ 8.6 ms`**。非常适合 3 人本科生团队在 24 小时赛场作为主干代码快速开发调试，定型后再切换至 `v1.1-r14-extreme-asm` 冲击极限跑分。
-4. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
+4. **C++26 `<simd>` vs Zig `@Vector` vs Rust `core::simd` 跨语言可移植 SIMD 对比 (`v1.3-r14-multi-lang-simd`)**：
+   - 在不写任何架构特化 Intrinsics 与内联汇编的前提下，Zig `@Vector(8, i32)` 凭借 `inline for (0..8)` 在 AST 层展开后触发的跨表公共子表达式消除（`off` 与 `frac` 复用同一个字节偏移寄存器直接执行 `vpinsrd`，规避了 Zen 3 微码 `vpgatherdd`），在单核达到 **`2.3383 ms/img`（`336.3 MPix/s`）**、20 线程达到 **`0.2393 ms/img`（`3.26 GPix/s`）**，高居三门语言可移植 SIMD 之首。
+   - C++26 `<simd>`（GCC 16 `std::simd::vec<int32_t, 8>`）与 Rust `core::simd::i32x8`（`Simd::gather_select_unchecked`）在单核下并驾齐驱（`3.20 ms` vs `3.28 ms`），20 线程下分别达到 **`2.53 GPix/s` (`0.3082 ms/img`)** 与 **`2.25 GPix/s` (`0.3500 ms/img`)**。
+5. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
    - 我们在最后两组基准测试中测量了单线程 `stb_image` PNG 解码（约 `14.0 ms/张`）与未压缩/默认级别 `stb_image_write` PNG 编码（约 `135 ms/张`，100 张合计仍仅需 `0.15s/张`，远低于 `1.5s/张`）。
    - 如果决赛要求批量读写图像文件，只需将**外层 OpenMP 并行循环放在图像列表级别（Image-Level Parallelism，每线程独立处理一张图并绑定 1 个核）**，即可将 PNG 解码 + LUT 映射 + 编码的端到端延迟同时除以核数（14 核下端到端含 PNG 读写 `< 12 ms/张`）。
 
@@ -149,7 +156,8 @@
 | `b135b61` | **V9 RBF BLAS 矩阵化与 PyTorch 线程隔离**：将 3D RBF 欧氏距离改写为 BLAS GEMM $\|X\|^2 + \|C\|^2 - 2XC^\top$，并限制 PyTorch 内部线程争用 | 完成全部 20 条路线 + 100 图 C++ 基准 + 29 图端到端全量评测 |
 | `83464cb` | **V10 全套评测报告与可视化图表**：生成 4 张高质量评测图表并完成 `PROBLEM.md`、`EVALUATION.md`、`ROUTES.md`、`DECISION.md` | 完整交付 20 路线多维评估体系 |
 | `82e8c69` (`v1.1-r14-extreme-asm`) | **V11 `R14` 极限性能优化（裸 C / AVX2 内联汇编 `tetra_asm` + C++17 `fit-r14`）**：启用 `-march=native -flto=auto`，实现 32-bit `of_pack` 复合轴表、6-op 无分支排序网络、Telescoped 16-bit `vpmaddwd` 差分内积、手写 x86-64 汇编 `tetra_asm` 及 15 点 Stencil C++ 拟合器 `fit-r14` | 推理达 **`0.1678 ms/img` (`4.69 GPix/s`)**，C++ 离线拟合达 **`4.10 ~ 5.84 ms`**（提速 **$215\times \sim 311\times$**），全 $2^{24}$ 色 **0-bit 误差** |
-| `HEAD` (`v1.2-r14-portable-clean`) | **V12 `R14` 去架构特化、高可读性与可维护性重构**：移除全部 SIMD Intrinsics、内联汇编与架构特化编译参数，采用 `RgbaNode` 领域结构体、代数递推插值与模块化 [`fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp) | 纯标准 C++17 推理达 **`0.5652 ms/img` (`1.39 GPix/s`)**，C++ 离线拟合 **`4.20 ~ 8.59 ms`**，兼具跨架构可移植性与本科生团队极佳可维护性 |
+| `30f664b` (`v1.2-r14-portable-clean`) | **V12 `R14` 去架构特化、高可读性与可维护性重构**：移除全部 SIMD Intrinsics、内联汇编与架构特化编译参数，采用 `RgbaNode` 领域结构体、代数递推插值与模块化 [`fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp) | 纯标准 C++17 推理达 **`0.5652 ms/img` (`1.39 GPix/s`)**，C++ 离线拟合 **`4.20 ~ 8.59 ms`**，兼具跨架构可移植性与本科生团队极佳可维护性 |
+| `HEAD` (`v1.3-r14-multi-lang-simd`) | **V13 跨语言可移植标准 SIMD 对比（C++26 `<simd>` vs Zig `@Vector` vs Rust `core::simd`）**：新增 [`cpp/src/lut_simd_cpp26.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut_simd_cpp26.cpp)、[`zig/lut_simd.zig`](file:///home/mo5nk/problem_probe/16/zig/lut_simd.zig)、[`rust/lut_simd.rs`](file:///home/mo5nk/problem_probe/16/rust/lut_simd.rs)，通过 CTest 全 $2^{24}$ 色 0-bit 一致性校验与 Generic/Native 双模式评测 | Zig `@Vector` 达 **`0.2393 ms/img` (`3.26 GPix/s`)**，C++26 `<simd>` 达 **`0.3082 ms/img` (`2.53 GPix/s`)**，Rust `std::simd` 达 **`0.3500 ms/img` (`2.25 GPix/s`)** |
 
 ### 5.2 独立实验日志库 (`logs/` Git Repository)
 
@@ -157,6 +165,8 @@
 - 完整评测归档提交：
   - `172961e` — `routes-sweep f36df336 (ok)`：包含全部 20 条路线在 6 大场景下的 JSON 指标以及 C++ 吞吐基准原始记录。
   - `5d19819` — `r14-extreme-opt 41945a8f (ok)`：包含 `v1.1-r14-extreme-asm` 极限优化后 `tetra_scalar`、`tetra_avx2`、`tetra_asm` 与 `jshc fit-r14` 的完整实测日志。
-  - `5ce3c0b` — `r14-portable-clean 4f49d561 (ok)`：包含 `v1.2-r14-portable-clean` 去架构特化高可维护性 C++17 版本的完整实测日志。
+  - `d745b49` — `r14-portable-clean be07cfe8 (ok)`：包含 `v1.2-r14-portable-clean` 去架构特化高可维护性 C++17 版本的完整实测日志。
+  - `379fd41` — `R14_multi_lang_portable_simd 5c01f571 (ok)`：包含 C++26 `<simd>`、Zig `@Vector` 与 Rust `core::simd` 在 Generic `x86-64` 与 Native Lowering 下的完整评测数据。
+
 
 

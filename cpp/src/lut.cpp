@@ -162,9 +162,30 @@ void SparseLut::prepare() {
 
   const size_t n = static_cast<size_t>(m) * m * m;
   rgba_nodes.resize(n + 16);
+  packed.resize(n + 16, 0);
   for (size_t i = 0; i < n; ++i) {
-    rgba_nodes[i] = RgbaNode{nodes[3 * i], nodes[3 * i + 1], nodes[3 * i + 2], 0};
+    const uint8_t r = nodes[3 * i];
+    const uint8_t g = nodes[3 * i + 1];
+    const uint8_t b = nodes[3 * i + 2];
+    rgba_nodes[i] = RgbaNode{r, g, b, 0};
+    packed[i] = static_cast<uint32_t>(r) | (static_cast<uint32_t>(g) << 8) |
+                (static_cast<uint32_t>(b) << 16);
   }
+}
+
+// ---- External Portable SIMD Symbols (C++26 <simd>, Zig @Vector, Rust std::simd) -------
+
+extern "C" {
+void jshc_tetra_cpp_simd(const int32_t* off_table, const uint32_t* frac_table,
+                         const int32_t* strides, const uint32_t* packed_nodes,
+                         const uint8_t* in_rgb, uint8_t* out_rgb, size_t n) noexcept;
+void jshc_tetra_zig_simd(const int32_t* off_table, const uint32_t* frac_table,
+                         const int32_t* strides, const uint32_t* packed_nodes,
+                         const uint8_t* in_rgb, uint8_t* out_rgb, size_t n) noexcept;
+void jshc_tetra_rust_simd(const int32_t* off_table, const uint32_t* frac_table,
+                          const int32_t* strides, const uint32_t* packed_nodes,
+                          size_t packed_len, const uint8_t* in_rgb, uint8_t* out_rgb,
+                          size_t n) noexcept;
 }
 
 // ---- Kernel Dispatch & Portable Implementations ---------------------------------------
@@ -173,6 +194,9 @@ Kernel parse_kernel(const std::string& s) {
   if (s == "tetra" || s == "tetra_scalar" || s == "portable" || s == "tetra_portable") {
     return Kernel::TetraScalar;
   }
+  if (s == "tetra_cpp_simd" || s == "cpp_simd" || s == "cpp26_simd") return Kernel::TetraCppSimd;
+  if (s == "tetra_zig_simd" || s == "zig_simd" || s == "zig") return Kernel::TetraZigSimd;
+  if (s == "tetra_rust_simd" || s == "rust_simd" || s == "rust") return Kernel::TetraRustSimd;
   if (s == "tetra_avx2" || s == "avx2") return Kernel::TetraAvx2;
   if (s == "tetra_asm" || s == "asm") return Kernel::TetraAsm;
   if (s == "tri" || s == "tri_float") return Kernel::TriFloat;
@@ -182,6 +206,9 @@ Kernel parse_kernel(const std::string& s) {
 const char* kernel_name(Kernel k) {
   switch (k) {
     case Kernel::TetraScalar: return "tetra_scalar";
+    case Kernel::TetraCppSimd: return "tetra_cpp_simd";
+    case Kernel::TetraZigSimd: return "tetra_zig_simd";
+    case Kernel::TetraRustSimd: return "tetra_rust_simd";
     case Kernel::TetraAvx2: return "tetra_avx2";
     case Kernel::TetraAsm: return "tetra_asm";
     case Kernel::TriFloat: return "tri_float";
@@ -197,12 +224,43 @@ void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n)
   }
 }
 
+void tetra_cpp_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  const size_t vec_n = n & ~static_cast<size_t>(7);
+  if (vec_n > 0) {
+    jshc_tetra_cpp_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
+  }
+  if (vec_n < n) {
+    tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
+  }
+}
+
+void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  const size_t vec_n = n & ~static_cast<size_t>(7);
+  if (vec_n > 0) {
+    jshc_tetra_zig_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
+  }
+  if (vec_n < n) {
+    tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
+  }
+}
+
+void tetra_rust_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  const size_t vec_n = n & ~static_cast<size_t>(7);
+  if (vec_n > 0) {
+    jshc_tetra_rust_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), L.packed.size(),
+                         in, out, vec_n);
+  }
+  if (vec_n < n) {
+    tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
+  }
+}
+
 void tetra_avx2(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  tetra_scalar(L, in, out, n);
+  tetra_cpp_simd(L, in, out, n);
 }
 
 void tetra_asm(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  tetra_scalar(L, in, out, n);
+  tetra_cpp_simd(L, in, out, n);
 }
 
 void tri_float(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -236,9 +294,18 @@ void tri_float(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
 static void run_kernel(Kernel k, const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
   switch (k) {
     case Kernel::TetraScalar:
+      tetra_scalar(L, in, out, n);
+      break;
+    case Kernel::TetraCppSimd:
     case Kernel::TetraAvx2:
     case Kernel::TetraAsm:
-      tetra_scalar(L, in, out, n);
+      tetra_cpp_simd(L, in, out, n);
+      break;
+    case Kernel::TetraZigSimd:
+      tetra_zig_simd(L, in, out, n);
+      break;
+    case Kernel::TetraRustSimd:
+      tetra_rust_simd(L, in, out, n);
       break;
     case Kernel::TriFloat:
       tri_float(L, in, out, n);

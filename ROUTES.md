@@ -292,4 +292,70 @@ flowchart TD
 | **C++ 离线拟合 ($m=33$, 20T)** | `1,258.0 ms` (Py) | **`6.993 ms`** (`9.811 ms` @ 10T) | `5.839 ms` (`8.674 ms` @ 10T) | 较 Python 提速 **$180\times$**，代码清晰易改 |
 | **全空间位级一致性 ($2^{24}$ 色)** | 基准 | **100% 0-bit 误差一致** | **100% 0-bit 误差一致** | 两个版本输出字节 100% 完全相同 |
 
+---
+
+## 6. 跨语言可移植标准 SIMD 橫向评测：C++26 `<simd>` vs Zig `@Vector` vs Rust `std::simd` (`v1.3-r14-multi-lang-simd`)
+
+为进一步探索 **“完全不使用任何架构特化 Intrinsics（如 `<immintrin.h>`、`core::arch::x86_64`）与手写内联汇编，仅使用语言内置或标准库提供的可移植 SIMD 抽象”** 在高可读性前提下的性能上限与编译器后端行为差异，我们用三门现代系统级语言的官方可移植 SIMD 实现了一模一样的 8 通道（8-lane `i32`）Q16 四面体插值内核，并通过 C ABI 无缝链接进统一测试与基准框架：
+
+### 6.1 三语言可移植 SIMD 实现与语言特性对比
+
+1. **C++26 标准库 `<simd>` ([`cpp/src/lut_simd_cpp26.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut_simd_cpp26.cpp)) —— GCC 16.2.1 `-std=c++26`**：
+   - 使用 C++26 标准正式合入（P1928）的 `<simd>` 头文件：`std::simd::vec<int32_t, 8>`、`std::simd::max`、`std::simd::min` 与 `std::simd::select(mask, a, b)`（同时通过 `#elif __has_include(<experimental/simd>)` 向下兼容 GCC 11~15 的 Parallelism TS v2）。
+   - **语言抽象特点**：C++26 `<simd>` 支持算术与比较运算符重载（`fg > f1` 返回 `std::simd::mask`），但 C++26 初版标准未内置可移植 `gather` 原语，因此离散查表通过标准 Generator 构造函数 `i32x8([&](int lane) noexcept -> int32_t { return table[idx[lane]]; })` 表达，可读性极佳。
+2. **Zig 内置 `@Vector` ([`zig/lut_simd.zig`](file:///home/mo5nk/problem_probe/16/zig/lut_simd.zig)) —— Zig `0.16.0` (`-O ReleaseFast`)**：
+   - 使用 Zig 语言一级内置类型 `@Vector(8, i32)` 与内置原语 `@splat`、`@select(i32, mask, a, b)`、`@max`、`@min`。
+   - **语言抽象特点**：Zig 将向量作为核心语法原语，支持 `[8]i32` 数组与 `@Vector(8, i32)` 之间的零开销隐式转换，配合编译期展开循环 `inline for (0..8) |lane|`，わずか 15 行即可写出清晰无魔数的 `gather8i` / `gather8u`。
+3. **Rust 标准库 `core::simd` / `std::simd` ([`rust/lut_simd.rs`](file:///home/mo5nk/problem_probe/16/rust/lut_simd.rs)) —— `rustc 1.101.0-nightly` (`#![feature(portable_simd)]`)**：
+   - 使用 `#![no_std]` + `core::simd::prelude::*`（`i32x8`、`usizex8`、`Mask`），通过 `.simd_gt()` / `.simd_lt()` + `.select()` + `.simd_max()` / `.simd_min()` 表达无分支四面体步长选择。
+   - **语言抽象特点**：**三门语言中唯一在标准库可移植 SIMD 中原生提供硬件级 Gather 抽象的语言** —— `Simd::gather_select_unchecked(slice, Mask::splat(true), u_idx, i32x8::splat(0))`，在 LLVM IR 层直接映射为 `@llvm.masked.gather.v8i32`。
+
+| 维度 | C++26 `<simd>` (`std::simd`) | Zig `@Vector(8, i32)` | Rust `core::simd::i32x8` |
+| :--- | :--- | :--- | :--- |
+| **编译器版本** | GCC `16.2.1` (`-std=c++26 -O3`) | Zig `0.16.0` (`-O ReleaseFast`) | `rustc 1.101.0-nightly` (`-C opt-level=3`) |
+| **标准状态** | C++26 IS (`<simd>`, 兼容 `<experimental/simd>`) | 语言核心内置 (`@Vector`, 稳定) | Nightly `#![feature(portable_simd)]` |
+| **条件选择语法** | `std::simd::select(fg > f1, sg, smax)` | `@select(i32, fg > f1, sg, smax)` | `fg.simd_gt(f1).select(sg, smax)` |
+| **可移植 Gather 原语** | 无（用 Generator 构造 `vec([&](int i){...})`） | 无（用 `inline for (0..8)` 数组构造） | **原生支持 `Simd::gather_select_unchecked`** |
+| **x86-64 基线总指令数** | `946` 条（自动拆分为成对 `%xmm` 128-bit） | `848` 条（自动拆分为成对 `%xmm` 128-bit） | `1029` 条（自动拆分为成对 `%xmm` 128-bit） |
+| **Native 映射总指令数** | `444` 条（`102` 条 `%ymm`，`0` 条 `vpgatherdd`） | `360` 条（`104` 条 `%ymm`，`0` 条 `vpgatherdd`） | **`247` 条（`111` 条 `%ymm`，`10` 条 `vpgatherdd`）** |
+| **$2^{24}$ 全空间位级校验** | **100% 0-bit 误差一致** | **100% 0-bit 误差一致** | **100% 0-bit 误差一致** |
+
+### 6.2 双模式实测性能对比（100 张 $1024\times 768$ 图像，`R14` 单级 $m=33$，20 轮重复）
+
+我们在**完全不改动任何一行源码**的前提下，通过 CMake 选项 `-DJSHC_PORTABLE_NATIVE_TARGET=OFF/ON` 分别测试了两种编译目标映射模式：
+- **Mode A（严格通用基线目标 `-march=x86-64` / `-mcpu=x86_64` / `-C target-cpu=x86-64`）**：编译器仅能使用 20 年前的 128-bit SSE2 寄存器（`%xmm`），自动将 8-lane 向量拆分为两个 4-lane 向量执行；
+- **Mode B（同一套可移植源码 + 本地目标自动映射 `-march=native` / `-mcpu=native` / `-C target-cpu=native`）**：源码仍保持 100% 架构无关，由编译器后端自动将 8-lane 可移植向量映射为宿主机 256-bit `%ymm` 寄存器。
+
+| 编译目标模式 | 内核名称 | 语言与可移植 SIMD 抽象 | 1T 单图耗时 (`ms`) | 1T 吞吐 (`MPix/s`) | 10T 单图耗时 (`ms`) | 20T 单图 p50 (`ms`) | 20T 峰值吞吐 (`MPix/s`) | 较纯标量加速比 (1T) |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Mode A: Generic `x86-64`** | `tetra_scalar` | C++17 纯标量 (`RgbaNode`) | `5.8062` | `135.4` | `0.7544` | `0.5491` | `1,429.2` | $1.00\times$ |
+| **Mode A: Generic `x86-64`** | **`tetra_cpp_simd`** | **C++26 `std::simd::vec<int32_t, 8>`** | **`3.8673`** | **`203.4`** | **`0.5245`** | **`0.4239`** | **`1,792.8`** | **$1.50\times$** |
+| **Mode A: Generic `x86-64`** | **`tetra_zig_simd`** | **Zig `@Vector(8, i32)`** | **`3.6169`** | **`217.4`** | **`0.4882`** | `0.8978` | **`1,610.9`** (10T) | **$1.61\times$** |
+| **Mode A: Generic `x86-64`** | **`tetra_rust_simd`** | **Rust `core::simd::i32x8`** | `5.4287` | `144.9` | `0.7275` | `0.9414` | `1,081.1` (10T) | $1.07\times$ |
+| **Mode B: Native Lowering** | `tetra_scalar` | C++17 纯标量 (`RgbaNode`) | `6.1039` | `128.8` | `0.8385` | `0.6035` | `1,293.3` | $1.00\times$ |
+| **Mode B: Native Lowering** | **`tetra_cpp_simd`** | **C++26 `std::simd::vec<int32_t, 8>`** | **`3.1951`** | **`246.1`** | **`0.4326`** | **`0.3082`** | **`2,530.0`** | **$1.91\times$** |
+| **Mode B: Native Lowering** | **`tetra_zig_simd`** | **Zig `@Vector(8, i32)`** | **`2.3383`** | **`336.3`** | **`0.3358`** | **`0.2393`** | **`3,255.7`** | **$2.61\times$** |
+| **Mode B: Native Lowering** | **`tetra_rust_simd`** | **Rust `core::simd::i32x8`** | **`3.2834`** | **`239.5`** | **`0.4945`** | **`0.3500`** | **`2,247.4`** | **$1.86\times$** |
+
+### 6.3 编译器后端代码生成（Codegen）深度剖析：为什么 Zig `@Vector` 最快？
+
+通过反汇编对比 `build/lut_simd_cpp26.o`、`build/lut_simd_zig.o` 与 `build/lut_simd_rust.o`，我们发现了三个极具价值的编译器微架构现象：
+
+1. **Zig `comptime inline for` 带来的跨表地址公共子表达式消除（CSE）**：
+   - 在四面体插值开头，每个像素的输入通道 $r, g, b \in [0, 255]$ 需要同时查两张表：`off[a][c]` 与 `frac[a][c]`。
+   - 在 Zig 中，`inline for (0..8) |lane|` 在 AST/ZIR 层完全展开后，LLVM 后端直接识别出 `off_r[r[lane]]` 与 `frac_r[r[lane]]` 共享同一个字节偏移 `%r15 = p[3*lane] << 2`，从而生成成对紧邻的标量 L1d 查表与插入指令：
+     ```asm
+     movzbl -0x8(%r8,%r10,1), %r15d
+     shl    $0x2, %r15d
+     vpinsrd $0x1, (%rdi,%r15,1), %xmm8, %xmm1   # 直接从 L1d 装入 off_r[r]
+     vpinsrd $0x1, (%rsi,%r15,1), %xmm0, %xmm0   # 复用 %r15 直接从 L1d 装入 frac_r[r]
+     ```
+     既省去了先将 $r, g, b$ 打包进向量再提取出来的往返开销，又完全避免了在 AMD Zen 3 上微码化的 `vpgatherdd`！因此 Zig 单核达到 **`2.3383 ms/img`（`336.3 MPix/s`）**，20 线程达到 **`0.2416 ms/img`（`3.26 GPix/s`）**，在不写一行架构相关代码的前提下达到了手写汇编极限版（`0.1678 ms/img`）**70% 的吞吐性能**！
+2. **Rust `Simd::gather_select_unchecked` 的双刃剑效应（Zen 3 微码 `vpgatherdd` 瓶颈）**：
+   - Rust 的 `core::simd` 生成了三者中最精简的机器码（仅 `247` 条指令，包含 10 条硬件 `vpgatherdd`）。甚至当我们尝试在 Rust 中改用 `i32x8::from_array([*table.get_unchecked(a[0]), ...])` 时，`rustc` 的 LLVM SLP Vectorizer 依然足够激进地将其自动合并为 `vpgatherdd`。
+   - 然而在当前宿主机（AMD Ryzen 9 5900X，Zen 3 微架构）上，`vpgatherdd` 是微码指令（每条耗时 ~4–6 周期、占用 37 个 uops），10 条未经 `of_pack` 合并的 `vpgatherdd` 导致 Load 管线饱和（`3.28 ms/img` @ 1T）；若在 Intel AVX-512 / Ice Lake 或 AVX2 fast-gather 架构上，Rust 的硬件 Gather 路径优势会更加明显。
+3. **C++26 `<simd>` (`std::simd::vec<int32_t, 8>`) 的成熟度与均衡表现**：
+   - GCC 16 的 C++26 `<simd>` 提供了极佳的运算符重载体验与零外部符号依赖，在 Generic `x86-64` (`0.4239 ms/img` @ 20T) 与 Native Lowering (`0.3082 ms/img` @ 20T, **`2.53 GPix/s`**) 下均表现稳健，且无需引入多语言编译工具链，是纯 C++ 技术栈下兼顾可读性与性能的理想选择。
+
+
 

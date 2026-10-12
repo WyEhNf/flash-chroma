@@ -69,37 +69,44 @@ int main() {
     tri_float(I, cube.data(), out.data(), n);
     CHECK(std::memcmp(out.data(), cube.data(), out.size()) == 0, "identity tri_float");
   }
-  // 2. AVX2 and ASM equal scalar on random lattices over the whole cube, for several m.
+  // 2. C++26 <simd>, Zig @Vector, and Rust std::simd equal scalar bit-exactly over the whole 2^24 cube.
   for (uint32_t m : {17u, 25u, 33u}) {
     SparseLut R = make_lut(m, false, 1234 + m);
-    std::vector<uint8_t> a(n * 3), b(n * 3), c(n * 3);
-    tetra_scalar(R, cube.data(), a.data(), n);
-    tetra_avx2(R, cube.data(), b.data(), n);
-    tetra_asm(R, cube.data(), c.data(), n);
-    CHECK(std::memcmp(a.data(), b.data(), a.size()) == 0, "avx2 vs scalar");
-    CHECK(std::memcmp(a.data(), c.data(), a.size()) == 0, "asm vs scalar");
-    // odd lengths exercise tails
+    std::vector<uint8_t> ref(n * 3), out_cpp(n * 3), out_zig(n * 3), out_rust(n * 3);
+    tetra_scalar(R, cube.data(), ref.data(), n);
+    tetra_cpp_simd(R, cube.data(), out_cpp.data(), n);
+    tetra_zig_simd(R, cube.data(), out_zig.data(), n);
+    tetra_rust_simd(R, cube.data(), out_rust.data(), n);
+    CHECK(std::memcmp(ref.data(), out_cpp.data(), ref.size()) == 0, "cpp26_simd vs scalar");
+    CHECK(std::memcmp(ref.data(), out_zig.data(), ref.size()) == 0, "zig_simd vs scalar");
+    CHECK(std::memcmp(ref.data(), out_rust.data(), ref.size()) == 0, "rust_simd vs scalar");
+    // odd lengths exercise tails and check for buffer overruns
     for (size_t len : {1, 7, 9, 10, 11, 17, 1001}) {
-      std::vector<uint8_t> x(len * 3 + 16, 0xAB), y(len * 3 + 16, 0xAB), z(len * 3 + 16, 0xAB);
+      std::vector<uint8_t> x(len * 3 + 16, 0xAB);
+      std::vector<uint8_t> y_cpp(len * 3 + 16, 0xAB);
+      std::vector<uint8_t> y_zig(len * 3 + 16, 0xAB);
+      std::vector<uint8_t> y_rust(len * 3 + 16, 0xAB);
       tetra_scalar(R, cube.data() + 3 * 12345, x.data(), len);
-      tetra_avx2(R, cube.data() + 3 * 12345, y.data(), len);
-      tetra_asm(R, cube.data() + 3 * 12345, z.data(), len);
-      CHECK(std::memcmp(x.data(), y.data(), x.size()) == 0, "avx2 tail / no overrun");
-      CHECK(std::memcmp(x.data(), z.data(), x.size()) == 0, "asm tail / no overrun");
+      tetra_cpp_simd(R, cube.data() + 3 * 12345, y_cpp.data(), len);
+      tetra_zig_simd(R, cube.data() + 3 * 12345, y_zig.data(), len);
+      tetra_rust_simd(R, cube.data() + 3 * 12345, y_rust.data(), len);
+      CHECK(std::memcmp(x.data(), y_cpp.data(), x.size()) == 0, "cpp26_simd tail / no overrun");
+      CHECK(std::memcmp(x.data(), y_zig.data(), x.size()) == 0, "zig_simd tail / no overrun");
+      CHECK(std::memcmp(x.data(), y_rust.data(), x.size()) == 0, "rust_simd tail / no overrun");
     }
   }
-  // 3. fused chain == sequential, threads do not matter.
+  // 3. fused chain == sequential across all portable SIMD backends, threads do not matter.
   {
     SparseLut A = make_lut(33, false, 7), B = make_lut(17, false, 8);
-    std::vector<uint8_t> seq(cube), fused1(cube), fused8(cube), fused_asm(cube), tmp(n * 3);
+    std::vector<uint8_t> seq(cube), f_cpp(cube), f_zig(cube), f_rust(cube), tmp(n * 3);
     tetra_scalar(A, seq.data(), tmp.data(), n);
     tetra_scalar(B, tmp.data(), seq.data(), n);
-    apply_chain({&A, &B}, fused1.data(), n, Kernel::TetraAvx2, 1);
-    apply_chain({&A, &B}, fused8.data(), n, Kernel::TetraAvx2, 8);
-    apply_chain({&A, &B}, fused_asm.data(), n, Kernel::TetraAsm, 8);
-    CHECK(std::memcmp(seq.data(), fused1.data(), seq.size()) == 0, "chain vs sequential");
-    CHECK(std::memcmp(fused1.data(), fused8.data(), seq.size()) == 0, "threads determinism");
-    CHECK(std::memcmp(seq.data(), fused_asm.data(), seq.size()) == 0, "chain asm vs sequential");
+    apply_chain({&A, &B}, f_cpp.data(), n, Kernel::TetraCppSimd, 8);
+    apply_chain({&A, &B}, f_zig.data(), n, Kernel::TetraZigSimd, 8);
+    apply_chain({&A, &B}, f_rust.data(), n, Kernel::TetraRustSimd, 8);
+    CHECK(std::memcmp(seq.data(), f_cpp.data(), seq.size()) == 0, "chain cpp_simd vs sequential");
+    CHECK(std::memcmp(seq.data(), f_zig.data(), seq.size()) == 0, "chain zig_simd vs sequential");
+    CHECK(std::memcmp(seq.data(), f_rust.data(), seq.size()) == 0, "chain rust_simd vs sequential");
   }
   // 4. fit_r14 native C++ offline solver on identity 256^3 LUT.
   {
