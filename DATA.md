@@ -1,6 +1,6 @@
 # 测试数据集与四级色彩空间仿真设计 (`DATA.md`)
 
-由于正式比赛测试集与 `Threshold` 将在赛中统一公布，为了在赛前获得**高度接近真实手机 ISP / 车载流媒体色彩管线**且同时涵盖**数学病态边界**的严格基准，我们在 [luts.py](file:///home/mo5nk/problem_probe/16/python/lutlab/luts.py) 与 [data.py](file:///home/mo5nk/problem_probe/16/python/lutlab/data.py) 中构建了完整的评测数据集生成器（`pixi run gen-data`）。
+由于正式比赛测试集与 `Threshold` 将在赛中统一公布，为了在赛前获得**高度接近真实手机 ISP / 车载流媒体色彩管线**且同时涵盖**数学病态边界**的严格基准，我们在 [luts.py](python/lutlab/luts.py) 与 [data.py](python/lutlab/data.py) 中构建了完整的评测数据集生成器（`pixi run gen-data`）。
 
 ---
 

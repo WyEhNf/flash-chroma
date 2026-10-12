@@ -1,8 +1,10 @@
 # 完整基准评测、多场景精度与版本演进记录 (`EVALUATION.md`)
 
-> 原始机器数据：[experiments/route_sweep.json](file:///home/mo5nk/problem_probe/16/experiments/route_sweep.json)  
-> 独立日志仓库提交：`logs/` Git commit `172961e` ([logs/runs/20261012T143211Z-routes-sweep-f36df336](file:///home/mo5nk/problem_probe/16/logs/runs/20261012T143211Z-routes-sweep-f36df336))  
-> 可视化图表：[docs/plots/accuracy_routes_isp0.png](file:///home/mo5nk/problem_probe/16/docs/plots/accuracy_routes_isp0.png)、[docs/plots/cpp_throughput.png](file:///home/mo5nk/problem_probe/16/docs/plots/cpp_throughput.png)
+> **版本说明（2026-10-13）**：下文各表是归档提交的历史实验，不是当前 `codex/zig-default-pixi` 分支的性能承诺。原文的“满分线”“稳拿 40 分”推断不成立：官方规则只说明速度最快者得满分，阈值和测试 LUT 尚未发布。当前分支的复测与审计见 `AUDIT.md`。
+
+> 原始机器数据：[experiments/route_sweep.json](experiments/route_sweep.json)
+> 独立日志仓库提交：`logs/` Git commit `172961e` ([logs/runs/20261012T143211Z-routes-sweep-f36df336](logs/runs/20261012T143211Z-routes-sweep-f36df336))
+> 可视化图表：[docs/plots/accuracy_routes_isp0.png](docs/plots/accuracy_routes_isp0.png)、[docs/plots/cpp_throughput.png](docs/plots/cpp_throughput.png)
 
 ---
 
@@ -13,13 +15,13 @@
 | **CPU 型号** | Intel Core i7-14700 (8P+12E, 20C/28T, 33 MB L3) | Intel Core i7-13700H (6P+8E, 14C/20T, 24 MB L3) | 官方评测机单核/多核与 L3 缓存均强于本地 $1.35\times \sim 1.6\times$ |
 | **图像规格** | $1024 \times 768$ RGB 8-bit 图像集 | 29 张评测集（24 张 Kodak 真彩 + 5 张合成抗性图）+ 100 张吞吐基准集 | 完全对齐 $1024 \times 768 \times 3$ uint8 |
 | **稀疏 LUT 规模** | $m^3 \times 3\text{ B}$，$17 \le m \le 33$，4 个阶段 | 全面测试 $m \in \{17, 25, 33\}$（`58.9 KB` / `187.5 KB` / `431.2 KB` 4 表合计） | 相对原始 $4 \times 48\text{ MB} = 192\text{ MB}$ 压缩 **$466\times \sim 3,417\times$** |
-| **速度满分线** | $\Delta E < \text{Threshold}$ 前提下，$< 1500\text{ ms/张}$ 得 40 分 | 四阶段融合内核 **`1.68 ~ 1.77 ms/张`**；单级等效内核 **`0.42 ms/张`** | 比满分线快 **847 倍 ~ 3,550 倍**，稳拿 40 分满分 |
+| **速度参考条件** | 题面给出单张低于 1.5 s 的参考要求，最快队伍得 40 分 | 历史四阶段融合内核 **`1.68 ~ 1.77 ms/张`**；单级等效内核 **`0.42 ms/张`** | 可说明本地性能余量，不能推出正式比赛得分 |
 
 ---
 
 ## 2. 全量 29 张 $1024\times 768$ 真彩与抗性图像端到端精度与过线率 (`full_eval_spotchecks`)
 
-我们在完整 29 张 $1024\times 768$ 图像（共 $22,806,528$ 个像素）上，调用 C++ `jshc` 引擎对比了朴素采样（`sample`）、单阶段精确四面体+整数精化（`seq + ls_tetra_int`）、四阶段残差前向补偿（`residual + adaptive`）以及单级等效复合坍缩（`composite + adaptive`）在不同阈值设定下的**图像级 100% 过线率（Pass Rate）**：
+我们在完整 29 张 $1024\times 768$ 图像（共 $22,806,528$ 个像素）上，用 Python `lutlab.routes` 中的 `_eval_chain_fast` 评测朴素采样（`sample`）、单阶段精确四面体+整数精化（`seq + ls_tetra_int`）、四阶段残差前向补偿（`residual + adaptive`）以及单级等效复合坍缩（`composite + adaptive`）在若干自设阈值下的图像级过线率。它们不是官方阈值下的 C++ 端到端验收结果：
 
 | 场景 | 网格 $m$ | 4 表总字节 | 路线方案 | 29 图平均 $\Delta E$ | 最差单图平均 $\Delta E$ | 29 图平均 $\text{p99 }\Delta E$ | 全场最大单像素 $\Delta E$ | 过线率 ($\text{mean }\Delta E \le 2.0$) | 过线率 ($\text{p99 }\Delta E \le 3.0$) |
 | :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -84,7 +86,7 @@
 
 ## 4. C++17 运行时性能基准测试（100 张 $1024 \times 768$ RGB 图像）
 
-测试命令：`./build/jshc bench --lut ... --images data/bench.txt --reps 7`  
+当前命令格式：`./build/jshc bench -l data/bench.txt -r 7 -k tetra_zig_simd stage1.slut stage2.slut stage3.slut stage4.slut`。下表来自各历史版本，具体命令和内核见对应独立日志。
 所有测试均在 $100 \times 1024 \times 768$ 图像集（每轮 78.64 MPix，重复 7 轮取统计值）上完成。
 
 ### 4.1 算子、线程数與阶段模式吞吐对比表
@@ -156,8 +158,8 @@
 | `b135b61` | **V9 RBF BLAS 矩阵化与 PyTorch 线程隔离**：将 3D RBF 欧氏距离改写为 BLAS GEMM $\|X\|^2 + \|C\|^2 - 2XC^\top$，并限制 PyTorch 内部线程争用 | 完成全部 20 条路线 + 100 图 C++ 基准 + 29 图端到端全量评测 |
 | `83464cb` | **V10 全套评测报告与可视化图表**：生成 4 张高质量评测图表并完成 `PROBLEM.md`、`EVALUATION.md`、`ROUTES.md`、`DECISION.md` | 完整交付 20 路线多维评估体系 |
 | `82e8c69` (`v1.1-r14-extreme-asm`) | **V11 `R14` 极限性能优化（裸 C / AVX2 内联汇编 `tetra_asm` + C++17 `fit-r14`）**：启用 `-march=native -flto=auto`，实现 32-bit `of_pack` 复合轴表、6-op 无分支排序网络、Telescoped 16-bit `vpmaddwd` 差分内积、手写 x86-64 汇编 `tetra_asm` 及 15 点 Stencil C++ 拟合器 `fit-r14` | 推理达 **`0.1678 ms/img` (`4.69 GPix/s`)**，C++ 离线拟合达 **`4.10 ~ 5.84 ms`**（提速 **$215\times \sim 311\times$**），全 $2^{24}$ 色 **0-bit 误差** |
-| `30f664b` (`v1.2-r14-portable-clean`) | **V12 `R14` 去架构特化、高可读性与可维护性重构**：移除全部 SIMD Intrinsics、内联汇编与架构特化编译参数，采用 `RgbaNode` 领域结构体、代数递推插值与模块化 [`fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp) | 纯标准 C++17 推理达 **`0.5652 ms/img` (`1.39 GPix/s`)**，C++ 离线拟合 **`4.20 ~ 8.59 ms`**，兼具跨架构可移植性与本科生团队极佳可维护性 |
-| `HEAD` (`v1.3-r14-multi-lang-simd`) | **V13 跨语言可移植标准 SIMD 对比（C++26 `<simd>` vs Zig `@Vector` vs Rust `core::simd`）**：新增 [`cpp/src/lut_simd_cpp26.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut_simd_cpp26.cpp)、[`zig/lut_simd.zig`](file:///home/mo5nk/problem_probe/16/zig/lut_simd.zig)、[`rust/lut_simd.rs`](file:///home/mo5nk/problem_probe/16/rust/lut_simd.rs)，通过 CTest 全 $2^{24}$ 色 0-bit 一致性校验与 Generic/Native 双模式评测 | Zig `@Vector` 达 **`0.2393 ms/img` (`3.26 GPix/s`)**，C++26 `<simd>` 达 **`0.3082 ms/img` (`2.53 GPix/s`)**，Rust `std::simd` 达 **`0.3500 ms/img` (`2.25 GPix/s`)** |
+| `30f664b` (`v1.2-r14-portable-clean`) | **V12 `R14` 去架构特化、高可读性与可维护性重构**：移除全部 SIMD Intrinsics、内联汇编与架构特化编译参数，采用 `RgbaNode` 领域结构体、代数递推插值与模块化 [`fit_r14.cpp`](cpp/src/fit_r14.cpp) | 纯标准 C++17 推理达 **`0.5652 ms/img` (`1.39 GPix/s`)**，C++ 离线拟合 **`4.20 ~ 8.59 ms`**，兼具跨架构可移植性与本科生团队极佳可维护性 |
+| `969d046` (`v1.3-r14-multi-lang-simd`) | **V13 跨语言可移植标准 SIMD 对比（C++26 `<simd>` vs Zig `@Vector` vs Rust `core::simd`）**：新增 [`cpp/src/lut_simd_cpp26.cpp`](cpp/src/lut_simd_cpp26.cpp)、[`zig/lut_simd.zig`](zig/lut_simd.zig)、[`rust/lut_simd.rs`](rust/lut_simd.rs)，通过 CTest 全 $2^{24}$ 色 0-bit 一致性校验与 Generic/Native 双模式评测 | 历史记录：Zig `@Vector` **`0.2393 ms/img`**，C++26 `<simd>` **`0.3082 ms/img`**，Rust `std::simd` **`0.3500 ms/img`**；当前构建不可直接沿用 |
 
 ### 5.2 独立实验日志库 (`logs/` Git Repository)
 
@@ -167,6 +169,3 @@
   - `5d19819` — `r14-extreme-opt 41945a8f (ok)`：包含 `v1.1-r14-extreme-asm` 极限优化后 `tetra_scalar`、`tetra_avx2`、`tetra_asm` 与 `jshc fit-r14` 的完整实测日志。
   - `d745b49` — `r14-portable-clean be07cfe8 (ok)`：包含 `v1.2-r14-portable-clean` 去架构特化高可维护性 C++17 版本的完整实测日志。
   - `379fd41` — `R14_multi_lang_portable_simd 5c01f571 (ok)`：包含 C++26 `<simd>`、Zig `@Vector` 与 Rust `core::simd` 在 Generic `x86-64` 与 Native Lowering 下的完整评测数据。
-
-
-

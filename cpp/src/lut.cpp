@@ -18,9 +18,15 @@ namespace {
 std::vector<uint8_t> read_binary_file(const std::string& path) {
   FILE* f = std::fopen(path.c_str(), "rb");
   if (!f) throw std::runtime_error("cannot open " + path);
-  std::fseek(f, 0, SEEK_END);
+  if (std::fseek(f, 0, SEEK_END) != 0) {
+    std::fclose(f);
+    throw std::runtime_error("cannot seek " + path);
+  }
   const long sz = std::ftell(f);
-  std::fseek(f, 0, SEEK_SET);
+  if (sz < 0 || std::fseek(f, 0, SEEK_SET) != 0) {
+    std::fclose(f);
+    throw std::runtime_error("cannot size " + path);
+  }
   std::vector<uint8_t> buf(static_cast<size_t>(sz));
   if (sz > 0 && std::fread(buf.data(), 1, buf.size(), f) != buf.size()) {
     std::fclose(f);
@@ -93,11 +99,12 @@ FullLut FullLut::load(const std::string& path) {
 
 SparseLut SparseLut::load(const std::string& path) {
   const auto buf = read_binary_file(path);
+  if (buf.size() < 16) throw std::runtime_error("truncated slut: " + path);
   const uint8_t* p = buf.data();
   const uint8_t* const end = p + buf.size();
 
   auto take = [&](void* dst, size_t n) {
-    if (p + n > end) throw std::runtime_error("truncated slut: " + path);
+    if (n > static_cast<size_t>(end - p)) throw std::runtime_error("truncated slut: " + path);
     std::memcpy(dst, p, n);
     p += n;
   };
@@ -111,7 +118,8 @@ SparseLut SparseLut::load(const std::string& path) {
   take(&version, 4);
   take(&L.m, 4);
   take(&reserved, 4);
-  if (version != 1 || L.m < 2 || L.m > 256) throw std::runtime_error("bad slut header: " + path);
+  if (version != 1 || reserved != 0 || L.m < 2 || L.m > 256)
+    throw std::runtime_error("bad slut header: " + path);
 
   for (int a = 0; a < 3; ++a) {
     L.grid[a].resize(L.m);
@@ -122,6 +130,7 @@ SparseLut SparseLut::load(const std::string& path) {
 
   L.nodes.resize(static_cast<size_t>(L.m) * L.m * L.m * 3);
   take(L.nodes.data(), L.nodes.size());
+  if (p != end) throw std::runtime_error("trailing slut data: " + path);
 
   for (int a = 0; a < 3; ++a) {
     for (int x = 0; x < 256; ++x) {

@@ -10,7 +10,7 @@
 
 ### 方案 A：Pixi 一键安装（推荐，毫秒级激活）
 
-配置文件：[pixi.toml](file:///home/mo5nk/problem_probe/16/pixi.toml) 与锁文件 [pixi.lock](file:///home/mo5nk/problem_probe/16/pixi.lock)。
+配置文件：[pixi.toml](pixi.toml) 与锁文件 [pixi.lock](pixi.lock)。
 Pixi 会从 `conda-forge` 安装 Zig 0.17、Linux 上的 GCC/G++ 16（用于 C++26 `<simd>`）、Rust 1.99（仅本实验分支）、`CMake`、`Ninja` 以及 `Python 3.12`、`NumPy`、`SciPy`、`Pillow` 和 `Pytest`。`ml` 环境额外安装 PyTorch CPU。Rust `portable_simd` 目前需要构建命令局部设置 `RUSTC_BOOTSTRAP=1`。
 
 ```bash
@@ -37,7 +37,8 @@ pixi run logs
 
 ### 方案 B：Ubuntu 24.04 容器化方案（Dockerfile）
 
-配置文件：[Dockerfile](file:///home/mo5nk/problem_probe/16/Dockerfile)。以 `ubuntu:24.04` 为基座，内置完整构建链与 Pixi 锁环境：
+配置文件：[Dockerfile](Dockerfile)。以 `ubuntu:24.04` 为基座，内置完整构建链与 Pixi 锁环境：
+仓库的 `.dockerignore` 排除本机 `.pixi/`、生成的 `data/`、`build/` 与独立 `logs/`，避免将数 GB 本机文件复制进镜像。
 
 ```bash
 docker build -t jisu-huancai:latest .
@@ -51,25 +52,25 @@ docker run --rm -it -v "$PWD":/workspace jisu-huancai:latest pixi run test
 为兼顾**算法快速迭代（稀疏化求解）**与**极致执行速度（40 分性能分 + 20 分工程可移植分）**，代码库采用清晰的二层解耦架构：
 
 1. **离线/预处理稀疏化层（Python `lutlab`）**：
-   - [io.py](file:///home/mo5nk/problem_probe/16/python/lutlab/io.py)：定义二进制 `.lut256`（完整 $256^3 \times 3$ LUT，48 MB/个）与紧凑 `.slut`（稀疏 $m^3 \times 3$ 晶体表 + 预计算 256 项 `idx`/`frac` Q16 定点轴查找表）。
-   - [interp.py](file:///home/mo5nk/problem_probe/16/python/lutlab/interp.py)：与 C++ 逐比特完全一致（Bit-Exact）的 Q16 四面体插值镜像与精确稀疏权重矩阵构造器。
-   - [fit.py](file:///home/mo5nk/problem_probe/16/python/lutlab/fit.py)：涵盖最近邻采样、亚像素采样、盒式滤波、可分离张量最小二乘（Hat / Lagrange 三次 / B-Spline 二次与三次）、精确四面体稀疏最小二乘（CG + Jacobi 预条件）、IRLS $L_p$ 极小极大逼近、**8 色棋盘格整数坐标下降精化（Integer Coordinate Refinement）**及**曲率自适应非均匀网格（Adaptive Knot Placement）**。
-   - [cascade.py](file:///home/mo5nk/problem_probe/16/python/lutlab/cascade.py)：多级串联误差传播补偿（Cascade Residual Absorption）、四级复合单级等价映射、3D 多项式拟合、Tucker HOSVD 低秩分解、3D RBF 径向基网络、超轻量残差 MLP 与 SIREN 隐式神经 LUT。
+   - [io.py](python/lutlab/io.py)：定义二进制 `.lut256`（完整 $256^3 \times 3$ LUT，48 MB/个）与紧凑 `.slut`（稀疏 $m^3 \times 3$ 晶体表 + 预计算 256 项 `idx`/`frac` Q16 定点轴查找表）。
+   - [interp.py](python/lutlab/interp.py)：与 C++ 逐比特完全一致（Bit-Exact）的 Q16 四面体插值镜像与精确稀疏权重矩阵构造器。
+   - [fit.py](python/lutlab/fit.py)：涵盖最近邻采样、亚像素采样、盒式滤波、可分离张量最小二乘（Hat / Lagrange 三次 / B-Spline 二次与三次）、精确四面体稀疏最小二乘（CG + Jacobi 预条件）、IRLS $L_p$ 极小极大逼近、**8 色棋盘格整数坐标下降精化（Integer Coordinate Refinement）**及**曲率自适应非均匀网格（Adaptive Knot Placement）**。
+   - [cascade.py](python/lutlab/cascade.py)：多级串联误差传播补偿（Cascade Residual Absorption）、四级复合单级等价映射、3D 多项式拟合、Tucker HOSVD 低秩分解、3D RBF 径向基网络、超轻量残差 MLP 与 SIREN 隐式神经 LUT。
 2. **在线推理核心（C++17 `jshc` 调度，默认 Zig `@Vector`）**：
-   - [lut.hpp](file:///home/mo5nk/problem_probe/16/cpp/include/jshc/lut.hpp) / [lut.cpp](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp)：零外部动态库依赖的纯 C++17 核心。
+   - [lut.hpp](cpp/include/jshc/lut.hpp) / [lut.cpp](cpp/src/lut.cpp)：零外部动态库依赖的纯 C++17 核心。
      - **Q16 纯整数四面体插值**：利用预计算的 256 项 `off[axis][x]` 与 `frac[axis][x]` 表，支持均匀或非均匀网格。
      - **8 像素并行**：默认 `tetra_zig_simd` 使用 Zig `@Vector`；`tetra_cpp_simd` 使用 C++26 `<simd>`；`tetra_rust_simd` 使用 Rust `core::simd`。这些内核不使用手写汇编或架构特化 intrinsic。旧 `tetra_avx2` / `tetra_asm` 名称保留为 C++ SIMD 内核的兼容别名。
      - **L1/L2 Cache 分块四级流水融合（Block-Fused Cascade）**：以 `4096` 像素（`12 KB`）为单位在线程私有栈缓冲区中连续完成 4 个色彩空间的串联映射，避免 4 次读写主存，完美契合 CPU L1 Data Cache（48 KB）。
-   - [main.cpp](file:///home/mo5nk/problem_probe/16/cpp/src/main.cpp)：支持 `apply`、`ref`、`cube`、`bench`、`info` 五大子命令，输出高精度分阶段计时 JSON。
+   - [main.cpp](cpp/src/main.cpp)：支持 `apply`、`ref`、`cube`、`bench`、`info` 五大子命令，输出高精度分阶段计时 JSON。
 
 ---
 
 ## 3. 独立实验日志系统（Independent Run-Log System）
 
-实现文件：[runlog.py](file:///home/mo5nk/problem_probe/16/python/lutlab/runlog.py)。
+实现文件：[runlog.py](python/lutlab/runlog.py)。
 
 为了确保在频繁 `git commit` / `git reset` / 分支切换时**绝对不会丢失任何一次实验日志**：
-- `logs/` 目录在首次运行时自动初始化为一个**完全独立的 Git 仓库**（`logs/.git`），并在主代码仓库的 [.gitignore](file:///home/mo5nk/problem_probe/16/.gitignore) 中被排除。
+- `logs/` 目录在首次运行时自动初始化为一个**完全独立的 Git 仓库**（`logs/.git`），并在主代码仓库的 [.gitignore](.gitignore) 中被排除。
 - 每次调用 `Run(name, params)` 上下文管理器时：
   1. 自动在 `logs/runs/<UTC时间戳>-<任务名>-<8位UUID>/` 下创建独立目录；
   2. 自动捕获主代码仓库当前的 `git commit SHA`、分支名、工作区是否 dirty，若存在未提交修改则自动保存 `code.diff` 快照及 SHA256；

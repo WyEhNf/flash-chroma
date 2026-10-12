@@ -44,12 +44,16 @@ def apply_full(lut: np.ndarray, img: np.ndarray) -> np.ndarray:
 class SparseLut:
     grid: np.ndarray   # (3, m) float positions in input units [0, 255]
     nodes: np.ndarray  # (m, m, m, 3) uint8
+    idx: np.ndarray | None = None   # serialized axis tables, if loaded from .slut
+    frac: np.ndarray | None = None
 
     @property
     def m(self) -> int:
         return self.grid.shape[1]
 
     def tables(self) -> tuple[np.ndarray, np.ndarray]:
+        if self.idx is not None and self.frac is not None:
+            return self.idx, self.frac
         return axis_tables(self.grid)
 
 
@@ -93,13 +97,25 @@ def save_sparse(path: str | Path, s: SparseLut) -> None:
 
 def load_sparse(path: str | Path) -> SparseLut:
     b = Path(path).read_bytes()
-    assert b[:4] == b"SLUT"
-    _, m, _ = struct.unpack("<III", b[4:16])
+    if len(b) < 16 or b[:4] != b"SLUT":
+        raise ValueError(f"bad sparse LUT header: {path}")
+    version, m, reserved = struct.unpack("<III", b[4:16])
+    if version != 1 or not 2 <= m <= 256 or reserved != 0:
+        raise ValueError(f"unsupported sparse LUT header: {path}")
+    expected = 16 + 12 * m + 3 * 256 + 3 * 256 * 4 + m ** 3 * 3
+    if len(b) != expected:
+        raise ValueError(f"bad sparse LUT size: {path}")
     o = 16
     grid = np.frombuffer(b, "<f4", 3 * m, o).reshape(3, m).astype(np.float64)
-    o += 12 * m + 3 * 256 + 3 * 256 * 4
+    o += 12 * m
+    idx = np.frombuffer(b, np.uint8, 3 * 256, o).reshape(3, 256).copy()
+    o += 3 * 256
+    frac = np.frombuffer(b, "<u4", 3 * 256, o).reshape(3, 256).copy()
+    o += 3 * 256 * 4
+    if np.any(idx > m - 2) or np.any(frac > ONE):
+        raise ValueError(f"bad sparse LUT tables: {path}")
     nodes = np.frombuffer(b, np.uint8, m ** 3 * 3, o).reshape(m, m, m, 3).copy()
-    return SparseLut(grid, nodes)
+    return SparseLut(grid, nodes, idx, frac)
 
 
 # ---------------------------------------------------------------- images

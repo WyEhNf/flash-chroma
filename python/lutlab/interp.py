@@ -57,7 +57,7 @@ def tri_weights(rgb: np.ndarray, idx, frac, m: int):
 
 def apply_tetra_q16(s: SparseLut, img: np.ndarray) -> np.ndarray:
     """Bit-exact mirror of jshc::tetra_scalar."""
-    idx, frac = axis_tables(s.grid)
+    idx, frac = s.tables()
     flat = img.reshape(-1, 3)
     I, W = tetra_index_weights_q(flat, idx, frac, s.m)
     N = s.nodes.reshape(-1, 3).astype(np.int32)

@@ -1,8 +1,10 @@
 # 20 条技术路线全景探索与多维对比 (`ROUTES.md`)
 
+> 第 4–6 节记录归档版本的实现与测量。当前分支已移除手写汇编和 `JSHC_PORTABLE_NATIVE_TARGET` 选项，旧 `tetra_asm` / `tetra_avx2` 名称只是 C++ SIMD 兼容别名。当前工具链、基准口径及证据问题见 `AUDIT.md`。
+
 > 对应赛题：**【2026 Hackathon 决赛】第 16 题：极速焕彩**  
-> 代码实现：[python/lutlab/fit.py](file:///home/mo5nk/problem_probe/16/python/lutlab/fit.py)、[python/lutlab/cascade.py](file:///home/mo5nk/problem_probe/16/python/lutlab/cascade.py)、[cpp/src/lut.cpp](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp)  
-> 实验编排：[python/lutlab/routes.py](file:///home/mo5nk/problem_probe/16/python/lutlab/routes.py)
+> 代码实现：[python/lutlab/fit.py](python/lutlab/fit.py)、[python/lutlab/cascade.py](python/lutlab/cascade.py)、[cpp/src/lut.cpp](cpp/src/lut.cpp)
+> 实验编排：[python/lutlab/routes.py](python/lutlab/routes.py)
 
 为全面评估本题的技术边界，我们实现了跨越**朴素方法（Naive）、经典信号处理（Classic）、现代数值优化（Modern）、前沿级联补偿与等价坍缩（Frontier）、高阶基函数/低秩张量/核方法（Basis & Low-Rank）、以及隐式深度神经网络（DL）**共 **6 大流派、20 条具体技术路线**，并在 6 类四阶段色彩空间映射场景上完成了对比测试。
 
@@ -202,15 +204,15 @@ flowchart TD
 
 ## 4. `R14` 路线极限性能优化：裸 C / AVX2 内联汇编 (`tetra_asm`) 与 C++17 原生拟合器 (`fit-r14`)
 
-针对综合表现最强的 **`R14_composite_1stage_adaptive`** 路线，我们在 [`CMakeLists.txt`](file:///home/mo5nk/problem_probe/16/CMakeLists.txt)、[`cpp/include/jshc/lut.hpp`](file:///home/mo5nk/problem_probe/16/cpp/include/jshc/lut.hpp) 与 [`cpp/src/lut.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp) 中实施了从编译器选项、代数恒等变换、SIMD 微架构到 x86-64 手写内联汇编的全栈极限优化，并严格保持与 `tetra_scalar` 在全部 $2^{24}=16,777,216$ 种颜色上的 **0-bit 绝对一致**。
+针对综合表现最强的 **`R14_composite_1stage_adaptive`** 路线，我们在 [`CMakeLists.txt`](CMakeLists.txt)、[`cpp/include/jshc/lut.hpp`](cpp/include/jshc/lut.hpp) 与 [`cpp/src/lut.cpp`](cpp/src/lut.cpp) 中实施了从编译器选项、代数恒等变换、SIMD 微架构到 x86-64 手写内联汇编的全栈极限优化，并严格保持与 `tetra_scalar` 在全部 $2^{24}=16,777,216$ 种颜色上的 **0-bit 绝对一致**。
 
-### 4.1 激进编译器与链接器优化选项 ([`CMakeLists.txt`](file:///home/mo5nk/problem_probe/16/CMakeLists.txt#L10-L15))
+### 4.1 激进编译器与链接器优化选项 ([`CMakeLists.txt`](CMakeLists.txt#L10-L15))
 启用 `-O3 -march=native -mtune=native -flto=auto -fomit-frame-pointer -funroll-loops -fno-plt -fno-trapping-math -fno-math-errno`，开启跨模块链接时优化（LTO）并释放帧指针寄存器 `%rbp`。
 
-### 4.2 运行时推理内核的六大底层突破 ([`tetra_avx2`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L177-L289) & [`tetra_asm`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L291-L455))
+### 4.2 运行时推理内核的六大底层突破 ([`tetra_avx2`](cpp/src/lut.cpp#L177-L289) & [`tetra_asm`](cpp/src/lut.cpp#L291-L455))
 
 1. **边界归一化与 32-bit 复合坐标轴表 (`of_pack[3][256]`) —— 砍掉 50% 坐标轴 Gather**：
-   在 [`SparseLut::prepare()`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L90-L116) 中，利用四面体插值在节点边界处的代数等价性，将 `(idx = k, frac = 65536)` 归一化为 `(idx = k + 1, frac = 0)`（并将 `packed` 尾部安全填充 `S + 16` 个元素）。归一化后 `frac_norm` 严格落在 `[0, 65535]`（16 bit），令 $\tilde{f} = \text{int16}(f_{\text{norm}} - 32768) \in [-32768, +32767]$，即可将 `frac` 与 `off` 打包进同一个 `int32_t`：
+   在 [`SparseLut::prepare()`](cpp/src/lut.cpp#L90-L116) 中，利用四面体插值在节点边界处的代数等价性，将 `(idx = k, frac = 65536)` 归一化为 `(idx = k + 1, frac = 0)`（并将 `packed` 尾部安全填充 `S + 16` 个元素）。归一化后 `frac_norm` 严格落在 `[0, 65535]`（16 bit），令 $\tilde{f} = \text{int16}(f_{\text{norm}} - 32768) \in [-32768, +32767]$，即可将 `frac` 与 `off` 打包进同一个 `int32_t`：
    $$\text{of\_pack}[a][x] = (\text{int32}(\tilde{f}) \ll 16) \mid (\text{off}_{\text{norm}} \mathbin{\&} \text{0xFFFF})$$
    每 8 个像素的坐标轴查表从 **6 条 `vpgatherdd` 减半为 3 条 `vpgatherdd`**。
 2. **双通道 128-bit 错位加载 + 单掩码 `vpshufb` RGB 解交织**：
@@ -221,13 +223,13 @@ flowchart TD
    将传统四面体插值展开式重写为中心化差分内积恒等式：
    $$\text{acc} + 32768 = (c_1 - c_0)\tilde{f}_1 + (c_2 - c_1)\tilde{f}_2 + (c_3 - c_2)\tilde{f}_3 + \bigl(\sim(c_0 + c_3)\bigr)(-32768)$$
    其中 $\sim(c_0 + c_3) = -(c_0 + c_3 + 1)$ 通过一条微融合 `vpxor` 指令直接得到！原本需要 **12 条 32-bit `vpmulld`（24 uops，延迟 10 周期）** 的三通道乘法，被替换为 **6 条 16-bit `vpmaddwd`（6 uops，延迟 5 周期，Port 0/1 双发射并行树）**，且 R 与 B 通道的顶点差分通过 `0x00FF00FF` 掩码在同一个寄存器内同时完成。
-5. **手写 x86-64 内联汇编 [`tetra_asm`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L291-L455)**：
+5. **手写 x86-64 内联汇编 [`tetra_asm`](cpp/src/lut.cpp#L291-L455)**：
    - `.p2align 6` 对齐 64 字节指令缓存行；
    - 精确手工分配 `ymm0..ymm15` 全部 16 个寄存器（0 栈溢出），将高频常量驻留于 `ymm12..ymm15`，单次使用常量通过 64B 对齐的 `AsmConsts` 结构体微融合（Micro-fusion）加载；
    - 在排序网络执行前**提前发射** `c0`、`c3` 的 `vpgatherdd`，并在权重打包与 `c0`/`c3` 解包前**提前发射** `c1`、`c2` 的 `vpgatherdd`，让 Load 端口（Port 2/3）与 Vector ALU 端口（Port 0/1/5）完全重叠执行；
    - 尾部使用 `vpshufb` + 跨通道 `vpermd` + `vmovdqu` (16B) + `vmovq` (8B) 无重叠写回 24 字节 RGB，配合 `K=1` 原地零拷贝与 `std::atomic` 双块工作窃取（Work-Stealing），彻底消除 Intel 混合架构（P-Core + E-Core）负载不均。
 
-### 4.3 离线拟合阶段的 C++17 + OpenMP 15 点 Lovász Stencil 求解器 ([`fit_r14`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L644-L1142))
+### 4.3 离线拟合阶段的 C++17 + OpenMP 15 点 Lovász Stencil 求解器 ([`fit_r14`](cpp/src/lut.cpp#L644-L1142))
 
 我们将 `R14` 的完整离线拟合流水线移植为原生 C++ 子命令 `./build/jshc fit-r14`，通过四项算法革新将拟合耗时从 Python 的 **`1,258 ms` 压缩至 `4.10 ~ 5.84 ms`（提速 $215\times \sim 311\times$）**：
 1. **流式 L1 驻留曲率统计**：无需分配和合成 48 MB 的 $256^3$ 复合表，直接并行流式追踪 $3 \times 16 \times 16 = 768$ 条 256 像素轴向切片计算二阶差分曲率并生成自适应网格。
@@ -256,32 +258,32 @@ flowchart TD
 
 ### 5.1 工程化重构与核心设计原则
 
-1. **彻底移除硬件架构耦合 ([`CMakeLists.txt`](file:///home/mo5nk/problem_probe/16/CMakeLists.txt))**：
+1. **彻底移除硬件架构耦合 ([`CMakeLists.txt`](CMakeLists.txt))**：
    - 移除 `-march=native`、`-mtune=native`、`<immintrin.h>` 及全部 x86 内联汇编，仅使用标准 `-O3 -Wall -Wextra` 与标准 OpenMP，代码可在 x86-64、ARM64（Apple Silicon / 鲲鹏）、RISC-V 上零修改编译并保持 **0-bit 误差严格一致**。
-2. **自解释领域类型替代位运算魔数 ([`cpp/include/jshc/lut.hpp`](file:///home/mo5nk/problem_probe/16/cpp/include/jshc/lut.hpp) & [`cpp/src/lut.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp))**：
-   - 用 4 字节对齐结构体 [`struct alignas(4) RgbaNode { uint8_t r, g, b, pad; }`](file:///home/mo5nk/problem_probe/16/cpp/include/jshc/lut.hpp#L28-L33) 替代原先需要 `(c >> sh) & 255` 移位解包的 `uint32_t packed`；直接访问 `v0.r, v0.g, v0.b` 既消除了移位与掩码指令，又让代码一目了然。
-   - 用 5 行内联函数 [`compare_and_swap_axis`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L32-L37) (`std::swap`) 表达 3 比较器排序网络。
-   - 用直观的代数递推 [`interpolate_channel`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L42-L46)：
+2. **自解释领域类型替代位运算魔数 ([`cpp/include/jshc/lut.hpp`](cpp/include/jshc/lut.hpp) & [`cpp/src/lut.cpp`](cpp/src/lut.cpp))**：
+   - 用 4 字节对齐结构体 [`struct alignas(4) RgbaNode { uint8_t r, g, b, pad; }`](cpp/include/jshc/lut.hpp#L28-L33) 替代原先需要 `(c >> sh) & 255` 移位解包的 `uint32_t packed`；直接访问 `v0.r, v0.g, v0.b` 既消除了移位与掩码指令，又让代码一目了然。
+   - 用 5 行内联函数 [`compare_and_swap_axis`](cpp/src/lut.cpp#L32-L37) (`std::swap`) 表达 3 比较器排序网络。
+   - 用直观的代数递推 [`interpolate_channel`](cpp/src/lut.cpp#L42-L46)：
      ```cpp
      const int32_t acc = (c0 << kQ) + (c1 - c0) * f1 + (c2 - c1) * f2 + (c3 - c2) * f3;
      return static_cast<uint8_t>((acc + kHalf) >> kQ);
      ```
      无需任何 `-32768` 偏置或按位取反魔数，即可把每通道 4 次乘法精简为 3 次乘法。
    - 用单行声明式 `#pragma omp for schedule(dynamic, 1)` 替代手动 `std::atomic` 工作窃取循环与混合架构核数硬编码。
-3. **单一职责模块化拆分 ([`cpp/src/fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp))**：
-   将离线拟合器从 `lut.cpp` 中独立为专门模块 [`cpp/src/fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp)，以强类型 [`RgbFloat`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L28-L35) 与 [`LovaszStencilSystem`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L37-L43) 封装数据，并拆分为 6 个职责单一、结合 `<algorithm>` (`std::upper_bound`, `std::clamp`, `std::accumulate`) 的纯函数：
-   - [`compute_grid_knots`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L85-L190)：流式曲率统计与自适应网格节点生成；
-   - [`compute_axis_lookup_tables`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L192-L205)：生成 Q16 坐标轴索引与小数表；
-   - [`compute_separable_initial_guess`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L207-L299)：一维 Hat 基 Cholesky 求逆与三轴张量收缩；
-   - [`assemble_lovasz_stencil`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L301-L407)：奇偶 R-Slab 两趟无锁并行组装 15 点 Stencil；
-   - [`solve_jacobi_cg`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L409-L505)：三通道同步 Jacobi 预条件共轭梯度求解；
-   - [`refine_integer_lattice`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp#L507-L566)：8 色棋盘整数坐标下降。
+3. **单一职责模块化拆分 ([`cpp/src/fit_r14.cpp`](cpp/src/fit_r14.cpp))**：
+   将离线拟合器从 `lut.cpp` 中独立为专门模块 [`cpp/src/fit_r14.cpp`](cpp/src/fit_r14.cpp)，以强类型 [`RgbFloat`](cpp/src/fit_r14.cpp#L28-L35) 与 [`LovaszStencilSystem`](cpp/src/fit_r14.cpp#L37-L43) 封装数据，并拆分为 6 个职责单一、结合 `<algorithm>` (`std::upper_bound`, `std::clamp`, `std::accumulate`) 的纯函数：
+   - [`compute_grid_knots`](cpp/src/fit_r14.cpp#L85-L190)：流式曲率统计与自适应网格节点生成；
+   - [`compute_axis_lookup_tables`](cpp/src/fit_r14.cpp#L192-L205)：生成 Q16 坐标轴索引与小数表；
+   - [`compute_separable_initial_guess`](cpp/src/fit_r14.cpp#L207-L299)：一维 Hat 基 Cholesky 求逆与三轴张量收缩；
+   - [`assemble_lovasz_stencil`](cpp/src/fit_r14.cpp#L301-L407)：奇偶 R-Slab 两趟无锁并行组装 15 点 Stencil；
+   - [`solve_jacobi_cg`](cpp/src/fit_r14.cpp#L409-L505)：三通道同步 Jacobi 预条件共轭梯度求解；
+   - [`refine_integer_lattice`](cpp/src/fit_r14.cpp#L507-L566)：8 色棋盘整数坐标下降。
 
 ### 5.2 两个版本（极限 ASM 版 vs 纯标准高可维护版）正面对比表
 
 | 对比维度 | 原始标量基线 (`v1.0`) | **可移植高可维护版 (`v1.2-r14-portable-clean`)** | **极限 AVX2/ASM 版 (`v1.1-r14-extreme-asm`)** | 赛场工程结论 |
 | :--- | :---: | :---: | :---: | :--- |
-| **Git 标签 / Commit** | `83464cb` | **`v1.2-r14-portable-clean` (`HEAD`)** | **`v1.1-r14-extreme-asm` (`82e8c69`)** | 双版本均已完整归档，随时一键切换 |
+| **Git 标签 / Commit** | `83464cb` | **`v1.2-r14-portable-clean` (`30f664b`)** | **`v1.1-r14-extreme-asm` (`82e8c69`)** | 双版本均已完整归档，随时一键切换 |
 | **架构依赖与汇编代码** | 无 | **0 行 ASM / 0 行 Intrinsics / 纯 `-O3`** | 140 行手写 x86-64 ASM + AVX2 Gather | `v1.2` 具备满分可读性与跨平台移植性 |
 | **单线程推理 ($m=17$, 1T)** | `7.1653 ms/img` | **`4.8632 ms/img` (`161.7 MPix/s`)** | `1.3413 ms/img` (`586.3 MPix/s`) | 仅靠 `RgbaNode` + 代数递推即提速 **$1.47\times$** |
 | **单线程推理 ($m=33$, 1T)** | `7.8262 ms/img` | **`5.1404 ms/img` (`153.0 MPix/s`)** | `1.3005 ms/img` (`604.7 MPix/s`) | 纯标准 C++ 单核比原标量快 **$1.52\times$** |
@@ -300,13 +302,13 @@ flowchart TD
 
 ### 6.1 三语言可移植 SIMD 实现与语言特性对比
 
-1. **C++26 标准库 `<simd>` ([`cpp/src/lut_simd_cpp26.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut_simd_cpp26.cpp)) —— GCC 16.2.1 `-std=c++26`**：
+1. **C++26 标准库 `<simd>` ([`cpp/src/lut_simd_cpp26.cpp`](cpp/src/lut_simd_cpp26.cpp)) —— GCC 16.2.1 `-std=c++26`**：
    - 使用 C++26 标准正式合入（P1928）的 `<simd>` 头文件：`std::simd::vec<int32_t, 8>`、`std::simd::max`、`std::simd::min` 与 `std::simd::select(mask, a, b)`（同时通过 `#elif __has_include(<experimental/simd>)` 向下兼容 GCC 11~15 的 Parallelism TS v2）。
    - **语言抽象特点**：C++26 `<simd>` 支持算术与比较运算符重载（`fg > f1` 返回 `std::simd::mask`），但 C++26 初版标准未内置可移植 `gather` 原语，因此离散查表通过标准 Generator 构造函数 `i32x8([&](int lane) noexcept -> int32_t { return table[idx[lane]]; })` 表达，可读性极佳。
-2. **Zig 内置 `@Vector` ([`zig/lut_simd.zig`](file:///home/mo5nk/problem_probe/16/zig/lut_simd.zig)) —— Zig `0.16.0` (`-O ReleaseFast`)**：
+2. **Zig 内置 `@Vector` ([`zig/lut_simd.zig`](zig/lut_simd.zig)) —— Zig `0.16.0` (`-O ReleaseFast`)**：
    - 使用 Zig 语言一级内置类型 `@Vector(8, i32)` 与内置原语 `@splat`、`@select(i32, mask, a, b)`、`@max`、`@min`。
    - **语言抽象特点**：Zig 将向量作为核心语法原语，支持 `[8]i32` 数组与 `@Vector(8, i32)` 之间的零开销隐式转换，配合编译期展开循环 `inline for (0..8) |lane|`，わずか 15 行即可写出清晰无魔数的 `gather8i` / `gather8u`。
-3. **Rust 标准库 `core::simd` / `std::simd` ([`rust/lut_simd.rs`](file:///home/mo5nk/problem_probe/16/rust/lut_simd.rs)) —— `rustc 1.101.0-nightly` (`#![feature(portable_simd)]`)**：
+3. **Rust 标准库 `core::simd` / `std::simd` ([`rust/lut_simd.rs`](rust/lut_simd.rs)) —— `rustc 1.101.0-nightly` (`#![feature(portable_simd)]`)**：
    - 使用 `#![no_std]` + `core::simd::prelude::*`（`i32x8`、`usizex8`、`Mask`），通过 `.simd_gt()` / `.simd_lt()` + `.select()` + `.simd_max()` / `.simd_min()` 表达无分支四面体步长选择。
    - **语言抽象特点**：**三门语言中唯一在标准库可移植 SIMD 中原生提供硬件级 Gather 抽象的语言** —— `Simd::gather_select_unchecked(slice, Mask::splat(true), u_idx, i32x8::splat(0))`，在 LLVM IR 层直接映射为 `@llvm.masked.gather.v8i32`。
 
@@ -322,7 +324,7 @@ flowchart TD
 
 ### 6.2 双模式实测性能对比（100 张 $1024\times 768$ 图像，`R14` 单级 $m=33$，20 轮重复）
 
-我们在**完全不改动任何一行源码**的前提下，通过 CMake 选项 `-DJSHC_PORTABLE_NATIVE_TARGET=OFF/ON` 分别测试了两种编译目标映射模式：
+归档版本曾通过当时的 CMake 选项 `-DJSHC_PORTABLE_NATIVE_TARGET=OFF/ON` 分别测试两种编译目标映射模式；当前分支已移除该选项：
 - **Mode A（严格通用基线目标 `-march=x86-64` / `-mcpu=x86_64` / `-C target-cpu=x86-64`）**：编译器仅能使用 20 年前的 128-bit SSE2 寄存器（`%xmm`），自动将 8-lane 向量拆分为两个 4-lane 向量执行；
 - **Mode B（同一套可移植源码 + 本地目标自动映射 `-march=native` / `-mcpu=native` / `-C target-cpu=native`）**：源码仍保持 100% 架构无关，由编译器后端自动将 8-lane 可移植向量映射为宿主机 256-bit `%ymm` 寄存器。
 
@@ -353,9 +355,6 @@ flowchart TD
      既省去了先将 $r, g, b$ 打包进向量再提取出来的往返开销，又完全避免了在 AMD Zen 3 上微码化的 `vpgatherdd`！因此 Zig 单核达到 **`2.3383 ms/img`（`336.3 MPix/s`）**，20 线程达到 **`0.2416 ms/img`（`3.26 GPix/s`）**，在不写一行架构相关代码的前提下达到了手写汇编极限版（`0.1678 ms/img`）**70% 的吞吐性能**！
 2. **Rust `Simd::gather_select_unchecked` 的双刃剑效应（Zen 3 微码 `vpgatherdd` 瓶颈）**：
    - Rust 的 `core::simd` 生成了三者中最精简的机器码（仅 `247` 条指令，包含 10 条硬件 `vpgatherdd`）。甚至当我们尝试在 Rust 中改用 `i32x8::from_array([*table.get_unchecked(a[0]), ...])` 时，`rustc` 的 LLVM SLP Vectorizer 依然足够激进地将其自动合并为 `vpgatherdd`。
-   - 然而在当前宿主机（AMD Ryzen 9 5900X，Zen 3 微架构）上，`vpgatherdd` 是微码指令（每条耗时 ~4–6 周期、占用 37 个 uops），10 条未经 `of_pack` 合并的 `vpgatherdd` 导致 Load 管线饱和（`3.28 ms/img` @ 1T）；若在 Intel AVX-512 / Ice Lake 或 AVX2 fast-gather 架构上，Rust 的硬件 Gather 路径优势会更加明显。
+   - 该次日志的机器实际是 **Intel i7-13700H**，原稿将其写为 AMD Ryzen 9 5900X 是错误的。因此不能用 Zen 3 的微码成本解释此次 Rust 与 Zig 的耗时差异；汇编观察只说明生成了 Gather 指令，瓶颈归因仍需硬件计数器验证。
 3. **C++26 `<simd>` (`std::simd::vec<int32_t, 8>`) 的成熟度与均衡表现**：
    - GCC 16 的 C++26 `<simd>` 提供了极佳的运算符重载体验与零外部符号依赖，在 Generic `x86-64` (`0.4239 ms/img` @ 20T) 与 Native Lowering (`0.3082 ms/img` @ 20T, **`2.53 GPix/s`**) 下均表现稳健，且无需引入多语言编译工具链，是纯 C++ 技术栈下兼顾可读性与性能的理想选择。
-
-
-

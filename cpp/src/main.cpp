@@ -136,6 +136,8 @@ static double pct(std::vector<double> v, double q) {
 
 int main(int argc, char** argv) try {
   Args a = parse(argc, argv);
+  if (a.reps < 1) throw std::runtime_error("reps must be positive");
+  if (a.threads < 0) throw std::runtime_error("threads must be nonnegative");
   if (a.cmd == "info") {
     std::printf("{\"avx2\": %s, \"openmp_threads\": %d, \"hw_threads\": %u}\n",
                 avx2_available() ? "true" : "false", max_threads(),
@@ -255,15 +257,21 @@ int main(int argc, char** argv) try {
     }
     double mean = std::accumulate(per_img.begin(), per_img.end(), 0.0) / per_img.size();
     double dmean = std::accumulate(dec.begin(), dec.end(), 0.0) / dec.size();
+    const double set_best = *std::min_element(rep_totals.begin(), rep_totals.end());
+    const double set_ms_per_image = set_best / imgs.size();
+    const double pixels_per_image = imgs[0].rgb.size() / 3;
     std::printf(
         "{\"kernel\": \"%s\", \"threads\": %d, \"stages\": %zu, \"m\": %u, \"images\": %zu, "
         "\"reps\": %d, \"setup_ms\": %.3f, \"decode_ms_mean\": %.3f, \"apply_ms_mean\": %.4f, "
         "\"apply_ms_p50\": %.4f, \"apply_ms_p95\": %.4f, \"apply_ms_max\": %.4f, "
-        "\"set_ms_best_rep\": %.3f, \"apply_write_png_ms_mean\": %.3f, \"mpix_per_s\": %.1f}\n",
+        "\"set_ms_best_rep\": %.3f, \"set_ms_per_image_best_rep\": %.4f, "
+        "\"set_mpix_per_s_best_rep\": %.1f, \"apply_write_png_ms_mean\": %.3f, "
+        "\"mpix_per_s\": %.1f}\n",
         kernel_name(k), a.threads > 0 ? a.threads : max_threads(), L.size(), L[0].m,
         imgs.size(), a.reps, setup_ms, dmean, mean, pct(per_img, 0.5), pct(per_img, 0.95),
-        pct(per_img, 1.0), *std::min_element(rep_totals.begin(), rep_totals.end()), enc_ms,
-        (imgs[0].rgb.size() / 3) / (mean * 1e3));
+        pct(per_img, 1.0), set_best, set_ms_per_image,
+        pixels_per_image / (set_ms_per_image * 1e3), enc_ms,
+        pixels_per_image / (mean * 1e3));
     return 0;
   }
   throw std::runtime_error("unknown command " + a.cmd);

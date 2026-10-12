@@ -43,7 +43,7 @@ def _ensure_repo() -> None:
         subprocess.run(["git", "init", "-q", "-b", "main"], cwd=LOGS)
         subprocess.run(["git", "config", "user.name", "jshc-runlog"], cwd=LOGS)
         subprocess.run(["git", "config", "user.email", "runlog@localhost"], cwd=LOGS)
-        (LOGS / "README.md").write_text("Run logs for problem 16 (independent repo, see docs/LOGGING.md).\n")
+        (LOGS / "README.md").write_text("Run logs for problem 16 (independent repo, see the main project's docs/LOGGING.md).\n")
 
 
 def _cpu_model() -> str:

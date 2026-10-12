@@ -10,6 +10,24 @@ from . import cascade, data, fit as fit_mod, interp, io, luts, metrics
 from .runlog import Run
 
 
+def model_dir(args) -> Path:
+    variant = f"{args.mode}_{args.method}_m{args.m}"
+    if args.adaptive:
+        variant += "_adaptive"
+    return data.DATA / "models" / args.scenario / variant
+
+
+def model_paths(args) -> list[Path]:
+    paths = sorted(model_dir(args).glob("stage*.slut"))
+    expected = 1 if args.mode == "composite" else 4
+    if len(paths) != expected:
+        cmd_fit(args)
+        paths = sorted(model_dir(args).glob("stage*.slut"))
+    if len(paths) != expected:
+        raise RuntimeError(f"expected {expected} sparse LUT stages in {model_dir(args)}, found {len(paths)}")
+    return paths
+
+
 def cmd_gen_data(args):
     with Run("gen-data", {"scenarios": args.scenarios, "seed": args.seed}) as run:
         lists = data.build_images(seed=args.seed)
@@ -22,12 +40,12 @@ def cmd_gen_data(args):
 
 
 def cmd_fit(args):
-    with Run("fit", {"scenario": args.scenario, "m": args.m, "method": args.method, "mode": args.mode}) as run:
+    with Run("fit", {"scenario": args.scenario, "m": args.m, "method": args.method, "mode": args.mode, "adaptive": args.adaptive}) as run:
         sdir = data.scenario_dir(args.scenario)
         if not (sdir / "meta.json").exists():
             data.build_scenario(args.scenario)
         tables = [io.load_full(sdir / f"lut{k}.lut256") for k in range(1, 5)]
-        out_dir = data.DATA / "models" / args.scenario / f"{args.mode}_{args.method}_m{args.m}"
+        out_dir = model_dir(args)
         out_dir.mkdir(parents=True, exist_ok=True)
         if args.mode == "seq":
             chain, info = cascade.fit_cascade_sequential(tables, args.m, args.method, use_adaptive_grid=args.adaptive)
@@ -47,15 +65,12 @@ def cmd_fit(args):
 
 
 def cmd_evaluate(args):
-    with Run("evaluate", {"scenario": args.scenario, "m": args.m, "method": args.method, "mode": args.mode}) as run:
+    with Run("evaluate", {"scenario": args.scenario, "m": args.m, "method": args.method, "mode": args.mode, "adaptive": args.adaptive}) as run:
         sdir = data.scenario_dir(args.scenario)
         if not (sdir / "meta.json").exists():
             data.build_scenario(args.scenario)
         comp = io.load_full(sdir / "composite.lut256")
-        model_dir = data.DATA / "models" / args.scenario / f"{args.mode}_{args.method}_m{args.m}"
-        if not model_dir.exists():
-            cmd_fit(args)
-        sluts = [io.load_sparse(p) for p in sorted(model_dir.glob("stage*.slut"))]
+        sluts = [io.load_sparse(p) for p in model_paths(args)]
 
         def pred_fn(img):
             x = img
@@ -72,14 +87,11 @@ def cmd_evaluate(args):
 
 
 def cmd_bench(args):
-    with Run("bench", {"scenario": args.scenario, "m": args.m, "kernel": args.kernel, "threads": args.threads, "mode": args.mode}) as run:
+    with Run("bench", {"scenario": args.scenario, "m": args.m, "method": args.method, "kernel": args.kernel, "threads": args.threads, "mode": args.mode, "adaptive": args.adaptive}) as run:
         sdir = data.scenario_dir(args.scenario)
         if not (sdir / "meta.json").exists():
             data.build_scenario(args.scenario)
-        model_dir = data.DATA / "models" / args.scenario / f"{args.mode}_{args.method}_m{args.m}"
-        if not model_dir.exists():
-            cmd_fit(args)
-        slut_paths = sorted(model_dir.glob("stage*.slut"))
+        slut_paths = model_paths(args)
         b = metrics.run_cpp_bench(
             slut_paths,
             data.DATA / "bench.txt",
