@@ -28,11 +28,15 @@ def _eval_chain(chain: list[io.SparseLut], comp: np.ndarray, img_paths: list[str
                 x = interp.apply_tetra_q16(s, x)
             return x
     elif kernel == "tri":
+        # Separable synthesis builds the exact 256^3 trilinear lookup table in ~0.08s/stage
+        stages = [
+            np.clip(np.floor(fit_mod.synth_sep(s.nodes.astype(np.float32), s.grid, "hat") + 0.5), 0, 255).astype(np.uint8)
+            for s in chain
+        ]
         def pred_fn(img):
             x = img
-            for s in chain:
-                y = interp.eval_float(s.nodes.astype(np.float64), s.grid, x.reshape(-1, 3), "tri")
-                x = np.clip(np.floor(y + 0.5), 0, 255).astype(np.uint8).reshape(x.shape)
+            for S in stages:
+                x = S[x[..., 0], x[..., 1], x[..., 2]]
             return x
     else:
         raise ValueError(kernel)

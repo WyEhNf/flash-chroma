@@ -61,7 +61,12 @@ def apply_tetra_q16(s: SparseLut, img: np.ndarray) -> np.ndarray:
     flat = img.reshape(-1, 3)
     I, W = tetra_index_weights_q(flat, idx, frac, s.m)
     N = s.nodes.reshape(-1, 3).astype(np.int64)
-    acc = np.einsum("nk,nkc->nc", W, N[I])
+    acc = (
+        W[:, 0:1] * N[I[:, 0]]
+        + W[:, 1:2] * N[I[:, 1]]
+        + W[:, 2:3] * N[I[:, 2]]
+        + W[:, 3:4] * N[I[:, 3]]
+    )
     out = ((acc + (1 << (Q - 1))) >> Q).astype(np.uint8)
     return out.reshape(img.shape)
 
