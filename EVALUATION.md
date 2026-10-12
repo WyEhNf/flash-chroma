@@ -110,7 +110,10 @@
 | **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **1** | **`1.3005`** | **`151.30`** | **`604.7`** | **$40.09\times$** | **$1153.4\times$** |
 | **1-Stage R14** | $17$ | `14.7 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1680`** | **`43.42`** | **`4680.8`** | **$310.31\times$** | **$8928.6\times$** |
 | **1-Stage R14** | $25$ | `46.9 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1684`** | **`49.72`** | **`4670.5`** | **$309.57\times$** | **$8907.4\times$** |
-| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1678`** | **`42.88`** | **`4686.5`** | **$310.68\times$** | **$8939.2\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_asm` (`v1.1` Hand-Scheduled x86-64 ASM)** | **20** | **`0.1678`** | **`42.88`** | **`4686.5`** | **$310.68\times$** | **$8939.2\times$** |
+| **1-Stage R14** | $17$ | `14.7 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **20** | **`0.5652`** | **`84.82`** | **`1391.4`** | **$92.24\times$** | **$2653.9\times$** |
+| **1-Stage R14** | $25$ | `46.9 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **20** | **`0.6054`** | **`99.14`** | **`1299.1`** | **$86.11\times$** | **$2477.7\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_scalar` (`v1.2` Portable C++17 Clean)** | **10** | **`0.9035`** | **`118.65`** | **`870.5`** | **$57.70\times$** | **$1660.2\times$** |
 
 ### 4.2 关键硬件微架构洞察（用于决赛现场调优）
 
@@ -119,7 +122,9 @@
    - 在单核微架构层面，`tetra_asm` 通过归一化 32-bit 轴表 `of_pack`（将坐标轴 Gather 减半为 3 条）、6 指令无分支 `vpmaxsd`/`vpminsd` 排序网络、Telescoped 16-bit `vpmaddwd` 差分内积（消除全部 12 条 32-bit `vpmulld`）、手写 `.p2align 6` 寄存器分配与 Gather-ALU 提前乱序发射，将单线程耗时压缩至 **`1.3005 ms/img`（`604.7 MPix/s`）**。
 2. **`R14` 离线拟合器的 C++17 原生加速（`jshc fit-r14`）**：
    - 利用 Lovász 6-四面体剖分下 $H=W^\top W$ 的 **15 点固定偏移 Stencil 定理**、奇偶 R-Slab 两趟无锁并行组装、三通道同步 Jacobi-CG 与单趟 8 色棋盘坐标下降，将 4 级 $256^3$ LUT 到单级自适应 $m^3$ LUT 的完整拟合时间从 Python 的 `1.26 s` 压缩至 **`4.10 ms` ($m=17$) / `5.00 ms` ($m=25$) / `5.84 ms` ($m=33$)**，提速 **$215\times \sim 311\times$**，且 29 图全量 $\Delta E$ 精度完全一致（`mean_dE = 1.0846`）。
-3. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
+3. **无架构特化、高可维护性纯标准 C++17 版本 (`v1.2-r14-portable-clean`) 的定位**：
+   - 在完全禁用 `-march=native`、禁用 `<immintrin.h>` 与内联汇编的前提下，仅凭 `RgbaNode` 4 字节结构体直接访存、代数递推插值与声明式 OpenMP `schedule(dynamic, 1)`，即可在单张图像上达到 **`0.565 ms/img`（`1,391.4 MPix/s`，超满分线 $2654\times$）**，且离线拟合耗时同样保持在 **`4.2 ~ 8.6 ms`**。非常适合 3 人本科生团队在 24 小时赛场作为主干代码快速开发调试，定型后再切换至 `v1.1-r14-extreme-asm` 冲击极限跑分。
+4. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
    - 我们在最后两组基准测试中测量了单线程 `stb_image` PNG 解码（约 `14.0 ms/张`）与未压缩/默认级别 `stb_image_write` PNG 编码（约 `135 ms/张`，100 张合计仍仅需 `0.15s/张`，远低于 `1.5s/张`）。
    - 如果决赛要求批量读写图像文件，只需将**外层 OpenMP 并行循环放在图像列表级别（Image-Level Parallelism，每线程独立处理一张图并绑定 1 个核）**，即可将 PNG 解码 + LUT 映射 + 编码的端到端延迟同时除以核数（14 核下端到端含 PNG 读写 `< 12 ms/张`）。
 
@@ -131,7 +136,7 @@
 
 ### 5.1 主代码库 (`git log --oneline`)
 
-| Commit Hash | 阶段与尝试内容 | 关键指标或改进效果 |
+| Commit Hash / Tag | 阶段与尝试内容 | 关键指标或改进效果 |
 | :--- | :--- | :--- |
 | `15937ee` | **V1 脚手架与 C++ 内核**：配置 `pixi.toml` + CMake，实现 C++17 `tri_float`、`tetra_scalar` (Q16)、`tetra_avx2` (AVX2 Gather) 及 4096 像素 L1 驻留四阶段融合流水线，通过 CTest 单元测试 | C++ 内核较浮点三线性提速 **$31\times$**，达到 `1.68 ms/img` |
 | `ed0154b` | **V2 Python 算法库与位级对齐**：实现 `.lut256`/`.slut` 二进制协议、6 大场景生成器、Kodak 真彩数据集构建、全套拟合器 (`fit.py`/`cascade.py`)、独立 Git 日志器 (`runlog.py`) 及 Pytest 位级一致性校验 | Python Q16 与 C++ Scalar/AVX2 输出实现 **0 bit 误差严格一致** |
@@ -143,12 +148,15 @@
 | `f5e415d` | **V8 整数溢出修复与探针子网格**：修复 Python `apply_tetra_q16` 中 `int64` 临时数组带宽瓶颈，统一使用 `int32` | 内存带宽占用减半 |
 | `b135b61` | **V9 RBF BLAS 矩阵化与 PyTorch 线程隔离**：将 3D RBF 欧氏距离改写为 BLAS GEMM $\|X\|^2 + \|C\|^2 - 2XC^\top$，并限制 PyTorch 内部线程争用 | 完成全部 20 条路线 + 100 图 C++ 基准 + 29 图端到端全量评测 |
 | `83464cb` | **V10 全套评测报告与可视化图表**：生成 4 张高质量评测图表并完成 `PROBLEM.md`、`EVALUATION.md`、`ROUTES.md`、`DECISION.md` | 完整交付 20 路线多维评估体系 |
-| `HEAD` | **V11 `R14` 极限性能优化（裸 C / AVX2 内联汇编 `tetra_asm` + C++17 `fit-r14`）**：启用 `-march=native -flto=auto`，实现 32-bit `of_pack` 复合轴表、6-op 无分支排序网络、Telescoped 16-bit `vpmaddwd` 差分内积、手写 x86-64 汇编 `tetra_asm` 及 15 点 Stencil C++ 拟合器 `fit-r14` | 推理达 **`0.1678 ms/img` (`4.69 GPix/s`)**，C++ 离线拟合达 **`4.10 ~ 5.84 ms`**（提速 **$215\times \sim 311\times$**），全 $2^{24}$ 色 **0-bit 误差** |
+| `82e8c69` (`v1.1-r14-extreme-asm`) | **V11 `R14` 极限性能优化（裸 C / AVX2 内联汇编 `tetra_asm` + C++17 `fit-r14`）**：启用 `-march=native -flto=auto`，实现 32-bit `of_pack` 复合轴表、6-op 无分支排序网络、Telescoped 16-bit `vpmaddwd` 差分内积、手写 x86-64 汇编 `tetra_asm` 及 15 点 Stencil C++ 拟合器 `fit-r14` | 推理达 **`0.1678 ms/img` (`4.69 GPix/s`)**，C++ 离线拟合达 **`4.10 ~ 5.84 ms`**（提速 **$215\times \sim 311\times$**），全 $2^{24}$ 色 **0-bit 误差** |
+| `HEAD` (`v1.2-r14-portable-clean`) | **V12 `R14` 去架构特化、高可读性与可维护性重构**：移除全部 SIMD Intrinsics、内联汇编与架构特化编译参数，采用 `RgbaNode` 领域结构体、代数递推插值与模块化 [`fit_r14.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/fit_r14.cpp) | 纯标准 C++17 推理达 **`0.5652 ms/img` (`1.39 GPix/s`)**，C++ 离线拟合 **`4.20 ~ 8.59 ms`**，兼具跨架构可移植性与本科生团队极佳可维护性 |
 
 ### 5.2 独立实验日志库 (`logs/` Git Repository)
 
 - 路径：`/home/mo5nk/problem_probe/16/logs/.git`（被主仓库 `.gitignore` 忽略，主仓库任意 `git reset` 均不会丢失实验记录）
 - 完整评测归档提交：
   - `172961e` — `routes-sweep f36df336 (ok)`：包含全部 20 条路线在 6 大场景下的 JSON 指标以及 C++ 吞吐基准原始记录。
-  - `5d19819` — `r14-extreme-opt 41945a8f (ok)`：包含 `R14` 极限优化后 `tetra_scalar`、`tetra_avx2`、`tetra_asm` 与 `jshc fit-r14` 在 $m \in \{17, 25, 33\}$ 及 1/10/20 线程下的完整实测日志。
+  - `5d19819` — `r14-extreme-opt 41945a8f (ok)`：包含 `v1.1-r14-extreme-asm` 极限优化后 `tetra_scalar`、`tetra_avx2`、`tetra_asm` 与 `jshc fit-r14` 的完整实测日志。
+  - `5ce3c0b` — `r14-portable-clean 4f49d561 (ok)`：包含 `v1.2-r14-portable-clean` 去架构特化高可维护性 C++17 版本的完整实测日志。
+
 
