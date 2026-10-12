@@ -173,29 +173,31 @@ def fit_tucker_lut(T: np.ndarray, m: int, rank: int = 8) -> tuple[io.SparseLut, 
     }
 
 
-def fit_rbf(T: np.ndarray, n_centers: int = 512, stride: int = 4) -> tuple[dict, dict]:
+def fit_rbf(T: np.ndarray, n_centers: int = 216, stride: int = 8) -> tuple[dict, dict]:
     """Radial Basis Function (Gaussian + linear tail) approximation in 3D RGB space."""
     t0 = time.perf_counter()
     k = max(2, round(n_centers ** (1 / 3)))
     g = np.linspace(0, 1, k, dtype=np.float32)
     centers = np.stack(np.meshgrid(g, g, g, indexing="ij"), -1).reshape(-1, 3)
     sigma = 1.0 / (k - 1)
+    c_norm2 = np.sum(centers * centers, axis=1, keepdims=True).T  # (1, K)
 
-    v = np.arange(0, 256, stride, dtype=np.float32) / 255.0
-    pts = np.stack(np.meshgrid(v, v, v, indexing="ij"), -1).reshape(-1, 3)
-    Y = T[::stride, ::stride, ::stride].reshape(-1, 3).astype(np.float32)
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.intp)
+    vf = v.astype(np.float32) / 255.0
+    pts = np.stack(np.meshgrid(vf, vf, vf, indexing="ij"), -1).reshape(-1, 3)
+    Y = T[np.ix_(v, v, v)].reshape(-1, 3).astype(np.float32)
 
     def feat(P):
-        d2 = ((P[:, None, :] - centers[None, :, :]) ** 2).sum(-1)
+        p_norm2 = np.sum(P * P, axis=1, keepdims=True)
+        d2 = np.maximum(p_norm2 + c_norm2 - 2.0 * (P @ centers.T), 0.0)
         phi = np.exp(-0.5 * d2 / (sigma ** 2))
         return np.concatenate([phi, P, np.ones((len(P), 1), np.float32)], axis=1)
 
     A = feat(pts)
-    # Ridge regression
     ATA = A.T @ A + 1e-4 * np.eye(A.shape[1], dtype=np.float32)
     W = np.linalg.solve(ATA, A.T @ Y)
     fit_s = time.perf_counter() - t0
-    model = {"centers": centers, "sigma": float(sigma), "W": W}
+    model = {"centers": centers, "c_norm2": c_norm2, "sigma": float(sigma), "W": W}
     return model, {
         "n_centers": len(centers),
         "fit_s": round(fit_s, 3),
@@ -205,12 +207,13 @@ def fit_rbf(T: np.ndarray, n_centers: int = 512, stride: int = 4) -> tuple[dict,
 
 def apply_rbf(model: dict, img: np.ndarray) -> np.ndarray:
     P = img.reshape(-1, 3).astype(np.float32) / 255.0
-    centers, sigma, W = model["centers"], model["sigma"], model["W"]
+    centers, c_norm2, sigma, W = model["centers"], model["c_norm2"], model["sigma"], model["W"]
     out = np.empty_like(P, dtype=np.uint8)
-    chunk = 65536
+    chunk = 131072
     for s in range(0, len(P), chunk):
         Pc = P[s : s + chunk]
-        d2 = ((Pc[:, None, :] - centers[None, :, :]) ** 2).sum(-1)
+        p_norm2 = np.sum(Pc * Pc, axis=1, keepdims=True)
+        d2 = np.maximum(p_norm2 + c_norm2 - 2.0 * (Pc @ centers.T), 0.0)
         phi = np.exp(-0.5 * d2 / (sigma ** 2))
         F = np.concatenate([phi, Pc, np.ones((len(Pc), 1), np.float32)], axis=1)
         y = F @ W
@@ -223,8 +226,8 @@ def fit_mlp_lut(
     T: np.ndarray,
     hidden: int = 32,
     layers: int = 3,
-    steps: int = 600,
-    batch_size: int = 16384,
+    steps: int = 300,
+    batch_size: int = 8192,
     siren: bool = False,
     seed: int = 0,
 ) -> tuple[dict, dict]:
@@ -234,6 +237,7 @@ def fit_mlp_lut(
     import torch
     import torch.nn as nn
 
+    torch.set_num_threads(4)
     torch.manual_seed(seed)
     t0 = time.perf_counter()
 
@@ -266,10 +270,10 @@ def fit_mlp_lut(
                     h = torch.nn.functional.gelu(z)
             return x * 255.0 + self.out(h)
 
-    # Subsample 64^3 = 262,144 points for fast training
-    v = np.arange(0, 256, 4, dtype=np.float32)
-    pts = np.stack(np.meshgrid(v, v, v, indexing="ij"), -1).reshape(-1, 3) / 255.0
-    Y = T[::4, ::4, ::4].reshape(-1, 3).astype(np.float32)
+    v = np.round(np.linspace(0, 255, 32)).astype(np.intp)
+    vf = v.astype(np.float32) / 255.0
+    pts = np.stack(np.meshgrid(vf, vf, vf, indexing="ij"), -1).reshape(-1, 3)
+    Y = T[np.ix_(v, v, v)].reshape(-1, 3).astype(np.float32)
 
     X_t = torch.from_numpy(pts)
     Y_t = torch.from_numpy(Y)

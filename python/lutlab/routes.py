@@ -226,7 +226,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                 print(f"  [{sid}] B5_poly3d_deg{deg:<15} mean_dE={ev_s['mean_de']:.4f} max={ev_s['max_pixel_de']:.2f}")
 
             t0 = time.perf_counter()
-            rbfs = [cascade.fit_rbf(T, n_centers=512) for T in tables]
+            rbfs = [cascade.fit_rbf(T, n_centers=216) for T in tables]
             fit_s = round(time.perf_counter() - t0, 3)
 
             def rbf_fn(img, rbfs=rbfs):
@@ -237,17 +237,17 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
 
             ev_s = _eval_preloaded(rbf_fn, sub_imgs, sub_gts)
             rec = {
-                "route": "B6_rbf_512centers", "family": "ML-Kernel", "scenario": sid,
+                "route": "B6_rbf_216centers", "family": "ML-Kernel", "scenario": sid,
                 "fit_s": fit_s, "lut_bytes": sum(i["bytes"] for _, i in rbfs), **ev_s,
             }
             results["non_lattice_routes"].append(rec)
-            print(f"  [{sid}] B6_rbf_512centers           mean_dE={ev_s['mean_de']:.4f} max={ev_s['max_pixel_de']:.2f}")
+            print(f"  [{sid}] B6_rbf_216centers           mean_dE={ev_s['mean_de']:.4f} max={ev_s['max_pixel_de']:.2f}")
 
             try:
                 import torch  # noqa: F401
                 for siren, tag in [(False, "DL1_mlp_gelu_3x32"), (True, "DL2_siren_3x32")]:
                     t0 = time.perf_counter()
-                    mlps = [cascade.fit_mlp_lut(T, hidden=32, layers=3, steps=400, siren=siren) for T in tables]
+                    mlps = [cascade.fit_mlp_lut(T, hidden=32, layers=3, steps=250, siren=siren) for T in tables]
                     fit_s = round(time.perf_counter() - t0, 3)
 
                     t_inf0 = time.perf_counter()
