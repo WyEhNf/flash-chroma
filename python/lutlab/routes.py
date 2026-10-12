@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXP_DIR = ROOT / "experiments"
 
 
-def _eval_chain(chain: list[io.SparseLut], comp: np.ndarray, img_paths: list[str], kernel: str = "tetra") -> dict:
+def _eval_chain_fast(chain: list[io.SparseLut], imgs: list[np.ndarray], gts: list[np.ndarray], kernel: str = "tetra") -> dict:
     if kernel == "tetra":
         def pred_fn(img):
             x = img
@@ -28,7 +28,6 @@ def _eval_chain(chain: list[io.SparseLut], comp: np.ndarray, img_paths: list[str
                 x = interp.apply_tetra_q16(s, x)
             return x
     elif kernel == "tri":
-        # Separable synthesis builds the exact 256^3 trilinear lookup table in ~0.08s/stage
         stages = [
             np.clip(np.floor(fit_mod.synth_sep(s.nodes.astype(np.float32), s.grid, "hat") + 0.5), 0, 255).astype(np.uint8)
             for s in chain
@@ -40,11 +39,33 @@ def _eval_chain(chain: list[io.SparseLut], comp: np.ndarray, img_paths: list[str
             return x
     else:
         raise ValueError(kernel)
-    ev = metrics.eval_images(pred_fn, comp, img_paths)
-    return {k: v for k, v in ev.items() if k != "per_image"}
+    return _eval_preloaded(pred_fn, imgs, gts)
 
 
-def _eval_sep_basis_chain(tables: list[np.ndarray], comp: np.ndarray, m: int, kind: str, img_paths: list[str]) -> tuple[dict, float]:
+def _eval_preloaded(pred_fn, imgs: list[np.ndarray], gts: list[np.ndarray]) -> dict:
+    means, p95s, p99s, maxs = [], [], [], []
+    for img, gt in zip(imgs, gts):
+        pred = pred_fn(img)
+        de = metrics.delta_e_map(pred, gt)
+        st = metrics.summarize_delta_e(de)
+        means.append(st["mean"])
+        p95s.append(st["p95"])
+        p99s.append(st["p99"])
+        maxs.append(st["max"])
+    return {
+        "n_images": len(imgs),
+        "mean_de": round(float(np.mean(means)), 4),
+        "worst_img_mean_de": round(float(np.max(means)), 4),
+        "mean_p95_de": round(float(np.mean(p95s)), 4),
+        "mean_p99_de": round(float(np.mean(p99s)), 4),
+        "max_pixel_de": round(float(np.max(maxs)), 4),
+        "pass_rate_mean_le_1_0": round(float(np.mean(np.array(means) <= 1.0)), 4),
+        "pass_rate_mean_le_2_0": round(float(np.mean(np.array(means) <= 2.0)), 4),
+        "pass_rate_p99_le_3_0": round(float(np.mean(np.array(p99s) <= 3.0)), 4),
+    }
+
+
+def _eval_sep_basis_chain(tables: list[np.ndarray], m: int, kind: str, imgs: list[np.ndarray], gts: list[np.ndarray]) -> tuple[dict, float]:
     """Fit 4 stages using separable higher-order basis (`bspline2`, `bspline3`, `lagrange3`)
     with quantized uint8 coefficients, and evaluate 4-stage sequential mapping."""
     t0 = time.perf_counter()
@@ -53,7 +74,6 @@ def _eval_sep_basis_chain(tables: list[np.ndarray], comp: np.ndarray, m: int, ki
     stages = []
     for T in tables:
         X = fit_mod.quantize(fit_mod.fit_ls_sep(T, grid, kind))
-        # Pre-evaluate 256^3 integer table implied by this basis + uint8 coefficients
         Y = np.clip(np.floor(fit_mod.contract(X, *B) + 0.5), 0, 255).astype(np.uint8)
         stages.append(Y)
     fit_s = round(time.perf_counter() - t0, 3)
@@ -64,8 +84,7 @@ def _eval_sep_basis_chain(tables: list[np.ndarray], comp: np.ndarray, m: int, ki
             x = S[x[..., 0], x[..., 1], x[..., 2]]
         return x
 
-    ev = metrics.eval_images(pred_fn, comp, img_paths)
-    return {k: v for k, v in ev.items() if k != "per_image"}, fit_s
+    return _eval_preloaded(pred_fn, imgs, gts), fit_s
 
 
 def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 33)):
@@ -80,12 +99,12 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
         for sid in scenarios:
             data.build_scenario(sid)
 
-        eval_imgs = (data.DATA / "eval.txt").read_text().splitlines()
-        # Use a representative subset of 10 diverse images (5 Kodak + all 5 synthetic stress
-        # images) for the full cross-product sweep, plus full 29-image eval on key configs
-        sub_imgs = [p for p in eval_imgs if "syn_" in Path(p).name] + [
-            p for p in eval_imgs if "kodim" in Path(p).name
+        eval_img_paths = (data.DATA / "eval.txt").read_text().splitlines()
+        sub_img_paths = [p for p in eval_img_paths if "syn_" in Path(p).name] + [
+            p for p in eval_img_paths if "kodim" in Path(p).name
         ][:5]
+        all_imgs = [io.load_image(p) for p in eval_img_paths]
+        sub_imgs = [io.load_image(p) for p in sub_img_paths]
 
         results = {"lattice_routes": [], "non_lattice_routes": [], "cpp_benchmarks": [], "full_eval_spotchecks": []}
 
@@ -111,15 +130,16 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             sdir = data.scenario_dir(sid)
             tables = [io.load_full(sdir / f"lut{k}.lut256") for k in range(1, 5)]
             comp = io.load_full(sdir / "composite.lut256")
+            sub_gts = [io.apply_full(comp, img) for img in sub_imgs]
             print(f"\n=== Scenario: {sid} ===")
 
             for m in ms:
-                # Evaluate main lattice routes on all scenarios for m=17,33, and on isp-0/film-0/stress-0 for m=25
                 if m == 25 and sid not in ("isp-0", "film-0", "stress-0"):
                     continue
                 for rname, mode, method, adaptive, kern, family in lattice_configs:
-                    # Run heavy IRLS only on representative scenarios (isp-0, stress-0) to keep sweep fast
                     if method == "irls_tetra" and sid not in ("isp-0", "stress-0"):
+                        continue
+                    if adaptive and sid not in ("isp-0", "film-0", "clip-0", "stress-0"):
                         continue
                     if mode == "seq":
                         chain, info = cascade.fit_cascade_sequential(tables, m, method, use_adaptive_grid=adaptive)
@@ -130,7 +150,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     else:
                         raise ValueError(mode)
 
-                    ev = _eval_chain(chain, comp, sub_imgs, kernel=kern)
+                    ev = _eval_chain_fast(chain, sub_imgs, sub_gts, kernel=kern)
                     mem_bytes = len(chain) * (m ** 3 * 3)
                     rec = {
                         "route": rname, "family": family, "scenario": sid, "m": m,
@@ -146,11 +166,11 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     )
 
         # 3. Higher-order basis & non-lattice routes (Lagrange, B-spline, Polynomial, Tucker, RBF, MLP, SIREN)
-        # Tested on representative realistic (`isp-0`, `film-0`) and stress (`stress-0`) scenarios
         for sid in ("isp-0", "film-0", "stress-0"):
             sdir = data.scenario_dir(sid)
             tables = [io.load_full(sdir / f"lut{k}.lut256") for k in range(1, 5)]
             comp = io.load_full(sdir / "composite.lut256")
+            sub_gts = [io.apply_full(comp, img) for img in sub_imgs]
             print(f"\n=== Non-lattice & Higher-Order Basis Routes ({sid}) ===")
 
             for m in (17, 33):
@@ -159,7 +179,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     ("bspline2", "B2_bspline_quadratic_tensor"),
                     ("bspline3", "B3_bspline_cubic_tensor"),
                 ]:
-                    ev, fit_s = _eval_sep_basis_chain(tables, comp, m, kind, sub_imgs)
+                    ev, fit_s = _eval_sep_basis_chain(tables, m, kind, sub_imgs, sub_gts)
                     rec = {
                         "route": label, "family": "Classic-Basis", "scenario": sid, "m": m,
                         "fit_s": fit_s, "lut_bytes": 4 * (m ** 3 * 3), **ev,
@@ -167,7 +187,6 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     results["non_lattice_routes"].append(rec)
                     print(f"  [{sid} m={m}] {label:<28} mean_dE={ev['mean_de']:.4f} p99={ev['mean_p99_de']:.4f} max={ev['max_pixel_de']:.2f}")
 
-                # Low-rank Tucker decomposition on 4-stage cascade
                 for rank in (6, 10):
                     t0 = time.perf_counter()
                     t_chain = []
@@ -177,7 +196,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                         t_chain.append(slut)
                         t_bytes += tinfo["tucker_bytes_fp16"]
                     fit_s = round(time.perf_counter() - t0, 3)
-                    ev = _eval_chain(t_chain, comp, sub_imgs, kernel="tetra")
+                    ev = _eval_chain_fast(t_chain, sub_imgs, sub_gts, kernel="tetra")
                     rec = {
                         "route": f"B4_tucker_hosvd_r{rank}", "family": "Low-Rank", "scenario": sid, "m": m,
                         "rank": rank, "fit_s": fit_s, "lut_bytes": t_bytes, **ev,
@@ -185,7 +204,6 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     results["non_lattice_routes"].append(rec)
                     print(f"  [{sid} m={m}] B4_tucker_hosvd_r{rank:<11} mean_dE={ev['mean_de']:.4f} p99={ev['mean_p99_de']:.4f} bytes={t_bytes}")
 
-            # Polynomial, RBF, MLP, SIREN on 4-stage sequential vs 1-stage composite
             for deg in (3, 5):
                 t0 = time.perf_counter()
                 coefs = [cascade.eval_polynomial(T, deg=deg) for T in tables]
@@ -197,8 +215,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                         x = cascade.apply_polynomial(c, info["exps"], x)
                     return x
 
-                ev = metrics.eval_images(poly_fn, comp, sub_imgs)
-                ev_s = {k: v for k, v in ev.items() if k != "per_image"}
+                ev_s = _eval_preloaded(poly_fn, sub_imgs, sub_gts)
                 rec = {
                     "route": f"B5_poly3d_deg{deg}", "family": "Classic-Fit", "scenario": sid,
                     "fit_s": fit_s, "lut_bytes": sum(i["bytes"] for _, i in coefs), **ev_s,
@@ -206,7 +223,6 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                 results["non_lattice_routes"].append(rec)
                 print(f"  [{sid}] B5_poly3d_deg{deg:<15} mean_dE={ev_s['mean_de']:.4f} max={ev_s['max_pixel_de']:.2f}")
 
-            # RBF 3D
             t0 = time.perf_counter()
             rbfs = [cascade.fit_rbf(T, n_centers=512) for T in tables]
             fit_s = round(time.perf_counter() - t0, 3)
@@ -217,8 +233,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                     x = cascade.apply_rbf(m_rbf, x)
                 return x
 
-            ev = metrics.eval_images(rbf_fn, comp, sub_imgs)
-            ev_s = {k: v for k, v in ev.items() if k != "per_image"}
+            ev_s = _eval_preloaded(rbf_fn, sub_imgs, sub_gts)
             rec = {
                 "route": "B6_rbf_512centers", "family": "ML-Kernel", "scenario": sid,
                 "fit_s": fit_s, "lut_bytes": sum(i["bytes"] for _, i in rbfs), **ev_s,
@@ -226,12 +241,11 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             results["non_lattice_routes"].append(rec)
             print(f"  [{sid}] B6_rbf_512centers           mean_dE={ev_s['mean_de']:.4f} max={ev_s['max_pixel_de']:.2f}")
 
-            # Neural implicit LUTs (MLP-GELU & SIREN) if PyTorch is available in current env
             try:
                 import torch  # noqa: F401
                 for siren, tag in [(False, "DL1_mlp_gelu_3x32"), (True, "DL2_siren_3x32")]:
                     t0 = time.perf_counter()
-                    mlps = [cascade.fit_mlp_lut(T, hidden=32, layers=3, steps=500, siren=siren) for T in tables]
+                    mlps = [cascade.fit_mlp_lut(T, hidden=32, layers=3, steps=400, siren=siren) for T in tables]
                     fit_s = round(time.perf_counter() - t0, 3)
 
                     t_inf0 = time.perf_counter()
@@ -242,9 +256,8 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                             x = cascade.apply_mlp_lut(m_mlp, x)
                         return x
 
-                    ev = metrics.eval_images(mlp_fn, comp, sub_imgs)
+                    ev_s = _eval_preloaded(mlp_fn, sub_imgs, sub_gts)
                     inf_ms = (time.perf_counter() - t_inf0) * 1000.0 / len(sub_imgs)
-                    ev_s = {k: v for k, v in ev.items() if k != "per_image"}
                     rec = {
                         "route": tag, "family": "DL-Implicit", "scenario": sid,
                         "fit_s": fit_s, "infer_ms_py": round(inf_ms, 2),
@@ -260,6 +273,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             sdir = data.scenario_dir(sid)
             tables = [io.load_full(sdir / f"lut{k}.lut256") for k in range(1, 5)]
             comp = io.load_full(sdir / "composite.lut256")
+            all_gts = [io.apply_full(comp, img) for img in all_imgs]
             for m in (17, 25, 33):
                 for mode, method, adaptive in [
                     ("seq", "sample", False),
@@ -273,7 +287,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
                         chain, _ = cascade.fit_cascade_residual(tables, m, use_adaptive_grid=adaptive)
                     else:
                         chain, _ = cascade.fit_composite_single(tables, m, method, use_adaptive_grid=adaptive)
-                    ev = _eval_chain(chain, comp, eval_imgs, kernel="tetra")
+                    ev = _eval_chain_fast(chain, all_imgs, all_gts, kernel="tetra")
                     results["full_eval_spotchecks"].append({
                         "scenario": sid, "m": m, "mode": mode, "method": method, "adaptive": adaptive, **ev
                     })
