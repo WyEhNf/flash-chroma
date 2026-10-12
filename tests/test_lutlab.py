@@ -18,7 +18,6 @@ def test_python_cpp_bit_exact(tmp_path: Path):
     rng = np.random.default_rng(42)
     img = rng.integers(0, 256, (64, 96, 3), dtype=np.uint8)
     in_p = tmp_path / "in.png"
-    io.save_image(in_p, img)
 
     for m in (17, 25, 33):
         # Create a non-uniform grid to stress-test axis_tables & Q16 fractions
@@ -37,6 +36,7 @@ def test_python_cpp_bit_exact(tmp_path: Path):
             assert np.any(loaded.frac != io.axis_tables(loaded.grid)[1])
             img[:32, :, 0] = 73
 
+        io.save_image(in_p, img)
         py_out = interp.apply_tetra_q16(loaded, img)
         for k in ("tetra_scalar", "tetra_cpp_simd", "tetra_zig_simd"):
             out_p = tmp_path / f"out_{m}_{k}.png"
