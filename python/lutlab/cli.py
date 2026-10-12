@@ -108,7 +108,7 @@ def main(argv=None):
         p.add_argument("--mode", choices=["seq", "residual", "composite"], default="seq")
         p.add_argument("--adaptive", action="store_true")
         if name == "bench":
-            p.add_argument("--kernel", default="tetra_avx2")
+            p.add_argument("--kernel", default="tetra_zig_simd")
             p.add_argument("--threads", type=int, default=0)
             p.add_argument("--reps", type=int, default=5)
 

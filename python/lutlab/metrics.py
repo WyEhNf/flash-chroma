@@ -67,7 +67,7 @@ def eval_images(
 def run_cpp_bench(
     slut_paths: list[str | Path],
     list_file: str | Path,
-    kernel: str = "tetra_avx2",
+    kernel: str = "tetra_zig_simd",
     threads: int = 0,
     reps: int = 5,
     write_dir: str | Path | None = None,

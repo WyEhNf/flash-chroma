@@ -311,7 +311,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             paths1 = [paths4[0]]
 
             for stages_paths, stage_tag in [(paths4, "4stage"), (paths1, "1stage_equiv")]:
-                for kern in ("tri_float", "tetra_scalar", "tetra_avx2"):
+                for kern in ("tri_float", "tetra_scalar", "tetra_cpp_simd", "tetra_zig_simd", "tetra_rust_simd"):
                     for th in (1, 4, 8, 0):  # 0 = all hardware threads (20)
                         if kern == "tri_float" and th not in (1, 0):
                             continue
@@ -337,7 +337,7 @@ def run_all(scenarios: list[str] | None = None, ms: tuple[int, ...] = (17, 25, 3
             b = metrics.run_cpp_bench(
                 stages_paths,
                 data.DATA / "bench.txt",
-                kernel="tetra_avx2",
+                kernel="tetra_zig_simd",
                 threads=0,
                 reps=3,
                 write_dir=data.DATA / "bench_out",

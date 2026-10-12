@@ -1,6 +1,6 @@
 // jshc: command line driver for sparse-LUT colour mapping.
 //
-//   jshc apply  -i in.png -o out.png [-k tetra_avx2] [-t N] a.slut [b.slut ...]
+//   jshc apply  -i in.png -o out.png [-k tetra_zig_simd] [-t N] a.slut [b.slut ...]
 //   jshc ref    -i in.png -o out.png [-t N] a.lut256 [b.lut256 ...]
 //   jshc cube   -o out.raw [-k K] [-t N] a.slut [...]   (all 2^24 colours, index order)
 //   jshc bench  -l list.txt [-k K] [-t N] [-r reps] [-w out_dir] a.slut [...]
@@ -79,7 +79,7 @@ static void save_image(const std::string& path, const Image& im) {
 
 struct Args {
   std::string cmd, in, out, list, write_dir;
-  std::string kernel = "tetra_avx2";
+  std::string kernel = "tetra_zig_simd";
   int threads = 0, reps = 3;
   uint32_t m = 33;
   std::vector<std::string> luts;
