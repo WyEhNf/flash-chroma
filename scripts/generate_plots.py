@@ -52,24 +52,34 @@ def main():
     fig.savefig(PLOTS / "accuracy_routes_isp0.png")
     plt.close(fig)
 
-    # 2. C++ Throughput bar chart (ms per image vs 1500 ms target)
-    fig, ax = plt.subplots(figsize=(9.5, 4.8), dpi=160)
-    labels, vals = [], []
-    for b in bench:
-        if "with_png_io" in b["stage_mode"]:
-            continue
-        if b["m"] in (17, 33) and b["threads"] in (1, 20):
-            labels.append(f"{b['stage_mode']}\nm={b['m']} {b['kernel']}\n{b['threads']}T")
-            vals.append(b["apply_ms_mean"])
+    # 2. Historical throughput, using the best complete 100-image repetition.
+    # A small representative set keeps the labels legible and the timing comparable.
+    selected = [
+        ("4stage", "tri_float", 1),
+        ("4stage", "tetra_scalar", 1),
+        ("4stage", "tetra_avx2", 1),
+        ("4stage", "tetra_avx2", 4),
+        ("1stage_equiv", "tetra_scalar", 1),
+        ("1stage_equiv", "tetra_avx2", 1),
+        ("1stage_equiv", "tetra_avx2", 4),
+    ]
+    by_key = {(b["stage_mode"], b["kernel"], b["threads"]): b for b in bench if b["m"] == 33}
+    labels, vals, colours = [], [], []
+    for stage, kernel, threads in selected:
+        b = by_key[(stage, kernel, threads)]
+        labels.append(f"{'4 stages' if stage == '4stage' else '1 stage'} · {kernel} · {threads} thread{'s' if threads != 1 else ''}")
+        vals.append(b["set_ms_best_rep"] / b["images"])
+        colours.append("#2563eb" if stage == "4stage" else "#0d9488")
+    fig, ax = plt.subplots(figsize=(11, 5), dpi=160)
     y = np.arange(len(labels))
-    ax.barh(y, vals, color="#6366f1")
+    ax.barh(y, vals, color=colours)
     for idx, v in enumerate(vals):
-        ax.text(v + max(vals) * 0.015, idx, f"{v:.3f} ms", va="center", fontsize=8)
-    ax.set_yticks(y)
-    ax.set_yticklabels(labels, fontsize=8)
-    ax.set_xlabel("Mean Time per 1024×768 Image (ms) — Target Threshold < 1500 ms")
-    ax.set_title("C++17 Execution Speed on 100× 1024×768 Images (4-Stage & 1-Stage Equivalent)")
-    ax.set_xlim(0, max(vals) * 1.18)
+        ax.text(v + max(vals) * 0.012, idx, f"{v:.2f} ms", va="center", fontsize=9)
+    ax.set_yticks(y, labels=labels, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlabel("Best full-set time / 100 images (ms per image; excludes PNG decode/write)")
+    ax.set_title("Historical C++17 benchmark · m=33 · 100 RGB images")
+    ax.set_xlim(0, max(vals) * 1.17)
     ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
     fig.savefig(PLOTS / "cpp_throughput.png")
