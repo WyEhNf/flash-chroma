@@ -118,8 +118,8 @@ def fit_box(T, grid):
 
 
 # ================================================================ sparse LS (tetra)
-def _cube_points(stride: int = 1) -> np.ndarray:
-    v = np.arange(0, 256, stride, dtype=np.uint8)
+def _cube_points(stride: int = 2) -> np.ndarray:
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.uint8)
     return np.stack(np.meshgrid(v, v, v, indexing="ij"), -1).reshape(-1, 3)
 
 
@@ -145,7 +145,7 @@ def normal_equations(points, targets, weights, grid, chunk=1 << 20):
     return H, b
 
 
-def solve_spd(H, b, x0=None, lam=1e-6, tol=1e-10):
+def solve_spd(H, b, x0=None, lam=1e-6, tol=1e-8):
     """(H + lam*D) x = b + lam*D*x0, D = diag(H)+1 keeps unsupported nodes at x0."""
     M = H.shape[0]
     d = H.diagonal()
@@ -157,11 +157,11 @@ def solve_spd(H, b, x0=None, lam=1e-6, tol=1e-10):
     out = np.empty((M, 3))
     for c in range(3):
         rhs = b[:, c] + lam * D * x0[:, c]
-        out[:, c], info = spla.cg(A, rhs, x0=x0[:, c], rtol=tol, maxiter=2000, M=Pinv)
+        out[:, c], info = spla.cg(A, rhs, x0=x0[:, c], rtol=tol, maxiter=500, M=Pinv)
     return out
 
 
-@lru_cache(maxsize=8)
+@lru_cache(maxsize=16)
 def _full_cube_H(grid_key: bytes, m: int, stride: int):
     grid = np.frombuffer(grid_key).reshape(3, m)
     pts = _cube_points(stride)
@@ -169,12 +169,13 @@ def _full_cube_H(grid_key: bytes, m: int, stride: int):
     return H
 
 
-def fit_ls_tetra(T, grid, stride: int = 1, x0=None, lam=1e-6):
-    """Uniform-weight LS over the full cube (H depends only on the grid -> cached)."""
+def fit_ls_tetra(T, grid, stride: int = 2, x0=None, lam=1e-6):
+    """Uniform-weight LS over the RGB cube (H depends only on the grid -> cached)."""
     m = grid.shape[1]
     H = _full_cube_H(np.ascontiguousarray(grid, np.float64).tobytes(), m, stride)
     pts = _cube_points(stride)
-    Y = T[::stride, ::stride, ::stride].reshape(-1, 3)
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.intp)
+    Y = T[np.ix_(v, v, v)].reshape(-1, 3)
     idx, frac = axis_tables(grid)
     M = m ** 3
     b = np.zeros((M, 3))
@@ -195,11 +196,12 @@ def fit_weighted_tetra(points, targets, weights, grid, x0, lam=1e-3):
     return solve_spd(H, b, x0.reshape(-1, 3), lam).reshape(m, m, m, 3), H, b
 
 
-def fit_irls_tetra(T, grid, p=6.0, iters=6, stride=2, x0=None):
+def fit_irls_tetra(T, grid, p=6.0, iters=4, stride=4, x0=None):
     """Iteratively reweighted LS approximating the L_p (-> L_inf) norm of the error."""
     m = grid.shape[1]
     pts = _cube_points(stride)
-    Y = T[::stride, ::stride, ::stride].reshape(-1, 3).astype(np.float64)
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.intp)
+    Y = T[np.ix_(v, v, v)].reshape(-1, 3).astype(np.float64)
     idx, frac = axis_tables(grid)
     I, W = tetra_weights(pts, idx, frac, m)
     x = (fit_ls_sep(T, grid, "hat") if x0 is None else x0).reshape(-1, 3).astype(np.float64)

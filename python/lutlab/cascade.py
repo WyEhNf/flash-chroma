@@ -40,7 +40,7 @@ def fit_cascade_sequential(
 def fit_cascade_residual(
     tables: list[np.ndarray],
     m: int,
-    stride: int = 2,
+    stride: int = 4,
     use_adaptive_grid: bool = False,
 ) -> tuple[list[io.SparseLut], dict]:
     """Cascade-aware fitting: each stage k is fitted on the *actual* output distribution
@@ -49,11 +49,11 @@ def fit_cascade_residual(
 
     Specifically:
     - Stages 1..3: fit with `ls_tetra_int` (plus optional adaptive grid).
-    - Propagate a dense subgrid (stride=2 -> 128^3 = 2.1M points) through stages 1..3
+    - Propagate a subgrid (stride=4 -> 64^3 = 262k points) through stages 1..3
       using exact Q16 tetrahedral interpolation, and also compute the exact 4-stage
       composite target Y_true(x) for every original point x.
     - Stage 4: fit a weighted least-squares problem mapping x^{(3)} -> Y_true(x), blended
-      with a small regulariser towards the uniform stage-4 fit so unvisited cells stay
+      with a regulariser towards the uniform stage-4 fit so unvisited cells stay
       well-behaved, followed by integer coordinate refinement.
     """
     t0 = time.perf_counter()
@@ -66,7 +66,7 @@ def fit_cascade_residual(
         chain.append(io.SparseLut(grid, nodes))
 
     # Build subgrid of input RGB cube and exact 4-stage targets
-    v = np.arange(0, 256, stride, dtype=np.uint8)
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.uint8)
     pts0 = np.stack(np.meshgrid(v, v, v, indexing="ij"), -1).reshape(-1, 3)
     y_true = pts0.copy()
     for T in tables:
