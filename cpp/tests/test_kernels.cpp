@@ -69,31 +69,46 @@ int main() {
     tri_float(I, cube.data(), out.data(), n);
     CHECK(std::memcmp(out.data(), cube.data(), out.size()) == 0, "identity tri_float");
   }
-  // 2. AVX2 equals scalar on random lattices over the whole cube, for several m.
+  // 2. AVX2 and ASM equal scalar on random lattices over the whole cube, for several m.
   for (uint32_t m : {17u, 25u, 33u}) {
     SparseLut R = make_lut(m, false, 1234 + m);
-    std::vector<uint8_t> a(n * 3), b(n * 3);
+    std::vector<uint8_t> a(n * 3), b(n * 3), c(n * 3);
     tetra_scalar(R, cube.data(), a.data(), n);
     tetra_avx2(R, cube.data(), b.data(), n);
+    tetra_asm(R, cube.data(), c.data(), n);
     CHECK(std::memcmp(a.data(), b.data(), a.size()) == 0, "avx2 vs scalar");
+    CHECK(std::memcmp(a.data(), c.data(), a.size()) == 0, "asm vs scalar");
     // odd lengths exercise tails
     for (size_t len : {1, 7, 9, 10, 11, 17, 1001}) {
-      std::vector<uint8_t> x(len * 3 + 16, 0xAB), y(len * 3 + 16, 0xAB);
+      std::vector<uint8_t> x(len * 3 + 16, 0xAB), y(len * 3 + 16, 0xAB), z(len * 3 + 16, 0xAB);
       tetra_scalar(R, cube.data() + 3 * 12345, x.data(), len);
       tetra_avx2(R, cube.data() + 3 * 12345, y.data(), len);
+      tetra_asm(R, cube.data() + 3 * 12345, z.data(), len);
       CHECK(std::memcmp(x.data(), y.data(), x.size()) == 0, "avx2 tail / no overrun");
+      CHECK(std::memcmp(x.data(), z.data(), x.size()) == 0, "asm tail / no overrun");
     }
   }
   // 3. fused chain == sequential, threads do not matter.
   {
     SparseLut A = make_lut(33, false, 7), B = make_lut(17, false, 8);
-    std::vector<uint8_t> seq(cube), fused1(cube), fused8(cube), tmp(n * 3);
+    std::vector<uint8_t> seq(cube), fused1(cube), fused8(cube), fused_asm(cube), tmp(n * 3);
     tetra_scalar(A, seq.data(), tmp.data(), n);
     tetra_scalar(B, tmp.data(), seq.data(), n);
     apply_chain({&A, &B}, fused1.data(), n, Kernel::TetraAvx2, 1);
     apply_chain({&A, &B}, fused8.data(), n, Kernel::TetraAvx2, 8);
+    apply_chain({&A, &B}, fused_asm.data(), n, Kernel::TetraAsm, 8);
     CHECK(std::memcmp(seq.data(), fused1.data(), seq.size()) == 0, "chain vs sequential");
     CHECK(std::memcmp(fused1.data(), fused8.data(), seq.size()) == 0, "threads determinism");
+    CHECK(std::memcmp(seq.data(), fused_asm.data(), seq.size()) == 0, "chain asm vs sequential");
+  }
+  // 4. fit_r14 native C++ offline solver on identity 256^3 LUT.
+  {
+    FullLut F;
+    F.data = cube;
+    SparseLut S = fit_r14({&F, &F}, 18, 4, false);
+    std::vector<uint8_t> out(n * 3);
+    tetra_asm(S, cube.data(), out.data(), n);
+    CHECK(std::memcmp(out.data(), cube.data(), out.size()) == 0, "fit_r14 identity exactness");
   }
   std::printf("%s (%d failures)\n", failures ? "FAILED" : "OK", failures);
   return failures ? 1 : 0;

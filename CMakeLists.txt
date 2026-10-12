@@ -7,17 +7,28 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# JSHC_ARCH: "native" (default, fastest on this host), "x86-64-v3" (AVX2/FMA, matches the
-# i7-14700 evaluation CPU, portable across modern x86), or "generic" (no SIMD flags).
-set(JSHC_ARCH "x86-64-v3" CACHE STRING "native | x86-64-v3 | generic")
+# JSHC_ARCH: "native" (default, fastest on this host: AVX2/FMA/AVX-VNNI/BMI2/GFNI),
+# "x86-64-v3" (portable AVX2/FMA), or "generic" (no SIMD flags).
+set(JSHC_ARCH "native" CACHE STRING "native | x86-64-v3 | generic")
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
   if(JSHC_ARCH STREQUAL "native")
-    add_compile_options(-march=native)
+    add_compile_options(-march=native -mtune=native)
   elseif(JSHC_ARCH STREQUAL "x86-64-v3")
     add_compile_options(-march=x86-64-v3)
   endif()
 endif()
-add_compile_options(-O3 -Wall -Wextra)
+add_compile_options(
+  -O3
+  -flto=auto
+  -fomit-frame-pointer
+  -funroll-loops
+  -fno-plt
+  -fno-trapping-math
+  -fno-math-errno
+  -Wall
+  -Wextra
+)
+add_link_options(-flto=auto)
 
 find_package(OpenMP)
 

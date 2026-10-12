@@ -188,7 +188,7 @@ flowchart TD
 | **`R11`** | **四级级联残差前向补偿** | **Frontier** | **★★★★★ (`1.39`)** | **`1.05s`** | **★★★★★ (`1.77 ms`)** | **`58.9 KB`** | **中** | **★ 主力方案 A** |
 | **`R12`** | **级联残差补偿 + 自适应网格** | **Frontier** | **★★★★★ (`1.35`)** | **`1.20s`** | **★★★★★ (`1.77 ms`)** | **`58.9 KB`** | **中高** | **★ 主力方案 A+** |
 | **`R13`** | **单级等效复合坍缩 (均匀)** | **Frontier** | **★★★★★ (`1.14`)** | **`1.00s`** | **★★★★★ (`0.43 ms`)** | **`14.7 KB`** | **中** | **★ 主力方案 B** |
-| **`R14`** | **单级等效复合坍缩 (自适应)** | **Frontier** | **★★★★★ (`1.13`)** | **`1.18s`** | **★★★★★ (`0.43 ms`)** | **`14.7 KB`** | **中高** | **★ 主力方案 B+** |
+| **`R14`** | **单级等效复合坍缩 (自适应 + 极限 ASM)** | **Frontier** | **★★★★★ (`1.13`)** | **`4.1 ~ 5.8 ms` (C++)** | **★★★★★ (`0.168 ms`)** | **`14.7 KB`** | **中高** | **★ 终极王牌方案** |
 | `B1` | 三次 Lagrange 张量积 | Basis | ★★★★☆ (`1.51`) | `0.40s` | ★★☆☆☆ (64 邻域) | `58.9 KB` | 中 | 不推荐（访存重） |
 | `B2` | 二次均匀 B 样条 | Basis | ★☆☆☆☆ (`4.92`) | `0.40s` | ★★☆☆☆ (27 邻域) | `58.9 KB` | 中 | 排除（边界退化） |
 | `B3` | 三次均匀 B 样条 | Basis | ★☆☆☆☆ (`6.19`) | `0.40s` | ★★☆☆☆ (64 邻域) | `58.9 KB` | 中 | 排除（边界退化） |
@@ -197,3 +197,54 @@ flowchart TD
 | `B6` | 3D 高斯 RBF (216 中心) | Kernel | ★★☆☆☆ (`3.69`) | `1.50s` | ★☆☆☆☆ | `5.2 KB` | 中 | 排除（慢且欠拟合） |
 | `DL1` | 隐式 MLP-GELU ($3\times 32$) | DL / INR | ★☆☆☆☆ (`22.9`) | `3.50s` | ★☆☆☆☆ (`615 ms`) | `14.5 KB` | 高 | 排除（算力墙） |
 | `DL2` | 隐式 SIREN ($3\times 32$) | DL / INR | ★☆☆☆☆ (`21.5`) | `2.80s` | ★☆☆☆☆ (`328 ms`) | `14.5 KB` | 高 | 排除（算力墙） |
+
+---
+
+## 4. `R14` 路线极限性能优化：裸 C / AVX2 内联汇编 (`tetra_asm`) 与 C++17 原生拟合器 (`fit-r14`)
+
+针对综合表现最强的 **`R14_composite_1stage_adaptive`** 路线，我们在 [`CMakeLists.txt`](file:///home/mo5nk/problem_probe/16/CMakeLists.txt)、[`cpp/include/jshc/lut.hpp`](file:///home/mo5nk/problem_probe/16/cpp/include/jshc/lut.hpp) 与 [`cpp/src/lut.cpp`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp) 中实施了从编译器选项、代数恒等变换、SIMD 微架构到 x86-64 手写内联汇编的全栈极限优化，并严格保持与 `tetra_scalar` 在全部 $2^{24}=16,777,216$ 种颜色上的 **0-bit 绝对一致**。
+
+### 4.1 激进编译器与链接器优化选项 ([`CMakeLists.txt`](file:///home/mo5nk/problem_probe/16/CMakeLists.txt#L10-L15))
+启用 `-O3 -march=native -mtune=native -flto=auto -fomit-frame-pointer -funroll-loops -fno-plt -fno-trapping-math -fno-math-errno`，开启跨模块链接时优化（LTO）并释放帧指针寄存器 `%rbp`。
+
+### 4.2 运行时推理内核的六大底层突破 ([`tetra_avx2`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L177-L289) & [`tetra_asm`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L291-L455))
+
+1. **边界归一化与 32-bit 复合坐标轴表 (`of_pack[3][256]`) —— 砍掉 50% 坐标轴 Gather**：
+   在 [`SparseLut::prepare()`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L90-L116) 中，利用四面体插值在节点边界处的代数等价性，将 `(idx = k, frac = 65536)` 归一化为 `(idx = k + 1, frac = 0)`（并将 `packed` 尾部安全填充 `S + 16` 个元素）。归一化后 `frac_norm` 严格落在 `[0, 65535]`（16 bit），令 $\tilde{f} = \text{int16}(f_{\text{norm}} - 32768) \in [-32768, +32767]$，即可将 `frac` 与 `off` 打包进同一个 `int32_t`：
+   $$\text{of\_pack}[a][x] = (\text{int32}(\tilde{f}) \ll 16) \mid (\text{off}_{\text{norm}} \mathbin{\&} \text{0xFFFF})$$
+   每 8 个像素的坐标轴查表从 **6 条 `vpgatherdd` 减半为 3 条 `vpgatherdd`**。
+2. **双通道 128-bit 错位加载 + 单掩码 `vpshufb` RGB 解交织**：
+   用 `vmovdqu (%[in]), %xmm0` 与 `vinserti128 $1, 12(%[in]), %ymm0, %ymm0` 将前 4 像素与后 4 像素直接装入 `ymm0` 的低/高 128-bit 通道，配合 `vpsrldq $1/$2` 和**单个** `shR` 掩码寄存器即可在 5 条指令内完成 24 字节 RGB 解包。
+3. **无分支 6 指令 `vpmaxsd`/`vpminsd` 复合键值排序网络**：
+   用 `vpblendw $0x55` 将各轴步长 `stride[a]` 混入 `of_pack` 低 16 位构造 32 位有符号复合键 $(\tilde{f}_a \ll 16) \mid \text{stride}_a$。由于高 16 位为 $\tilde{f}_a$，仅需 **3 条 `vpmaxsd` + 3 条 `vpminsd`** 即可同时排好 $f_1 \ge f_2 \ge f_3$ 及其对应的网格步长 $(s_{\max}, s_{\text{mid}}, s_{\min})$，彻底消除所有 `vpcmpgtd` 与 `vpblendvb`。
+4. **Telescoped 16-bit `vpmaddwd` 差分插值恒等式 —— 砍掉全部 12 条 32-bit `vpmulld`**：
+   将传统四面体插值展开式重写为中心化差分内积恒等式：
+   $$\text{acc} + 32768 = (c_1 - c_0)\tilde{f}_1 + (c_2 - c_1)\tilde{f}_2 + (c_3 - c_2)\tilde{f}_3 + \bigl(\sim(c_0 + c_3)\bigr)(-32768)$$
+   其中 $\sim(c_0 + c_3) = -(c_0 + c_3 + 1)$ 通过一条微融合 `vpxor` 指令直接得到！原本需要 **12 条 32-bit `vpmulld`（24 uops，延迟 10 周期）** 的三通道乘法，被替换为 **6 条 16-bit `vpmaddwd`（6 uops，延迟 5 周期，Port 0/1 双发射并行树）**，且 R 与 B 通道的顶点差分通过 `0x00FF00FF` 掩码在同一个寄存器内同时完成。
+5. **手写 x86-64 内联汇编 [`tetra_asm`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L291-L455)**：
+   - `.p2align 6` 对齐 64 字节指令缓存行；
+   - 精确手工分配 `ymm0..ymm15` 全部 16 个寄存器（0 栈溢出），将高频常量驻留于 `ymm12..ymm15`，单次使用常量通过 64B 对齐的 `AsmConsts` 结构体微融合（Micro-fusion）加载；
+   - 在排序网络执行前**提前发射** `c0`、`c3` 的 `vpgatherdd`，并在权重打包与 `c0`/`c3` 解包前**提前发射** `c1`、`c2` 的 `vpgatherdd`，让 Load 端口（Port 2/3）与 Vector ALU 端口（Port 0/1/5）完全重叠执行；
+   - 尾部使用 `vpshufb` + 跨通道 `vpermd` + `vmovdqu` (16B) + `vmovq` (8B) 无重叠写回 24 字节 RGB，配合 `K=1` 原地零拷贝与 `std::atomic` 双块工作窃取（Work-Stealing），彻底消除 Intel 混合架构（P-Core + E-Core）负载不均。
+
+### 4.3 离线拟合阶段的 C++17 + OpenMP 15 点 Lovász Stencil 求解器 ([`fit_r14`](file:///home/mo5nk/problem_probe/16/cpp/src/lut.cpp#L644-L1142))
+
+我们将 `R14` 的完整离线拟合流水线移植为原生 C++ 子命令 `./build/jshc fit-r14`，通过四项算法革新将拟合耗时从 Python 的 **`1,258 ms` 压缩至 `4.10 ~ 5.84 ms`（提速 $215\times \sim 311\times$）**：
+1. **流式 L1 驻留曲率统计**：无需分配和合成 48 MB 的 $256^3$ 复合表，直接并行流式追踪 $3 \times 16 \times 16 = 768$ 条 256 像素轴向切片计算二阶差分曲率并生成自适应网格。
+2. **Lovász 6-四面体剖分的 15 点固定 Stencil 定理**：证明了在 Kuhn-Lovász 剖分下，$H = W^\top W$ 的任意非零非对角元 $H_{u,v}$ ($u < v$) 的下标差 $v - u$ 必定属于 $\{1, m, m+1, m^2, m^2+1, m^2+m, m^2+m+1\}$ 共 7 个固定正偏移之一，且槽位下标满足 $\text{slot} = (\text{mask}_b - \text{mask}_a) - 1$。由此直接构造零分支的扁平数组 `H_nb[M * 14]`，省去全部 CSR 稀疏矩阵排序与列索引开销。
+3. **奇偶 R-Slab 两趟无锁并行组装 + 三通道同步 Jacobi-CG**：按 R 轴网格单元的奇偶性分两趟 OpenMP 并行组装 $H$ 与 $b$（零原子锁、零线程局部拷贝），并在零填充边界数组上以单次 15 点 Stencil 访存同步求解 R/G/B 三个通道的共轭梯度迭代。
+4. **单趟 Stencil 8 色棋盘整数坐标下降**：利用同色节点互不共四面体（$H_{u,v}=0$）的性质，每轮坐标下降仅需 **1 次 Stencil 遍历**（替代 Python 每轮 16 次全矩阵 SpMV）。
+
+### 4.4 `R14` 极限优化前后实测对比表（100 张 $1024\times 768$ 图像 & 4 级 $256^3$ LUT 拟合）
+
+| 阶段 / 指标 | 优化前基线 | 极限优化后 (`tetra_avx2` / `tetra_asm` / `fit-r14`) | 实测提升幅度 |
+| :--- | :--- | :--- | :---: |
+| **单线程推理 ($m=33$, 1T)** | `7.5159 ms/img` (`tetra_scalar`) / `1.6300 ms/img` (`avx2 v1`) | **`1.4483 ms/img`** (`avx2 v2`) / **`1.3208 ms/img`** (`tetra_asm`, **`595.4 MPix/s`**) | **$5.69\times$** (vs Scalar) |
+| **多线程推理 ($m=17$, 20T)** | `0.4280 ms/img` (`1,837.4 MPix/s`) | **`0.1680 ms/img`** mean / **`0.1674 ms/img`** p50 (**`4,680.8 MPix/s`**) | **$2.56\times$** (vs v1) |
+| **多线程推理 ($m=25$, 20T)** | `0.4250 ms/img` (`1,850.0 MPix/s`) | **`0.1684 ms/img`** mean / **`0.1683 ms/img`** p50 (**`4,670.5 MPix/s`**) | **$2.52\times$** (vs v1) |
+| **多线程推理 ($m=33$, 20T)** | `0.4226 ms/img` (`1,861.0 MPix/s`) | **`0.1678 ms/img`** mean / **`0.1679 ms/img`** p50 (**`4,686.5 MPix/s`**) | **$2.52\times$** (vs v1) |
+| **离线拟合耗时 ($m=17$)** | `1,276.0 ms` (Python `scipy.sparse`) | **`4.099 ms`** (20T) / **`5.662 ms`** (10T) / `23.832 ms` (1T) | **$311.3\times$** |
+| **离线拟合耗时 ($m=25$)** | `1,207.0 ms` (Python `scipy.sparse`) | **`4.999 ms`** (20T) / **`7.338 ms`** (10T) / `26.412 ms` (1T) | **$241.4\times$** |
+| **离线拟合耗时 ($m=33$)** | `1,258.0 ms` (Python `scipy.sparse`) | **`5.839 ms`** (20T) / **`8.674 ms`** (10T) / `33.420 ms` (1T) | **$215.4\times$** |
+| **29 图全量精度 ($m=33$, `isp-0`)** | $\text{mean }\Delta E = 1.0910$, $p_{99} = 2.4464$ | **$\text{mean }\Delta E = 1.0846$**, **$p_{99} = 2.4495$**, **$\max = 6.6332$** | **精度完全一致 / 略优** |
+

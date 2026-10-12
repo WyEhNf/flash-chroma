@@ -103,16 +103,23 @@
 | **4-Stage** | $33$ | `431.2 KB` | `tetra_scalar` (Q16 四面体) | 20 | `1.9118` | `253.48` | `411.4` | $27.27\times$ | $784.6\times$ |
 | **4-Stage** | $33$ | `431.2 KB` | **`tetra_avx2` (AVX2 Gather)** | **4** | **`1.6819`** | **`192.50`** | **`467.6`** | **$31.00\times$** | **$891.8\times$** |
 | **4-Stage** | $33$ | `431.2 KB` | **`tetra_avx2` (AVX2 Gather)** | 20 | `2.2770` | `277.20` | `345.4` | $22.90\times$ | $658.8\times$ |
-| **1-Stage Equiv** | $17$ | `14.7 KB` | **`tetra_avx2` (AVX2 Gather)** | 1 | `1.6300` | `184.17` | `482.5` | $31.98\times$ | $920.2\times$ |
-| **1-Stage Equiv** | $17$ | `14.7 KB` | **`tetra_avx2` (AVX2 Gather)** | **4** | **`0.4280`** | **`61.26`** | **`1837.4`** | **$121.80\times$** | **$3504.7\times$** |
-| **1-Stage Equiv** | $33$ | `107.8 KB` | **`tetra_avx2` (AVX2 Gather)** | **4** | **`0.4226`** | **`58.12`** | **`1861.0`** | **$123.36\times$** | **$3549.5\times$** |
+| **1-Stage Equiv** | $17$ | `14.7 KB` | **`tetra_avx2` (AVX2 Gather v1)** | 1 | `1.6300` | `184.17` | `482.5` | $31.98\times$ | $920.2\times$ |
+| **1-Stage Equiv** | $17$ | `14.7 KB` | **`tetra_avx2` (AVX2 Gather v1)** | **4** | **`0.4280`** | **`61.26`** | **`1837.4`** | **$121.80\times$** | **$3504.7\times$** |
+| **1-Stage Equiv** | $33$ | `107.8 KB` | **`tetra_avx2` (AVX2 Gather v1)** | **4** | **`0.4226`** | **`58.12`** | **`1861.0`** | **$123.36\times$** | **$3549.5\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_avx2` (Telescoped `vpmaddwd` v2)** | 1 | `1.4395` | `165.92` | `546.3` | $36.22\times$ | $1042.0\times$ |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **1** | **`1.3005`** | **`151.30`** | **`604.7`** | **$40.09\times$** | **$1153.4\times$** |
+| **1-Stage R14** | $17$ | `14.7 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1680`** | **`43.42`** | **`4680.8`** | **$310.31\times$** | **$8928.6\times$** |
+| **1-Stage R14** | $25$ | `46.9 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1684`** | **`49.72`** | **`4670.5`** | **$309.57\times$** | **$8907.4\times$** |
+| **1-Stage R14** | $33$ | `107.8 KB` | **`tetra_asm` (Hand-Scheduled x86-64 ASM)** | **20** | **`0.1678`** | **`42.88`** | **`4686.5`** | **$310.68\times$** | **$8939.2\times$** |
 
 ### 4.2 关键硬件微架构洞察（用于决赛现场调优）
 
-1. **为什么 4 线程 (`1.68 ms/img`) 比 20 线程 (`2.28 ms/img`) 更快？**
-   - 单张 $1024 \times 768 \times 3$ 图像仅占 **2.36 MB**（正好完全驻留在 CPU L3 缓存中），按 4096 像素分块仅有 **192 个 Block**。
-   - 在 Intel 13/14 代混合架构（P-Core + E-Core）上，开启 20 线程会将任务调度到低频能效核（E-Core）并引发跨簇 L3 缓存行争用与 OpenMP Barrier 同步开销（约 `0.8 ms`）；而绑定 **4 个或 6 个 P-Core 物理线程** 时，单张图像耗时稳定在 **`1.68 ms`**（4 级）和 **`0.42 ms`**（1 级）！
-2. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
+1. **为什么 `tetra_asm` + 原子工作窃取能在 20 线程下突破 `0.168 ms/img` (`4.69 GPix/s`)？**
+   - 早期静态分块（`schedule(static)`）在 Intel 13/14 代混合架构（P-Core + E-Core）上受限于慢速能效核拖尾；改用 `std::atomic<size_t>` 双块无锁工作窃取（Work-Stealing）并消除 `K=1` 时的冗余 `memcpy` 后，P-Core 自动承担更多分块，20 线程吞吐率从 `1.86 GPix/s` 跃升至 **`4.69 GPix/s`（`0.1678 ms/img`）**！
+   - 在单核微架构层面，`tetra_asm` 通过归一化 32-bit 轴表 `of_pack`（将坐标轴 Gather 减半为 3 条）、6 指令无分支 `vpmaxsd`/`vpminsd` 排序网络、Telescoped 16-bit `vpmaddwd` 差分内积（消除全部 12 条 32-bit `vpmulld`）、手写 `.p2align 6` 寄存器分配与 Gather-ALU 提前乱序发射，将单线程耗时压缩至 **`1.3005 ms/img`（`604.7 MPix/s`）**。
+2. **`R14` 离线拟合器的 C++17 原生加速（`jshc fit-r14`）**：
+   - 利用 Lovász 6-四面体剖分下 $H=W^\top W$ 的 **15 点固定偏移 Stencil 定理**、奇偶 R-Slab 两趟无锁并行组装、三通道同步 Jacobi-CG 与单趟 8 色棋盘坐标下降，将 4 级 $256^3$ LUT 到单级自适应 $m^3$ LUT 的完整拟合时间从 Python 的 `1.26 s` 压缩至 **`4.10 ms` ($m=17$) / `5.00 ms` ($m=25$) / `5.84 ms` ($m=33$)**，提速 **$215\times \sim 311\times$**，且 29 图全量 $\Delta E$ 精度完全一致（`mean_dE = 1.0846`）。
+3. **如果评测包含图像文件磁盘读写（I/O）怎么办？**
    - 我们在最后两组基准测试中测量了单线程 `stb_image` PNG 解码（约 `14.0 ms/张`）与未压缩/默认级别 `stb_image_write` PNG 编码（约 `135 ms/张`，100 张合计仍仅需 `0.15s/张`，远低于 `1.5s/张`）。
    - 如果决赛要求批量读写图像文件，只需将**外层 OpenMP 并行循环放在图像列表级别（Image-Level Parallelism，每线程独立处理一张图并绑定 1 个核）**，即可将 PNG 解码 + LUT 映射 + 编码的端到端延迟同时除以核数（14 核下端到端含 PNG 读写 `< 12 ms/张`）。
 
@@ -135,9 +142,13 @@
 | `b525774` | **V7 曲率自适应网格加速**：向量化 `adaptive_grid` 二阶差分曲率统计与整数坐标下降 | `R10`/`R12`/`R14` 拟合时间控制在 `1.1 ~ 2.0s` |
 | `f5e415d` | **V8 整数溢出修复与探针子网格**：修复 Python `apply_tetra_q16` 中 `int64` 临时数组带宽瓶颈，统一使用 `int32` | 内存带宽占用减半 |
 | `b135b61` | **V9 RBF BLAS 矩阵化与 PyTorch 线程隔离**：将 3D RBF 欧氏距离改写为 BLAS GEMM $\|X\|^2 + \|C\|^2 - 2XC^\top$，并限制 PyTorch 内部线程争用 | 完成全部 20 条路线 + 100 图 C++ 基准 + 29 图端到端全量评测 |
+| `83464cb` | **V10 全套评测报告与可视化图表**：生成 4 张高质量评测图表并完成 `PROBLEM.md`、`EVALUATION.md`、`ROUTES.md`、`DECISION.md` | 完整交付 20 路线多维评估体系 |
+| `HEAD` | **V11 `R14` 极限性能优化（裸 C / AVX2 内联汇编 `tetra_asm` + C++17 `fit-r14`）**：启用 `-march=native -flto=auto`，实现 32-bit `of_pack` 复合轴表、6-op 无分支排序网络、Telescoped 16-bit `vpmaddwd` 差分内积、手写 x86-64 汇编 `tetra_asm` 及 15 点 Stencil C++ 拟合器 `fit-r14` | 推理达 **`0.1678 ms/img` (`4.69 GPix/s`)**，C++ 离线拟合达 **`4.10 ~ 5.84 ms`**（提速 **$215\times \sim 311\times$**），全 $2^{24}$ 色 **0-bit 误差** |
 
 ### 5.2 独立实验日志库 (`logs/` Git Repository)
 
 - 路径：`/home/mo5nk/problem_probe/16/logs/.git`（被主仓库 `.gitignore` 忽略，主仓库任意 `git reset` 均不会丢失实验记录）
-- 完整评测归档提交：`172961e` — `routes-sweep f36df336 (ok)`
-  - 包含运行环境指纹（CPU/内存/Git Commit/Dirty Diff）、全部 20 条路线在 6 大场景下的 JSON 指标以及 C++ 吞吐基准原始记录。
+- 完整评测归档提交：
+  - `172961e` — `routes-sweep f36df336 (ok)`：包含全部 20 条路线在 6 大场景下的 JSON 指标以及 C++ 吞吐基准原始记录。
+  - `5d19819` — `r14-extreme-opt 41945a8f (ok)`：包含 `R14` 极限优化后 `tetra_scalar`、`tetra_avx2`、`tetra_asm` 与 `jshc fit-r14` 在 $m \in \{17, 25, 33\}$ 及 1/10/20 线程下的完整实测日志。
+

@@ -37,6 +37,7 @@ struct SparseLut {
   // Derived, built by prepare():
   std::vector<uint32_t> packed;  // m^3, r | g<<8 | b<<16
   int32_t off[3][256];           // idx * stride (in nodes)
+  int32_t of_pack[3][256];       // (int16_t(frac_norm - 32768) << 16) | uint16_t(off_norm)
   int32_t stride[3];
 
   static SparseLut load(const std::string& path);
@@ -44,7 +45,7 @@ struct SparseLut {
   void prepare();
 };
 
-enum class Kernel { TetraScalar, TetraAvx2, TriFloat };
+enum class Kernel { TetraScalar, TetraAvx2, TetraAsm, TriFloat };
 Kernel parse_kernel(const std::string& s);
 const char* kernel_name(Kernel k);
 bool avx2_available();
@@ -59,6 +60,11 @@ void apply_full_chain(const std::vector<const FullLut*>& chain, uint8_t* rgb, si
 // Single-LUT kernels on a contiguous block (exposed for tests).
 void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
 void tetra_avx2(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
+void tetra_asm(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
 void tri_float(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n);
+
+// Native C++17 + OpenMP + AVX2 implementation of R14 (composite 1-stage adaptive + exact tetra LS + 8-color int_refine).
+SparseLut fit_r14(const std::vector<const FullLut*>& chain, uint32_t m, int threads = 0,
+                  bool adaptive = true);
 
 }  // namespace jshc

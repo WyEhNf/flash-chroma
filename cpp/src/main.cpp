@@ -81,11 +81,12 @@ struct Args {
   std::string cmd, in, out, list, write_dir;
   std::string kernel = "tetra_avx2";
   int threads = 0, reps = 3;
+  uint32_t m = 33;
   std::vector<std::string> luts;
 };
 
 static Args parse(int argc, char** argv) {
-  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|info} ...");
+  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|fit-r14|info} ...");
   Args a;
   a.cmd = argv[1];
   for (int i = 2; i < argc; ++i) {
@@ -99,6 +100,7 @@ static Args parse(int argc, char** argv) {
     else if (s == "-k") a.kernel = next();
     else if (s == "-t") a.threads = std::stoi(next());
     else if (s == "-r") a.reps = std::stoi(next());
+    else if (s == "-m") a.m = uint32_t(std::stoul(next()));
     else if (s == "-l") a.list = next();
     else if (s == "-w") a.write_dir = next();
     else a.luts.push_back(s);
@@ -141,6 +143,32 @@ int main(int argc, char** argv) try {
     return 0;
   }
   if (a.luts.empty()) throw std::runtime_error("no LUT files given");
+  if (a.cmd == "fit-r14") {
+    auto t0 = Clock::now();
+    std::vector<FullLut> F;
+    for (auto& p : a.luts) F.push_back(FullLut::load(p));
+    std::vector<const FullLut*> fp;
+    for (auto& f : F) fp.push_back(&f);
+    double load_ms = ms_since(t0);
+
+    SparseLut out_lut;
+    std::vector<double> fit_times;
+    for (int r = 0; r < a.reps; ++r) {
+      auto tf = Clock::now();
+      out_lut = fit_r14(fp, a.m, a.threads, true);
+      fit_times.push_back(ms_since(tf));
+    }
+    if (!a.out.empty()) out_lut.save(a.out);
+    double best_ms = *std::min_element(fit_times.begin(), fit_times.end());
+    double mean_ms = std::accumulate(fit_times.begin(), fit_times.end(), 0.0) / fit_times.size();
+    std::printf(
+        "{\"cmd\": \"fit-r14\", \"m\": %u, \"stages_in\": %zu, \"threads\": %d, \"reps\": %d, "
+        "\"load_ms\": %.3f, \"fit_ms_best\": %.3f, \"fit_ms_mean\": %.3f, \"fit_ms_p50\": %.3f, "
+        "\"slut_bytes\": %zu}\n",
+        a.m, F.size(), a.threads > 0 ? a.threads : max_threads(), a.reps, load_ms, best_ms,
+        mean_ms, pct(fit_times, 0.5), size_t(a.m) * a.m * a.m * 3);
+    return 0;
+  }
   Kernel k = parse_kernel(a.kernel);
 
   if (a.cmd == "apply") {
