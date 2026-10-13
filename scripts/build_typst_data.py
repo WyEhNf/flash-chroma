@@ -34,7 +34,7 @@ def run_dir(run_id: str) -> Path:
 
 def write_csv(path: Path, header: list[str], rows: list[list[object]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(header)
         w.writerows(rows)
 
