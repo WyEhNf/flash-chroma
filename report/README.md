@@ -11,5 +11,6 @@ pdfinfo report/exploration.pdf
 ```
 
 报告专用 `report/pixi.toml` 安装 Typst 和 Noto CJK 字体，不改变算法环境。生成器固定读取本轮主扫描 `52e23c0b`、36 组 Zig 扫描 `37f9fba6` 和 7 轮复测 `20bb8ce1`；若开展新一轮官方实验，须修改脚本中的固定运行 ID 并重新生成报告，避免混淆口径。
+编译任务固定 PDF 创建时间为 2026-10-13 00:00 UTC，以便重复编译时得到相同文件哈希。
 
 `data/run_records_exact.tar.gz` 按原始字节和相对路径保存本地 `logs/runs/` 的 JSON、stdout、测试日志和差异；`data/manifests_exact.tar.gz` 保存清单，`data/experiments_exact.tar.gz` 保存历史实验 JSON。约 1.8 GiB 的图像和 LUT 本体仍由主仓库忽略，报告不复制。原始数据索引和 SHA-256 见 `data/DATA_INDEX.md`。
