@@ -2,6 +2,8 @@
 
 主文件为 `exploration.typ`，交付 PDF 为 `exploration.pdf`。正文从题面和首个 Git 提交讲起，按阶段记录算法、失败路线、工程审计、当前 24 候选严格门禁、Zig 性能调参、选题判断和团队复现流程。`generated/` 包含由日志生成的 Typst 表格与图；`data/` 包含原始运行记录归档、数据清单归档、逐图 CSV、最坏颜色 CSV 和完整台账。
 
+这是基于 `codex/zig-default-pixi` 分支和独立实验日志冻结的报告，随 Codeberg 默认 `main` 一起提供阅读。`main` 保留较早的实现；需要复现实验或更新数值时先切到该实验分支，并取回 `experiment-logs` 日志分支。
+
 在项目根目录、代码与独立日志固定后运行：
 
 ```bash

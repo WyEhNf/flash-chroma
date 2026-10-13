@@ -2,11 +2,17 @@
 
 本仓库针对 **【2026 Hackathon 决赛】第 16 题「极速焕彩」**：把四个 `256³` RGB 整数 LUT 稀疏化到边长 `17–33` 的网格，在图像上执行色彩映射，并同时考察色差、速度和规则合规性。它包含 Python 离线拟合、C++17 驱动、默认 Zig `@Vector` 推理内核、C++26 `<simd>` / Rust `core::simd` 对照内核、测试与独立 Git 实验日志。
 
-**目前结论：有条件可选。** 本地 `isp-0` 模拟场景上已有通过示例门槛的四级候选；官方 LUT 格式、色差阈值及其统计口径、计时边界、单级复合是否合法仍需确认。本仓库的“通过”和速度数字都不是官方验收结果。先读 [图文探索报告](report/exploration.pdf) 可快速了解已试路线、失败案例和完整数据来源。
+**目前结论：有条件可选。** 本地 `isp-0` 模拟场景上已有通过示例门槛的四级候选；官方 LUT 格式、色差阈值及其统计口径、计时边界、单级复合是否合法仍需确认。本仓库的“通过”和速度数字都不是官方验收结果。
+
+## 完整报告
+
+**[阅读中文探索报告 PDF](report/exploration.pdf)**（11 页，已纳入 Git；在 Codeberg 默认 `main` 也能打开）。它从题面和首个版本讲起，说明 20 条技术路线、当前 24 个候选的精度与速度、失败场景、可移植 SIMD 实验、三人分工及最终选题判断。
+
+需要核对数字时看 [报告数据索引](report/data/DATA_INDEX.md)：其中有原始运行记录归档、696 条逐图结果、最坏颜色和 SHA-256。要修改或重建版式，请看 [Typst 源与复现说明](report/README.md)。这是固定实验记录的报告；后来代码或官方数据有变化时，须重新验证，不能直接沿用其中的性能结论。
 
 ## 从 Codeberg 开始
 
-Codeberg 的默认 `main` 保留较早的存档版本；**当前可运行的 Zig 默认实现和本 README 在 `codex/zig-default-pixi` 分支**。Rust 的 Pixi 依赖也只在此分支，不需要合入 `main`。建议在 Arch/Ubuntu WSL2 或 Linux 上执行；`pixi.toml` 还声明了 macOS ARM 平台，但需在实际机器上验证构建。原生 Windows 不在该 Pixi 清单的平台范围内。
+Codeberg 的默认 `main` 保留较早的代码版本，并提供本报告和上手入口；**当前可运行的 Zig 默认实现位于 `codex/zig-default-pixi` 分支**。Rust 的 Pixi 依赖也只在此分支，不需要合入 `main`。建议在 Arch/Ubuntu WSL2 或 Linux 上执行；实验分支的 `pixi.toml` 还声明了 macOS ARM 平台，但需在实际机器上验证构建。原生 Windows 不在该 Pixi 清单的平台范围内。
 
 ```bash
 git clone https://codeberg.org/Mooooonk/problem_probe_16.git
