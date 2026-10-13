@@ -34,7 +34,7 @@ def sweep(models: list[Path], image_list: Path, widths: list[int], blocks: list[
                     rows.append(row)
                     print(f"[perf] lanes={width} block={block} schedule={schedule} "
                           f"threads={threads} set_ms={bench['set_ms_best_rep']}", flush=True)
-    return {"winner": min(rows, key=lambda r: r["set_ms_best_rep"]), "rows": rows}
+    return {"winner": min(rows, key=lambda r: r["set_ms_p50_rep"]), "rows": rows}
 
 
 def main(argv=None):

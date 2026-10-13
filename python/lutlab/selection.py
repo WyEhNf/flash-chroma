@@ -63,7 +63,7 @@ def select(scenario: str, sizes: list[int], profiles: list[str], threshold: floa
             rows.append(row)
             print(f"[select] {name} m={m}: {row['status']}", flush=True)
     passing = [x for x in rows if x.get("status") == "pass" and "bench" in x]
-    winner = min(passing, key=lambda x: x["bench"]["set_ms_per_image_best_rep"]) if passing else None
+    winner = min(passing, key=lambda x: x["bench"]["set_ms_p50_rep"]) if passing else None
     return {"scenario": scenario, "threshold_strict": threshold, "metric": metric,
             "full_cube_checked": full_cube, "allow_composite": allow_composite,
             "winner": None if winner is None else {k: winner[k] for k in
