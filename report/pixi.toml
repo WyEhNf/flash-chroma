@@ -1,0 +1,14 @@
+[workspace]
+name = "color-lut-probe-typst-report"
+version = "0.1.0"
+description = "Isolated Typst compiler for problem 16 exploration report"
+channels = ["conda-forge"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
+
+[dependencies]
+typst = ">=0.15,<0.16"
+font-ttf-noto-cjk = ">=2.4,<3"
+
+[tasks]
+compile = "typst compile --root .. exploration.typ exploration.pdf"
+fonts = "typst fonts"
