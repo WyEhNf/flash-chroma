@@ -64,7 +64,9 @@ pixi run validate --scenario isp-0 --metric mean --threshold 2.0 --threads 20 \
 
 `data.py` 默认要求 24 张 Kodak 原图齐全；下载失败直接报错，只有显式 `--allow-synthetic-only` 才降级。`data/manifest.json` 记录生成种子、来源模式和 155 个输入/列表文件的 SHA-256；图像列表使用项目根目录相对路径。`verify-data` 检查所有文件哈希、29/100 张图的尺寸与模式，并验证 4 个完整 LUT 的原有哈希和复合 LUT 尺寸/哈希。旧数据可执行 `pixi run adopt-data` 建立清单；此操作只能固定现状，不能证明旧文件的来源。
 
-`pixi run competition-check --threshold ...` 可在缺数据时准备图像与场景，随后构建、跑 C++/Python 测试、核验数据、执行全色精度门禁与 100 图候选筛选。阈值必须显式输入；`--metric mean|p99|max` 与 `--allow-composite` 防止规则假设被暗中固定。完整输出进独立 `logs/` Git 仓库：`run.json` 记录代码 SHA、脏工作区状态、CPU、Pixi 锁文件 SHA；`test.log` 保存测试子进程输出；`selection.json` 保存全部候选的统计、模型哈希与时间。`logs/`、`data/` 均不随代码仓库自动共享，团队需要单独备份。当前独立日志仓库 HEAD：`f21c654`（写报告时）。
+`pixi run competition-check --threshold ...` 可在缺数据时准备图像与场景，随后构建、跑 C++/Python 测试、核验数据、执行全色精度门禁与 100 图候选筛选。阈值必须显式输入；`--metric mean|p99|max` 与 `--allow-composite` 防止规则假设被暗中固定。完整输出进独立 `logs/` Git 仓库：`run.json` 记录代码 SHA、脏工作区状态、CPU、Pixi 锁文件 SHA；`test.log` 保存测试子进程输出；`selection.json` 保存全部候选的统计、模型哈希与时间。`logs/`、`data/` 均不随代码仓库自动共享，团队需要单独备份。
+
+全量扫描使用的三组 `tetra` 基线模型最初复制自存档 `bench_models`。随后在当前代码提交 `123a7df` 上重新拟合 m=17/25/33 的四阶段模型，12 个 `.slut` 文件全部与存档逐字节相同；对应独立日志为 `d4e6375c`、`5ce1f5e1`、`62445746`。这验证了本次缓存来源在当前工具链下可再生。
 
 本次一键流程在已有本地数据上成功完成，耗时约 124 秒，C++ 全色内核测试 1/1 通过，Python 5/5 通过，29 张图、100 张图、场景哈希核验通过。干净机器的首次下载和容器构建尚未实测；WSL 本机无 Docker 命令。Rust 的 Pixi 依赖及 `RUSTC_BOOTSTRAP=1` 构建路径仍只在本实验分支，未进入主分支。
 
