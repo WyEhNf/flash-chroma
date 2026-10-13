@@ -4,7 +4,7 @@
 
 > 原始机器数据：[experiments/route_sweep.json](experiments/route_sweep.json)
 > 独立日志仓库提交：`logs/` Git commit `172961e` ([logs/runs/20261012T143211Z-routes-sweep-f36df336](logs/runs/20261012T143211Z-routes-sweep-f36df336))
-> 可视化图表：[docs/plots/accuracy_routes_isp0.png](docs/plots/accuracy_routes_isp0.png)、[docs/plots/cpp_throughput.png](docs/plots/cpp_throughput.png)
+> 可视化图表：[docs/plots/accuracy_routes_isp0.png](docs/plots/accuracy_routes_isp0.png)、[docs/plots/cpp_throughput.png](docs/plots/cpp_throughput.png)（后者已改用完整 100 图最佳轮次耗时）
 
 ---
 
