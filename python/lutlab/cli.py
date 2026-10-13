@@ -53,7 +53,8 @@ def cmd_fit(args):
             chain, info = cascade.fit_cascade_sequential(tables, args.m, args.method, use_adaptive_grid=args.adaptive, grid_mode=getattr(args, "grid", None))
         elif args.mode == "residual":
             chain, info = cascade.fit_cascade_residual(tables, args.m, use_adaptive_grid=args.adaptive,
-                                                        tail_beta=1.0 if args.method == "tail_tetra_int" else 0.0)
+                                                        tail_beta=1.0 if args.method == "tail_tetra_int" else 0.0,
+                                                        grid_mode=getattr(args, "grid", None))
         elif args.mode == "composite":
             chain, info = cascade.fit_composite_single(tables, args.m, args.method, use_adaptive_grid=args.adaptive, grid_mode=getattr(args, "grid", None))
         else:

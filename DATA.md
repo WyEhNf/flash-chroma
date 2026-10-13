@@ -2,6 +2,13 @@
 
 由于正式比赛测试集与 `Threshold` 将在赛中统一公布，为了在赛前获得**高度接近真实手机 ISP / 车载流媒体色彩管线**且同时涵盖**数学病态边界**的严格基准，我们在 [luts.py](python/lutlab/luts.py) 与 [data.py](python/lutlab/data.py) 中构建了完整的评测数据集生成器（`pixi run gen-data`）。
 
+生成器现在默认要求 24 张 Kodak 图像全部可用；下载失败会直接报错，只有显式传入
+`--allow-synthetic-only` 才会退化为合成图模式。`data/manifest.json` 记录源模式、种子、
+29/100 张图与原始图的 SHA-256。图像列表使用相对于项目根目录的路径。
+`pixi run verify-data` 校验文件哈希、图像规格和场景 LUT 哈希。
+已有完整旧数据集可用 `pixi run adopt-data` 建立清单；这一步记录当前文件的哈希，
+不能证明旧文件来自原始下载源。
+
 ---
 
 ## 1. 测试图像集设计（严格遵循 $1024 \times 768$ 8-bit RGB 规格）

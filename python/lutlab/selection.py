@@ -81,7 +81,7 @@ def main(argv=None):
     ap.add_argument("--eval-list", type=Path, default=data.DATA / "eval.txt")
     ap.add_argument("--bench-list", type=Path, default=data.DATA / "bench.txt")
     ap.add_argument("--threads", type=int, default=0)
-    ap.add_argument("--reps", type=int, default=3)
+    ap.add_argument("--reps", type=int, default=5)
     ap.add_argument("--allow-composite", action="store_true")
     ap.add_argument("--existing-only", action="store_true")
     ap.add_argument("--skip-cube", action="store_true")

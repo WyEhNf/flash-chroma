@@ -176,6 +176,9 @@ def verify_scenario(sid: str) -> dict:
     comp = d / "composite.lut256"
     if comp.stat().st_size != 256 ** 3 * 3:
         raise ValueError(f"wrong composite size: {comp}")
+    tables = [io.load_full(d / f"lut{k}.lut256", mmap=True) for k in range(1, 5)]
+    if not np.array_equal(io.compose(tables), io.load_full(comp, mmap=True)):
+        raise ValueError("composite LUT does not equal the exact four-stage composition")
     hashes[comp.name] = hashlib.sha256(comp.read_bytes()).hexdigest()
     return {"scenario": sid, "sha256": hashes}
 

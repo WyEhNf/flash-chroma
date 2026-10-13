@@ -19,6 +19,17 @@ from . import interp, io
 
 
 # ================================================================ 1. Cascade fitting
+def _grid_for(T: np.ndarray, m: int, use_adaptive_grid: bool, grid_mode: str | None) -> np.ndarray:
+    mode = grid_mode or ("curvature" if use_adaptive_grid else "uniform")
+    if mode == "curvature":
+        return fit_mod.adaptive_grid(T, m)
+    if mode == "error":
+        return fit_mod.adaptive_error_grid(T, m)
+    if mode == "uniform":
+        return io.uniform_grid(m)
+    raise ValueError(f"unknown grid mode: {mode}")
+
+
 def fit_cascade_sequential(
     tables: list[np.ndarray],
     m: int,
@@ -31,9 +42,7 @@ def fit_cascade_sequential(
     chain = []
     stage_times = []
     for k, T in enumerate(tables):
-        mode = grid_mode or ("curvature" if use_adaptive_grid else "uniform")
-        grid = (fit_mod.adaptive_grid(T, m) if mode == "curvature" else
-                fit_mod.adaptive_error_grid(T, m) if mode == "error" else io.uniform_grid(m))
+        grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
         nodes, grid, info = fit_mod.fit(T, m, base_method, grid=grid)
         chain.append(io.SparseLut(grid, nodes))
         stage_times.append(info["fit_s"])
@@ -46,6 +55,7 @@ def fit_cascade_residual(
     stride: int = 4,
     use_adaptive_grid: bool = False,
     tail_beta: float = 0.0,
+    grid_mode: str | None = None,
 ) -> tuple[list[io.SparseLut], dict]:
     """Cascade-aware fitting: each stage k is fitted on the *actual* output distribution
     of stages 1..k-1 against the *exact* stage-k target applied to the true intermediate
@@ -65,7 +75,7 @@ def fit_cascade_residual(
     # Fit stages 0..2 normally
     for k in range(len(tables) - 1):
         T = tables[k]
-        grid = fit_mod.adaptive_grid(T, m) if use_adaptive_grid else io.uniform_grid(m)
+        grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
         nodes, grid, _ = fit_mod.fit(T, m, "ls_tetra_int", grid=grid)
         chain.append(io.SparseLut(grid, nodes))
 
@@ -83,7 +93,7 @@ def fit_cascade_residual(
 
     # Prior for stage 3: standard fit on tables[-1]
     T_last = tables[-1]
-    grid_last = fit_mod.adaptive_grid(T_last, m) if use_adaptive_grid else io.uniform_grid(m)
+    grid_last = _grid_for(T_last, m, use_adaptive_grid, grid_mode)
     x0_float, H_prior, b_prior = fit_mod.fit_ls_tetra(T_last, grid_last, stride=stride)
 
     # Normal equations on actual propagated coordinates x_cur -> y_true
@@ -116,9 +126,7 @@ def fit_composite_single(
     sparsify into a single m^3 LUT."""
     t0 = time.perf_counter()
     comp = io.compose(tables)
-    mode = grid_mode or ("curvature" if use_adaptive_grid else "uniform")
-    grid = (fit_mod.adaptive_grid(comp, m) if mode == "curvature" else
-            fit_mod.adaptive_error_grid(comp, m) if mode == "error" else io.uniform_grid(m))
+    grid = _grid_for(comp, m, use_adaptive_grid, grid_mode)
     nodes, grid, info = fit_mod.fit(comp, m, method, grid=grid)
     return [io.SparseLut(grid, nodes)], {
         "fit_s": round(time.perf_counter() - t0, 3),

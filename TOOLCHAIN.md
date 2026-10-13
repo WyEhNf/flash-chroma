@@ -59,8 +59,9 @@ docker run --rm -it -v "$PWD":/workspace jisu-huancai:latest pixi run test
 2. **在线推理核心（C++17 `jshc` 调度，默认 Zig `@Vector`）**：
    - [lut.hpp](cpp/include/jshc/lut.hpp) / [lut.cpp](cpp/src/lut.cpp)：零外部动态库依赖的纯 C++17 核心。
      - **Q16 纯整数四面体插值**：利用预计算的 256 项 `off[axis][x]` 与 `frac[axis][x]` 表，支持均匀或非均匀网格。
-     - **8 像素并行**：默认 `tetra_zig_simd` 使用 Zig `@Vector`；`tetra_cpp_simd` 使用 C++26 `<simd>`；`tetra_rust_simd` 使用 Rust `core::simd`。这些内核不使用手写汇编或架构特化 intrinsic。旧 `tetra_avx2` / `tetra_asm` 名称保留为 C++ SIMD 内核的兼容别名。
+     - **16 像素并行**：默认 `tetra_zig_simd` 使用 Zig `@Vector(16, i32)`；显式 `tetra_zig_simd4`、`tetra_zig_simd8`、`tetra_zig_simd16` 可复跑 lane 宽度实验。`tetra_cpp_simd` 使用 C++26 `<simd>`；`tetra_rust_simd` 使用 Rust `core::simd`。这些内核不使用手写汇编或架构特化 intrinsic。旧 `tetra_avx2` / `tetra_asm` 名称保留为 C++ SIMD 内核的兼容别名。
      - **L1/L2 Cache 分块四级流水融合（Block-Fused Cascade）**：以 `4096` 像素（`12 KB`）为单位在线程私有栈缓冲区中连续完成 4 个色彩空间的串联映射，避免 4 次读写主存，完美契合 CPU L1 Data Cache（48 KB）。
+       `JSHC_BLOCK_PIXELS=1024|4096|8192` 与 `OMP_SCHEDULE=static|dynamic,1|guided,1` 用于无架构特化调参；默认块为 4096，调度为 `dynamic,1`。
    - [main.cpp](cpp/src/main.cpp)：支持 `apply`、`ref`、`cube`、`bench`、`info` 五大子命令，输出高精度分阶段计时 JSON。
 
 ---
@@ -77,3 +78,4 @@ docker run --rm -it -v "$PWD":/workspace jisu-huancai:latest pixi run test
   3. 实时双写终端输出到 `stdout.log`，将全部超参数、硬件环境（CPU 型号、核心数）与评测指标写入 `run.json`；
   4. 追加单行摘要至 `logs/index.jsonl`，并在 `logs/` 独立 Git 仓库中自动执行一次 `git commit`。
 - 也可通过环境变量 `JSHC_LOG_DIR=/path/to/external_logs` 将日志仓库挂载到任意工作目录之外的路径。
+- `run.json` 额外记录 `pixi.lock` 的 SHA-256；`competition-check` 的子进程测试输出保存在 `test.log`。

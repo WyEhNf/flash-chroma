@@ -19,11 +19,17 @@ def main(argv=None):
     ap.add_argument("--profiles", nargs="+", choices=list(selection.PROFILES),
                     default=list(selection.PROFILES))
     ap.add_argument("--threads", type=int, default=0)
-    ap.add_argument("--reps", type=int, default=3)
+    ap.add_argument("--reps", type=int, default=5)
     ap.add_argument("--allow-composite", action="store_true")
     ap.add_argument("--existing-only", action="store_true")
     args = ap.parse_args(argv)
     with Run("competition-check", vars(args)) as run:
+        if not (data.DATA / "manifest.json").exists():
+            data.build_images(seed=0)
+            run.metrics["dataset_bootstrapped"] = True
+        if not (data.scenario_dir(args.scenario) / "meta.json").exists():
+            data.build_scenario(args.scenario)
+            run.metrics["scenario_bootstrapped"] = True
         test = subprocess.run(["pixi", "run", "test"], cwd=data.ROOT, text=True,
                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         run.path("test.log").write_text(test.stdout)

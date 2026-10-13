@@ -23,6 +23,7 @@
 | [ROUTES.md](ROUTES.md) | 朴素 / 经典 / 现代 / 前沿共 **20 条具体算法路线**（含 Lagrange、B-Spline、多项式、Tucker 低秩、RBF、MLP、SIREN）原理与全维度评估 |
 | [EVALUATION.md](EVALUATION.md) | 完整实验数据汇总表、C++ 吞吐量基准测试结果、版本迭代历史与 Commit 可回溯记录 |
 | [AUDIT.md](AUDIT.md) | 当前分支的代码、文档、日志核查结果和待办优先级 |
+| [experiments/r16-five-directions.md](experiments/r16-five-directions.md) | 精度门禁、候选筛选、尾部拟合、复现流程、Zig 参数实验的完整报告 |
 
 ---
 
@@ -43,4 +44,11 @@ pixi run -e ml python -m lutlab.routes
 
 # 5. 查看独立 Git 日志仓库中的实验记录
 pixi run logs
+
+# 6. 官方阈值公布后，一条命令完成数据准备、构建、测试、完整精度门禁与 100 图筛选
+pixi run competition-check --scenario isp-0 --threshold <官方阈值> --threads 20
 ```
+
+赛题尚未说明阈值作用于每张图的均值、p99 还是最大像素；使用
+`--metric mean|p99|max` 明确指定口径。本地示例 `2.0` 仅供实验，不代表官方验收。
+`pixi run verify-data` 可核验输入哈希；`pixi run zig-perf` 可复跑可移植性能扫描。
