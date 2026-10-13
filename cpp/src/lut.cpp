@@ -361,6 +361,7 @@ void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_
 
 #if defined(_OPENMP)
   const int num_threads = (threads > 0) ? threads : omp_get_max_threads();
+  if (std::getenv("OMP_SCHEDULE") == nullptr) omp_set_schedule(omp_sched_dynamic, 1);
 #pragma omp parallel num_threads(num_threads)
 #endif
   {

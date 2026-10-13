@@ -42,6 +42,12 @@ evaluate = { cmd = "python -m lutlab.cli evaluate", depends-on = ["build"] }
 bench = { cmd = "python -m lutlab.cli bench", depends-on = ["build"] }
 routes = { cmd = "python -m lutlab.routes", depends-on = ["build"] }
 logs = "python -m lutlab.runlog list"
+adopt-data = "python -m lutlab.data adopt"
+verify-data = "python -m lutlab.data verify"
+validate = { cmd = "python -m lutlab.validation", depends-on = ["build"] }
+select = { cmd = "python -m lutlab.selection", depends-on = ["build"] }
+zig-perf = { cmd = "python -m lutlab.perf", depends-on = ["build"] }
+competition-check = "python -m lutlab.workflow"
 
 [feature.ml.dependencies]
 pytorch-cpu = ">=2.4,<3"

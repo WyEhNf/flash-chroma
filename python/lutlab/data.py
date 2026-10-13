@@ -140,6 +140,46 @@ def verify_images(require_kodak: bool = True) -> dict:
             "files_hashed": len(manifest["sha256"])}
 
 
+def adopt_existing_images(seed: int = 0) -> dict:
+    """Hash and register an already generated full Kodak set without regenerating it."""
+    raw = sorted((DATA / "raw" / "kodak").glob("kodim*.png"))
+    eval_files = sorted((DATA / "images" / "eval").glob("*.png"))
+    bench_files = sorted((DATA / "images" / "bench").glob("*.png"))
+    if len(raw) != 24 or len(eval_files) != 29 or len(bench_files) != 100:
+        raise ValueError("existing dataset must have 24 raw, 29 eval and 100 bench images")
+    for name, files in (("eval", eval_files), ("bench", bench_files)):
+        (DATA / f"{name}.txt").write_text(
+            "\n".join(p.relative_to(ROOT).as_posix() for p in files) + "\n")
+    all_files = [*raw, *eval_files, *bench_files, DATA / "eval.txt", DATA / "bench.txt"]
+    manifest = {"seed": seed, "source_mode": "kodak+synthetic", "width": W, "height": H,
+                "lists": {"eval": 29, "bench": 100},
+                "sha256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                           for p in all_files}}
+    (DATA / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    return verify_images()
+
+
+def verify_scenario(sid: str) -> dict:
+    d = scenario_dir(sid)
+    meta = json.loads((d / "meta.json").read_text())
+    if meta["id"] != sid:
+        raise ValueError("scenario ID mismatch")
+    hashes = {}
+    for k in range(1, 5):
+        p = d / f"lut{k}.lut256"
+        if p.stat().st_size != 256 ** 3 * 3:
+            raise ValueError(f"wrong full LUT size: {p}")
+        digest = hashlib.sha256(p.read_bytes()).hexdigest()
+        if digest[:16] != meta["sha256"][f"lut{k}"]:
+            raise ValueError(f"scenario LUT hash mismatch: {p}")
+        hashes[p.name] = digest
+    comp = d / "composite.lut256"
+    if comp.stat().st_size != 256 ** 3 * 3:
+        raise ValueError(f"wrong composite size: {comp}")
+    hashes[comp.name] = hashlib.sha256(comp.read_bytes()).hexdigest()
+    return {"scenario": sid, "sha256": hashes}
+
+
 def scenario_dir(sid: str) -> Path:
     return DATA / "scenarios" / sid
 
@@ -168,3 +208,15 @@ def build_scenario(sid: str, force: bool = False) -> dict:
     }
     meta_p.write_text(json.dumps(meta, indent=1))
     return meta
+
+
+if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("action", choices=["adopt", "verify"])
+    ap.add_argument("--scenario", default="isp-0")
+    args = ap.parse_args()
+    result = adopt_existing_images() if args.action == "adopt" else verify_images()
+    if args.action == "verify":
+        result["scenario"] = verify_scenario(args.scenario)
+    print(json.dumps(result, indent=2))

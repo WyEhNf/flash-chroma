@@ -58,6 +58,7 @@ def _cpu_model() -> str:
 
 def environment() -> dict:
     diff = _git("diff", "HEAD")
+    lock = ROOT / "pixi.lock"
     return {
         "commit": _git("rev-parse", "HEAD"),
         "branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
@@ -65,6 +66,7 @@ def environment() -> dict:
         "diff_sha": hashlib.sha256(diff.encode()).hexdigest()[:12] if diff else None,
         "host": platform.node(), "cpu": _cpu_model(), "nproc": os.cpu_count(),
         "python": sys.version.split()[0], "platform": platform.platform(),
+        "pixi_lock_sha256": hashlib.sha256(lock.read_bytes()).hexdigest() if lock.exists() else None,
     }
 
 
