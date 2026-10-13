@@ -18,7 +18,7 @@ W, H = 1024, 768
 KODAK_URL = "https://r0k.us/graphics/kodak/kodak/kodim{:02d}.png"
 
 
-def _fetch_kodak(dst: Path) -> list[Path]:
+def _fetch_kodak(dst: Path, allow_synthetic_only: bool = False) -> list[Path]:
     dst.mkdir(parents=True, exist_ok=True)
     out = []
     for i in range(1, 25):
@@ -27,9 +27,11 @@ def _fetch_kodak(dst: Path) -> list[Path]:
             try:
                 with urllib.request.urlopen(KODAK_URL.format(i), timeout=30) as r:
                     p.write_bytes(r.read())
-            except Exception as e:  # offline -> synthetic-only dataset
-                print(f"[data] kodak download failed ({e}); continuing without it")
-                return out
+            except Exception as e:
+                if allow_synthetic_only:
+                    print(f"[data] Kodak download failed ({e}); explicit synthetic-only mode")
+                    return []
+                raise RuntimeError(f"Kodak image {i} unavailable; rerun with --allow-synthetic-only to opt in") from e
         out.append(p)
     return out
 
@@ -72,9 +74,11 @@ def _synthetic(rng) -> dict[str, np.ndarray]:
     return imgs
 
 
-def build_images(seed: int = 0) -> dict:
+def build_images(seed: int = 0, allow_synthetic_only: bool = False) -> dict:
     rng = np.random.default_rng(seed)
-    raw = _fetch_kodak(DATA / "raw" / "kodak")
+    raw = _fetch_kodak(DATA / "raw" / "kodak", allow_synthetic_only)
+    if len(raw) != 24 and not allow_synthetic_only:
+        raise RuntimeError(f"expected 24 Kodak images, found {len(raw)}")
     eval_dir, bench_dir = DATA / "images" / "eval", DATA / "images" / "bench"
     eval_dir.mkdir(parents=True, exist_ok=True)
     bench_dir.mkdir(parents=True, exist_ok=True)
@@ -102,10 +106,38 @@ def build_images(seed: int = 0) -> dict:
         Image.fromarray(a).save(bench_dir / f"bench_{i:03d}.png", compress_level=1)
     lists = {}
     for name, d in [("eval", eval_dir), ("bench", bench_dir)]:
-        files = sorted(str(p) for p in d.glob("*.png"))
+        files = sorted(p.relative_to(ROOT).as_posix() for p in d.glob("*.png"))
         (DATA / f"{name}.txt").write_text("\n".join(files) + "\n")
         lists[name] = len(files)
+    manifest = {
+        "seed": seed, "source_mode": "kodak+synthetic" if len(raw) == 24 else "synthetic-only",
+        "width": W, "height": H, "lists": lists,
+        "sha256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                   for p in [*raw, *sorted(eval_dir.glob("*.png")), *sorted(bench_dir.glob("*.png")),
+                             DATA / "eval.txt", DATA / "bench.txt"]},
+    }
+    (DATA / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return lists
+
+
+def verify_images(require_kodak: bool = True) -> dict:
+    manifest = json.loads((DATA / "manifest.json").read_text())
+    if require_kodak and manifest["source_mode"] != "kodak+synthetic":
+        raise ValueError("dataset is synthetic-only; full Kodak set required")
+    for rel, expected in manifest["sha256"].items():
+        p = ROOT / rel
+        if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest() != expected:
+            raise ValueError(f"missing or modified dataset file: {rel}")
+    for name, expected in (("eval", 29), ("bench", 100)):
+        paths = [ROOT / line for line in (DATA / f"{name}.txt").read_text().splitlines() if line]
+        if len(paths) != expected and require_kodak:
+            raise ValueError(f"{name}: expected {expected} images, found {len(paths)}")
+        for p in paths:
+            with Image.open(p) as im:
+                if im.size != (W, H) or im.mode != "RGB":
+                    raise ValueError(f"unexpected image format: {p}")
+    return {"source_mode": manifest["source_mode"], "lists": manifest["lists"],
+            "files_hashed": len(manifest["sha256"])}
 
 
 def scenario_dir(sid: str) -> Path:

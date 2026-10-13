@@ -24,13 +24,16 @@ def fit_cascade_sequential(
     m: int,
     base_method: str = "ls_tetra_int",
     use_adaptive_grid: bool = False,
+    grid_mode: str | None = None,
 ) -> tuple[list[io.SparseLut], dict]:
     """Fit 4 stages sequentially without cross-stage compensation."""
     t0 = time.perf_counter()
     chain = []
     stage_times = []
     for k, T in enumerate(tables):
-        grid = fit_mod.adaptive_grid(T, m) if use_adaptive_grid else io.uniform_grid(m)
+        mode = grid_mode or ("curvature" if use_adaptive_grid else "uniform")
+        grid = (fit_mod.adaptive_grid(T, m) if mode == "curvature" else
+                fit_mod.adaptive_error_grid(T, m) if mode == "error" else io.uniform_grid(m))
         nodes, grid, info = fit_mod.fit(T, m, base_method, grid=grid)
         chain.append(io.SparseLut(grid, nodes))
         stage_times.append(info["fit_s"])
@@ -99,12 +102,15 @@ def fit_composite_single(
     m: int,
     method: str = "ls_tetra_int",
     use_adaptive_grid: bool = False,
+    grid_mode: str | None = None,
 ) -> tuple[list[io.SparseLut], dict]:
     """Equivalent 1-stage optimization: compose 4 LUTs into 1 exact 256^3 LUT, then
     sparsify into a single m^3 LUT."""
     t0 = time.perf_counter()
     comp = io.compose(tables)
-    grid = fit_mod.adaptive_grid(comp, m) if use_adaptive_grid else io.uniform_grid(m)
+    mode = grid_mode or ("curvature" if use_adaptive_grid else "uniform")
+    grid = (fit_mod.adaptive_grid(comp, m) if mode == "curvature" else
+            fit_mod.adaptive_error_grid(comp, m) if mode == "error" else io.uniform_grid(m))
     nodes, grid, info = fit_mod.fit(comp, m, method, grid=grid)
     return [io.SparseLut(grid, nodes)], {
         "fit_s": round(time.perf_counter() - t0, 3),

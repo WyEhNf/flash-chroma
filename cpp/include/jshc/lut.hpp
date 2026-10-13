@@ -60,6 +60,8 @@ enum class Kernel {
   TetraScalar,
   TetraCppSimd,
   TetraZigSimd,
+  TetraZigSimd4,
+  TetraZigSimd16,
   TetraRustSimd,
   TetraAvx2,
   TetraAsm,

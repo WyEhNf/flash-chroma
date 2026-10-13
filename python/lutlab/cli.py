@@ -12,7 +12,9 @@ from .runlog import Run
 
 def model_dir(args) -> Path:
     variant = f"{args.mode}_{args.method}_m{args.m}"
-    if args.adaptive:
+    if getattr(args, "grid", None) == "error":
+        variant += "_errorgrid"
+    elif getattr(args, "grid", None) == "curvature" or (getattr(args, "grid", None) is None and args.adaptive):
         variant += "_adaptive"
     return data.DATA / "models" / args.scenario / variant
 
@@ -30,7 +32,7 @@ def model_paths(args) -> list[Path]:
 
 def cmd_gen_data(args):
     with Run("gen-data", {"scenarios": args.scenarios, "seed": args.seed}) as run:
-        lists = data.build_images(seed=args.seed)
+        lists = data.build_images(seed=args.seed, allow_synthetic_only=args.allow_synthetic_only)
         scen_meta = {}
         for sid in args.scenarios:
             m = data.build_scenario(sid, force=args.force)
@@ -48,11 +50,11 @@ def cmd_fit(args):
         out_dir = model_dir(args)
         out_dir.mkdir(parents=True, exist_ok=True)
         if args.mode == "seq":
-            chain, info = cascade.fit_cascade_sequential(tables, args.m, args.method, use_adaptive_grid=args.adaptive)
+            chain, info = cascade.fit_cascade_sequential(tables, args.m, args.method, use_adaptive_grid=args.adaptive, grid_mode=getattr(args, "grid", None))
         elif args.mode == "residual":
             chain, info = cascade.fit_cascade_residual(tables, args.m, use_adaptive_grid=args.adaptive)
         elif args.mode == "composite":
-            chain, info = cascade.fit_composite_single(tables, args.m, args.method, use_adaptive_grid=args.adaptive)
+            chain, info = cascade.fit_composite_single(tables, args.m, args.method, use_adaptive_grid=args.adaptive, grid_mode=getattr(args, "grid", None))
         else:
             raise ValueError(args.mode)
         paths = []
@@ -111,6 +113,7 @@ def main(argv=None):
     g.add_argument("--scenarios", nargs="+", default=luts.DEFAULT_SCENARIOS)
     g.add_argument("--seed", type=int, default=0)
     g.add_argument("--force", action="store_true")
+    g.add_argument("--allow-synthetic-only", action="store_true")
 
     for name in ("fit", "evaluate", "bench"):
         p = sub.add_parser(name)
@@ -119,6 +122,7 @@ def main(argv=None):
         p.add_argument("--method", default="ls_tetra_int")
         p.add_argument("--mode", choices=["seq", "residual", "composite"], default="seq")
         p.add_argument("--adaptive", action="store_true")
+        p.add_argument("--grid", choices=["uniform", "curvature", "error"], default=None)
         if name == "bench":
             p.add_argument("--kernel", default="tetra_zig_simd")
             p.add_argument("--threads", type=int, default=0)

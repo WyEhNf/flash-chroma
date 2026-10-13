@@ -216,6 +216,26 @@ def fit_irls_tetra(T, grid, p=6.0, iters=4, stride=4, x0=None):
     return x.reshape(m, m, m, 3)
 
 
+def fit_tail_tetra(T, grid, stride=4, beta=2.0):
+    """Reweight high-error cube samples after a first exact-kernel LS fit.
+
+    Capped weights avoid fitting a tiny set of discontinuities at the expense of
+    the entire cube. The final choice still belongs to the strict validator.
+    """
+    x0, _, _ = fit_ls_tetra(T, grid, stride=stride)
+    pts = _cube_points(stride)
+    v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.intp)
+    target = T[np.ix_(v, v, v)].reshape(-1, 3)
+    idx, frac = axis_tables(grid)
+    I, W = tetra_weights(pts, idx, frac, grid.shape[1])
+    pred = np.einsum("nk,nkc->nc", W, x0.reshape(-1, 3)[I])
+    err = np.linalg.norm(pred - target, axis=1)
+    scale = max(float(np.percentile(err, 90)), 0.25)
+    weights = np.minimum(1.0 + beta * (err / scale) ** 2, 16.0)
+    x, H, b = fit_weighted_tetra(pts, target, weights, grid, x0)
+    return int_refine(x, H, b)
+
+
 # ================================================================ integer refinement
 def int_refine(x_float: np.ndarray, H, b, sweeps: int = 4) -> np.ndarray:
     """Coordinate descent on the integer lattice for 0.5*x^T H x - b^T x.
@@ -271,6 +291,30 @@ def adaptive_grid(T: np.ndarray, m: int, alpha: float = 0.5, expo: float = 0.4) 
     return grid
 
 
+def adaptive_error_grid(T: np.ndarray, m: int, alpha: float = 0.5) -> np.ndarray:
+    """Place knots using held-out error of a pilot uniform tetrahedral fit."""
+    pilot_grid = uniform_grid(m)
+    pilot = fit_sample(T, pilot_grid)
+    pts = _cube_points(8)
+    v = np.round(np.linspace(0, 255, 32)).astype(np.intp)
+    target = T[np.ix_(v, v, v)].reshape(-1, 3)
+    I, W = tetra_weights(pts, *axis_tables(pilot_grid), m)
+    pred = np.einsum("nk,nkc->nc", W, pilot.reshape(-1, 3)[I])
+    err = np.linalg.norm(pred - target, axis=1).reshape(32, 32, 32)
+    grid = np.empty((3, m))
+    for axis in range(3):
+        prof = err.mean(axis=tuple(a for a in range(3) if a != axis))
+        density = 1.0 - alpha + alpha * (prof + 0.25) / (prof.mean() + 0.25)
+        cdf = np.r_[0.0, np.cumsum((density[1:] + density[:-1]) / 2)]
+        cdf /= cdf[-1]
+        grid[axis] = np.interp(np.linspace(0, 1, m), cdf, v.astype(float))
+        grid[axis, 0], grid[axis, -1] = 0.0, 255.0
+        for j in range(1, m):
+            grid[axis, j] = max(grid[axis, j], grid[axis, j - 1] + 2)
+        grid[axis] = np.minimum(grid[axis], 255 - 2 * (m - 1 - np.arange(m)))
+    return grid
+
+
 # ================================================================ helpers
 def quantize(x: np.ndarray) -> np.ndarray:
     return np.clip(np.floor(np.asarray(x, np.float64) + 0.5), 0, 255).astype(np.uint8)
@@ -296,6 +340,8 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
         x = int_refine(x, H, b)
     elif method == "irls_tetra":
         x = fit_irls_tetra(T, grid)
+    elif method == "tail_tetra_int":
+        x = fit_tail_tetra(T, grid)
     else:
         raise KeyError(method)
     info["fit_s"] = round(time.perf_counter() - t0, 3)

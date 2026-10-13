@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 #include <stdexcept>
 #include <utility>
 
@@ -191,6 +192,10 @@ void jshc_tetra_cpp_simd(const int32_t* off_table, const uint32_t* frac_table,
 void jshc_tetra_zig_simd(const int32_t* off_table, const uint32_t* frac_table,
                          const int32_t* strides, const uint32_t* packed_nodes,
                          const uint8_t* in_rgb, uint8_t* out_rgb, size_t n) noexcept;
+void jshc_tetra_zig_simd4(const int32_t*, const uint32_t*, const int32_t*, const uint32_t*,
+                          const uint8_t*, uint8_t*, size_t) noexcept;
+void jshc_tetra_zig_simd16(const int32_t*, const uint32_t*, const int32_t*, const uint32_t*,
+                           const uint8_t*, uint8_t*, size_t) noexcept;
 void jshc_tetra_rust_simd(const int32_t* off_table, const uint32_t* frac_table,
                           const int32_t* strides, const uint32_t* packed_nodes,
                           size_t packed_len, const uint8_t* in_rgb, uint8_t* out_rgb,
@@ -205,6 +210,8 @@ Kernel parse_kernel(const std::string& s) {
   }
   if (s == "tetra_cpp_simd" || s == "cpp_simd" || s == "cpp26_simd") return Kernel::TetraCppSimd;
   if (s == "tetra_zig_simd" || s == "zig_simd" || s == "zig") return Kernel::TetraZigSimd;
+  if (s == "tetra_zig_simd4") return Kernel::TetraZigSimd4;
+  if (s == "tetra_zig_simd16") return Kernel::TetraZigSimd16;
   if (s == "tetra_rust_simd" || s == "rust_simd" || s == "rust") return Kernel::TetraRustSimd;
   if (s == "tetra_avx2" || s == "avx2") return Kernel::TetraAvx2;
   if (s == "tetra_asm" || s == "asm") return Kernel::TetraAsm;
@@ -217,6 +224,8 @@ const char* kernel_name(Kernel k) {
     case Kernel::TetraScalar: return "tetra_scalar";
     case Kernel::TetraCppSimd: return "tetra_cpp_simd";
     case Kernel::TetraZigSimd: return "tetra_zig_simd";
+    case Kernel::TetraZigSimd4: return "tetra_zig_simd4";
+    case Kernel::TetraZigSimd16: return "tetra_zig_simd16";
     case Kernel::TetraRustSimd: return "tetra_rust_simd";
     case Kernel::TetraAvx2: return "tetra_avx2";
     case Kernel::TetraAsm: return "tetra_asm";
@@ -243,14 +252,21 @@ void tetra_cpp_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t 
   }
 }
 
-void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  const size_t vec_n = n & ~static_cast<size_t>(7);
+void tetra_zig_simd_lanes(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n,
+                          size_t lanes) {
+  const size_t vec_n = n - n % lanes;
   if (vec_n > 0) {
-    jshc_tetra_zig_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
+    auto fn = lanes == 4 ? jshc_tetra_zig_simd4 :
+              lanes == 16 ? jshc_tetra_zig_simd16 : jshc_tetra_zig_simd;
+    fn(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
   }
   if (vec_n < n) {
     tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
   }
+}
+
+void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  tetra_zig_simd_lanes(L, in, out, n, 8);
 }
 
 void tetra_rust_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -313,6 +329,12 @@ static void run_kernel(Kernel k, const SparseLut& L, const uint8_t* in, uint8_t*
     case Kernel::TetraZigSimd:
       tetra_zig_simd(L, in, out, n);
       break;
+    case Kernel::TetraZigSimd4:
+      tetra_zig_simd_lanes(L, in, out, n, 4);
+      break;
+    case Kernel::TetraZigSimd16:
+      tetra_zig_simd_lanes(L, in, out, n, 16);
+      break;
     case Kernel::TetraRustSimd:
       tetra_rust_simd(L, in, out, n);
       break;
@@ -327,7 +349,14 @@ void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_
   const size_t num_stages = chain.size();
   if (num_stages == 0 || n == 0) return;
 
-  constexpr size_t kBlockPixels = 4096;  // 12 KiB per block, fits comfortably in L1d cache
+  // Bounded portable tuning knob. The default matches the archived baseline.
+  const size_t kBlockPixels = [] {
+    const char* raw = std::getenv("JSHC_BLOCK_PIXELS");
+    if (!raw) return size_t{4096};
+    const int v = std::atoi(raw);
+    if (v != 1024 && v != 4096 && v != 8192) throw std::runtime_error("JSHC_BLOCK_PIXELS must be 1024, 4096 or 8192");
+    return static_cast<size_t>(v);
+  }();
   const size_t num_blocks = (n + kBlockPixels - 1) / kBlockPixels;
 
 #if defined(_OPENMP)
@@ -335,11 +364,11 @@ void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_
 #pragma omp parallel num_threads(num_threads)
 #endif
   {
-    std::array<uint8_t, kBlockPixels * 3> buf_a{};
-    std::array<uint8_t, kBlockPixels * 3> buf_b{};
+    std::array<uint8_t, 8192 * 3> buf_a{};
+    std::array<uint8_t, 8192 * 3> buf_b{};
 
 #if defined(_OPENMP)
-#pragma omp for schedule(dynamic, 1)
+#pragma omp for schedule(runtime)
 #endif
     for (long long bi = 0; bi < static_cast<long long>(num_blocks); ++bi) {
       const size_t start = static_cast<size_t>(bi) * kBlockPixels;
