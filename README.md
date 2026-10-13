@@ -24,6 +24,7 @@
 | [EVALUATION.md](EVALUATION.md) | 完整实验数据汇总表、C++ 吞吐量基准测试结果、版本迭代历史与 Commit 可回溯记录 |
 | [AUDIT.md](AUDIT.md) | 当前分支的代码、文档、日志核查结果和待办优先级 |
 | [experiments/r16-five-directions.md](experiments/r16-five-directions.md) | 精度门禁、候选筛选、尾部拟合、复现流程、Zig 参数实验的完整报告 |
+| [report/exploration.pdf](report/exploration.pdf) | 图文版完整探索报告；[源文件与复现说明](report/README.md)、原始日志归档及逐图数据随附 |
 
 ---
 

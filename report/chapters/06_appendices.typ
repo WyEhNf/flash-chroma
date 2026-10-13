@@ -2,7 +2,7 @@
 
 = 原始数据附录与审计线索
 
-正文引用的当前扫描固定为运行 `#meta.selected_run_id`，源提交 `#meta.source_git_commit`，独立日志提交 `#meta.logs_git_commit`。这两个提交的用途不同：前者确定生成报告时的代码，后者确定已冻结的运行记录。共有 #meta.run_count 次运行，失败 #meta.failed_run_count 次；其失败状态也收录，不将其改写成成功。`report/data/` 的归档保留原字节和相对路径，CSV 只是便于检索的派生视图。当前 24 候选产生 #meta.image_row_count 条逐图行、#meta.hotspot_row_count 条最坏颜色行。表格显示小数经过舍入；做阈值复核应使用原始 `selection.json`。
+正文引用的当前扫描固定为运行 #meta.selected_run_id，源提交 #meta.source_git_commit，独立日志提交 #meta.logs_git_commit。这两个提交的用途不同：前者确定生成报告时的代码，后者确定已冻结的运行记录。共有 #meta.run_count 次运行，失败 #meta.failed_run_count 次；其失败状态也收录，不将其改写成成功。`report/data/` 的归档保留原字节和相对路径，CSV 只是便于检索的派生视图。当前 24 候选产生 #meta.image_row_count 条逐图行、#meta.hotspot_row_count 条最坏颜色行。表格显示小数经过舍入；做阈值复核应使用原始 `selection.json`。
 
 == 附录 A：当前 24 候选完整表
 
@@ -35,7 +35,7 @@
   [`cube_hotspots.csv`], [#text(size: 6pt)[#meta.artifact_sha256.at("cube_hotspots.csv")]],
 )
 
-历史 `experiments/route_sweep.json` 的独立 SHA-256 是 `#meta.route_sweep_sha256`。精确归档不包含被 Git 忽略的约 1.8 GiB 图像/LUT，也不等于官方比赛数据。文档级路径说明见 `data/DATA_INDEX.md`。
+历史 `experiments/route_sweep.json` 的独立 SHA-256 是 #meta.route_sweep_sha256。精确归档不包含被 Git 忽略的约 1.8 GiB 图像/LUT，也不等于官方比赛数据。文档级路径说明见 `data/DATA_INDEX.md`。
 
 == 附录 E：Git 探索时间线
 

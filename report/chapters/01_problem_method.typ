@@ -34,5 +34,5 @@ $ Delta E = sqrt((R_1-R_2)^2 + (G_1-G_2)^2 + (B_1-B_2)^2) $
 
 - *题面事实*：`source.htm`、`PROBLEM.md` 的原文及整理备注；备注中的推断不是裁判结论。
 - *历史探索*：`experiments/route_sweep.json` 的 #meta.historic_lattice_count 条网格候选、#meta.historic_non_lattice_count 条非网格候选、#meta.historic_bench_count 条历史吞吐量记录。其精度主扫描只用 10 张图和当时的 Python 评测，不能直接代替当前 29 张图门禁。
-- *当前验证*：独立日志 `#meta.selected_run_id` 对 `isp-0` 的 24 个候选使用真实可执行输出、29 张图与全部 2²⁴ RGB 颜色；达到本地示例门槛的合规候选才进入 100 图测速。
+- *当前验证*：独立日志 #meta.selected_run_id 对 `isp-0` 的 24 个候选使用真实可执行输出、29 张图与全部 2²⁴ RGB 颜色；达到本地示例门槛的合规候选才进入 100 图测速。
 - *推断与未验证*：目标机器更快、单级复合可提交、正式图像分布接近模拟 ISP 等，均不能由本地数字推出。压力场景仍有明显高误差。

@@ -24,4 +24,4 @@ C++ 测试对 m=17/25/33、全部 2²⁴ RGB 输入核对标量、C++26、Zig 4/
 
 主 `pixi.toml` 锁定 Zig 0.17、Linux GCC 16.2 的 C++26、Rust 1.99、Python 3.12、CMake/Ninja 和科学计算包；ML 附加环境有 PyTorch。WSL/Linux 是已实测开发平台，macOS ARM 在清单中但尚无团队机器复验。Ubuntu 24.04 Dockerfile 作为备选，`.dockerignore` 排除数 GiB 的 Pixi、数据与日志；当前 WSL 没有 Docker，镜像未实测。`report/pixi.toml` 为 Typst 和 Noto CJK 字体创建独立环境，不改动算法锁文件。
 
-`logs/` 有自己的 Git 仓库，主代码回退不会删除日志。本报告取数时共有 #meta.run_count 份 `run.json`，其中 #meta.failed_run_count 份明确记录为失败；取数日志 Git 为 `#meta.logs_git_commit`。每条记录包含命令参数、代码 SHA、脏工作区标记、CPU、运行时间、Pixi 锁哈希及原始输出/附属 JSON。`report/data/run_records_exact.tar.gz` 按原相对路径和原始字节归档本次所有日志文件；`manifests_exact.tar.gz` 固定输入清单，`experiments_exact.tar.gz` 固定历史实验 JSON。它们不包含被忽略的大型图像；第 6 章给出 SHA-256。
+`logs/` 有自己的 Git 仓库，主代码回退不会删除日志。本报告取数时共有 #meta.run_count 份 `run.json`，其中 #meta.failed_run_count 份明确记录为失败；取数日志 Git 为 #meta.logs_git_commit。每条记录包含命令参数、代码 SHA、脏工作区标记、CPU、运行时间、Pixi 锁哈希及原始输出/附属 JSON。`report/data/run_records_exact.tar.gz` 按原相对路径和原始字节归档本次所有日志文件；`manifests_exact.tar.gz` 固定输入清单，`experiments_exact.tar.gz` 固定历史实验 JSON。它们不包含被忽略的大型图像；第 6 章给出 SHA-256。

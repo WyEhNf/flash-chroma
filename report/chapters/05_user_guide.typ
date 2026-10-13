@@ -47,7 +47,7 @@ python -m lutlab.runlog show 52e23c0b
 
 == 重建本报告
 
-本报告用独立 `report/pixi.toml` 安装 Typst 与 Noto CJK 字体。生成器在*已提交代码和独立日志固定*后读取 `logs/`，写入 CSV、固定时间戳的原始文件归档、SHA 索引和图；它不修改实验日志。此版本固定主扫描运行 ID `#meta.selected_run_id`；重新做新一轮官方扫描时，应明确更新 `scripts/build_typst_data.py` 的固定 ID，不能偷偷把旧表换成新日志。
+本报告用独立 `report/pixi.toml` 安装 Typst 与 Noto CJK 字体。生成器在*已提交代码和独立日志固定*后读取 `logs/`，写入 CSV、固定时间戳的原始文件归档、SHA 索引和图；它不修改实验日志。此版本固定主扫描运行 ID #meta.selected_run_id；重新做新一轮官方扫描时，应明确更新 `scripts/build_typst_data.py` 的固定 ID，不能偷偷把旧表换成新日志。
 
 ```bash
 pixi run python scripts/build_typst_data.py
