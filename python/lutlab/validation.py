@@ -30,6 +30,7 @@ def validate(paths: list[Path], composite: Path, image_list: Path, *, kernel: st
         raise ValueError("threshold must be finite and nonnegative")
     if metric not in ("mean", "p99", "max"):
         raise ValueError(metric)
+    paths = [p.resolve() for p in paths]
     comp = io.load_full(composite, mmap=True)
     files = [Path(s) if Path(s).is_absolute() else data.ROOT / s
              for s in image_list.read_text().splitlines() if s.strip()]
@@ -38,7 +39,7 @@ def validate(paths: list[Path], composite: Path, image_list: Path, *, kernel: st
     with tempfile.TemporaryDirectory(prefix="jshc-validate-") as tmp:
         raw = Path(tmp) / "cube.raw"
         subprocess.run([str(metrics.JSHC_BIN), "cube", "-o", str(raw), "-k", kernel,
-                        "-t", str(threads), *map(str, paths)], check=True)
+                        "-t", str(threads), *map(str, paths)], cwd=data.ROOT, check=True)
         if raw.stat().st_size != (1 << 24) * 3:
             raise ValueError("wrong cube output size")
         cube = np.memmap(raw, dtype=np.uint8, mode="r", shape=io.FULL_SHAPE)

@@ -88,5 +88,5 @@ def run_cpp_bench(
         Path(write_dir).mkdir(parents=True, exist_ok=True)
         cmd += ["-w", str(write_dir)]
     cmd += [str(p) for p in slut_paths]
-    res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=True)
     return json.loads(res.stdout.strip())
