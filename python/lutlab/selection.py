@@ -15,6 +15,8 @@ PROFILES = {
     "tetra": ("seq", "ls_tetra_int", "uniform", "tetra_zig_simd"),
     "tail": ("seq", "tail_tetra_int", "uniform", "tetra_zig_simd"),
     "errorgrid": ("seq", "ls_tetra_int", "error", "tetra_zig_simd"),
+    "residual": ("residual", "ls_tetra_int", "uniform", "tetra_zig_simd"),
+    "residual_tail": ("residual", "tail_tetra_int", "uniform", "tetra_zig_simd"),
     "trilinear": ("seq", "ls_tri", "uniform", "tri_float"),
     "composite": ("composite", "ls_tetra_int", "uniform", "tetra_zig_simd"),
 }

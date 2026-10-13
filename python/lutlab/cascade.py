@@ -45,6 +45,7 @@ def fit_cascade_residual(
     m: int,
     stride: int = 4,
     use_adaptive_grid: bool = False,
+    tail_beta: float = 0.0,
 ) -> tuple[list[io.SparseLut], dict]:
     """Cascade-aware fitting: each stage k is fitted on the *actual* output distribution
     of stages 1..k-1 against the *exact* stage-k target applied to the true intermediate
@@ -86,7 +87,14 @@ def fit_cascade_residual(
     x0_float, H_prior, b_prior = fit_mod.fit_ls_tetra(T_last, grid_last, stride=stride)
 
     # Normal equations on actual propagated coordinates x_cur -> y_true
-    H_data, b_data = fit_mod.normal_equations(x_cur, y_true, None, grid_last)
+    weights = None
+    if tail_beta > 0:
+        pilot = io.SparseLut(grid_last, fit_mod.quantize(x0_float))
+        y_pilot = interp.apply_tetra_q16(pilot, x_cur)
+        err = np.linalg.norm(y_pilot.astype(np.float32) - y_true.astype(np.float32), axis=1)
+        scale = max(float(np.percentile(err, 90)), 0.25)
+        weights = np.minimum(1.0 + tail_beta * (err / scale) ** 2, 16.0)
+    H_data, b_data = fit_mod.normal_equations(x_cur, y_true, weights, grid_last)
     # Blend with a light prior weight (0.05) so cells with few hits remain smooth
     alpha = 0.05
     H_tot = H_data + alpha * H_prior
@@ -94,7 +102,7 @@ def fit_cascade_residual(
     x_sol = fit_mod.solve_spd(H_tot, b_tot, x0_float.reshape(-1, 3), lam=1e-5)
     x_int = fit_mod.int_refine(x_sol, H_tot, b_tot, sweeps=4)
     chain.append(io.SparseLut(grid_last, fit_mod.quantize(x_int.reshape(m, m, m, 3))))
-    return chain, {"fit_s": round(time.perf_counter() - t0, 3)}
+    return chain, {"fit_s": round(time.perf_counter() - t0, 3), "tail_beta": tail_beta}
 
 
 def fit_composite_single(

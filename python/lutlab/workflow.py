@@ -24,7 +24,12 @@ def main(argv=None):
     ap.add_argument("--existing-only", action="store_true")
     args = ap.parse_args(argv)
     with Run("competition-check", vars(args)) as run:
-        subprocess.run(["pixi", "run", "test"], cwd=data.ROOT, check=True)
+        test = subprocess.run(["pixi", "run", "test"], cwd=data.ROOT, text=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        run.path("test.log").write_text(test.stdout)
+        print(test.stdout, end="")
+        if test.returncode:
+            raise subprocess.CalledProcessError(test.returncode, ["pixi", "run", "test"])
         run.metrics["dataset"] = data.verify_images()
         run.metrics["scenario"] = data.verify_scenario(args.scenario)
         result = selection.select(args.scenario, args.m, args.profiles, args.threshold,
