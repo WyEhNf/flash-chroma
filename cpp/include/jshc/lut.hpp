@@ -61,6 +61,7 @@ enum class Kernel {
   TetraCppSimd,
   TetraZigSimd,
   TetraZigSimd4,
+  TetraZigSimd8,
   TetraZigSimd16,
   TetraRustSimd,
   TetraAvx2,
@@ -74,6 +75,8 @@ bool avx2_available();
 // In-place colour mapping of n interleaved RGB pixels through a chain of sparse LUTs.
 void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n,
                  Kernel k, int threads);
+void tetra_zig_simd_lanes(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n,
+                          size_t lanes);
 
 // Reference: chain of full 256^3 LUTs (exact lookups).
 void apply_full_chain(const std::vector<const FullLut*>& chain, uint8_t* rgb, size_t n,

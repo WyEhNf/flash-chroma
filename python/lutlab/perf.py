@@ -18,7 +18,7 @@ def sweep(models: list[Path], image_list: Path, widths: list[int], blocks: list[
         for width in widths:
             for block in blocks:
                 for schedule in schedules:
-                    kernel = {4: "tetra_zig_simd4", 8: "tetra_zig_simd",
+                    kernel = {4: "tetra_zig_simd4", 8: "tetra_zig_simd8",
                               16: "tetra_zig_simd16"}[width]
                     env = os.environ.copy()
                     env["JSHC_BLOCK_PIXELS"] = str(block)

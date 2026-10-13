@@ -76,6 +76,12 @@ int main() {
     tetra_scalar(R, cube.data(), ref.data(), n);
     tetra_cpp_simd(R, cube.data(), out_cpp.data(), n);
     tetra_zig_simd(R, cube.data(), out_zig.data(), n);
+    CHECK(std::memcmp(ref.data(), out_zig.data(), ref.size()) == 0, "zig default vs scalar");
+    tetra_zig_simd_lanes(R, cube.data(), out_zig.data(), n, 4);
+    CHECK(std::memcmp(ref.data(), out_zig.data(), ref.size()) == 0, "zig 4 lanes vs scalar");
+    tetra_zig_simd_lanes(R, cube.data(), out_zig.data(), n, 8);
+    CHECK(std::memcmp(ref.data(), out_zig.data(), ref.size()) == 0, "zig 8 lanes vs scalar");
+    tetra_zig_simd_lanes(R, cube.data(), out_zig.data(), n, 16);
     tetra_rust_simd(R, cube.data(), out_rust.data(), n);
     CHECK(std::memcmp(ref.data(), out_cpp.data(), ref.size()) == 0, "cpp26_simd vs scalar");
     CHECK(std::memcmp(ref.data(), out_zig.data(), ref.size()) == 0, "zig_simd vs scalar");
@@ -92,6 +98,10 @@ int main() {
       tetra_rust_simd(R, cube.data() + 3 * 12345, y_rust.data(), len);
       CHECK(std::memcmp(x.data(), y_cpp.data(), x.size()) == 0, "cpp26_simd tail / no overrun");
       CHECK(std::memcmp(x.data(), y_zig.data(), x.size()) == 0, "zig_simd tail / no overrun");
+      for (size_t lanes : {4u, 8u, 16u}) {
+        tetra_zig_simd_lanes(R, cube.data() + 3 * 12345, y_zig.data(), len, lanes);
+        CHECK(std::memcmp(x.data(), y_zig.data(), x.size()) == 0, "zig lane tail / no overrun");
+      }
       CHECK(std::memcmp(x.data(), y_rust.data(), x.size()) == 0, "rust_simd tail / no overrun");
     }
   }

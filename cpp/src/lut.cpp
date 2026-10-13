@@ -211,6 +211,7 @@ Kernel parse_kernel(const std::string& s) {
   if (s == "tetra_cpp_simd" || s == "cpp_simd" || s == "cpp26_simd") return Kernel::TetraCppSimd;
   if (s == "tetra_zig_simd" || s == "zig_simd" || s == "zig") return Kernel::TetraZigSimd;
   if (s == "tetra_zig_simd4") return Kernel::TetraZigSimd4;
+  if (s == "tetra_zig_simd8") return Kernel::TetraZigSimd8;
   if (s == "tetra_zig_simd16") return Kernel::TetraZigSimd16;
   if (s == "tetra_rust_simd" || s == "rust_simd" || s == "rust") return Kernel::TetraRustSimd;
   if (s == "tetra_avx2" || s == "avx2") return Kernel::TetraAvx2;
@@ -225,6 +226,7 @@ const char* kernel_name(Kernel k) {
     case Kernel::TetraCppSimd: return "tetra_cpp_simd";
     case Kernel::TetraZigSimd: return "tetra_zig_simd";
     case Kernel::TetraZigSimd4: return "tetra_zig_simd4";
+    case Kernel::TetraZigSimd8: return "tetra_zig_simd8";
     case Kernel::TetraZigSimd16: return "tetra_zig_simd16";
     case Kernel::TetraRustSimd: return "tetra_rust_simd";
     case Kernel::TetraAvx2: return "tetra_avx2";
@@ -266,7 +268,7 @@ void tetra_zig_simd_lanes(const SparseLut& L, const uint8_t* in, uint8_t* out, s
 }
 
 void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  tetra_zig_simd_lanes(L, in, out, n, 8);
+  tetra_zig_simd_lanes(L, in, out, n, 16);
 }
 
 void tetra_rust_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -331,6 +333,9 @@ static void run_kernel(Kernel k, const SparseLut& L, const uint8_t* in, uint8_t*
       break;
     case Kernel::TetraZigSimd4:
       tetra_zig_simd_lanes(L, in, out, n, 4);
+      break;
+    case Kernel::TetraZigSimd8:
+      tetra_zig_simd_lanes(L, in, out, n, 8);
       break;
     case Kernel::TetraZigSimd16:
       tetra_zig_simd_lanes(L, in, out, n, 16);

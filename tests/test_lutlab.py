@@ -38,7 +38,7 @@ def test_python_cpp_bit_exact(tmp_path: Path):
 
         io.save_image(in_p, img)
         py_out = interp.apply_tetra_q16(loaded, img)
-        for k in ("tetra_scalar", "tetra_cpp_simd", "tetra_zig_simd4",
+        for k in ("tetra_scalar", "tetra_cpp_simd", "tetra_zig_simd4", "tetra_zig_simd8",
                   "tetra_zig_simd", "tetra_zig_simd16"):
             out_p = tmp_path / f"out_{m}_{k}.png"
             subprocess.run([str(JSHC), "apply", "-i", str(in_p), "-o", str(out_p), "-k", k, str(slut_p)], check=True)
