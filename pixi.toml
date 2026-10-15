@@ -36,6 +36,10 @@ build = { cmd = "cmake --build build -j", depends-on = ["configure"] }
 test-cpp = { cmd = "ctest --test-dir build --output-on-failure", depends-on = ["build"] }
 test-py = { cmd = "python -m pytest -q tests", depends-on = ["build"] }
 test = { depends-on = ["test-cpp", "test-py"] }
+# CI 使用独立构建目录，避免复用本机可选后端或旧二进制。
+configure-correctness = "cmake -S . -B build-correctness -G Ninja -DCMAKE_BUILD_TYPE=Release -DJSHC_ENABLE_OPENMP=ON -DJSHC_ENABLE_AVX2=ON -DJSHC_ENABLE_CPP_SIMD=OFF -DJSHC_ENABLE_ZIG=OFF -DJSHC_ENABLE_RUST=OFF -DJSHC_ENABLE_FULL_FIT=ON"
+build-correctness = { cmd = "cmake --build build-correctness --parallel 2", depends-on = ["configure-correctness"] }
+correctness = { cmd = "python scripts/check_correctness.py", depends-on = ["build-correctness"] }
 gen-data = "python -m lutlab.cli gen-data"
 fit = "python -m lutlab.cli fit"
 evaluate = { cmd = "python -m lutlab.cli evaluate", depends-on = ["build"] }

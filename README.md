@@ -50,7 +50,15 @@ pixi install --locked
 pixi run --locked test
 ```
 
-`test` 编译当前 CMake 配置选中的后端，并执行 C++ 全 `2²⁴` 色空间对照和 Python 测试；**无需先下载图像或生成 LUT**。额外后端由 `JSHC_ENABLE_CPP_SIMD/ZIG/RUST` 开关启用，默认关闭。旧 Pixi 清单仍安装这些工具链，纯 CMake 路线无需全部安装。`--locked` 要求清单与 `pixi.lock` 一致；本轮未更改锁文件或复验 Pixi 安装。
+`test` 编译当前 CMake 配置选中的后端，并执行 C++ 全 `2²⁴` 色空间对照和 Python 测试；**无需先下载图像或生成 LUT**。额外后端由 `JSHC_ENABLE_CPP_SIMD/ZIG/RUST` 开关启用，默认关闭。Pixi 默认环境仍安装这些工具链，纯 CMake 路线无需全部安装。`--locked` 要求清单与 `pixi.lock` 一致。
+
+GitHub Actions 在 PR（包括 Draft）、`main` 的 push 或手动触发时，使用 Linux x86_64 与 macOS ARM runner 执行同一条正确性命令：
+
+```bash
+pixi run --locked correctness
+```
+
+该任务在独立的 `build-correctness/` 目录构建 C++17 运行时、可用的 AVX2 后端和完整色域离线拟合库，然后运行 CTest 全 `2²⁴` 色域对照及全部 Python 契约测试。Python 显式绑定这次构建的可执行文件与拟合库，缺失拟合库会失败。CI 不执行 benchmark、不下载 Kodak 图像、不生成实验数据集；Zig、Rust、C++ SIMD 与 CUDA 不在当前 CI 覆盖范围内。工作流见 [.github/workflows/correctness.yml](.github/workflows/correctness.yml)。
 
 没有 Pixi 的备选方式是 Ubuntu 24.04 [Dockerfile](Dockerfile)：
 
