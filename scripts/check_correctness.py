@@ -13,7 +13,6 @@ def main():
     executable = BUILD / ("jshc.exe" if os.name == "nt" else "jshc")
     library_name = (
         "jshc_full_fit.dll" if os.name == "nt"
-        else "libjshc_full_fit.dylib" if sys.platform == "darwin"
         else "libjshc_full_fit.so"
     )
     library = BUILD / library_name

@@ -34,7 +34,7 @@
 
 ## 从 Codeberg 开始
 
-Codeberg 的默认 `main` 保留较早的代码版本。当前本地`codex/zig-default-pixi`开发线包含R17–R26源码、统一入口及小型验收归档，本轮尚未推送；远端版本不能代替本地交付证据。原生 Windows 的 CMake 构建已实测，命令见[当前交付入口](docs/r19-delivery-results.md)。原有 Pixi 清单仍仅覆盖 Linux 与macOS ARM，后者未在本轮验证。
+Codeberg 的默认 `main` 保留较早的代码版本。当前本地`codex/zig-default-pixi`开发线包含R17–R26源码、统一入口及小型验收归档，本轮尚未推送；远端版本不能代替本地交付证据。原生 Windows 的 CMake 构建已实测，命令见[当前交付入口](docs/r19-delivery-results.md)。当前主 Pixi 环境仅支持 Linux x86_64；Windows 用户使用 WSL2 或 Docker。报告专用 Pixi 环境保留 Linux 与 Windows，不再提供 macOS 平台依赖。
 
 ```bash
 git clone https://codeberg.org/Mooooonk/problem_probe_16.git
@@ -52,7 +52,7 @@ pixi run --locked test
 
 `test` 编译当前 CMake 配置选中的后端，并执行 C++ 全 `2²⁴` 色空间对照和 Python 测试；**无需先下载图像或生成 LUT**。额外后端由 `JSHC_ENABLE_CPP_SIMD/ZIG/RUST` 开关启用，默认关闭。Pixi 默认环境仍安装这些工具链，纯 CMake 路线无需全部安装。`--locked` 要求清单与 `pixi.lock` 一致。
 
-GitHub Actions 在 PR（包括 Draft）、`main` 的 push 或手动触发时，使用 Linux x86_64 与 macOS ARM runner 执行同一条正确性命令：
+GitHub Actions 在 PR（包括 Draft）、`main` 的 push 或手动触发时，使用 Linux x86_64 runner 执行同一条正确性命令：
 
 ```bash
 pixi run --locked correctness

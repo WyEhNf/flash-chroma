@@ -5,7 +5,7 @@ description = "Hackathon 2026 final #16: sparse 3D LUT colour mapping probe"
 channels = ["conda-forge"]
 # Windows users: use WSL2 (recommended) or the Dockerfile. Native win-64 C++ builds
 # through conda-forge require a local Visual Studio Build Tools install.
-platforms = ["linux-64", "osx-arm64"]
+platforms = ["linux-64"]
 
 [dependencies]
 python = ">=3.12,<3.13"
@@ -22,10 +22,6 @@ rust = ">=1.99,<1.100"
 [target.linux-64.dependencies]
 gxx = ">=16.2,<17"
 gcc = ">=16.2,<17"
-
-[target.osx-arm64.dependencies]
-cxx-compiler = ">=1.7"
-c-compiler = ">=1.7"
 
 [activation.env]
 PYTHONPATH = "$PIXI_PROJECT_ROOT/python"

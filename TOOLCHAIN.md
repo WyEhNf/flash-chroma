@@ -6,7 +6,7 @@
 
 ## 1. 跨平台一键环境配置（3 人团队零摩擦同步）
 
-针对 3 人本科生团队（可能混合使用 Windows + WSL2、Ubuntu Linux 或 macOS）环境不一致的痛点，项目同时提供 **Pixi 锁文件方案（主推）** 与 **Ubuntu 24.04 Docker 容器方案（备选/兜底）**。
+团队统一使用 Linux x86_64（含 Windows + WSL2），项目提供 **Pixi 锁文件方案（主推）** 与 **Ubuntu 24.04 Docker 容器方案（备选/兜底）**。主环境与报告环境均已移除 macOS 平台依赖，GitHub Actions 仅在 Linux 上验证正确性。
 
 ### 方案 A：Pixi 一键安装（推荐，毫秒级激活）
 
