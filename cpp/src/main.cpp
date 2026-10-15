@@ -1,9 +1,10 @@
 // jshc: command line driver for sparse-LUT colour mapping.
 //
-//   jshc apply  -i in.png -o out.png [-k tetra_zig_simd] [-t N] a.slut [b.slut ...]
+//   jshc apply  -i in.png -o out.png [-k auto] [-t N] a.slut [b.slut ...]
 //   jshc ref    -i in.png -o out.png [-t N] a.lut256 [b.lut256 ...]
 //   jshc cube   -o out.raw [-k K] [-t N] a.slut [...]   (all 2^24 colours, index order)
-//   jshc bench  -l list.txt [-k K] [-t N] [-r reps] [-w out_dir] a.slut [...]
+//   jshc bench  -l list.txt [-k K] [-t N] [-r reps] [--batch] [-w out_dir] a.slut [...]
+//   jshc verify -l list.txt [-k K] [-t N] [--batch] [-o concatenated_rgb.raw] a.slut [...]
 //   jshc info
 // bench prints one JSON object with per-phase timings (ms).
 #include <algorithm>
@@ -11,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <filesystem>
 #include <numeric>
 #include <stdexcept>
 #include <string>
@@ -40,6 +42,7 @@ static double ms_since(Clock::time_point t0) {
 
 struct Image {
   int w = 0, h = 0;
+  bool source_rgb8 = false;
   std::vector<uint8_t> rgb;
 };
 
@@ -48,6 +51,7 @@ static Image load_image(const std::string& path) {
   int ch = 0;
   uint8_t* d = stbi_load(path.c_str(), &im.w, &im.h, &ch, 3);
   if (!d) throw std::runtime_error("cannot decode " + path);
+  im.source_rgb8 = ch == 3 && !stbi_is_16_bit(path.c_str());
   im.rgb.assign(d, d + size_t(im.w) * im.h * 3);
   stbi_image_free(d);
   return im;
@@ -79,14 +83,16 @@ static void save_image(const std::string& path, const Image& im) {
 
 struct Args {
   std::string cmd, in, out, list, write_dir;
-  std::string kernel = "tetra_zig_simd";
+  std::string kernel = "auto";
+  bool competition = false;
+  bool batch = false;
   int threads = 0, reps = 3;
   uint32_t m = 33;
   std::vector<std::string> luts;
 };
 
 static Args parse(int argc, char** argv) {
-  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|fit-r14|info} ...");
+  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|verify|fit-r14|info} ...");
   Args a;
   a.cmd = argv[1];
   for (int i = 2; i < argc; ++i) {
@@ -103,6 +109,9 @@ static Args parse(int argc, char** argv) {
     else if (s == "-m") a.m = uint32_t(std::stoul(next()));
     else if (s == "-l") a.list = next();
     else if (s == "-w") a.write_dir = next();
+    else if (s == "--competition") a.competition = true;
+    else if (s == "--batch") a.batch = true;
+    else if (!s.empty() && s[0] == '-') throw std::runtime_error("unknown option " + s);
     else a.luts.push_back(s);
   }
   return a;
@@ -116,10 +125,37 @@ static int max_threads() {
 #endif
 }
 
-static std::vector<SparseLut> load_sparse(const std::vector<std::string>& paths) {
+static constexpr bool openmp_enabled() {
+#if defined(_OPENMP)
+  return true;
+#else
+  return false;
+#endif
+}
+
+static int thread_upper_bound(int requested) {
+  return openmp_enabled() ? (requested > 0 ? requested : max_threads()) : 1;
+}
+
+static std::vector<SparseLut> load_sparse(const std::vector<std::string>& paths, bool competition) {
   std::vector<SparseLut> v;
-  for (auto& p : paths) v.push_back(SparseLut::load(p));
+  for (auto& p : paths) {
+    v.push_back(SparseLut::load(p));
+    if (competition && (v.back().m < 17 || v.back().m > 33))
+      throw std::runtime_error("competition LUT m must be in [17,33]");
+  }
   return v;
+}
+
+static void check_image(const Image& im, bool competition) {
+  if (competition && (im.w != 1024 || im.h != 768 || !im.source_rgb8))
+    throw std::runtime_error("competition image must be 1024x768 RGB8");
+}
+
+static void print_values(const char* key, const std::vector<double>& values) {
+  std::printf(", \"%s\": [", key);
+  for (size_t i = 0; i < values.size(); ++i) std::printf("%s%.6f", i ? ", " : "", values[i]);
+  std::printf("]");
 }
 
 static std::vector<const SparseLut*> ptrs(const std::vector<SparseLut>& v) {
@@ -134,17 +170,105 @@ static double pct(std::vector<double> v, double q) {
   return v[std::min(i, v.size() - 1)];
 }
 
+static void print_stage_sizes(const std::vector<SparseLut>& luts) {
+  std::printf(", \"stage_m\": [");
+  for (size_t i = 0; i < luts.size(); ++i) std::printf("%s%u", i ? ", " : "", luts[i].m);
+  std::printf("]");
+}
+
+// Correctness preflight has its own command so hashing/writing never enters
+// benchmark repetitions, alters their cache state, or requires time subtraction.
+static void verify_images(const Args& a, const std::vector<Image>& imgs,
+                          const std::vector<SparseLut>& luts, Kernel k) {
+  constexpr uint64_t offset = UINT64_C(14695981039346656037);
+  constexpr uint64_t prime = UINT64_C(1099511628211);
+  const auto chain = ptrs(luts);
+  std::ofstream raw;
+  if (!a.out.empty()) {
+    raw.open(a.out, std::ios::binary | std::ios::trunc);
+    if (!raw) throw std::runtime_error("cannot write " + a.out);
+  }
+  uint64_t concatenated_hash = offset;
+  size_t output_bytes = 0;
+  std::vector<uint64_t> hashes(imgs.size());
+  auto record = [&](size_t index, const std::vector<uint8_t>& pixels) {
+    uint64_t hash = offset;
+    for (uint8_t value : pixels) {
+      hash = (hash ^ value) * prime;
+      concatenated_hash = (concatenated_hash ^ value) * prime;
+    }
+    hashes[index] = hash;
+    output_bytes += pixels.size();
+    if (raw.is_open()) {
+      raw.write(reinterpret_cast<const char*>(pixels.data()),
+                static_cast<std::streamsize>(pixels.size()));
+      if (!raw) throw std::runtime_error("incomplete verification output: " + a.out);
+    }
+  };
+  if (a.batch) {
+    std::vector<std::vector<uint8_t>> output;
+    std::vector<RgbImageView> views;
+    output.reserve(imgs.size());
+    views.reserve(imgs.size());
+    for (const auto& im : imgs) output.push_back(im.rgb);
+    for (auto& pixels : output) views.push_back({pixels.data(), pixels.size() / 3});
+    apply_chain_batch(chain, views, k, a.threads);
+    for (size_t i = 0; i < output.size(); ++i) record(i, output[i]);
+  } else {
+    std::vector<uint8_t> output;
+    for (size_t i = 0; i < imgs.size(); ++i) {
+      output = imgs[i].rgb;
+      apply_chain(chain, output.data(), output.size() / 3, k, a.threads);
+      record(i, output);
+    }
+  }
+  if (raw.is_open()) {
+    raw.close();
+    if (!raw) throw std::runtime_error("cannot close verification output: " + a.out);
+  }
+  std::printf("{\"cmd\": \"verify\", \"verification_only\": true, \"kernel\": \"%s\", "
+              "\"stages\": %zu, \"images\": %zu, \"batch_mode\": %s, \"output_bytes\": %zu, "
+              "\"checksum_algorithm\": \"fnv1a64\", \"output_checksum_fnv1a64\": \"%llu\", "
+              "\"raw_output_written\": %s, \"output_layout\": \"list order; packed RGB8; no headers\", "
+              "\"requested_threads\": %d, \"openmp_enabled\": %s",
+              kernel_name(k), luts.size(), imgs.size(), a.batch ? "true" : "false", output_bytes,
+              static_cast<unsigned long long>(concatenated_hash), a.out.empty() ? "false" : "true",
+              a.threads, openmp_enabled() ? "true" : "false");
+  print_stage_sizes(luts);
+  std::printf(", \"per_image\": [");
+  for (size_t i = 0; i < imgs.size(); ++i) {
+    std::printf("%s{\"index\": %zu, \"width\": %d, \"height\": %d, \"output_bytes\": %zu, "
+                "\"output_checksum_fnv1a64\": \"%llu\"}",
+                i ? ", " : "", i, imgs[i].w, imgs[i].h, imgs[i].rgb.size(),
+                static_cast<unsigned long long>(hashes[i]));
+  }
+  std::printf("]}\n");
+}
+
 int main(int argc, char** argv) try {
   Args a = parse(argc, argv);
   if (a.reps < 1) throw std::runtime_error("reps must be positive");
   if (a.threads < 0) throw std::runtime_error("threads must be nonnegative");
+  if (a.batch && a.cmd != "bench" && a.cmd != "verify")
+    throw std::runtime_error("--batch is only valid for bench or verify");
   if (a.cmd == "info") {
-    std::printf("{\"avx2\": %s, \"openmp_threads\": %d, \"hw_threads\": %u}\n",
+    std::printf("{\"avx2\": %s, \"openmp_threads\": %d, \"hw_threads\": %u, \"default_kernel\": \"%s\", \"available_kernels\": [",
                 avx2_available() ? "true" : "false", max_threads(),
-                std::thread::hardware_concurrency());
+                std::thread::hardware_concurrency(), kernel_name(resolve_kernel(parse_kernel("auto"))));
+    bool first = true;
+    for (const auto name : {"tetra_scalar", "tetra_avx2", "tetra_avx2_madd", "tetra_avx2_scalar_gather", "tetra_avx2_exact_float", "tetra_cpp_simd", "tetra_zig_simd4",
+                            "tetra_zig_simd8", "tetra_zig_simd", "tetra_zig_simd16", "tetra_rust_simd", "tri_float"}) {
+      if (kernel_available(parse_kernel(name))) {
+        std::printf("%s\"%s\"", first ? "" : ", ", name);
+        first = false;
+      }
+    }
+    std::printf("], \"openmp_enabled\": %s}\n", openmp_enabled() ? "true" : "false");
     return 0;
   }
   if (a.luts.empty()) throw std::runtime_error("no LUT files given");
+  if (a.competition && (a.luts.size() != 4 || a.cmd == "fit-r14"))
+    throw std::runtime_error("competition mode requires four independent stages; fit-r14 is a research composite fitter");
   if (a.cmd == "fit-r14") {
     auto t0 = Clock::now();
     std::vector<FullLut> F;
@@ -166,16 +290,19 @@ int main(int argc, char** argv) try {
     std::printf(
         "{\"cmd\": \"fit-r14\", \"m\": %u, \"stages_in\": %zu, \"threads\": %d, \"reps\": %d, "
         "\"load_ms\": %.3f, \"fit_ms_best\": %.3f, \"fit_ms_mean\": %.3f, \"fit_ms_p50\": %.3f, "
-        "\"slut_bytes\": %zu}\n",
-        a.m, F.size(), a.threads > 0 ? a.threads : max_threads(), a.reps, load_ms, best_ms,
-        mean_ms, pct(fit_times, 0.5), size_t(a.m) * a.m * a.m * 3);
+        "\"slut_bytes\": %zu, \"requested_threads\": %d, \"openmp_enabled\": %s, "
+        "\"thread_count_semantics\": \"upper bound; runtime may use fewer workers\"}\n",
+        a.m, F.size(), thread_upper_bound(a.threads), a.reps, load_ms, best_ms,
+        mean_ms, pct(fit_times, 0.5), size_t(a.m) * a.m * a.m * 3,
+        a.threads, openmp_enabled() ? "true" : "false");
     return 0;
   }
-  Kernel k = parse_kernel(a.kernel);
+  Kernel k = resolve_kernel(parse_kernel(a.kernel));
 
   if (a.cmd == "apply") {
-    auto L = load_sparse(a.luts);
+    auto L = load_sparse(a.luts, a.competition);
     Image im = load_image(a.in);
+    check_image(im, a.competition);
     apply_chain(ptrs(L), im.rgb.data(), size_t(im.w) * im.h, k, a.threads);
     save_image(a.out, im);
     return 0;
@@ -186,12 +313,13 @@ int main(int argc, char** argv) try {
     std::vector<const FullLut*> fp;
     for (auto& f : F) fp.push_back(&f);
     Image im = load_image(a.in);
+    check_image(im, a.competition);
     apply_full_chain(fp, im.rgb.data(), size_t(im.w) * im.h, a.threads);
     save_image(a.out, im);
     return 0;
   }
   if (a.cmd == "cube") {
-    auto L = load_sparse(a.luts);
+    auto L = load_sparse(a.luts, a.competition);
     const size_t n = size_t(1) << 24;
     std::vector<uint8_t> buf(n * 3);
     for (size_t i = 0; i < n; ++i) {
@@ -202,20 +330,24 @@ int main(int argc, char** argv) try {
     apply_chain(ptrs(L), buf.data(), n, k, a.threads);
     FILE* f = std::fopen(a.out.c_str(), "wb");
     if (!f) throw std::runtime_error("cannot write " + a.out);
-    std::fwrite(buf.data(), 1, buf.size(), f);
-    std::fclose(f);
+    const bool written = std::fwrite(buf.data(), 1, buf.size(), f) == buf.size();
+    const int closed = std::fclose(f);
+    if (!written || closed != 0) throw std::runtime_error("incomplete cube output: " + a.out);
     return 0;
   }
-  if (a.cmd == "bench") {
+  if (a.cmd == "bench" || a.cmd == "verify") {
     auto t0 = Clock::now();
-    auto L = load_sparse(a.luts);
+    auto L = load_sparse(a.luts, a.competition);
     double setup_ms = ms_since(t0);
     std::vector<std::string> files;
     {
       std::ifstream fl(a.list);
       std::string line;
       while (std::getline(fl, line))
-        if (!line.empty()) files.push_back(line);
+        if (!line.empty()) {
+          if (line.back() == '\r') line.pop_back();
+          if (!line.empty()) files.push_back(line);
+        }
     }
     if (files.empty()) throw std::runtime_error("empty image list");
     std::vector<Image> imgs;
@@ -223,28 +355,63 @@ int main(int argc, char** argv) try {
     for (auto& f : files) {
       auto t = Clock::now();
       imgs.push_back(load_image(f));
+      check_image(imgs.back(), a.competition);
       dec.push_back(ms_since(t));
+    }
+    if (a.cmd == "verify") {
+      if (!a.write_dir.empty()) throw std::runtime_error("verify uses -o for concatenated raw RGB output");
+      verify_images(a, imgs, L, k);
+      return 0;
     }
     auto P = ptrs(L);
     std::vector<uint8_t> work;
-    // warm-up
-    work = imgs[0].rgb;
-    apply_chain(P, work.data(), work.size() / 3, k, a.threads);
+    std::vector<std::vector<uint8_t>> batch_work;
+    std::vector<RgbImageView> batch_views;
+    // Preserve the cold first application instead of silently discarding it.
+    if (a.batch) {
+      batch_work.reserve(imgs.size());
+      batch_views.reserve(imgs.size());
+      for (const auto& im : imgs) batch_work.push_back(im.rgb);
+      for (auto& pixels : batch_work) batch_views.push_back({pixels.data(), pixels.size() / 3});
+    } else {
+      work = imgs[0].rgb;
+    }
+    auto cold = Clock::now();
+    if (a.batch) apply_chain_batch(P, batch_views, k, a.threads);
+    else apply_chain(P, work.data(), work.size() / 3, k, a.threads);
+    const double cold_apply_ms = ms_since(cold);
     std::vector<double> per_img;      // best-of-reps per image
     std::vector<double> rep_totals;   // whole-set time per rep
+    std::vector<double> copy_totals, apply_totals;
     per_img.assign(imgs.size(), 1e30);
     for (int r = 0; r < a.reps; ++r) {
       auto tr = Clock::now();
-      for (size_t i = 0; i < imgs.size(); ++i) {
+      double copy_ms = 0.0, apply_ms = 0.0;
+      if (a.batch) {
+        auto tc = Clock::now();
+        for (size_t i = 0; i < imgs.size(); ++i)
+          std::copy(imgs[i].rgb.begin(), imgs[i].rgb.end(), batch_work[i].begin());
+        copy_ms = ms_since(tc);
+        auto ta = Clock::now();
+        apply_chain_batch(P, batch_views, k, a.threads);
+        apply_ms = ms_since(ta);
+      } else for (size_t i = 0; i < imgs.size(); ++i) {
+        auto tc = Clock::now();
         work = imgs[i].rgb;  // copy excluded from per-image apply time
+        copy_ms += ms_since(tc);
         auto t = Clock::now();
         apply_chain(P, work.data(), work.size() / 3, k, a.threads);
-        per_img[i] = std::min(per_img[i], ms_since(t));
+        const double elapsed = ms_since(t);
+        apply_ms += elapsed;
+        per_img[i] = std::min(per_img[i], elapsed);
       }
       rep_totals.push_back(ms_since(tr));
+      copy_totals.push_back(copy_ms);
+      apply_totals.push_back(apply_ms);
     }
     double enc_ms = 0;
     if (!a.write_dir.empty()) {
+      std::filesystem::create_directories(a.write_dir);
       auto t = Clock::now();
       for (size_t i = 0; i < imgs.size(); ++i) {
         Image o = imgs[i];
@@ -255,24 +422,51 @@ int main(int argc, char** argv) try {
       }
       enc_ms = ms_since(t) / imgs.size();
     }
-    double mean = std::accumulate(per_img.begin(), per_img.end(), 0.0) / per_img.size();
+    double mean = a.batch ? 0.0 : std::accumulate(per_img.begin(), per_img.end(), 0.0) / per_img.size();
     double dmean = std::accumulate(dec.begin(), dec.end(), 0.0) / dec.size();
     const double set_best = *std::min_element(rep_totals.begin(), rep_totals.end());
     const double set_p50 = pct(rep_totals, 0.5);
     const double set_ms_per_image = set_best / imgs.size();
-    const double pixels_per_image = imgs[0].rgb.size() / 3;
+    size_t image_bytes = 0, runtime_bytes = 0, payload_bytes = 0;
+    for (const auto& im : imgs) image_bytes += im.rgb.size();
+    for (const auto& lut : L) {
+      runtime_bytes += lut.runtime_bytes();
+      payload_bytes += lut.nodes.size();
+    }
+    const double pixels_per_image = double(image_bytes) / (3.0 * imgs.size());
+    size_t work_bytes = work.capacity();
+    for (const auto& pixels : batch_work) work_bytes += pixels.capacity();
     std::printf(
         "{\"kernel\": \"%s\", \"threads\": %d, \"stages\": %zu, \"m\": %u, \"images\": %zu, "
-        "\"reps\": %d, \"setup_ms\": %.3f, \"decode_ms_mean\": %.3f, \"apply_ms_mean\": %.4f, "
-        "\"apply_ms_p50\": %.4f, \"apply_ms_p95\": %.4f, \"apply_ms_max\": %.4f, "
+        "\"reps\": %d, \"setup_ms\": %.3f, \"decode_ms_mean\": %.3f, ",
+        kernel_name(k), thread_upper_bound(a.threads), L.size(), L[0].m,
+        imgs.size(), a.reps, setup_ms, dmean);
+    if (a.batch) {
+      std::printf("\"apply_ms_mean\": null, \"apply_ms_p50\": null, \"apply_ms_p95\": null, \"apply_ms_max\": null, \"mpix_per_s\": null, ");
+    } else {
+      std::printf("\"apply_ms_mean\": %.4f, \"apply_ms_p50\": %.4f, \"apply_ms_p95\": %.4f, \"apply_ms_max\": %.4f, \"mpix_per_s\": %.1f, ",
+                  mean, pct(per_img, 0.5), pct(per_img, 0.95), pct(per_img, 1.0), pixels_per_image / (mean * 1e3));
+    }
+    std::printf(
         "\"set_ms_best_rep\": %.3f, \"set_ms_p50_rep\": %.3f, \"set_ms_per_image_best_rep\": %.4f, "
-        "\"set_mpix_per_s_best_rep\": %.1f, \"apply_write_png_ms_mean\": %.3f, "
-        "\"mpix_per_s\": %.1f}\n",
-        kernel_name(k), a.threads > 0 ? a.threads : max_threads(), L.size(), L[0].m,
-        imgs.size(), a.reps, setup_ms, dmean, mean, pct(per_img, 0.5), pct(per_img, 0.95),
-        pct(per_img, 1.0), set_best, set_p50, set_ms_per_image,
-        pixels_per_image / (set_ms_per_image * 1e3), enc_ms,
-        pixels_per_image / (mean * 1e3));
+        "\"set_mpix_per_s_best_rep\": %.1f, \"apply_write_png_ms_mean\": %.3f",
+        set_best, set_p50, set_ms_per_image, pixels_per_image / (set_ms_per_image * 1e3), enc_ms);
+    if (a.batch) std::printf(", \"cold_apply_ms\": null, \"cold_batch_ms\": %.6f", cold_apply_ms);
+    else std::printf(", \"cold_apply_ms\": %.6f, \"cold_batch_ms\": null", cold_apply_ms);
+    std::printf(", \"batch_mode\": %s, \"work_image_bytes\": %zu, \"set_ms_per_image_p50_rep\": %.6f, "
+                "\"model_runtime_bytes\": %zu, \"model_node_payload_bytes\": %zu, "
+                "\"kernel_block_scratch_bytes_per_worker\": %zu, "
+                "\"preloaded_image_bytes\": %zu, \"driver_elapsed_ms\": %.6f, "
+                "\"timing_scope\": \"whole set includes copy and mapping; excludes fitting, model load, decoding and output encoding\"",
+                a.batch ? "true" : "false", work_bytes, set_p50 / imgs.size(), runtime_bytes, payload_bytes,
+                kernel_scratch_bytes(k), image_bytes, ms_since(t0));
+    print_values("set_ms_reps", rep_totals);
+    print_values("copy_ms_reps", copy_totals);
+    print_values("apply_ms_reps", apply_totals);
+    print_stage_sizes(L);
+    std::printf(", \"requested_threads\": %d, \"openmp_enabled\": %s, "
+                "\"thread_count_semantics\": \"upper bound; small inputs and OpenMP dynamic teams may use fewer workers\"}\n",
+                a.threads, openmp_enabled() ? "true" : "false");
     return 0;
   }
   throw std::runtime_error("unknown command " + a.cmd);

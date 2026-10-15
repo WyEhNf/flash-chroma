@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import os
 import subprocess
 from pathlib import Path
 
@@ -10,7 +12,20 @@ import numpy as np
 from . import io
 
 ROOT = Path(__file__).resolve().parents[2]
-JSHC_BIN = ROOT / "build" / "jshc"
+JSHC_BIN = ROOT / "build" / ("jshc.exe" if os.name == "nt" else "jshc")
+
+
+def resolve_jshc(executable: str | Path | None = None) -> Path:
+    """Resolve a concrete build without assuming a Unix binary or one build folder."""
+    path = Path(executable or os.environ.get("JSHC_BIN") or JSHC_BIN).resolve()
+    if not path.is_file():
+        raise FileNotFoundError(f"jshc executable not found: {path}; set JSHC_BIN or --executable")
+    return path
+
+
+def file_sha256(path: str | Path) -> str:
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
 def delta_e_map(pred: np.ndarray, target: np.ndarray) -> np.ndarray:
@@ -67,16 +82,17 @@ def eval_images(
 def run_cpp_bench(
     slut_paths: list[str | Path],
     list_file: str | Path,
-    kernel: str = "tetra_zig_simd",
+    kernel: str = "auto",
     threads: int = 0,
     reps: int = 5,
     write_dir: str | Path | None = None,
+    executable: str | Path | None = None,
 ) -> dict:
     cmd = [
-        str(JSHC_BIN),
+        str(resolve_jshc(executable)),
         "bench",
         "-l",
-        str(list_file),
+        str(Path(list_file).resolve()),
         "-k",
         kernel,
         "-t",
@@ -86,7 +102,10 @@ def run_cpp_bench(
     ]
     if write_dir is not None:
         Path(write_dir).mkdir(parents=True, exist_ok=True)
-        cmd += ["-w", str(write_dir)]
-    cmd += [str(p) for p in slut_paths]
+        cmd += ["-w", str(Path(write_dir).resolve())]
+    cmd += [str(Path(p).resolve()) for p in slut_paths]
     res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, check=True)
-    return json.loads(res.stdout.strip())
+    result = json.loads(res.stdout.strip())
+    result["executable_sha256"] = file_sha256(cmd[0])
+    result["command"] = cmd
+    return result

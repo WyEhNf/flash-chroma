@@ -32,7 +32,8 @@ LOGS = Path(os.environ.get("JSHC_LOG_DIR", ROOT / "logs"))
 
 def _git(*args, cwd=ROOT) -> str:
     try:
-        return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=20).stdout.strip()
+        return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", timeout=20).stdout.strip()
     except Exception:
         return ""
 
@@ -101,8 +102,8 @@ class Run:
         self.t0 = time.time()
         self.start = dt.datetime.now(dt.timezone.utc).isoformat()
         if diff := _git("diff", "HEAD"):
-            (self.dir / "code.diff").write_text(diff)
-        self._log = open(self.dir / "stdout.log", "w")
+            (self.dir / "code.diff").write_text(diff, encoding="utf-8")
+        self._log = open(self.dir / "stdout.log", "w", encoding="utf-8")
         self._old = sys.stdout
         sys.stdout = _Tee(self._old, self._log)
         print(f"[runlog] {self.name} {self.id} -> {self.dir.relative_to(ROOT) if self.dir.is_relative_to(ROOT) else self.dir}")
@@ -120,8 +121,8 @@ class Run:
             "params": self.params, "metrics": self.metrics, "env": environment(),
             "dir": str(self.dir.relative_to(LOGS)),
         }
-        (self.dir / "run.json").write_text(json.dumps(rec, indent=1, default=str))
-        with open(LOGS / "index.jsonl", "a") as f:
+        (self.dir / "run.json").write_text(json.dumps(rec, indent=1, default=str), encoding="utf-8")
+        with open(LOGS / "index.jsonl", "a", encoding="utf-8") as f:
             f.write(json.dumps({k: rec[k] for k in ("id", "name", "status", "start", "seconds", "params", "metrics", "dir")}
                                | {"commit": rec["env"]["commit"][:10], "dirty": rec["env"]["dirty"]}, default=str) + "\n")
         if self.commit_logs:

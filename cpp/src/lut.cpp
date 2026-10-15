@@ -1,12 +1,21 @@
 #include "jshc/lut.hpp"
+#include "lut_simd_avx2.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <limits>
 #include <stdexcept>
 #include <utility>
+
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+#include <intrin.h>
+#elif defined(__x86_64__) || defined(__i386__)
+#include <cpuid.h>
+#endif
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -53,8 +62,7 @@ inline uint8_t interpolate_channel(int32_t c0, int32_t c1, int32_t c2, int32_t c
   return static_cast<uint8_t>((acc + kHalf) >> kQ);
 }
 
-inline void tetra_pixel(const SparseLut& L, const uint8_t* __restrict__ in,
-                        uint8_t* __restrict__ out) {
+inline void tetra_pixel(const SparseLut& L, const uint8_t* in, uint8_t* out) {
   const uint8_t r = in[0];
   const uint8_t g = in[1];
   const uint8_t b = in[2];
@@ -74,15 +82,35 @@ inline void tetra_pixel(const SparseLut& L, const uint8_t* __restrict__ in,
   compare_and_swap_axis(f1, s1, f3, s3);
   compare_and_swap_axis(f2, s2, f3, s3);
 
-  const RgbaNode* __restrict__ nodes = L.rgba_nodes.data() + base;
-  const RgbaNode v0 = nodes[0];
-  const RgbaNode v1 = nodes[s1];
-  const RgbaNode v2 = nodes[s1 + s2];
-  const RgbaNode v3 = nodes[s1 + s2 + s3];
+  const uint8_t* const nodes = L.nodes.data() + 3 * base;
+  const uint8_t* const v0 = nodes;
+  const uint8_t* const v1 = nodes + 3 * s1;
+  const uint8_t* const v2 = nodes + 3 * (s1 + s2);
+  const uint8_t* const v3 = nodes + 3 * (s1 + s2 + s3);
+  for (int c = 0; c < 3; ++c)
+    out[c] = interpolate_channel(v0[c], v1[c], v2[c], v3[c], f1, f2, f3);
+}
 
-  out[0] = interpolate_channel(v0.r, v1.r, v2.r, v3.r, f1, f2, f3);
-  out[1] = interpolate_channel(v0.g, v1.g, v2.g, v3.g, f1, f2, f3);
-  out[2] = interpolate_channel(v0.b, v1.b, v2.b, v3.b, f1, f2, f3);
+void scalar_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n) {
+  for (size_t i = 0; i < n; ++i) {
+    uint8_t pixel[3] = {rgb[3 * i], rgb[3 * i + 1], rgb[3 * i + 2]};
+    for (const SparseLut* L : chain) tetra_pixel(*L, pixel, pixel);
+    std::memcpy(rgb + 3 * i, pixel, 3);
+  }
+}
+
+size_t block_pixels() {
+  const char* raw = std::getenv("JSHC_BLOCK_PIXELS");
+  if (!raw) return 4096;
+  if (std::strcmp(raw, "1024") == 0) return 1024;
+  if (std::strcmp(raw, "4096") == 0) return 4096;
+  if (std::strcmp(raw, "8192") == 0) return 8192;
+  throw std::runtime_error("JSHC_BLOCK_PIXELS must be 1024, 4096 or 8192");
+}
+
+bool is_avx2_kernel(Kernel k) {
+  return k == Kernel::TetraAvx2 || k == Kernel::TetraAvx2Madd ||
+         k == Kernel::TetraAvx2ScalarGather || k == Kernel::TetraAvx2ExactFloat;
 }
 
 }  // namespace
@@ -145,50 +173,85 @@ SparseLut SparseLut::load(const std::string& path) {
 }
 
 void SparseLut::save(const std::string& path) const {
+  if (m < 2 || m > 256 || nodes.size() != static_cast<size_t>(m) * m * m * 3)
+    throw std::runtime_error("cannot save malformed sparse LUT: " + path);
+  for (const auto& axis : grid)
+    if (axis.size() != m) throw std::runtime_error("cannot save malformed grid: " + path);
   FILE* f = std::fopen(path.c_str(), "wb");
   if (!f) throw std::runtime_error("cannot write " + path);
+  bool written = true;
+  auto write = [&](const void* data, size_t bytes) {
+    if (written && std::fwrite(data, 1, bytes, f) != bytes) written = false;
+  };
   const uint32_t version = 1, reserved = 0;
-  std::fwrite("SLUT", 1, 4, f);
-  std::fwrite(&version, 4, 1, f);
-  std::fwrite(&m, 4, 1, f);
-  std::fwrite(&reserved, 4, 1, f);
-  for (int a = 0; a < 3; ++a) std::fwrite(grid[a].data(), 4, m, f);
-  std::fwrite(idx, 1, sizeof(idx), f);
-  std::fwrite(frac, 1, sizeof(frac), f);
-  std::fwrite(nodes.data(), 1, nodes.size(), f);
-  std::fclose(f);
+  write("SLUT", 4);
+  write(&version, 4);
+  write(&m, 4);
+  write(&reserved, 4);
+  for (const auto& axis : grid) write(axis.data(), 4 * m);
+  write(idx, sizeof(idx));
+  write(frac, sizeof(frac));
+  write(nodes.data(), nodes.size());
+  const int close_result = std::fclose(f);
+  if (!written || close_result != 0) throw std::runtime_error("short write or close failure: " + path);
 }
 
 void SparseLut::prepare() {
+  if (m < 2 || m > 256 || nodes.size() != static_cast<size_t>(m) * m * m * 3)
+    throw std::runtime_error("bad sparse LUT shape");
   stride[0] = static_cast<int32_t>(m * m);
   stride[1] = static_cast<int32_t>(m);
   stride[2] = 1;
 
   for (int a = 0; a < 3; ++a) {
     for (int x = 0; x < 256; ++x) {
+      if (idx[a][x] > m - 2 || frac[a][x] > static_cast<uint32_t>(kOne))
+        throw std::runtime_error("bad sparse LUT axis table");
       off[a][x] = static_cast<int32_t>(idx[a][x]) * stride[a];
     }
   }
 
-  const size_t n = static_cast<size_t>(m) * m * m;
-  rgba_nodes.resize(n + 16);
-  packed.resize(n + 16, 0);
+  std::atomic_store(&packed_cache_, std::shared_ptr<const PackedTables>{});
+}
+
+const SparseLut::PackedTables& SparseLut::packed_tables() const {
+  auto cached = std::atomic_load(&packed_cache_);
+  if (cached) return *cached;
+  auto tables = std::make_shared<PackedTables>();
+  for (int a = 0; a < 3; ++a)
+    for (int x = 0; x < 256; ++x)
+      tables->axis[256 * a + x] = (static_cast<uint32_t>(idx[a][x]) << 17) | frac[a][x];
+  const size_t n = nodes.size() / 3;
+  tables->nodes.resize(n);
   for (size_t i = 0; i < n; ++i) {
     const uint8_t r = nodes[3 * i];
     const uint8_t g = nodes[3 * i + 1];
     const uint8_t b = nodes[3 * i + 2];
-    rgba_nodes[i] = RgbaNode{r, g, b, 0};
-    packed[i] = static_cast<uint32_t>(r) | (static_cast<uint32_t>(g) << 8) |
+    tables->nodes[i] = static_cast<uint32_t>(r) | (static_cast<uint32_t>(g) << 8) |
                 (static_cast<uint32_t>(b) << 16);
   }
+  std::shared_ptr<const PackedTables> desired = tables;
+  if (std::atomic_compare_exchange_strong(&packed_cache_, &cached, desired)) return *desired;
+  return *cached;
+}
+
+size_t SparseLut::runtime_bytes() const {
+  size_t bytes = sizeof(*this) + nodes.capacity();
+  for (const auto& axis : grid) bytes += axis.capacity() * sizeof(float);
+  const auto tables = std::atomic_load(&packed_cache_);
+  if (tables) bytes += sizeof(PackedTables) + tables->nodes.capacity() * sizeof(uint32_t);
+  return bytes;
 }
 
 // ---- External Portable SIMD Symbols (C++26 <simd>, Zig @Vector, Rust std::simd) -------
 
 extern "C" {
+#if defined(JSHC_HAVE_CPP_SIMD)
 void jshc_tetra_cpp_simd(const int32_t* off_table, const uint32_t* frac_table,
                          const int32_t* strides, const uint32_t* packed_nodes,
                          const uint8_t* in_rgb, uint8_t* out_rgb, size_t n) noexcept;
+#endif
+#if defined(JSHC_HAVE_ZIG)
 void jshc_tetra_zig_simd(const int32_t* off_table, const uint32_t* frac_table,
                          const int32_t* strides, const uint32_t* packed_nodes,
                          const uint8_t* in_rgb, uint8_t* out_rgb, size_t n) noexcept;
@@ -196,15 +259,19 @@ void jshc_tetra_zig_simd4(const int32_t*, const uint32_t*, const int32_t*, const
                           const uint8_t*, uint8_t*, size_t) noexcept;
 void jshc_tetra_zig_simd16(const int32_t*, const uint32_t*, const int32_t*, const uint32_t*,
                            const uint8_t*, uint8_t*, size_t) noexcept;
+#endif
+#if defined(JSHC_HAVE_RUST)
 void jshc_tetra_rust_simd(const int32_t* off_table, const uint32_t* frac_table,
                           const int32_t* strides, const uint32_t* packed_nodes,
                           size_t packed_len, const uint8_t* in_rgb, uint8_t* out_rgb,
                           size_t n) noexcept;
+#endif
 }
 
 // ---- Kernel Dispatch & Portable Implementations ---------------------------------------
 
 Kernel parse_kernel(const std::string& s) {
+  if (s == "auto" || s == "tetra_auto") return Kernel::TetraAuto;
   if (s == "tetra" || s == "tetra_scalar" || s == "portable" || s == "tetra_portable") {
     return Kernel::TetraScalar;
   }
@@ -215,6 +282,9 @@ Kernel parse_kernel(const std::string& s) {
   if (s == "tetra_zig_simd16") return Kernel::TetraZigSimd16;
   if (s == "tetra_rust_simd" || s == "rust_simd" || s == "rust") return Kernel::TetraRustSimd;
   if (s == "tetra_avx2" || s == "avx2") return Kernel::TetraAvx2;
+  if (s == "tetra_avx2_madd" || s == "avx2_madd") return Kernel::TetraAvx2Madd;
+  if (s == "tetra_avx2_scalar_gather" || s == "avx2_scalar_gather") return Kernel::TetraAvx2ScalarGather;
+  if (s == "tetra_avx2_exact_float" || s == "avx2_exact_float") return Kernel::TetraAvx2ExactFloat;
   if (s == "tetra_asm" || s == "asm") return Kernel::TetraAsm;
   if (s == "tri" || s == "tri_float") return Kernel::TriFloat;
   throw std::runtime_error("unknown kernel " + s);
@@ -222,6 +292,7 @@ Kernel parse_kernel(const std::string& s) {
 
 const char* kernel_name(Kernel k) {
   switch (k) {
+    case Kernel::TetraAuto: return "auto";
     case Kernel::TetraScalar: return "tetra_scalar";
     case Kernel::TetraCppSimd: return "tetra_cpp_simd";
     case Kernel::TetraZigSimd: return "tetra_zig_simd";
@@ -230,13 +301,90 @@ const char* kernel_name(Kernel k) {
     case Kernel::TetraZigSimd16: return "tetra_zig_simd16";
     case Kernel::TetraRustSimd: return "tetra_rust_simd";
     case Kernel::TetraAvx2: return "tetra_avx2";
+    case Kernel::TetraAvx2Madd: return "tetra_avx2_madd";
+    case Kernel::TetraAvx2ScalarGather: return "tetra_avx2_scalar_gather";
+    case Kernel::TetraAvx2ExactFloat: return "tetra_avx2_exact_float";
     case Kernel::TetraAsm: return "tetra_asm";
     case Kernel::TriFloat: return "tri_float";
   }
   return "?";
 }
 
-bool avx2_available() { return false; }
+bool avx2_available() {
+  static const bool available = [] {
+#if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_IX86))
+    int regs[4]{};
+    __cpuid(regs, 0);
+    if (regs[0] < 7) return false;
+    __cpuidex(regs, 1, 0);
+    if ((regs[2] & ((1 << 27) | (1 << 28))) != ((1 << 27) | (1 << 28))) return false;
+    if ((_xgetbv(0) & 6) != 6) return false;
+    __cpuidex(regs, 7, 0);
+    return (regs[1] & (1 << 5)) != 0;
+#elif defined(__x86_64__) || defined(__i386__)
+    unsigned a = 0, b = 0, c = 0, d = 0;
+    if (__get_cpuid_max(0, nullptr) < 7) return false;
+    __get_cpuid(1, &a, &b, &c, &d);
+    if ((c & ((1u << 27) | (1u << 28))) != ((1u << 27) | (1u << 28))) return false;
+    unsigned xlo = 0, xhi = 0;
+    __asm__ volatile("xgetbv" : "=a"(xlo), "=d"(xhi) : "c"(0));
+    if ((xlo & 6) != 6) return false;
+    __get_cpuid_count(7, 0, &a, &b, &c, &d);
+    return (b & (1u << 5)) != 0;
+#else
+    return false;
+#endif
+  }();
+  return available;
+}
+
+bool kernel_available(Kernel k) {
+  switch (k) {
+    case Kernel::TetraAuto:
+    case Kernel::TetraScalar:
+    case Kernel::TriFloat: return true;
+#if defined(JSHC_HAVE_AVX2)
+    case Kernel::TetraAvx2:
+    case Kernel::TetraAvx2Madd:
+    case Kernel::TetraAvx2ScalarGather:
+    case Kernel::TetraAvx2ExactFloat: return avx2_available();
+#endif
+#if defined(JSHC_HAVE_CPP_SIMD)
+    case Kernel::TetraCppSimd: return true;
+#endif
+#if defined(JSHC_HAVE_ZIG)
+    case Kernel::TetraZigSimd:
+    case Kernel::TetraZigSimd4:
+    case Kernel::TetraZigSimd8:
+    case Kernel::TetraZigSimd16: return true;
+#endif
+#if defined(JSHC_HAVE_RUST)
+    case Kernel::TetraRustSimd: return true;
+#endif
+    default: return false;
+  }
+}
+
+Kernel default_kernel() {
+  for (Kernel k : {Kernel::TetraAvx2, Kernel::TetraZigSimd, Kernel::TetraCppSimd})
+    if (kernel_available(k)) return k;
+  return Kernel::TetraScalar;
+}
+
+Kernel resolve_kernel(Kernel k) {
+  if (k == Kernel::TetraAuto) return default_kernel();
+  if (!kernel_available(k)) {
+    if (k == Kernel::TetraAsm)
+      throw std::runtime_error("tetra_asm has no assembly implementation; use auto or tetra_avx2");
+    throw std::runtime_error(std::string("kernel unavailable in this build or CPU/OS: ") + kernel_name(k));
+  }
+  return k;
+}
+
+size_t kernel_scratch_bytes(Kernel k) {
+  k = resolve_kernel(k);
+  return (k == Kernel::TetraScalar || is_avx2_kernel(k)) ? 0 : 2 * block_pixels() * 3;
+}
 
 void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
   for (size_t i = 0; i < n; ++i) {
@@ -245,26 +393,49 @@ void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n)
 }
 
 void tetra_cpp_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  (void)resolve_kernel(Kernel::TetraCppSimd);
+#if defined(JSHC_HAVE_CPP_SIMD)
+  if (in == out && n) {
+    std::vector<uint8_t> tmp(n * 3);
+    tetra_cpp_simd(L, in, tmp.data(), n);
+    std::memcpy(out, tmp.data(), n * 3);
+    return;
+  }
   const size_t vec_n = n & ~static_cast<size_t>(7);
   if (vec_n > 0) {
-    jshc_tetra_cpp_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
+    jshc_tetra_cpp_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed_tables().nodes.data(), in, out, vec_n);
   }
   if (vec_n < n) {
     tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
   }
+#else
+  (void)L; (void)in; (void)out; (void)n;
+#endif
 }
 
 void tetra_zig_simd_lanes(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n,
                           size_t lanes) {
+  if (lanes != 4 && lanes != 8 && lanes != 16) throw std::runtime_error("Zig lane count must be 4, 8 or 16");
+  (void)resolve_kernel(Kernel::TetraZigSimd);
+#if defined(JSHC_HAVE_ZIG)
+  if (in == out && n) {
+    std::vector<uint8_t> tmp(n * 3);
+    tetra_zig_simd_lanes(L, in, tmp.data(), n, lanes);
+    std::memcpy(out, tmp.data(), n * 3);
+    return;
+  }
   const size_t vec_n = n - n % lanes;
   if (vec_n > 0) {
     auto fn = lanes == 4 ? jshc_tetra_zig_simd4 :
               lanes == 16 ? jshc_tetra_zig_simd16 : jshc_tetra_zig_simd;
-    fn(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), in, out, vec_n);
+    fn(&L.off[0][0], &L.frac[0][0], L.stride, L.packed_tables().nodes.data(), in, out, vec_n);
   }
   if (vec_n < n) {
     tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
   }
+#else
+  (void)L; (void)in; (void)out; (void)n;
+#endif
 }
 
 void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -272,22 +443,44 @@ void tetra_zig_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t 
 }
 
 void tetra_rust_simd(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
+  (void)resolve_kernel(Kernel::TetraRustSimd);
+#if defined(JSHC_HAVE_RUST)
+  if (in == out && n) {
+    std::vector<uint8_t> tmp(n * 3);
+    tetra_rust_simd(L, in, tmp.data(), n);
+    std::memcpy(out, tmp.data(), n * 3);
+    return;
+  }
   const size_t vec_n = n & ~static_cast<size_t>(7);
   if (vec_n > 0) {
-    jshc_tetra_rust_simd(&L.off[0][0], &L.frac[0][0], L.stride, L.packed.data(), L.packed.size(),
+    const auto& packed = L.packed_tables().nodes;
+    jshc_tetra_rust_simd(&L.off[0][0], &L.frac[0][0], L.stride, packed.data(), packed.size(),
                          in, out, vec_n);
   }
   if (vec_n < n) {
     tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
   }
+#else
+  (void)L; (void)in; (void)out; (void)n;
+#endif
 }
 
 void tetra_avx2(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  tetra_cpp_simd(L, in, out, n);
+  (void)resolve_kernel(Kernel::TetraAvx2);
+#if defined(JSHC_HAVE_AVX2)
+  const auto& packed = L.packed_tables();
+  const detail::Avx2LutView view{packed.axis.data(), packed.nodes.data(), L.stride[0], L.stride[1]};
+  const size_t vec_n = n & ~size_t{7};
+  detail::avx2_chain(&view, 1, in, out, vec_n);
+  tetra_scalar(L, in + 3 * vec_n, out + 3 * vec_n, n - vec_n);
+#else
+  (void)L; (void)in; (void)out; (void)n;
+#endif
 }
 
 void tetra_asm(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
-  tetra_cpp_simd(L, in, out, n);
+  (void)L; (void)in; (void)out; (void)n;
+  (void)resolve_kernel(Kernel::TetraAsm);
 }
 
 void tri_float(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -324,9 +517,10 @@ static void run_kernel(Kernel k, const SparseLut& L, const uint8_t* in, uint8_t*
       tetra_scalar(L, in, out, n);
       break;
     case Kernel::TetraCppSimd:
-    case Kernel::TetraAvx2:
-    case Kernel::TetraAsm:
       tetra_cpp_simd(L, in, out, n);
+      break;
+    case Kernel::TetraAvx2:
+      tetra_avx2(L, in, out, n);
       break;
     case Kernel::TetraZigSimd:
       tetra_zig_simd(L, in, out, n);
@@ -346,57 +540,137 @@ static void run_kernel(Kernel k, const SparseLut& L, const uint8_t* in, uint8_t*
     case Kernel::TriFloat:
       tri_float(L, in, out, n);
       break;
+    default: throw std::runtime_error("kernel must be resolved before dispatch");
   }
 }
 
-void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n, Kernel k,
-                 int threads) {
+static void apply_images(const std::vector<const SparseLut*>& chain,
+                          const RgbImageView* images, size_t image_count,
+                          Kernel k, int threads) {
+  k = resolve_kernel(k);
   const size_t num_stages = chain.size();
-  if (num_stages == 0 || n == 0) return;
+  if (num_stages == 0 || image_count == 0) return;
+  const size_t kBlockPixels = block_pixels();
+  // A prefix of virtual block indices avoids concatenating image bytes or
+  // allocating one descriptor for each 4096-pixel task. Empty views are legal.
+  std::vector<size_t> prefix;
+  if (image_count > 1) prefix.resize(image_count + 1);
+  size_t num_blocks = 0;
+  std::vector<std::pair<uintptr_t, uintptr_t>> ranges;
+  if (image_count > 1) ranges.reserve(image_count);
+  for (size_t i = 0; i < image_count; ++i) {
+    const auto& image = images[i];
+    if (image.pixels > std::numeric_limits<size_t>::max() / 3 || (!image.rgb && image.pixels))
+      throw std::runtime_error("invalid RGB image view");
+    const size_t blocks = image.pixels / kBlockPixels + (image.pixels % kBlockPixels != 0);
+    if (blocks > static_cast<size_t>(std::numeric_limits<long long>::max()) - num_blocks)
+      throw std::runtime_error("image batch is too large");
+    num_blocks += blocks;
+    if (image_count > 1) {
+      prefix[i + 1] = num_blocks;
+      if (image.pixels) {
+        const uintptr_t begin = reinterpret_cast<uintptr_t>(image.rgb);
+        const size_t bytes = image.pixels * 3;
+        if (begin > std::numeric_limits<uintptr_t>::max() - bytes)
+          throw std::runtime_error("invalid RGB view address range");
+        ranges.emplace_back(begin, begin + bytes);
+      }
+    }
+  }
+  std::sort(ranges.begin(), ranges.end());
+  for (size_t i = 1; i < ranges.size(); ++i)
+    if (ranges[i].first < ranges[i - 1].second)
+      throw std::runtime_error("batch RGB image views must not overlap");
+  if (num_blocks == 0) return;
+  const bool fused = k == Kernel::TetraScalar || is_avx2_kernel(k);
+  std::vector<detail::Avx2LutView> views;
+  if (is_avx2_kernel(k)) views.reserve(num_stages);
+  for (const SparseLut* L : chain) {
+    if (!L) throw std::runtime_error("null sparse LUT in chain");
+    if (k != Kernel::TetraScalar && k != Kernel::TriFloat) {
+      // Prepare once before entering OpenMP: no first-use allocations/locks in
+      // AVX2 pixel loops, and all worker references remain stable.
+      const auto& packed = L->packed_tables();
+      if (is_avx2_kernel(k))
+        views.push_back({packed.axis.data(), packed.nodes.data(), L->stride[0], L->stride[1]});
+    }
+  }
 
-  // Bounded portable tuning knob. The default matches the archived baseline.
-  const size_t kBlockPixels = [] {
-    const char* raw = std::getenv("JSHC_BLOCK_PIXELS");
-    if (!raw) return size_t{4096};
-    const int v = std::atoi(raw);
-    if (v != 1024 && v != 4096 && v != 8192) throw std::runtime_error("JSHC_BLOCK_PIXELS must be 1024, 4096 or 8192");
-    return static_cast<size_t>(v);
-  }();
-  const size_t num_blocks = (n + kBlockPixels - 1) / kBlockPixels;
+#if defined(JSHC_HAVE_AVX2)
+  const auto avx2_fn = k == Kernel::TetraAvx2Madd ? detail::avx2_chain_madd :
+      k == Kernel::TetraAvx2ScalarGather ? detail::avx2_chain_scalar_gather :
+      k == Kernel::TetraAvx2ExactFloat ? detail::avx2_chain_exact_float : detail::avx2_chain;
+#endif
 
 #if defined(_OPENMP)
-  const int num_threads = (threads > 0) ? threads : omp_get_max_threads();
-  if (std::getenv("OMP_SCHEDULE") == nullptr) omp_set_schedule(omp_sched_dynamic, 1);
+  const int requested_threads = (threads > 0) ? threads : omp_get_max_threads();
+  const int num_threads = omp_in_parallel() ? 1 :
+      static_cast<int>(std::min(num_blocks, static_cast<size_t>(requested_threads)));
+  if (std::getenv("OMP_SCHEDULE") == nullptr) omp_set_schedule(omp_sched_static, 0);
 #pragma omp parallel num_threads(num_threads)
 #endif
   {
-    std::array<uint8_t, 8192 * 3> buf_a{};
-    std::array<uint8_t, 8192 * 3> buf_b{};
+    // Fused kernels need no per-worker block buffers. Other kernels write every
+    // byte before reading it; value-initialization would just clear unused data.
+    std::unique_ptr<uint8_t[]> scratch;
+    if (!fused) scratch.reset(new uint8_t[2 * kBlockPixels * 3]);
+    uint8_t* const buf_a = scratch.get();
+    uint8_t* const buf_b = fused ? nullptr : buf_a + kBlockPixels * 3;
 
 #if defined(_OPENMP)
 #pragma omp for schedule(runtime)
 #endif
     for (long long bi = 0; bi < static_cast<long long>(num_blocks); ++bi) {
-      const size_t start = static_cast<size_t>(bi) * kBlockPixels;
-      const size_t len = std::min(kBlockPixels, n - start);
-      uint8_t* const block_rgb = rgb + 3 * start;
+      const size_t block = static_cast<size_t>(bi);
+      const size_t image_index = image_count == 1 ? 0 :
+          static_cast<size_t>(std::upper_bound(prefix.begin(), prefix.end(), block) - prefix.begin() - 1);
+      const size_t image_block = block - (image_count == 1 ? 0 : prefix[image_index]);
+      const size_t start = image_block * kBlockPixels;
+      const size_t len = std::min(kBlockPixels, images[image_index].pixels - start);
+      uint8_t* const block_rgb = images[image_index].rgb + 3 * start;
+
+      if (k == Kernel::TetraScalar) {
+        scalar_chain(chain, block_rgb, len);
+        continue;
+      }
+#if defined(JSHC_HAVE_AVX2)
+      if (is_avx2_kernel(k)) {
+        const size_t vec_n = len & ~size_t{7};
+        avx2_fn(views.data(), views.size(), block_rgb, block_rgb, vec_n);
+        scalar_chain(chain, block_rgb + 3 * vec_n, len - vec_n);
+        continue;
+      }
+#endif
 
       if (num_stages == 1) {
-        run_kernel(k, *chain[0], block_rgb, block_rgb, len);
+        // External SIMD backends declare restricted input/output pointers.
+        run_kernel(k, *chain[0], block_rgb, buf_a, len);
+        std::memcpy(block_rgb, buf_a, 3 * len);
         continue;
       }
 
       const uint8_t* src = block_rgb;
-      uint8_t* dst = buf_a.data();
+      uint8_t* dst = buf_a;
       for (size_t stage = 0; stage < num_stages; ++stage) {
         uint8_t* const out_ptr = (stage + 1 == num_stages) ? block_rgb : dst;
         run_kernel(k, *chain[stage], src, out_ptr, len);
         src = out_ptr;
-        dst = (dst == buf_a.data()) ? buf_b.data() : buf_a.data();
+        dst = (dst == buf_a) ? buf_b : buf_a;
       }
     }
   }
   (void)threads;
+}
+
+void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n, Kernel k,
+                 int threads) {
+  const RgbImageView image{rgb, n};
+  apply_images(chain, &image, 1, k, threads);
+}
+
+void apply_chain_batch(const std::vector<const SparseLut*>& chain,
+                       const std::vector<RgbImageView>& images, Kernel k, int threads) {
+  apply_images(chain, images.data(), images.size(), k, threads);
 }
 
 void apply_full_chain(const std::vector<const FullLut*>& chain, uint8_t* rgb, size_t n,

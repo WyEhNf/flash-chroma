@@ -16,6 +16,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -25,14 +26,6 @@ constexpr int kQ = 16;
 constexpr int32_t kOne = 1 << kQ;
 constexpr int32_t kHalf = 1 << (kQ - 1);
 
-// 4-byte aligned node representation for direct field access without bit shifts.
-struct alignas(4) RgbaNode {
-  uint8_t r = 0;
-  uint8_t g = 0;
-  uint8_t b = 0;
-  uint8_t pad = 0;
-};
-
 struct FullLut {
   std::vector<uint8_t> data;  // 256^3 * 3
   static FullLut load(const std::string& path);
@@ -41,22 +34,35 @@ struct FullLut {
 struct SparseLut {
   uint32_t m = 0;
   std::vector<float> grid[3];
-  uint8_t idx[3][256];
-  uint32_t frac[3][256];
+  uint8_t idx[3][256]{};
+  uint32_t frac[3][256]{};
   std::vector<uint8_t> nodes;  // m^3 * 3
 
-  // Derived tables built by prepare() for fast, readable lookup:
-  std::vector<RgbaNode> rgba_nodes;  // m^3 padded 4-byte nodes (scalar struct access)
-  std::vector<uint32_t> packed;      // m^3 packed u32 nodes: r | (g << 8) | (b << 16) (SIMD gather)
-  int32_t off[3][256];               // pre-multiplied cell offset (idx[a][x] * stride[a])
-  int32_t stride[3];                 // {m^2, m, 1}
+  // Scalar/tri kernels use only the canonical RGB nodes. SIMD tables are created
+  // on first use and shared by copies; no duplicate RGBA representation is kept.
+  struct PackedTables {
+    std::array<uint32_t, 3 * 256> axis;  // (cell index << 17) | Q16 fraction
+    std::vector<uint32_t> nodes;         // r | (g << 8) | (b << 16)
+  };
+  int32_t off[3][256]{};
+  int32_t stride[3]{};  // {m^2, m, 1}
 
   static SparseLut load(const std::string& path);
   void save(const std::string& path) const;
+  // Call after editing nodes/axis tables, before applying the LUT. Editing a LUT
+  // concurrently with readers is unsupported; concurrent first use is safe.
   void prepare();
+  const PackedTables& packed_tables() const;
+  // Object and owned vector allocations, including a SIMD cache if materialized.
+  // This is a model-memory estimate, not peak process RSS or allocator overhead.
+  size_t runtime_bytes() const;
+
+ private:
+  mutable std::shared_ptr<const PackedTables> packed_cache_;
 };
 
 enum class Kernel {
+  TetraAuto,
   TetraScalar,
   TetraCppSimd,
   TetraZigSimd,
@@ -65,16 +71,32 @@ enum class Kernel {
   TetraZigSimd16,
   TetraRustSimd,
   TetraAvx2,
+  TetraAvx2Madd,
+  TetraAvx2ScalarGather,
+  TetraAvx2ExactFloat,
   TetraAsm,
   TriFloat,
 };
 Kernel parse_kernel(const std::string& s);
 const char* kernel_name(Kernel k);
 bool avx2_available();
+bool kernel_available(Kernel k);
+Kernel default_kernel();
+Kernel resolve_kernel(Kernel k);
+// Maximum block workspace per worker; excludes stack frames and model tables.
+size_t kernel_scratch_bytes(Kernel k);
 
 // In-place colour mapping of n interleaved RGB pixels through a chain of sparse LUTs.
 void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n,
                  Kernel k, int threads);
+struct RgbImageView {
+  uint8_t* rgb;
+  size_t pixels;
+};
+// Apply to non-overlapping, possibly noncontiguous images in one worker team.
+// The images remain independently rounded four-stage chains; no LUT composition.
+void apply_chain_batch(const std::vector<const SparseLut*>& chain,
+                       const std::vector<RgbImageView>& images, Kernel k, int threads);
 void tetra_zig_simd_lanes(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n,
                           size_t lanes);
 

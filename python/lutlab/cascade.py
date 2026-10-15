@@ -25,6 +25,8 @@ def _grid_for(T: np.ndarray, m: int, use_adaptive_grid: bool, grid_mode: str | N
         return fit_mod.adaptive_grid(T, m)
     if mode == "error":
         return fit_mod.adaptive_error_grid(T, m)
+    if mode == "dp":
+        return fit_mod.adaptive_dp_grid(T, m)
     if mode == "uniform":
         return io.uniform_grid(m)
     raise ValueError(f"unknown grid mode: {mode}")
@@ -41,12 +43,15 @@ def fit_cascade_sequential(
     t0 = time.perf_counter()
     chain = []
     stage_times = []
+    stage_info = []
     for k, T in enumerate(tables):
         grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
         nodes, grid, info = fit_mod.fit(T, m, base_method, grid=grid)
         chain.append(io.SparseLut(grid, nodes))
         stage_times.append(info["fit_s"])
-    return chain, {"fit_s": round(time.perf_counter() - t0, 3), "stage_s": stage_times}
+        stage_info.append(info)
+    return chain, {"fit_s": round(time.perf_counter() - t0, 3), "stage_s": stage_times,
+                   "stage_info": stage_info, "stage_semantics": "independent_lut_fits"}
 
 
 def fit_cascade_residual(
@@ -72,12 +77,14 @@ def fit_cascade_residual(
     """
     t0 = time.perf_counter()
     chain: list[io.SparseLut] = []
+    stage_info = []
     # Fit stages 0..2 normally
     for k in range(len(tables) - 1):
         T = tables[k]
         grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
-        nodes, grid, _ = fit_mod.fit(T, m, "ls_tetra_int", grid=grid)
+        nodes, grid, info = fit_mod.fit(T, m, "ls_tetra_int", grid=grid)
         chain.append(io.SparseLut(grid, nodes))
+        stage_info.append(info)
 
     # Build subgrid of input RGB cube and exact 4-stage targets
     v = np.round(np.linspace(0, 255, 256 // stride)).astype(np.uint8)
@@ -94,7 +101,9 @@ def fit_cascade_residual(
     # Prior for stage 3: standard fit on tables[-1]
     T_last = tables[-1]
     grid_last = _grid_for(T_last, m, use_adaptive_grid, grid_mode)
-    x0_float, H_prior, b_prior = fit_mod.fit_ls_tetra(T_last, grid_last, stride=stride)
+    prior_solver = {}
+    x0_float, H_prior, b_prior = fit_mod.fit_ls_tetra(T_last, grid_last, stride=stride,
+                                                   diagnostics=prior_solver)
 
     # Normal equations on actual propagated coordinates x_cur -> y_true
     weights = None
@@ -109,10 +118,15 @@ def fit_cascade_residual(
     alpha = 0.05
     H_tot = H_data + alpha * H_prior
     b_tot = b_data + alpha * b_prior
-    x_sol = fit_mod.solve_spd(H_tot, b_tot, x0_float.reshape(-1, 3), lam=1e-5)
+    residual_solver = {}
+    x_sol = fit_mod.solve_spd(H_tot, b_tot, x0_float.reshape(-1, 3), lam=1e-5,
+                             diagnostics=residual_solver)
     x_int = fit_mod.int_refine(x_sol, H_tot, b_tot, sweeps=4)
     chain.append(io.SparseLut(grid_last, fit_mod.quantize(x_int.reshape(m, m, m, 3))))
-    return chain, {"fit_s": round(time.perf_counter() - t0, 3), "tail_beta": tail_beta}
+    return chain, {"fit_s": round(time.perf_counter() - t0, 3), "tail_beta": tail_beta,
+                   "stage_info": stage_info + [{"prior_solver": prior_solver,
+                                                  "residual_solver": residual_solver}],
+                   "stage_semantics": "residual_compensation_requires_explicit_permission"}
 
 
 def fit_composite_single(
@@ -131,6 +145,8 @@ def fit_composite_single(
     return [io.SparseLut(grid, nodes)], {
         "fit_s": round(time.perf_counter() - t0, 3),
         "inner_fit_s": info["fit_s"],
+        "stage_info": [info],
+        "stage_semantics": "composite_requires_explicit_permission",
     }
 
 

@@ -9,17 +9,21 @@ import numpy as np
 from PIL import Image
 
 FULL_SHAPE = (256, 256, 256, 3)
+FULL_NBYTES = 256 ** 3 * 3
 Q = 16
 ONE = 1 << Q
 
 
 # ---------------------------------------------------------------- full LUTs
 def save_full(path: str | Path, lut: np.ndarray) -> None:
-    assert lut.shape == FULL_SHAPE and lut.dtype == np.uint8
+    if lut.shape != FULL_SHAPE or lut.dtype != np.uint8:
+        raise ValueError("full LUT must have shape (256,256,256,3) and dtype uint8")
     np.ascontiguousarray(lut).tofile(path)
 
 
 def load_full(path: str | Path, mmap: bool = False) -> np.ndarray:
+    if Path(path).stat().st_size != FULL_NBYTES:
+        raise ValueError(f"full LUT must contain exactly {FULL_NBYTES} uint8 RGB bytes: {path}")
     if mmap:
         return np.memmap(path, dtype=np.uint8, mode="r", shape=FULL_SHAPE)
     return np.fromfile(path, dtype=np.uint8).reshape(FULL_SHAPE)
@@ -58,6 +62,8 @@ class SparseLut:
 
 
 def uniform_grid(m: int) -> np.ndarray:
+    if not isinstance(m, (int, np.integer)) or not 2 <= m <= 256:
+        raise ValueError("sparse LUT size must be an integer in [2,256]")
     g = np.linspace(0.0, 255.0, m)
     return np.stack([g, g, g])
 
@@ -67,14 +73,13 @@ def axis_tables(grid: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
     Grid positions must be strictly increasing with grid[0] <= 0 and grid[-1] >= 255.
     """
+    _validate_grid(grid)
     m = grid.shape[1]
     x = np.arange(256, dtype=np.float64)
     idx = np.empty((3, 256), np.uint8)
     frac = np.empty((3, 256), np.uint32)
     for a in range(3):
         g = grid[a].astype(np.float64)
-        assert np.all(np.diff(g) > 0), "grid must be strictly increasing"
-        assert g[0] <= 0 and g[-1] >= 255, "grid must cover [0,255]"
         i = np.clip(np.searchsorted(g, x, side="right") - 1, 0, m - 2)
         f = (x - g[i]) / (g[i + 1] - g[i])
         idx[a] = i
@@ -82,10 +87,42 @@ def axis_tables(grid: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return idx, frac
 
 
+def _validate_grid(grid: np.ndarray) -> None:
+    if grid.ndim != 2 or grid.shape[0] != 3 or not 2 <= grid.shape[1] <= 256:
+        raise ValueError("grid must have shape (3,m), 2 <= m <= 256")
+    if not np.all(np.isfinite(grid)) or not np.all(np.diff(grid, axis=1) > 0):
+        raise ValueError("grid must be finite and strictly increasing on each axis")
+    if np.any(grid[:, 0] > 0) or np.any(grid[:, -1] < 255):
+        raise ValueError("grid must cover [0,255] on each axis")
+
+
+def validate_sparse(s: SparseLut, *, competition: bool = False) -> None:
+    """Validate representable bytes; competition adds the published grid-size bound.
+
+    Axis tables are authoritative: recomputing them from the float32 grid can
+    change Q16 fractions by one unit, so loaded tables must be preserved.
+    """
+    _validate_grid(s.grid)
+    if competition and not 17 <= s.m <= 33:
+        raise ValueError("competition sparse LUT size must be in [17,33]")
+    if s.nodes.shape != (s.m, s.m, s.m, 3) or s.nodes.dtype != np.uint8:
+        raise ValueError("sparse nodes must have shape (m,m,m,3) and dtype uint8")
+    if (s.idx is None) != (s.frac is None):
+        raise ValueError("sparse axis tables must be supplied together")
+    if s.idx is not None:
+        if s.idx.shape != (3, 256) or s.idx.dtype != np.uint8:
+            raise ValueError("axis indices must have shape (3,256) and dtype uint8")
+        if s.frac.shape != (3, 256) or s.frac.dtype.kind != "u" or s.frac.dtype.itemsize != 4:
+            raise ValueError("axis fractions must have shape (3,256) and dtype uint32")
+        if np.any(s.idx > s.m - 2) or np.any(s.frac > ONE):
+            raise ValueError("sparse axis table values are out of range")
+
+
 def save_sparse(path: str | Path, s: SparseLut) -> None:
+    validate_sparse(s)
+    _validate_grid(s.grid.astype("<f4"))
     idx, frac = s.tables()
     m = s.m
-    assert s.nodes.shape == (m, m, m, 3) and s.nodes.dtype == np.uint8
     with open(path, "wb") as f:
         f.write(b"SLUT")
         f.write(struct.pack("<III", 1, m, 0))
@@ -95,7 +132,7 @@ def save_sparse(path: str | Path, s: SparseLut) -> None:
         f.write(np.ascontiguousarray(s.nodes).tobytes())
 
 
-def load_sparse(path: str | Path) -> SparseLut:
+def load_sparse(path: str | Path, *, competition: bool = False) -> SparseLut:
     b = Path(path).read_bytes()
     if len(b) < 16 or b[:4] != b"SLUT":
         raise ValueError(f"bad sparse LUT header: {path}")
@@ -115,12 +152,54 @@ def load_sparse(path: str | Path) -> SparseLut:
     if np.any(idx > m - 2) or np.any(frac > ONE):
         raise ValueError(f"bad sparse LUT tables: {path}")
     nodes = np.frombuffer(b, np.uint8, m ** 3 * 3, o).reshape(m, m, m, 3).copy()
-    return SparseLut(grid, nodes, idx, frac)
+    result = SparseLut(grid, nodes, idx, frac)
+    validate_sparse(result, competition=competition)
+    return result
+
+
+def inspect_submission_contract(paths: list[Path], *, semantics: str = "independent") -> dict:
+    """Report the conservative local contract without claiming official acceptance.
+
+    Bytes cannot prove independent approximation. Semantics are declared unless
+    corroborated by the cached fitting manifest.
+    """
+    if semantics not in ("independent", "residual", "composite"):
+        raise ValueError(f"unknown stage semantics: {semantics}")
+    paths = [Path(path).resolve() for path in paths]
+    violations, sizes = [], []
+    if len(paths) != 4:
+        violations.append("four sparse stages are required by the conservative contract")
+    for path in paths:
+        try:
+            sizes.append(load_sparse(path, competition=True).m)
+        except (OSError, ValueError) as exc:
+            violations.append(f"{path.name}: {exc}")
+    if semantics != "independent":
+        violations.append(f"{semantics} semantics require separate rule clarification")
+    evidence = "declared"
+    if paths and all(path.parent == paths[0].parent for path in paths):
+        from . import cache
+        try:
+            import json
+            manifest = json.loads((paths[0].parent / "manifest.json").read_text(encoding="utf-8"))
+            entry = cache.inspect_entry(paths[0].parent, manifest["identity"])
+            if entry is not None and entry.paths == paths:
+                recorded = manifest["identity"]["parameters"]["semantics"]
+                evidence = "verified_model_manifest"
+                if recorded != semantics:
+                    violations.append(f"declared semantics {semantics} disagree with manifest {recorded}")
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
+    return {"pass": not violations, "violations": violations, "semantics": semantics,
+            "semantics_evidence": evidence, "n_stages": len(paths), "grid_sizes": sizes,
+            "format": "SLUT v1, uint8 RGB nodes and stage output, serialized Q16 axis tables",
+            "scope": "local conservative model contract; official formats and semantics remain unconfirmed"}
 
 
 # ---------------------------------------------------------------- images
 def load_image(path: str | Path) -> np.ndarray:
-    return np.asarray(Image.open(path).convert("RGB"))
+    with Image.open(path) as image:
+        return np.asarray(image.convert("RGB"))
 
 
 def save_image(path: str | Path, img: np.ndarray) -> None:

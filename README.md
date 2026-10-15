@@ -1,6 +1,10 @@
 # 极速焕彩：第 16 题算法探索与可复现实验工程
 
-本仓库针对 **【2026 Hackathon 决赛】第 16 题「极速焕彩」**：把四个 `256³` RGB 整数 LUT 稀疏化到边长 `17–33` 的网格，在图像上执行色彩映射，并同时考察色差、速度和规则合规性。它包含 Python 离线拟合、C++17 驱动、默认 Zig `@Vector` 推理内核、C++26 `<simd>` / Rust `core::simd` 对照内核、测试与独立 Git 实验日志。
+本仓库针对 **【2026 Hackathon 决赛】第 16 题「极速焕彩」**：把四个 `256³` RGB 整数 LUT 稀疏化到边长 `17–33` 的网格，在图像上执行四级整数色彩映射。当前采用 Python 离线拟合、独立可构建的 C++17 运行时、运行时检测的 AVX2 加速与标量回退；Zig、C++ SIMD、Rust 是可选对照后端。
+
+**当前统一入口：`python -m lutlab`。** 支持任意四张原始 LUT 的 `fit --inputs ... --grid dp --method ls_tetra_jitter`，以及 CPU/CUDA 共用的 `apply`、`cube`、`verify`、`bench-models`、`validate`、`accept` 和严格配对 `compare`。先设置 `PYTHONPATH=python`；CPU 程序用 `JSHC_BIN`，可选 CUDA 程序用 `JSHC_CUDA_BIN` 或显式 `--executable`。接口、完整复现及本机 100 图结果见 [R19 统一交付与严格验收](docs/r19-delivery-results.md)。旧入口继续可用，历史时间不与当前结果混排。
+
+**2026-10-15 R17 历史阶段：** 原生 Windows/AMD 8945HX 已完成阶段验收。新增真实 Q16 精化、内容绑定的模型缓存、明确范围的误差门禁，以及四级寄存器融合 AVX2。[阶段优化与实测](docs/r17-optimization-results.md) · [R17构建说明](docs/r17-delivery.md) · [算法推导](docs/r17-algorithm.md)。当前交付以R19报告为准；[仓库内验收归档](report/data/r19/README.md)保留摘要、原始记录及模型。下文保留上游历史报告与数据获取背景，现有成果不能推算官方成绩。
 
 **目前结论：有条件可选。** 本地 `isp-0` 模拟场景上已有通过示例门槛的四级候选；官方 LUT 格式、色差阈值及其统计口径、计时边界、单级复合是否合法仍需确认。本仓库的“通过”和速度数字都不是官方验收结果。
 
@@ -12,7 +16,7 @@
 
 ## 从 Codeberg 开始
 
-Codeberg 的默认 `main` 保留较早的代码版本，并提供本报告和上手入口；**当前可运行的 Zig 默认实现位于 `codex/zig-default-pixi` 分支**。Rust 的 Pixi 依赖也只在此分支，不需要合入 `main`。建议在 Arch/Ubuntu WSL2 或 Linux 上执行；实验分支的 `pixi.toml` 还声明了 macOS ARM 平台，但需在实际机器上验证构建。原生 Windows 不在该 Pixi 清单的平台范围内。
+Codeberg 的默认 `main` 保留较早的代码版本。`codex/zig-default-pixi` 分支包含R17–R19源码、统一入口及小型验收归档。原生 Windows 的 CMake 构建已实测，命令见[当前交付入口](docs/r19-delivery-results.md)。原有 Pixi 清单仍仅覆盖 Linux 与macOS ARM，后者未在本轮验证。
 
 ```bash
 git clone https://codeberg.org/Mooooonk/problem_probe_16.git
@@ -28,7 +32,7 @@ pixi install --locked
 pixi run --locked test
 ```
 
-`test` 会配置并编译 C++、Zig、Rust 内核，执行 C++ 全 `2²⁴` 色空间的逐字节一致性测试和 Python 测试；**无需先下载图像或生成 LUT**。首次安装需要下载编译器及 Python 依赖，磁盘占用较大。`--locked` 要求清单与 `pixi.lock` 一致，避免上手时意外改锁文件。想运行 PyTorch 路线时再安装额外的 `ml` 环境：`pixi install --locked -e ml`。
+`test` 编译当前 CMake 配置选中的后端，并执行 C++ 全 `2²⁴` 色空间对照和 Python 测试；**无需先下载图像或生成 LUT**。额外后端由 `JSHC_ENABLE_CPP_SIMD/ZIG/RUST` 开关启用，默认关闭。旧 Pixi 清单仍安装这些工具链，纯 CMake 路线无需全部安装。`--locked` 要求清单与 `pixi.lock` 一致；本轮未更改锁文件或复验 Pixi 安装。
 
 没有 Pixi 的备选方式是 Ubuntu 24.04 [Dockerfile](Dockerfile)：
 
@@ -46,15 +50,14 @@ docker run --rm -it -v "$PWD":/workspace jisu-huancai:latest pixi run test
 ```bash
 pixi run --locked gen-data --scenarios isp-0
 pixi run --locked verify-data --scenario isp-0
-pixi run --locked fit --scenario isp-0 --m 17 --method ls_tetra_int --mode residual
-pixi run --locked validate --scenario isp-0 --threshold 2.0 --metric mean --threads 4 \
-  data/models/isp-0/residual_ls_tetra_int_m17/stage{1,2,3,4}.slut
-pixi run --locked bench --scenario isp-0 --m 17 --method ls_tetra_int --mode residual --threads 4 --reps 3
+pixi run --locked fit --scenario isp-0 --m 18 --method ls_tetra_int --mode seq
+pixi run --locked select --scenario isp-0 --m 18 --profiles tetra \
+  --threshold 2.0 --metric mean --constraint-scope both --threads 4 --reps 3
 ```
 
-这里的 `2.0` 只是本地演示门槛；`validate` 要求**每张图**的未舍入统计量严格小于阈值。`--metric` 可选 `mean`、`p99`、`max`，必须根据官方规则选定。它通过实际 `jshc cube` 输出检查图像色差，并默认统计全部 `2²⁴` RGB 颜色。`bench` 默认使用 `tetra_zig_simd`（Zig 16 lane），对 100 张图运行 3 轮；比较候选时看整组时间中位数 `set_ms_p50_rep`，不要把不同机器、线程数或历史“每图最佳”数字混排。
+这里的 `2.0` 只是本地演示门槛，比较使用未舍入统计量和严格 `<`。`--metric` 可选 `mean`、`p99`、`max`；`--constraint-scope` 明确指定图片、全色域或两者。实际内核由 `auto` 按可用能力选择；查看 `jshc info`。比较候选时看整组时间中位数 `set_ms_p50_rep`，不要把不同机器、线程数或历史“每图最佳”数字混排。
 
-拟合结果位于 `data/models/isp-0/residual_ls_tetra_int_m17/`；输入清单为 `data/eval.txt` 和 `data/bench.txt`。`data/` 与 `build/` 被 Git 忽略，新的 clone 要自行生成或从可信备份恢复。若已有完整图像却缺 `manifest.json`，可在核对来源后运行 `pixi run --locked adopt-data` 建立本地哈希清单；该操作不能证明图像上游来源。数据布局详见 [DATA.md](DATA.md)。
+拟合输出在 `data/models/<scenario>/<variant>/<identity>/batch-<id>/`，包含完整 manifest 与四个模型，命令输出具体路径；输入清单为 `data/eval.txt` 和 `data/bench.txt`。缓存核验输入 LUT、参数、源码和模型内容，不复用旧的无 manifest 目录。生成数据和构建产物被 Git 忽略。旧图像可用 `adopt-data` 固定当前字节，但不能据此证明来源；详见 [DATA.md](DATA.md)。
 
 ## 按需选择命令
 
@@ -62,18 +65,18 @@ pixi run --locked bench --scenario isp-0 --m 17 --method ls_tetra_int --mode res
 
 | 目的 | 命令或入口 | 结果与注意事项 |
 | --- | --- | --- |
-| 构建和测试 | `pixi run --locked test` | 构建三个语言的内核，运行 C++ 和 Python 测试；无须 `data/`。 |
+| 构建和测试 | `pixi run --locked test` | 构建所选后端，运行一次阶段验收；无须 `data/`。 |
 | 生成或核验数据 | `pixi run --locked gen-data --scenarios isp-0` / `pixi run --locked verify-data --scenario isp-0` | 生成图像、LUT 和清单；核验哈希及四级精确复合。 |
-| 拟合单个模型 | `pixi run --locked fit --scenario isp-0 --m 17 --method ls_tetra_int --mode residual` | 输出四个 `.slut` 文件；`--mode composite` 只生成单级备选。 |
+| 拟合单个模型 | `pixi run --locked fit --scenario isp-0 --m 18 --method ls_tetra_int --mode seq` | 原子发布四个 `.slut` 文件及 manifest。 |
 | 传统精度/性能检查 | `pixi run --locked evaluate ...` / `pixi run --locked bench ...` | 用于迭代；严格提交门禁请用 `validate` 或 `select`。 |
 | 严格门禁 | `pixi run --locked validate --threshold 2.0 <四个 .slut 路径>` | 基于真实可执行输出；失败返回非零，并写逐图记录。 |
-| 候选筛选 | `pixi run --locked select --scenario isp-0 --m 17 --profiles tetra residual errorgrid --threshold 2.0 --threads 4 --reps 3` | 缺模型会自动拟合；逐个过门禁后才测速，无合格获胜者返回状态码 2。 |
-| 一条命令复核 | `pixi run --locked competition-check --scenario isp-0 --m 17 --profiles residual --threshold 2.0 --threads 4` | 自动准备缺失数据、构建、测试、核验，再做完整精度及 100 图筛选；耗时较长。 |
-| 可移植 Zig 调参 | `pixi run --locked zig-perf --help` | 比较 lane、分块、调度和线程；需显式给出模型路径。 |
+| 候选筛选 | `pixi run --locked select --scenario isp-0 --m 17 18 --profiles tetra q16 --threshold 2.0 --threads 4 --reps 3` | 输出独立主线的 Pareto 候选及推荐；不推断总分。 |
+| 一条命令复核 | `pixi run --locked competition-check --scenario isp-0 --m 18 --profiles tetra --threshold 2.0 --threads 4` | 构建、阶段测试、核验数据及候选；已验收的二进制可用 `--executable` 和 `--skip-tests`。 |
+| 可移植 Zig 调参 | `pixi run --locked zig-perf --help` | 需先显式启用并编入 Zig 后端；不属于本轮默认验收。 |
 | 历史路线探索 | `pixi run --locked -e ml routes` | 含 ML 路线，依赖 `ml` 环境；不代替当前严格门禁。 |
 | 查看运行记录 | `pixi run --locked logs` | 从独立日志仓库列出运行 ID、状态和关联代码提交。 |
 
-默认自动筛选**排除** `composite` 单级复合，即使其数值误差达标。只有收到官方明确许可，才对 `select` / `competition-check` 显式加 `--allow-composite`。`--existing-only` 可防止筛选器自动拟合；`--skip-cube` 只适合缩短探索，不应当作完整全色验证。两种设置的实际适用命令以各入口的 `--help` 为准。
+保守主线要求独立四级。`--allow-residual` / `--allow-composite` 显式启用研究路线，并在结果中单列；启用研究不表示官方认可该语义。`--existing-only` 只接受经验证的缓存；`--skip-cube` 不代表通过全色域约束。
 
 ## 代码、数据和报告在哪里
 
@@ -86,13 +89,14 @@ pixi run --locked bench --scenario isp-0 --m 17 --method ls_tetra_int --mode res
 | `data/`、`build/`、`.pixi/` | 本机生成的图像/LUT/模型、二进制、依赖环境；均不进入主 Git。 |
 | [report/exploration.pdf](report/exploration.pdf)、[report/README.md](report/README.md) | 已编译的中文完整报告、Typst 源和重建说明。 |
 | [report/data/DATA_INDEX.md](report/data/DATA_INDEX.md) | 跟随主 Git 的原始运行记录归档、逐图 CSV、最坏颜色与 SHA-256 索引；不含约 1.8 GiB 图像/LUT 本体。 |
-| [experiments/r16-five-directions.md](experiments/r16-five-directions.md)、[AUDIT.md](AUDIT.md) | 当前五项发展工作的详细实验报告及代码审计。 |
+| [docs/r17-optimization-results.md](docs/r17-optimization-results.md) | 当前优化、阶段验收、性能及明确失败的结果。 |
+| [experiments/r16-five-directions.md](experiments/r16-five-directions.md)、[AUDIT.md](AUDIT.md) | 上游历史实验报告及代码审计。 |
 
 更多背景按需查 [TOOLCHAIN.md](TOOLCHAIN.md)、[ROUTES.md](ROUTES.md)、[EVALUATION.md](EVALUATION.md)。报告中的 24 候选结果来自固定的 `isp-0` 本地实验；模型、机器和评测口径变动后必须重新测量。
 
 ## 独立日志与团队交接
 
-`logs/` 是**另一个 Git 仓库**，主仓库会忽略它。每次调用日志包装的任务会写 `logs/runs/<UTC时间>-<任务>-<ID>/run.json`、`stdout.log` 和相关 JSON，并在日志仓库自动提交；记录里有主仓库提交、分支、参数、机器和锁文件哈希。当前历史日志在 Codeberg 的 [`experiment-logs` 分支](https://codeberg.org/Mooooonk/problem_probe_16/src/branch/experiment-logs)，新 clone 可单独取回：
+`logs/` 是**另一个 Git 仓库**，主仓库会忽略它。日志包装写入 `run.json`、`stdout.log` 和相关 JSON；R17 的拟合、验证、选择和 workflow 入口不自动提交日志。历史日志在 Codeberg 的 [`experiment-logs` 分支](https://codeberg.org/Mooooonk/problem_probe_16/src/branch/experiment-logs)，新 clone 可单独取回：
 
 ```bash
 # 仅在尚无 logs/ 时执行；它会成为被主仓库忽略的独立 clone

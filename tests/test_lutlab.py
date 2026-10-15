@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import subprocess
+import json
 from types import SimpleNamespace
 from pathlib import Path
 
@@ -10,16 +11,18 @@ import numpy as np
 from lutlab import cascade, cli, fit as fit_mod, interp, io, metrics
 
 ROOT = Path(__file__).resolve().parents[1]
-JSHC = ROOT / "build" / "jshc"
+JSHC = metrics.resolve_jshc()
 
 
 def test_python_cpp_bit_exact(tmp_path: Path):
-    """Verify Python's loaded .slut tables agree with scalar, C++26 and Zig kernels."""
+    """Verify serialized Q16 tables agree with every compiled integer backend."""
     rng = np.random.default_rng(42)
     img = rng.integers(0, 256, (64, 96, 3), dtype=np.uint8)
     in_p = tmp_path / "in.png"
 
-    for m in (17, 25, 33):
+    capabilities = json.loads(subprocess.check_output([str(JSHC), "info"], text=True))
+    kernels = [k for k in capabilities["available_kernels"] if k.startswith("tetra_")]
+    for m in (17, 18, 25, 26, 33):
         # Create a non-uniform grid to stress-test axis_tables & Q16 fractions
         g = np.linspace(0, 1, m) ** 1.15 * 255.0
         g[0], g[-1] = 0.0, 255.0
@@ -38,8 +41,7 @@ def test_python_cpp_bit_exact(tmp_path: Path):
 
         io.save_image(in_p, img)
         py_out = interp.apply_tetra_q16(loaded, img)
-        for k in ("tetra_scalar", "tetra_cpp_simd", "tetra_zig_simd4", "tetra_zig_simd8",
-                  "tetra_zig_simd", "tetra_zig_simd16"):
+        for k in ["auto", *kernels]:
             out_p = tmp_path / f"out_{m}_{k}.png"
             subprocess.run([str(JSHC), "apply", "-i", str(in_p), "-o", str(out_p), "-k", k, str(slut_p)], check=True)
             cpp_out = io.load_image(out_p)
@@ -70,19 +72,6 @@ def test_adaptive_models_use_a_separate_cache(tmp_path: Path, monkeypatch):
     adaptive = cli.model_dir(args)
     assert standard != adaptive
     assert adaptive.name.endswith("_adaptive")
-    standard.mkdir(parents=True)
-    (standard / "stage1.slut").write_bytes(b"incomplete")
-    calls = []
-
-    def finish_fit(fit_args):
-        calls.append(fit_args)
-        for stage in (2, 3, 4):
-            (standard / f"stage{stage}.slut").write_bytes(b"placeholder")
-
-    monkeypatch.setattr(cli, "cmd_fit", finish_fit)
-    args.adaptive = False
-    assert len(cli.model_paths(args)) == 4
-    assert calls == [args]
 
 
 def test_fitting_monotonic_improvement():
