@@ -23,7 +23,7 @@ def sweep(models: list[Path], image_list: Path, widths: list[int], blocks: list[
                     env = os.environ.copy()
                     env["JSHC_BLOCK_PIXELS"] = str(block)
                     env["OMP_SCHEDULE"] = schedule
-                    cmd = [str(metrics.JSHC_BIN), "bench", "-l", str(image_list),
+                    cmd = [str(metrics.resolve_jshc()), "bench", "-l", str(image_list),
                            "-k", kernel, "-t", str(threads), "-r", str(reps),
                            *map(str, models)]
                     result = subprocess.run(cmd, cwd=data.ROOT, env=env, text=True,

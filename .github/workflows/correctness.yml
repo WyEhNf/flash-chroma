@@ -15,24 +15,47 @@ concurrency:
 
 jobs:
   correctness:
-    name: correctness (ubuntu-latest)
+    name: correctness (${{ matrix.task }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [test, test-scalar]
     env:
       OMP_NUM_THREADS: "4"
       OPENBLAS_NUM_THREADS: "1"
       MKL_NUM_THREADS: "1"
-      MPLBACKEND: Agg
     steps:
       - name: 检出代码
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: 安装锁定的 Pixi 环境
+      - name: 安装锁定的默认环境
         uses: prefix-dev/setup-pixi@ad1da6449d9e506fd127fd67ab2d054a769f6a94 # v0.11.2
         with:
           pixi-version: v0.81.0
           environments: default
           locked: true
       - name: 运行 C++ 与 Python 正确性测试
-        run: pixi run --locked correctness
+        run: pixi run --locked ${{ matrix.task }}
+
+  docker:
+    name: correctness (Docker)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: 构建默认环境镜像
+        run: |
+          mkdir -p build-context-probe .pixi/context-probe
+          docker build --tag flash-chroma:ci .
+      - name: 验证本机缓存未进入镜像
+        run: >-
+          docker run --rm --entrypoint sh flash-chroma:ci -c
+          'test ! -e /workspace/build-context-probe && test ! -e /workspace/.pixi/context-probe'
+      - name: 在容器中运行同一正确性门禁
+        run: docker run --rm flash-chroma:ci

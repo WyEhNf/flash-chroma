@@ -1,57 +1,67 @@
 [workspace]
-name = "jisu-huancai"
+name = "flash-chroma"
 version = "0.1.0"
-description = "Hackathon 2026 final #16: sparse 3D LUT colour mapping probe"
+description = "四级 RGB LUT 稀疏拟合、整数映射与正确性验证"
 channels = ["conda-forge"]
-# Windows users: use WSL2 (recommended) or the Dockerfile. Native win-64 C++ builds
-# through conda-forge require a local Visual Studio Build Tools install.
 platforms = ["linux-64"]
+requires-pixi = ">=0.81.0"
 
 [dependencies]
 python = ">=3.12,<3.13"
 numpy = ">=2.0,<3"
 scipy = ">=1.13,<2"
 pillow = ">=10,<12"
-matplotlib = ">=3.8,<4"
 pytest = ">=8,<10"
 cmake = ">=3.24,<5"
 ninja = ">=1.11,<2"
-zig = ">=0.17,<0.18"
-rust = ">=1.99,<1.100"
-
-[target.linux-64.dependencies]
-gxx = ">=16.2,<17"
-gcc = ">=16.2,<17"
+gxx = ">=13,<17"
+git = ">=2.43,<3"
 
 [activation.env]
 PYTHONPATH = "$PIXI_PROJECT_ROOT/python"
 
 [tasks]
-configure = "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release"
-build = { cmd = "cmake --build build -j", depends-on = ["configure"] }
-test-cpp = { cmd = "ctest --test-dir build --output-on-failure", depends-on = ["build"] }
-test-py = { cmd = "python -m pytest -q tests", depends-on = ["build"] }
-test = { depends-on = ["test-cpp", "test-py"] }
-# CI 使用独立构建目录，避免复用本机可选后端或旧二进制。
-configure-correctness = "cmake -S . -B build-correctness -G Ninja -DCMAKE_BUILD_TYPE=Release -DJSHC_ENABLE_OPENMP=ON -DJSHC_ENABLE_AVX2=ON -DJSHC_ENABLE_CPP_SIMD=OFF -DJSHC_ENABLE_ZIG=OFF -DJSHC_ENABLE_RUST=OFF -DJSHC_ENABLE_FULL_FIT=ON"
-build-correctness = { cmd = "cmake --build build-correctness --parallel 2", depends-on = ["configure-correctness"] }
-correctness = { cmd = "python scripts/check_correctness.py", depends-on = ["build-correctness"] }
-gen-data = "python -m lutlab.cli gen-data"
-fit = "python -m lutlab.cli fit"
-evaluate = { cmd = "python -m lutlab.cli evaluate", depends-on = ["build"] }
-bench = { cmd = "python -m lutlab.cli bench", depends-on = ["build"] }
-routes = { cmd = "python -m lutlab.routes", depends-on = ["build"] }
+configure = "cmake --preset default"
+build = { cmd = "cmake --build --preset default", depends-on = ["configure"] }
+test = { cmd = "python scripts/check_correctness.py", depends-on = ["build"] }
+correctness = { depends-on = ["test"] }
+test-cpp = { cmd = "python scripts/check_correctness.py --only cpp", depends-on = ["build"] }
+test-py = { cmd = "python scripts/check_correctness.py --only python", depends-on = ["build"] }
+configure-scalar = "cmake --preset scalar"
+build-scalar = { cmd = "cmake --build --preset scalar", depends-on = ["configure-scalar"] }
+test-scalar = { cmd = "python scripts/check_correctness.py --build-dir build-scalar", depends-on = ["build-scalar"] }
+lutlab = { cmd = "python -m lutlab", depends-on = ["build"] }
+gen-data = "python -m lutlab gen-data"
+fit = { cmd = "python -m lutlab fit", depends-on = ["build"] }
+evaluate = { cmd = "python -m lutlab evaluate", depends-on = ["build"] }
+bench = { cmd = "python -m lutlab bench", depends-on = ["build"] }
+validate = { cmd = "python -m lutlab.validation", depends-on = ["build"] }
+select = { cmd = "python -m lutlab select", depends-on = ["build"] }
+competition-check = { cmd = "python -m lutlab check", depends-on = ["build"] }
 logs = "python -m lutlab.runlog list"
 adopt-data = "python -m lutlab.data adopt"
 verify-data = "python -m lutlab.data verify"
-validate = { cmd = "python -m lutlab.validation", depends-on = ["build"] }
-select = { cmd = "python -m lutlab.selection", depends-on = ["build"] }
-zig-perf = { cmd = "python -m lutlab.perf", depends-on = ["build"] }
-competition-check = "python -m lutlab.workflow"
+routes = { cmd = "python -m lutlab.routes", depends-on = ["build"] }
+
+[feature.simd.dependencies]
+gxx = ">=16.2,<17"
+zig = ">=0.17,<0.18"
+rust = ">=1.99,<1.100"
+
+[feature.simd.tasks]
+configure-simd = "cmake --preset simd"
+build-simd = { cmd = "cmake --build --preset simd", depends-on = ["configure-simd"] }
+test-simd = { cmd = "python scripts/check_correctness.py --build-dir build-simd", depends-on = ["build-simd"] }
+zig-perf = { cmd = "python -m lutlab.perf", depends-on = ["build-simd"], env = { JSHC_BIN = "$PIXI_PROJECT_ROOT/build-simd/jshc" } }
+
+[feature.plots.dependencies]
+matplotlib-base = ">=3.8,<4"
 
 [feature.ml.dependencies]
 pytorch-cpu = ">=2.4,<3"
 
 [environments]
 default = { solve-group = "main" }
+plots = { features = ["plots"], solve-group = "main" }
 ml = { features = ["ml"], solve-group = "main" }
+simd = { features = ["simd"] }

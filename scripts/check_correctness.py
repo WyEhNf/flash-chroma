@@ -1,38 +1,48 @@
-"""运行 CI 的完整正确性门禁，不执行性能测试或下载实验数据。"""
-from pathlib import Path
+"""运行当前 CMake 构建的正确性测试，不下载数据或执行性能循环。"""
+import argparse
+import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "build-correctness"
 
 
-def main():
-    executable = BUILD / ("jshc.exe" if os.name == "nt" else "jshc")
-    library_name = (
-        "jshc_full_fit.dll" if os.name == "nt"
-        else "libjshc_full_fit.so"
-    )
-    library = BUILD / library_name
-    for path in (executable, library):
-        if not path.is_file():
-            raise FileNotFoundError(f"缺少正确性测试产物，请运行 pixi run --locked correctness：{path}")
-
-    # 显式指定同一次构建的产物；拟合库缺失或不可加载必须失败，不能跳过。
+def test_environment(build: Path, config: str) -> dict[str, str]:
+    # 路径由 CMake 按目标与配置生成，避免猜测扩展名或多配置输出目录。
+    manifest = build / f"test-artifacts-{config}.json"
+    artifacts = json.loads(manifest.read_text(encoding="utf-8"))
     env = os.environ.copy()
-    env["JSHC_BIN"] = str(executable)
-    env["JSHC_FULL_FIT_LIB"] = str(library)
+    for variable in ("JSHC_BIN", "JSHC_FULL_FIT_LIB"):
+        path = Path(artifacts[variable])
+        if not path.is_file():
+            raise FileNotFoundError(f"缺少测试产物，请先构建 {build}：{path}")
+        env[variable] = str(path)
     env["PYTHONPATH"] = str(ROOT / "python")
-    subprocess.run(
-        ["ctest", "--test-dir", str(BUILD), "--output-on-failure", "--no-tests=error"],
-        cwd=ROOT, env=env, check=True,
-    )
-    subprocess.run(
-        [sys.executable, "-m", "pytest", "-q", "-ra", "tests"],
-        cwd=ROOT, env=env, check=True,
-    )
+    return env
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build-dir", type=Path, default=ROOT / "build")
+    parser.add_argument("--config", default="Release")
+    parser.add_argument("--only", choices=("all", "cpp", "python"), default="all")
+    args = parser.parse_args(argv)
+    build = args.build_dir.resolve()
+    env = test_environment(build, args.config)
+    if args.only in ("all", "cpp"):
+        subprocess.run(
+            ["ctest", "--test-dir", str(build), "-C", args.config,
+             "--output-on-failure", "--no-tests=error"],
+            cwd=ROOT, env=env, check=True,
+        )
+    if args.only in ("all", "python"):
+        subprocess.run(
+            [sys.executable, "-m", "pytest", "-q", "-ra", "tests"],
+            cwd=ROOT, env=env, check=True,
+        )
 
 
 if __name__ == "__main__":

@@ -1,81 +1,102 @@
-# 工具链、一键环境与独立日志系统说明 (`TOOLCHAIN.md`)
+# 构建、依赖与正确性测试
 
-本文档说明 `~/problem_probe/16` 为 **【2026 Hackathon 决赛】第 16 题：极速焕彩** 构建的可复现开发环境、构建工具链、Git 版本追踪规范以及独立实验日志仓库。
+当前支持的 Pixi 平台为 Linux x86_64，Windows 队员使用 WSL2。主环境不再提供 macOS 依赖。原生 Windows 和 CUDA 的历史构建记录保留在技术文档中，不属于 Linux CI 的验证承诺。
 
----
-
-## 1. 跨平台一键环境配置（3 人团队零摩擦同步）
-
-团队统一使用 Linux x86_64（含 Windows + WSL2），项目提供 **Pixi 锁文件方案（主推）** 与 **Ubuntu 24.04 Docker 容器方案（备选/兜底）**。主环境与报告环境均已移除 macOS 平台依赖，GitHub Actions 仅在 Linux 上验证正确性。
-
-### 方案 A：Pixi 一键安装（推荐，毫秒级激活）
-
-配置文件：[pixi.toml](pixi.toml) 与锁文件 [pixi.lock](pixi.lock)。
-Pixi 会从 `conda-forge` 安装 Zig 0.17、Linux 上的 GCC/G++ 16（用于 C++26 `<simd>`）、Rust 1.99（仅本实验分支）、`CMake`、`Ninja` 以及 `Python 3.12`、`NumPy`、`SciPy`、`Pillow` 和 `Pytest`。`ml` 环境额外安装 PyTorch CPU。Rust `portable_simd` 目前需要构建命令局部设置 `RUSTC_BOOTSTRAP=1`。
+## 单一默认入口
 
 ```bash
-# 1. 克隆仓库后一键安装全部环境（default 与 ml）
-pixi install -a
-
-# 2. 编译 Zig/C++26/Rust 内核并运行 C++ 与 Python 全部单元测试
-pixi run test
-
-# 3. 生成标准测试集（24 张 Kodak 真彩自然图像 + 5 张极限合成压力图 + 100 张吞吐量测试图 + 6 组四级 256^3 LUT 场景）
-pixi run gen-data
-
-# 4. 运行单次稀疏化拟合、精度评测与 C++ 吞吐量基准测试
-pixi run fit --scenario isp-0 --m 33 --method ls_tetra_int --mode residual
-pixi run evaluate --scenario isp-0 --m 33 --method ls_tetra_int --mode residual
-pixi run bench --scenario isp-0 --m 33 --threads 0
-
-# 5. 运行全套技术路线大横评（朴素 / 经典 / 现代 / 前沿 / 高阶基函数 / 低秩 Tucker / RBF / MLP / SIREN）
-pixi run -e ml python -m lutlab.routes
-
-# 6. 查看独立实验日志
-pixi run logs
+pixi install --locked
+pixi run --locked build
+pixi run --locked test
 ```
 
-### 方案 B：Ubuntu 24.04 容器化方案（Dockerfile）
+`build` 使用 `CMakePresets.json` 的 `default` 配置，在 `build/` 中构建。`test` 依赖 `build`，先运行 CTest，再运行 Python 测试；任一步失败都会返回非零。`correctness` 只是 `test` 的别名。`test-cpp` 与 `test-py` 可分别执行两部分，二者都使用同一次默认构建。
 
-配置文件：[Dockerfile](Dockerfile)。以 `ubuntu:24.04` 为基座，内置完整构建链与 Pixi 锁环境：
-仓库的 `.dockerignore` 排除本机 `.pixi/`、生成的 `data/`、`build/` 与独立 `logs/`，避免将数 GB 本机文件复制进镜像。
+默认门禁包括：
+
+- C++ 全 `2²⁴` RGB 色域与独立整数 oracle 对照、非均匀网格、边界、向量尾部、四级串联和线程一致性。
+- Python/C++ 位精确一致性、模型格式和缓存、拟合约束、实际图片路径、输入位深及全色域验证契约。
+- 完整色域离线拟合库与独立 Python 正规方程组装的对照。
+
+CMake 生成 `build/test-artifacts-Release.json`，记录运行时和拟合库的实际目标路径。测试运行器通过 `JSHC_BIN`、`JSHC_FULL_FIT_LIB` 显式绑定这些产物；拟合库缺失或加载失败不能变成测试跳过。默认门禁不读取下载数据，不执行性能扫描。
+
+## 依赖分层
+
+| Pixi 环境 | 内容 | 典型命令 |
+| --- | --- | --- |
+| `default` | Python 3.12、NumPy、SciPy、Pillow、pytest、CMake、Ninja、G++、日志所需的 Git | `pixi run --locked test` |
+| `simd` | 默认依赖，加 GCC/G++ 16、Zig、Rust | `pixi run --locked -e simd test-simd` |
+| `plots` | 默认依赖，加 `matplotlib-base`，不额外安装 Qt GUI 前端 | `pixi run --locked -e plots python scripts/generate_plots.py` |
+| `ml` | 默认依赖，加 PyTorch CPU | `pixi run --locked -e ml routes` |
+
+日常开发和 CI 不使用 `pixi install -a`。运行选定环境的任务即可按需安装，所有精确包版本与构建均记录在 `pixi.lock`。只有有意修改依赖时才运行 `pixi lock`；提交清单和锁文件后，用 `pixi lock --check` 检查一致性。
+
+`report/pixi.toml` 是独立的 Typst/字体环境，保留 Linux 与 Windows，用自己的锁文件管理；不进入默认数值环境。报告重建依赖见 [report/README.md](report/README.md)。
+
+## CMake 配置
+
+| Preset | 目录 | 配置 |
+| --- | --- | --- |
+| `default` | `build/` | Release、测试、完整色域拟合库；启用 AVX2 编译与 OpenMP 查找；关闭可选 SIMD |
+| `scalar` | `build-scalar/` | 继承默认配置，禁用 AVX2 和 OpenMP |
+| `simd` | `build-simd/` | 继承默认配置，启用 C++ SIMD、Zig 与 Rust |
+
+任务显式设置各后端开关，避免本机残留 CMake cache 改变默认门禁。构建默认并行度为 2，可直接向 CMake 覆盖：
 
 ```bash
-docker build -t jisu-huancai:latest .
-docker run --rm -it -v "$PWD":/workspace jisu-huancai:latest pixi run test
+pixi run --locked cmake --preset default
+pixi run --locked cmake --build --preset default --parallel 4
+pixi run --locked python scripts/check_correctness.py
+pixi run --locked test-scalar
+pixi run --locked -e simd test-simd
 ```
 
----
+AVX2 只在独立翻译单元中启用；运行时根据 CPU 和操作系统能力选择内核，能力不足时回退。OpenMP 在默认配置中为可选依赖，查找结果显示在 CMake 输出中。`scalar` 验证完全不依赖这两项的路径。
 
-## 2. Zig/C++26/Rust SIMD + C++17/Python 混合架构设计
+C++ SIMD 需要支持 `<simd>` 或 `<experimental/simd>` 的编译器/标准库。Rust `portable_simd` 后端仍使用构建命令局部的 `RUSTC_BOOTSTRAP=1`；它是显式可选研究后端。不要把可选环境的产物写入 `build/`。
 
-为兼顾**算法快速迭代（稀疏化求解）**与**极致执行速度（40 分性能分 + 20 分工程可移植分）**，代码库采用清晰的二层解耦架构：
+无 Pixi 时，可在自行准备的 CMake ≥3.24、Ninja、C++17 编译器及 Python 数值依赖环境中使用同一 preset。多配置生成器可按以下方式构建：
 
-1. **离线/预处理稀疏化层（Python `lutlab`）**：
-   - [io.py](python/lutlab/io.py)：定义二进制 `.lut256`（完整 $256^3 \times 3$ LUT，48 MB/个）与紧凑 `.slut`（稀疏 $m^3 \times 3$ 晶体表 + 预计算 256 项 `idx`/`frac` Q16 定点轴查找表）。
-   - [interp.py](python/lutlab/interp.py)：与 C++ 逐比特完全一致（Bit-Exact）的 Q16 四面体插值镜像与精确稀疏权重矩阵构造器。
-   - [fit.py](python/lutlab/fit.py)：涵盖最近邻采样、亚像素采样、盒式滤波、可分离张量最小二乘（Hat / Lagrange 三次 / B-Spline 二次与三次）、精确四面体稀疏最小二乘（CG + Jacobi 预条件）、IRLS $L_p$ 极小极大逼近、**8 色棋盘格整数坐标下降精化（Integer Coordinate Refinement）**及**曲率自适应非均匀网格（Adaptive Knot Placement）**。
-   - [cascade.py](python/lutlab/cascade.py)：多级串联误差传播补偿（Cascade Residual Absorption）、四级复合单级等价映射、3D 多项式拟合、Tucker HOSVD 低秩分解、3D RBF 径向基网络、超轻量残差 MLP 与 SIREN 隐式神经 LUT。
-2. **在线推理核心（C++17 `jshc` 调度，默认 Zig `@Vector`）**：
-   - [lut.hpp](cpp/include/jshc/lut.hpp) / [lut.cpp](cpp/src/lut.cpp)：零外部动态库依赖的纯 C++17 核心。
-     - **Q16 纯整数四面体插值**：利用预计算的 256 项 `off[axis][x]` 与 `frac[axis][x]` 表，支持均匀或非均匀网格。
-     - **16 像素并行**：默认 `tetra_zig_simd` 使用 Zig `@Vector(16, i32)`；显式 `tetra_zig_simd4`、`tetra_zig_simd8`、`tetra_zig_simd16` 可复跑 lane 宽度实验。`tetra_cpp_simd` 使用 C++26 `<simd>`；`tetra_rust_simd` 使用 Rust `core::simd`。这些内核不使用手写汇编或架构特化 intrinsic。旧 `tetra_avx2` / `tetra_asm` 名称保留为 C++ SIMD 内核的兼容别名。
-     - **L1/L2 Cache 分块四级流水融合（Block-Fused Cascade）**：以 `4096` 像素（`12 KB`）为单位在线程私有栈缓冲区中连续完成 4 个色彩空间的串联映射，避免 4 次读写主存，完美契合 CPU L1 Data Cache（48 KB）。
-       `JSHC_BLOCK_PIXELS=1024|4096|8192` 与 `OMP_SCHEDULE=static|dynamic,1|guided,1` 用于无架构特化调参；默认块为 4096，调度为 `dynamic,1`。
-   - [main.cpp](cpp/src/main.cpp)：支持 `apply`、`ref`、`cube`、`bench`、`info` 五大子命令，输出高精度分阶段计时 JSON。
+```bash
+cmake -S . -B build-custom -G "Ninja Multi-Config" \
+  -DBUILD_TESTING=ON -DJSHC_ENABLE_FULL_FIT=ON
+cmake --build build-custom --config Release --parallel 2
+PYTHONPATH=python python scripts/check_correctness.py --build-dir build-custom --config Release
+```
 
----
+只需要 C++ 运行时可关闭测试和离线拟合库：
 
-## 3. 独立实验日志系统（Independent Run-Log System）
+```bash
+cmake -S . -B build-runtime -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_TESTING=OFF -DJSHC_ENABLE_FULL_FIT=OFF
+cmake --build build-runtime --parallel 2
+```
 
-实现文件：[runlog.py](python/lutlab/runlog.py)。
+不允许在源码根目录直接配置构建。开发者的局部 preset 放入被忽略的 `CMakeUserPresets.json`。
 
-为了确保在频繁 `git commit` / `git reset` / 分支切换时**绝对不会丢失任何一次实验日志**：
-- `logs/` 目录在首次运行时自动初始化为一个**完全独立的 Git 仓库**（`logs/.git`），并在主代码仓库的 [.gitignore](.gitignore) 中被排除。
-- 每次调用 `Run(name, params)` 上下文管理器时：
-  1. 自动在 `logs/runs/<UTC时间戳>-<任务名>-<8位UUID>/` 下创建独立目录；
-  2. 自动捕获主代码仓库当前的 `git commit SHA`、分支名、工作区是否 dirty，若存在未提交修改则自动保存 `code.diff` 快照及 SHA256；
-  3. 实时双写终端输出到 `stdout.log`，将全部超参数、硬件环境（CPU 型号、核心数）与评测指标写入 `run.json`；
-  4. 追加单行摘要至 `logs/index.jsonl`，并在 `logs/` 独立 Git 仓库中自动执行一次 `git commit`。
-- 也可通过环境变量 `JSHC_LOG_DIR=/path/to/external_logs` 将日志仓库挂载到任意工作目录之外的路径。
-- `run.json` 额外记录 `pixi.lock` 的 SHA-256；`competition-check` 的子进程测试输出保存在 `test.log`。
+## 产物选择
+
+默认 CLI 查找 `build/jshc`，完整色域拟合方法查找 `build/` 中的共享库；旧 `build-fit/` 仅作为兼容回退。使用自定义构建时显式设置 `JSHC_BIN` 和 `JSHC_FULL_FIT_LIB`，或向支持的命令传入 `--executable`。更换模型或构建后重新验收，不能沿用另一产物的测试结果。
+
+锁文件与相关源码参与模型缓存身份计算。依赖清理后旧批次仍保留，但可能不再命中新身份；应按新环境重新拟合与验收，不要手工改写旧 manifest。
+
+`pixi run --locked lutlab ...` 是统一 CLI 的自动构建包装。`competition-check` 还会核验或生成数据、执行候选选择与性能测量，属于实验工作流，不能替代无数据依赖的 `test`。
+
+## GitHub Actions 与 Docker
+
+[正确性工作流](.github/workflows/correctness.yml) 在 PR（含 Draft）、`main` push 和手动触发时运行：
+
+1. Linux 默认门禁 `pixi run --locked test`。
+2. Linux 无 AVX2/OpenMP 门禁 `pixi run --locked test-scalar`。
+3. Docker 镜像构建及容器中的默认门禁。
+
+CI 固定 Pixi 版本，按锁文件只安装默认环境，不运行 benchmark，不下载实验数据。CUDA 与可选 SIMD 需在具备相应环境的机器上单独验证。
+
+Dockerfile 基于固定版本 `ghcr.io/prefix-dev/pixi:0.81.0`，只安装默认锁定环境，不再重复安装宿主发行版的编译器、Python 和 CMake。构建上下文排除所有层级的 `.pixi/`、`build/`、`build-*/`、测试缓存和本机实验目录。
+
+```bash
+docker build -t flash-chroma:dev .
+docker run --rm flash-chroma:dev
+```
+
+锁文件固定数值依赖；基础镜像标签并不保证镜像字节永远不变。需要镜像级冻结时，应另行记录镜像 digest。报告和历史性能数字的复现要求见 [文档索引](docs/README.md)。

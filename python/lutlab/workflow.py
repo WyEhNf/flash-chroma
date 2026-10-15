@@ -44,11 +44,12 @@ def main(argv=None):
         build_dir = args.build_dir.resolve()
         executable = args.executable or os.environ.get("JSHC_BIN")
         if executable is None:
-            configure = ["cmake", "-S", str(data.ROOT), "-B", str(build_dir), "-DCMAKE_BUILD_TYPE=Release"]
+            configure = ["cmake", "-S", str(data.ROOT), "-B", str(build_dir), "-DCMAKE_BUILD_TYPE=Release",
+                         "-DBUILD_TESTING=ON", "-DJSHC_ENABLE_FULL_FIT=ON"]
             if args.generator:
                 configure += ["-G", args.generator]
             _step(run, "configure", configure)
-            _step(run, "build", ["cmake", "--build", str(build_dir), "--config", "Release", "--parallel"])
+            _step(run, "build", ["cmake", "--build", str(build_dir), "--config", "Release", "--parallel", "2"])
             name = "jshc.exe" if os.name == "nt" else "jshc"
             executable = next((path for path in (build_dir / name, build_dir / "Release" / name)
                                if path.is_file()), build_dir / name)
@@ -62,14 +63,22 @@ def main(argv=None):
             # multi-configuration Release subdirectories.
             test_dir = next((path for path in (binary.parent, binary.parent.parent)
                              if (path / "CTestTestfile.cmake").is_file()), None)
-            if test_dir is not None:
-                _step(run, "test-cpp", ["ctest", "--test-dir", str(test_dir), "-C", "Release", "--output-on-failure"])
+            test_manifest = test_dir / "test-artifacts-Release.json" if test_dir is not None else None
+            if (test_manifest is not None and test_manifest.is_file()
+                    and Path(json.loads(test_manifest.read_text(encoding="utf-8"))["JSHC_BIN"]).resolve() == binary):
+                _step(run, "test", [sys.executable, str(data.ROOT / "scripts/check_correctness.py"),
+                                   "--build-dir", str(test_dir)])
             else:
-                run.metrics["cpp_test_status"] = "not_available_for_supplied_binary"
-            environment = os.environ.copy()
-            environment["JSHC_BIN"] = str(binary)
-            environment["PYTHONPATH"] = os.pathsep.join(filter(None, [str(data.ROOT / "python"), environment.get("PYTHONPATH")]))
-            _step(run, "test-python", [sys.executable, "-m", "pytest", "-q", "tests"], environment)
+                # 外部历史产物可能没有新的测试清单；保留显式标记的兼容入口。
+                run.metrics["test_mode"] = "legacy_supplied_binary"
+                if test_dir is not None:
+                    _step(run, "test-cpp", ["ctest", "--test-dir", str(test_dir), "-C", "Release", "--output-on-failure"])
+                else:
+                    run.metrics["cpp_test_status"] = "not_available_for_supplied_binary"
+                environment = os.environ.copy()
+                environment["JSHC_BIN"] = str(binary)
+                environment["PYTHONPATH"] = os.pathsep.join(filter(None, [str(data.ROOT / "python"), environment.get("PYTHONPATH")]))
+                _step(run, "test-python", [sys.executable, "-m", "pytest", "-q", "tests"], environment)
         else:
             run.metrics["tests_skipped_explicitly"] = True
         if not (data.DATA / "manifest.json").exists():
