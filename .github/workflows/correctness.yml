@@ -37,6 +37,7 @@ jobs:
           pixi-version: v0.81.0
           environments: default
           locked: true
+          cache-write: ${{ matrix.task == 'test' }}
       - name: 运行 C++ 与 Python 正确性测试
         run: pixi run --locked ${{ matrix.task }}
 
