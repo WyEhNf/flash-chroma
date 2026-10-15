@@ -1,10 +1,10 @@
 # 冻结报告与重建
 
-本目录保存历史中文 Typst 探索报告、原始证据归档和生成表格。当前使用方法与构建入口见根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)；本报告中的历史分支名、默认后端和构建状态不再作为开发指南。
+本目录统一保存报告源码、PDF、生成表格和证据归档；原 `output/pdf/` 内容已按原始字节迁入 `latest/`。当前使用方法与构建入口见根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)；本报告中的历史分支名、默认后端和构建状态不再作为开发指南。
 
 ## 阅读与查证
 
-- [R27 已测版本 PDF](../output/pdf/problem16-latest-tested-report.pdf)：较新的固定阶段技术评估。
+- [R27 已测版本 PDF](latest/problem16-latest-tested-report.pdf)：较新的固定阶段技术评估。
 - [历史探索报告](exploration.pdf)：由 `exploration.typ` 与 `chapters/` 组成的冻结报告。
 - [数据索引](data/DATA_INDEX.md)：运行记录、逐图数据、最坏颜色与 SHA-256。
 - [R17–R27 技术文档索引](../docs/README.md)。
@@ -37,3 +37,5 @@ pixi run --locked -e plots python scripts/build_typst_data.py
 `scripts/build_latest_tested_pdf.py` 依赖 ReportLab、原始 `artifacts/r27-step/` 证据和 Windows 等线字体绝对路径。它目前是历史机器上的生成脚本，未纳入 Linux 的一键报告构建；阅读仓库中的现成 PDF 不需要这些依赖。
 
 `data/` 中的归档按原始字节与相对路径保存证据。大体积图像和 LUT 不全部随仓库分发；归档和文档不能替代缺失的实验输入。此次构建清理不重新生成 PDF，也不修改冻结数据或归档哈希。
+
+`latest/report-manifest.json` 与 `latest/layout-qa.json` 是当时生成的冻结记录，保留原 Windows 机器路径和旧生成脚本哈希，不能作为迁移后再次执行生成器的证明。PDF、CSV 及这两份记录均保持原始字节；未来生成器输出统一写入 `report/latest/`。

@@ -24,7 +24,7 @@ CMake 生成 `build/test-artifacts-Release.json`，记录运行时和拟合库�
 
 | Pixi 环境 | 内容 | 典型命令 |
 | --- | --- | --- |
-| `default` | Python 3.12、NumPy、SciPy、Pillow、pytest、CMake、Ninja、G++、日志所需的 Git | `pixi run --locked test` |
+| `default` | Python 3.12、NumPy、SciPy、Pillow、pytest、CMake、Ninja、G++/Binutils、日志所需的 Git | `pixi run --locked test` |
 | `simd` | 默认依赖，加 GCC/G++ 16、Zig、Rust | `pixi run --locked -e simd test-simd` |
 | `plots` | 默认依赖，加 `matplotlib-base`，不额外安装 Qt GUI 前端 | `pixi run --locked -e plots python scripts/generate_plots.py` |
 | `ml` | 默认依赖，加 PyTorch CPU | `pixi run --locked -e ml routes` |
@@ -92,11 +92,11 @@ cmake --build build-runtime --parallel 2
 
 CI 固定 Pixi 版本，按锁文件只安装默认环境，不运行 benchmark，不下载实验数据。CUDA 与可选 SIMD 需在具备相应环境的机器上单独验证。
 
-Dockerfile 基于固定版本 `ghcr.io/prefix-dev/pixi:0.81.0`，只安装默认锁定环境，不再重复安装宿主发行版的编译器、Python 和 CMake。构建上下文排除所有层级的 `.pixi/`、`build/`、`build-*/`、测试缓存和本机实验目录。
+项目镜像统一命名为 `flash-chroma`，并设置同名 OCI title。Dockerfile 固定 Pixi 0.81.0 的基础镜像版本与 digest，只安装默认锁定环境，不再重复安装宿主发行版的编译器、Python 和 CMake。Binutils 由锁定环境提供，归档和链接不借用宿主工具。构建上下文排除所有层级的 `.pixi/`、`build/`、`build-*/`、测试缓存和本机实验目录。
 
 ```bash
-docker build -t flash-chroma:dev .
-docker run --rm flash-chroma:dev
+docker build -t flash-chroma .
+docker run --rm flash-chroma
 ```
 
-锁文件固定数值依赖；基础镜像标签并不保证镜像字节永远不变。需要镜像级冻结时，应另行记录镜像 digest。报告和历史性能数字的复现要求见 [文档索引](docs/README.md)。
+报告和历史性能数字的复现要求见 [文档索引](docs/README.md)，统一报告目录为 `report/`。

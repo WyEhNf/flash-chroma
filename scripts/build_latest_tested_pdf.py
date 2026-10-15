@@ -21,7 +21,7 @@ from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate, Paragraph,
 from reportlab.graphics.shapes import Drawing, Line, Rect, String, PolyLine, Circle
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "output/pdf"
+OUT = ROOT / "report/latest"
 ART = ROOT / "artifacts/r27-step"
 NAVY = colors.HexColor("#153044")
 TEAL = colors.HexColor("#087F8C")
@@ -404,7 +404,7 @@ def main():
         ["artifacts/r27-step/mapping-comparison.json", "7对CPU16/CUDA含传输性能、预检字节及主机工作集"],
         ["artifacts/r27-step/industry/comparison.json", "OCIO全色精度、100图实际输出和7对4线程性能"],
         ["report/data/r27/r27-evidence.zip", "可审阅的源码/JSON/日志/SLUT归档；不含大体积原始图像与完整LUT"],
-        ["output/pdf/latest-tested-accuracy.csv", "本报告13行精度数据，保持原始浮点数"],
+        ["report/latest/latest-tested-accuracy.csv", "本报告13行精度数据，保持原始浮点数"],
     ], [300, CONTENT - 300], small=True)
     heading("当前执行文件指纹（SHA256 前16位）")
     table([["组件", "指纹"],

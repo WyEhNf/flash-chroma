@@ -8,7 +8,7 @@
 - [数据格式、来源与生成](../DATA.md)。
 - [独立实验日志与交接](LOGGING.md)。
 - [Agent 交流与协作规范](../AGENTS.md)。
-- [日常摄影样本](../assets/photos/kodak/README.md)。
+- [日常摄影样本](../assets/photos/README.md)。
 
 ## 算法与验收演进
 
@@ -28,7 +28,7 @@
 
 ## 冻结报告与早期研究
 
-- [R27 已测版本 PDF](../output/pdf/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
+- [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。
 - [原始数据与哈希索引](../report/data/DATA_INDEX.md)。
 - [早期路线说明](../ROUTES.md)、[早期评测记录](../EVALUATION.md)、[早期审计](../AUDIT.md)。

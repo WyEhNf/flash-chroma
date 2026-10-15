@@ -50,7 +50,7 @@ pixi run --locked lutlab accept --help
 
 模型批次以输入内容、算法参数、源码及环境指纹标识，不应手工覆盖已发布批次。四级独立模型是默认语义；残差或单级复合研究需要显式授权开关。当前采用欧氏 RGB 距离，阈值、统计口径和计时边界须按实际任务确认。
 
-已有五张带来源记录的日常照片可用于小规模可视化：[Kodak 样本](assets/photos/kodak/README.md)。它们不是完整评测集，也不替代全色域或 100 图验收。
+已有带来源和哈希记录的 [100 张日常照片](assets/photos/README.md)，包含 Kodak、DPED 和 DIV2K 子集，可显式传入 `assets/photos/eval.txt`。它们不自动替换模拟数据清单，也不替代全色域验收；各来源的使用范围见样本说明。
 
 ## 模拟数据与实验
 
@@ -69,8 +69,8 @@ pixi run --locked select --scenario isp-0 --m 18 --profiles tetra \
 ## Docker
 
 ```bash
-docker build -t flash-chroma:dev .
-docker run --rm flash-chroma:dev
+docker build -t flash-chroma .
+docker run --rm flash-chroma
 ```
 
 镜像固定 Pixi 版本，仅按锁文件安装默认环境，并运行同一 `test` 门禁。本机构建目录、Pixi 环境、实验数据与日志不进入构建上下文。直接运行镜像即可验证，不必挂载整个仓库覆盖容器中的依赖和构建产物。

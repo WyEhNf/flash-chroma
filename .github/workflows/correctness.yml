@@ -52,10 +52,10 @@ jobs:
       - name: 构建默认环境镜像
         run: |
           mkdir -p build-context-probe .pixi/context-probe
-          docker build --tag flash-chroma:ci .
+          docker build --tag flash-chroma .
       - name: 验证本机缓存未进入镜像
         run: >-
-          docker run --rm --entrypoint sh flash-chroma:ci -c
+          docker run --rm --entrypoint sh flash-chroma -c
           'test ! -e /workspace/build-context-probe && test ! -e /workspace/.pixi/context-probe'
       - name: 在容器中运行同一正确性门禁
-        run: docker run --rm flash-chroma:ci
+        run: docker run --rm flash-chroma
