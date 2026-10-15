@@ -1,5 +1,7 @@
 # 报告数据索引
 
+最新已完成测试版本为[R27](r27/README.md)：13组拟合与证明、新压力模型全色域/100图验收、CPU/CUDA及OpenColorIO严格配对比较。[完整PDF](../../output/pdf/problem16-latest-tested-report.pdf)。R20-R26归档仍分别保留在同名子目录；下文为历史探索报告的固定数据索引。
+
 由 `scripts/build_typst_data.py` 从 Git `f73b8dd81a360521098ee985d68bcb3b548ccb19` 和独立日志 `32f23355ab678e0696725ac871762a5be7a0ce57` 生成。
 包含 43 次运行、24 个当前候选、696 条逐图结果；原始日志按字节归档，生成器不修改 `logs/`。
 

@@ -41,6 +41,9 @@ struct DeviceBuffer {
   size_t bytes = 0;
   explicit DeviceBuffer(size_t size) : bytes(size) { CUDA(cudaMalloc(&pointer, size)); }
   ~DeviceBuffer() { if (pointer) cudaFree(pointer); }
+  void release() {
+    if (pointer) { CUDA(cudaFree(pointer)); pointer = nullptr; bytes = 0; }
+  }
   DeviceBuffer(const DeviceBuffer&) = delete;
   DeviceBuffer& operator=(const DeviceBuffer&) = delete;
 };
@@ -279,7 +282,7 @@ int main(int argc, char** argv) try {
               << ",\"cuda_driver_version\":" << driver_version << ",\"cuda_runtime_version\":" << runtime_version
               << ",\"global_memory_bytes\":" << properties.totalGlobalMem << ",\"multiprocessors\":" << properties.multiProcessorCount
               << ",\"kernel\":\"cuda_q16_fused4\",\"default_kernel\":\"cuda_q16_fused4\",\"available_kernels\":[\"cuda_q16_fused4\"]"
-              << ",\"commands\":[\"info\",\"apply\",\"pixels\",\"cube\",\"verify\",\"bench\"],\"benchmark_schema_version\":2"
+              << ",\"commands\":[\"info\",\"apply\",\"pixels\",\"cube\",\"verify\",\"bench\"],\"benchmark_schema_version\":3"
               << ",\"cpu_main_integration\":false}\n";
     return 0;
   }
@@ -422,7 +425,12 @@ int main(int argc, char** argv) try {
     else host_wall.push_back(wall);
   }
   const uint64_t host_checksum = checksum(host_output.data(), host_output.size());
-  if (host_checksum != transfer_checksum) throw std::runtime_error("ordinary-host and pinned-transfer output checksums differ");
+  if (std::memcmp(host_output.data(), output.pointer, host_output.size()) != 0)
+    throw std::runtime_error("ordinary-host and pinned-transfer output bytes differ");
+  // These synchronized transfer buffers are no longer used. Release them before
+  // allocating the resident pair instead of retaining both pairs simultaneously.
+  // Checked cudaFree calls stay outside every timed interval.
+  device_input.release(); device_output.release();
   // Keep all original images resident so the device-only measure processes the
   // same 100 distinct inputs, and never reapplies the transform to prior output.
   DeviceBuffer resident_input(images.size()), resident_output(images.size());
@@ -437,10 +445,16 @@ int main(int argc, char** argv) try {
     applied.record(); applied.sync();
     if (repetition >= 0) { resident_event.push_back(elapsed(start, applied)); resident_wall.push_back(milliseconds(wall_start)); }
   }
+  // Validate the device-only branch too. Reuse the existing pinned host output;
+  // this download and byte check are deliberately outside the resident timer.
+  CUDA(cudaMemcpy(output.pointer, resident_output.pointer, images.size(), cudaMemcpyDeviceToHost));
+  if (std::memcmp(host_output.data(), output.pointer, host_output.size()) != 0)
+    throw std::runtime_error("ordinary-host and resident output bytes differ");
+  const uint64_t resident_checksum = checksum(output.pointer, images.size());
   if (!options.output.empty()) {
     write_bytes(options.output, host_output.data(), host_output.size());
   }
-  std::cout << "{\"benchmark_schema_version\":2,\"kernel\":\"cuda_q16_fused4\",\"device\":\"" << properties.name << "\",\"images\":" << count
+  std::cout << "{\"benchmark_schema_version\":3,\"kernel\":\"cuda_q16_fused4\",\"device\":\"" << properties.name << "\",\"images\":" << count
             << ",\"reps\":" << options.reps << ",\"batch_images\":" << options.batch << ",\"block_threads\":" << options.block
             << ",\"model_setup_ms\":" << model_ms << ",\"decode_ms\":" << decode_ms << ",\"host_pinned_staging_ms\":" << staging_ms
             << ",\"cold_transfer_wall_ms\":" << cold_transfer_wall_ms
@@ -448,14 +462,20 @@ int main(int argc, char** argv) try {
             << ",\"set_transfer_wall_ms_p50\":" << median(transfer_wall) << ",\"set_transfer_event_ms_p50\":" << median(transfer_event)
             << ",\"set_resident_event_ms_p50\":" << median(resident_event) << ",\"set_resident_wall_ms_p50\":" << median(resident_wall)
             << ",\"model_device_bytes\":" << model.nodes.bytes + model.axes.bytes
-            << ",\"model_serialized_bytes\":" << host.serialized_bytes << ",\"image_device_buffers_bytes\":" << 2 * group_bytes + 2 * images.size()
+            << ",\"model_serialized_bytes\":" << host.serialized_bytes
+            << ",\"image_device_buffers_bytes\":" << std::max(2 * group_bytes, 2 * images.size())
+            << ",\"transfer_image_device_buffers_bytes\":" << 2 * group_bytes
+            << ",\"resident_image_device_buffers_bytes\":" << 2 * images.size()
+            << ",\"transfer_buffers_released_before_resident\":true"
+            << ",\"image_device_buffers_scope\":\"peak explicit CUDA image allocations across sequential benchmark phases; excludes model, allocator and driver overhead\""
             << ",\"host_image_bytes\":" << images.size() << ",\"host_output_bytes\":" << host_output.size() << ",\"host_pinned_bytes\":" << 2 * images.size()
             << ",\"output_bytes\":" << host_output.size() << ",\"output_checksum_fnv1a64\":\"" << host_checksum
             << "\",\"transfer_output_checksum_fnv1a64\":\"" << transfer_checksum << "\",\"host_transfer_output_checksums_match\":true"
+            << ",\"resident_output_checksum_fnv1a64\":\"" << resident_checksum << "\",\"all_timing_paths_output_bytes_equal\":true"
             << ",\"process_wall_ms\":" << milliseconds(process_start)
             << ",\"host_scope\":\"ordinary decoded host RGB8 -> pinned copy -> H2D -> fused four-stage kernel -> D2H and synchronization -> ordinary host RGB8 copy; excludes allocation, decode, model setup and checksum\""
             << ",\"transfer_scope\":\"pinned H2D + fused four-stage kernel + D2H; excludes decode, initial pinned staging, model setup and checksum\""
-            << ",\"resident_scope\":\"100 original images already on device; kernel sequence and synchronization; excludes H2D and D2H\"";
+            << ",\"resident_scope\":\"100 original images already on device; kernel sequence and synchronization; excludes H2D, validation D2H and byte comparison\"";
   print_vector("h2d_ms_reps", h2d); print_vector("kernel_ms_reps", kernel); print_vector("d2h_ms_reps", d2h);
   print_vector("transfer_event_ms_reps", transfer_event); print_vector("transfer_wall_ms_reps", transfer_wall);
   print_vector("set_host_wall_ms_reps", host_wall);

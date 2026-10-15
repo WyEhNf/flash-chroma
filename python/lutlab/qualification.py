@@ -95,6 +95,10 @@ def accept(args):
     report["backend_cube_sha256_equal"] = len(outputs) > 1 and len(set(outputs)) == 1
     if len(outputs) > 1 and not report["backend_cube_sha256_equal"]:
         raise RuntimeError("CPU and CUDA whole-cube outputs differ")
+    image_outputs = [row["mapped_images_sha256"] for row in report["backends"].values()]
+    report["backend_images_sha256_equal"] = len(image_outputs) > 1 and len(set(image_outputs)) == 1
+    if len(image_outputs) > 1 and not report["backend_images_sha256_equal"]:
+        raise RuntimeError("CPU and CUDA native image outputs differ")
     for record in source_records:
         if metrics.file_sha256(record["path"]) != record["sha256"]:
             raise RuntimeError("source changed during acceptance")

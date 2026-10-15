@@ -13,6 +13,7 @@ option(JSHC_ENABLE_AVX2 "Build the runtime-dispatched x86 AVX2 kernel" ON)
 option(JSHC_ENABLE_CPP_SIMD "Build optional C++26/experimental SIMD backend" OFF)
 option(JSHC_ENABLE_ZIG "Build optional Zig SIMD backend (requires Zig)" OFF)
 option(JSHC_ENABLE_RUST "Build optional Rust portable_simd backend" OFF)
+option(JSHC_ENABLE_FULL_FIT "Build optional full-domain offline normal-equation library" OFF)
 
 add_library(jshc_core STATIC cpp/src/lut.cpp cpp/src/fit_r14.cpp)
 target_include_directories(jshc_core PUBLIC cpp/include)
@@ -25,6 +26,34 @@ if(JSHC_ENABLE_OPENMP)
   find_package(OpenMP QUIET)
   if(OpenMP_CXX_FOUND)
     target_link_libraries(jshc_core PUBLIC OpenMP::OpenMP_CXX)
+  endif()
+endif()
+
+# Kept separate from the pixel runtime: no training library is loaded or linked
+# into jshc_core. The input table is read directly through a versioned C ABI.
+if(JSHC_ENABLE_FULL_FIT)
+  set(JSHC_FULL_FIT_CPP "${CMAKE_CURRENT_SOURCE_DIR}/cpp/src/full_normals.cpp")
+  set(JSHC_FULL_FIT_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/cpp/include/jshc/full_normals.h")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${JSHC_FULL_FIT_CPP}" "${JSHC_FULL_FIT_HEADER}")
+  file(SHA256 "${JSHC_FULL_FIT_CPP}" JSHC_FULL_CPP_SHA)
+  file(SHA256 "${JSHC_FULL_FIT_HEADER}" JSHC_FULL_HEADER_SHA)
+  string(SHA256 JSHC_FULL_SOURCE_SHA "${JSHC_FULL_CPP_SHA}:${JSHC_FULL_HEADER_SHA}")
+  add_library(jshc_full_fit SHARED "${JSHC_FULL_FIT_CPP}")
+  target_include_directories(jshc_full_fit PRIVATE cpp/include)
+  target_compile_definitions(jshc_full_fit PRIVATE JSHC_FULL_FIT_BUILD
+    "JSHC_FULL_FIT_SOURCE_SHA256=\"${JSHC_FULL_SOURCE_SHA}\"")
+  if(JSHC_ENABLE_OPENMP AND OpenMP_CXX_FOUND)
+    target_link_libraries(jshc_full_fit PRIVATE OpenMP::OpenMP_CXX)
+  endif()
+  if(MINGW)
+    foreach(JSHC_FIT_DLL libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libgomp-1.dll)
+      execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-print-file-name=${JSHC_FIT_DLL}"
+        OUTPUT_VARIABLE JSHC_FIT_DLL_PATH OUTPUT_STRIP_TRAILING_WHITESPACE)
+      if(IS_ABSOLUTE "${JSHC_FIT_DLL_PATH}" AND EXISTS "${JSHC_FIT_DLL_PATH}")
+        add_custom_command(TARGET jshc_full_fit POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+          "${JSHC_FIT_DLL_PATH}" "$<TARGET_FILE_DIR:jshc_full_fit>" VERBATIM)
+      endif()
+    endforeach()
   endif()
 endif()
 

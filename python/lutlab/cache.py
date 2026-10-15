@@ -14,7 +14,9 @@ import json
 import math
 import os
 import platform
+import struct
 import sys
+import sysconfig
 import tempfile
 import uuid
 from dataclasses import dataclass
@@ -23,7 +25,7 @@ from pathlib import Path
 from . import io
 
 SCHEMA_VERSION = 1
-SOURCE_FILES = ("cache.py", "cli.py", "cascade.py", "fit.py", "interp.py", "io.py")
+SOURCE_FILES = ("box.py", "cache.py", "cli.py", "cascade.py", "curve.py", "fit.py", "fullfit.py", "interp.py", "io.py", "step.py")
 
 
 def file_sha256(path: str | Path) -> str:
@@ -47,9 +49,9 @@ def source_fingerprint() -> dict:
 
 def fitting_defaults() -> dict:
     """Record callable defaults as well as the source hashes of internal constants."""
-    from . import cascade, fit
+    from . import box, cascade, curve, fit, fullfit, step
     defaults = {}
-    for module in (fit, cascade):
+    for module in (fit, cascade, curve, fullfit, box, step):
         for name, value in sorted(vars(module).items()):
             # lru_cache wraps sampling/grid helpers in a callable object. Its
             # underlying defaults still govern the actual fit and must be bound.
@@ -76,13 +78,27 @@ def algorithm_settings(parameters: dict) -> dict:
     These are recorded controls, not a second set of tunable defaults. Callable
     defaults are read from the fitter; in-body constants remain source-bound.
     """
-    from . import fit
+    from . import box, curve, fit
 
     def default(function, name):
         return inspect.signature(function).parameters[name].default
 
     settings = {}
-    if parameters.get("method") in ("ls_tetra_jitter", "ls_tetra_guarded"):
+    if parameters.get("method") == "adaptive_full":
+        fallback = algorithm_settings({**parameters, "method": "ls_tetra_full"})
+        fallback["adaptive_model"] = {
+            "precedence": ["prove complete constant-slice partitions", "exact sampling at proved reachable input vertices", "R25 full-domain fallback"],
+            "partition_scope": "all adjacent RGB8 input slices, all remaining coordinates and channels",
+            "hold_coordinates": "canonical cell indices; Q16 coordinate zero, except endpoint 255 uses 65536",
+            "grid_completion": "include required integer knots and 0/255, split largest remaining gap to m",
+            "palette_proof": "one-hot stage outputs are stored vertices; finite sets propagate through actual sparse operators",
+            "target_semantics": "each model samples/fits its own original LUT; no residual or composite labels",
+            "runtime": "existing four independent Q16 maps; serialized authoritative tables, unchanged SLUT v1",
+        }
+        for key in ("training", "least_squares", "integer_refinement", "grid", "structured"):
+            fallback[key]["scope"] = "full-domain fallback only"
+        return fallback
+    if parameters.get("method") in ("ls_tetra_jitter", "ls_tetra_guarded", "ls_tetra_boundary", "ls_tetra_structured", "ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box"):
         settings["training"] = {
             "scheme": "one_jittered_point_per_4x4x4_block", "block_width": 4,
             "sample_count": 64 ** 3, "seed": default(fit.fit_stratified_tetra, "seed"),
@@ -96,6 +112,64 @@ def algorithm_settings(parameters: dict) -> dict:
         settings["integer_refinement"] = {
             "objective": "unrounded_quadratic", "sweeps": default(fit.int_refine, "sweeps"),
         }
+    if parameters.get("method") in ("ls_tetra_boundary", "ls_tetra_structured"):
+        settings["training"] = {
+            "scheme": "exact_boundary_and_weighted_stratified_interior", "block_width": 4,
+            "interior_sample_count": 64 ** 3, "exact_boundary_count": 256 ** 3 - 254 ** 3,
+            "sample_count": 64 ** 3 + 256 ** 3 - 254 ** 3,
+            "seed": default(fit.fit_boundary_tetra, "seed"),
+            "sampling_function_default_seed": default(fit.boundary_complete_points, "seed"),
+            "interior_weight": "interior population of the stratum / 64",
+            "boundary_weight": 1 / 64, "weight_sum": float(64 ** 3),
+            "objective_measure": "uniform full-cube; unbiased interior quadrature and exact boundary",
+        }
+    if parameters.get("method") == "ls_tetra_supported":
+        m = parameters["m"]
+        settings["training"] = {
+            "scheme": "exact_boundary_and_grid_vertices_with_remaining_interior_strata", "block_width": 4,
+            "exact_boundary_count": 256 ** 3 - 254 ** 3, "exact_interior_vertex_count": (m - 2) ** 3,
+            "full_grid_vertex_count": m ** 3, "random_interior_maximum": 64 ** 3,
+            "seed": default(fit.fit_supported_tetra, "seed"),
+            "sampling_function_default_seed": default(fit.supported_points, "seed"),
+            "interior_weight": "non-vertex interior population of the stratum / 64",
+            "exact_color_weight": 1 / 64, "weight_sum": float(64 ** 3),
+            "data_hessian_eigenvalue_lower_bound": 1 / 64,
+            "objective_measure": "uniform full-cube; exact boundary/vertices and unbiased remaining interior",
+        }
+    if parameters.get("method") in ("ls_tetra_full", "ls_tetra_full_box"):
+        from . import fullfit
+        settings["training"] = {
+            "scheme": "exact_full_cube_uint64_stencil", "sample_count": 256 ** 3,
+            "color_weight": 1 / 64, "weight_sum": float(64 ** 3),
+            "data_hessian_eigenvalue_lower_bound": 1 / 64,
+            "requested_threads": default(fit.fit_full_box_tetra if parameters.get("method") == "ls_tetra_full_box" else fit.fit_full_tetra, "threads"),
+            "wrapper_default_threads": default(fullfit.normal_equations, "threads"),
+            "native_trainer": fullfit.trainer_fingerprint(),
+            "objective_measure": "exact uniform full-cube, independent original-LUT targets",
+        }
+    if parameters.get("method") == "ls_tetra_full_box":
+        settings["least_squares"] = {
+            "basis": "tetra_q16_unrounded_output", "solver": "centred_diagonal_lbfgsb", "lambda": 0., "bounds": [0, 255],
+            "scaled_kkt_tolerance": default(box.solve_box, "tol"), "maxiter": default(box.solve_box, "maxiter"),
+            "ftol": default(box.solve_box, "ftol"), "maxcor": default(box.solve_box, "maxcor"),
+            "initialization": "R25 feasible integer result from regularized CG and integer refinement",
+            "warm_start_cg": {"lambda": default(fit.solve_spd, "lam"), "rtol": default(fit.solve_spd, "tol"),
+                              "maxiter": default(fit.solve_spd, "maxiter")},
+            "integer_selection": "exact full-domain unrounded SSE change, retain R25 result unless strictly better",
+        }
+    if parameters.get("method") in ("ls_tetra_structured", "ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box"):
+        settings["structured"] = {
+            "verification": "all 256^3 source colours, each channel depends on one input axis",
+            "curve_inputs": 256, "max_node_value": default(curve.fit_integer_curve, "max_node_value"),
+            "objective": "minimum maximum byte error then minimum SSE at that global bound",
+            "solver": "two-pass integer dynamic programming",
+            "fallback": {"ls_tetra_supported": "fully_supported_ls", "ls_tetra_full": "exact_full_domain_ls",
+                         "ls_tetra_full_box": "exact_full_domain_box_ls"}.get(
+                parameters.get("method"), "ls_tetra_boundary"),
+            "runtime": "expand curves into ordinary m^3 RGB8 nodes; unchanged Q16 tetra",
+        }
+        for name in ("training", "least_squares", "integer_refinement"):
+            settings[name]["scope"] = "general three-dimensional fallback only"
     if parameters.get("method") == "ls_tetra_guarded":
         settings["q16_refinement"] = {
             "sweeps": default(fit.fit_guarded_tetra, "sweeps"),
@@ -130,7 +204,10 @@ def build_identity(input_paths: list[Path], parameters: dict) -> dict:
         "source_sha256": source_fingerprint(),
         "solver_environment": {
             "python": platform.python_version(), "numpy": importlib.metadata.version("numpy"),
-            "scipy": importlib.metadata.version("scipy"), "machine": platform.machine(),
+            # CPython build metadata is stable across parent/child processes.
+            # platform.machine() can transiently return "" through Windows WMI.
+            "scipy": importlib.metadata.version("scipy"),
+            "python_platform": sysconfig.get_platform(), "pointer_bits": struct.calcsize("P") * 8,
             "platform": sys.platform, "byteorder": sys.byteorder,
         },
         "format": {"version": 1, "full_shape": list(io.FULL_SHAPE), "node_dtype": "uint8",

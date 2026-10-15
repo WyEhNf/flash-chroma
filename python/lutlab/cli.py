@@ -13,7 +13,8 @@ from . import cache, cascade, data, interp, io, luts, metrics
 from .runlog import Run
 
 METHODS = ("sample", "sample_interp", "box", "ls_tri", "ls_tetra", "ls_tetra_int",
-           "ls_tetra_q16", "ls_tetra_jitter", "ls_tetra_guarded", "irls_tetra", "tail_tetra_int")
+           "ls_tetra_q16", "ls_tetra_jitter", "ls_tetra_boundary", "ls_tetra_structured", "ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box",
+           "ls_tetra_guarded", "irls_tetra", "tail_tetra_int", "adaptive_full")
 GRIDS = ("uniform", "curvature", "error", "dp")
 
 
@@ -24,9 +25,13 @@ def fit_parameters(args) -> dict:
         raise ValueError("unsupported fitting mode or method")
     if args.mode == "residual" and args.method not in ("ls_tetra_int", "tail_tetra_int"):
         raise ValueError("residual fitting supports ls_tetra_int and tail_tetra_int only")
+    if args.method == "adaptive_full" and args.mode != "seq":
+        raise ValueError("adaptive_full supports four independent sequential stages only")
     grid = getattr(args, "grid", None) or ("curvature" if getattr(args, "adaptive", False) else "uniform")
     if grid not in GRIDS:
         raise ValueError(f"unknown grid mode: {grid}")
+    if args.method in ("ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box", "adaptive_full") and grid != "dp":
+        raise ValueError(f"{args.method} requires --grid dp for exact integer vertex observations")
     if getattr(args, "adaptive", False) and grid != "curvature":
         raise ValueError("--adaptive conflicts with a non-curvature --grid")
     return {"m": args.m, "mode": args.mode, "method": args.method, "grid": grid,

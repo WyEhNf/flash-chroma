@@ -71,6 +71,36 @@ def _cube_stats(cube, comp, top_k: int, threshold: float) -> dict:
                          for sq, r, g, b in hotspots]}
 
 
+def _execute_images(paths, files, directory, *, backend, binary, kernel, threads,
+                    competition, device, block, standard_images):
+    """Consume the native image path, including its decoder and RGB8 gates.
+
+    CUDA's verify command accepts exactly 100 standard frames. Its ordinary
+    apply command covers smaller validation sets without weakening the native
+    input checks. Neither path is a performance measurement.
+    """
+    raw = directory / "images.raw"
+    common = dict(backend=backend, executable=binary, kernel=kernel, threads=threads,
+                  competition=competition, device=device, block=block)
+    if backend == "cpu" or (len(files) == 100 and standard_images):
+        listing = directory / "images.txt"
+        listing.write_text("".join(str(path) + "\n" for path in files), encoding="utf-8")
+        execution = runtime.verify(paths, listing, output=raw, **common)
+        if execution.get("images") != len(files) or execution.get("output_bytes") != raw.stat().st_size:
+            raise RuntimeError("native image verification returned an incomplete image set")
+        return raw, {"mode": "verify", "source_rgb8_checked": competition or backend == "cuda",
+                     "runtime": execution}
+    commands = []
+    with raw.open("wb") as stream:
+        for index, path in enumerate(files):
+            output = directory / f"image-{index}.png"
+            execution = runtime.apply(paths, path, output, **common)
+            commands.append(execution)
+            stream.write(io.load_image(output).tobytes())
+            output.unlink()
+    return raw, {"mode": "per_image_apply", "source_rgb8_checked": True, "runtime": commands}
+
+
 def validate(paths: list[Path], composite: Path, image_list: Path, *, kernel: str,
              threads: int, threshold: float, metric: str = "mean", full_cube: bool = True,
              top_k: int = 20, executable: str | Path | None = None,
@@ -102,8 +132,8 @@ def validate(paths: list[Path], composite: Path, image_list: Path, *, kernel: st
     sparse_contract = model_contract["pass"]
     if competition and (not sparse_contract or semantics != "independent"):
         raise ValueError("competition mode requires four independent integer LUTs with 17 <= m <= 33")
-    files = [Path(s.strip()) if Path(s.strip()).is_absolute() else data.ROOT / s.strip()
-             for s in Path(image_list).read_text().splitlines() if s.strip()]
+    files = [(Path(s.strip()) if Path(s.strip()).is_absolute() else data.ROOT / s.strip()).resolve()
+             for s in Path(image_list).read_text(encoding="utf-8").splitlines() if s.strip()]
     if not files:
         raise ValueError("empty image list")
     image_specs = []
@@ -117,26 +147,42 @@ def validate(paths: list[Path], composite: Path, image_list: Path, *, kernel: st
     tracked = [binary, Path(composite).resolve(), Path(image_list).resolve(), *paths, *files]
     hashes_before = {path: metrics.file_sha256(path) for path in tracked}
     with tempfile.TemporaryDirectory(prefix="jshc-validate-") as tmp:
-        raw = Path(tmp) / "cube.raw"
+        directory = Path(tmp)
+        image_raw, image_execution = _execute_images(paths, files, directory,
+            backend=backend, binary=binary, kernel=kernel, threads=threads,
+            competition=competition, device=device, block=block, standard_images=all(image_specs))
+        raw = directory / "cube.raw"
         execution = runtime.cube(paths, raw, backend=backend, executable=binary,
                                  kernel=kernel, threads=threads, competition=competition,
                                  device=device, block=block)
-        with _mapped_full(raw) as cube, _mapped_full(Path(composite)) as comp:
+        with _mapped_full(raw) as cube, _mapped_full(Path(composite)) as comp, image_raw.open("rb") as image_stream:
             per_image = []
             for path in files:
                 img = io.load_image(path)
-                st, sq = _stats(io.apply_full(cube, img), io.apply_full(comp, img))
+                encoded = image_stream.read(img.nbytes)
+                if len(encoded) != img.nbytes:
+                    raise RuntimeError(f"native image output is truncated: {path}")
+                pred = np.frombuffer(encoded, dtype=np.uint8).reshape(img.shape)
+                if not np.array_equal(pred, io.apply_full(cube, img)):
+                    raise RuntimeError(f"native image output differs from whole-cube mapping: {path}")
+                st, sq = _stats(pred, io.apply_full(comp, img))
                 per_image.append({"image": str(path), **st,
                                   "pixels_at_or_above_threshold": int(np.count_nonzero(
                                       np.sqrt(sq.astype(np.float64)) >= threshold)),
                                   "pass": bool(st[metric] < threshold)})
+            if image_stream.read(1):
+                raise RuntimeError("native image output contains trailing pixels")
             image_pass = all(row["pass"] for row in per_image)
-            contract_pass = sparse_contract and semantics == "independent" and all(image_specs)
+            contract_pass = (sparse_contract and semantics == "independent" and all(image_specs)
+                             and image_execution["source_rgb8_checked"])
             result = {"kernel": kernel, "backend": backend, "metric": metric, "threshold_strict": threshold,
                       "constraint_scope": constraint_scope, "semantics": semantics,
                       "competition_mode": competition, "stages": len(paths), "sizes": sizes,
                       "model_contract": model_contract,
                       "image_set_pass": image_pass, "cube_stats_computed": full_cube,
+                      "image_execution_verified": True,
+                      "image_execution": image_execution,
+                      "mapped_images_sha256": metrics.file_sha256(image_raw),
                       "cube_constraint_pass": None, "submission_contract_pass": contract_pass,
                       "submission_contract_note": "local conservative format/declared semantics only; official threshold and format are not supplied",
                       "n_images": len(files),

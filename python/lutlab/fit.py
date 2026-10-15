@@ -16,6 +16,7 @@ Families
 from __future__ import annotations
 
 import time
+import hashlib
 from functools import lru_cache
 
 import numpy as np
@@ -24,6 +25,7 @@ import scipy.sparse.linalg as spla
 
 from .interp import apply_tetra_q16, tetra_index_weights_q, tetra_weights
 from .io import ONE, Q, SparseLut, axis_tables, uniform_grid
+from . import curve
 
 
 # ================================================================ separable machinery
@@ -518,12 +520,26 @@ def guard_points_excluding(points, count=1 << 16, seed=0x473138):
     return np.concatenate(parts)
 
 
-@lru_cache(maxsize=4)
-def _stratified_H(grid_key: bytes, m: int, seed: int):
+def _tetra_system(points, grid, weights=None):
+    """Assemble H and A^T W with at most four design entries per sample."""
+    m = grid.shape[1]
+    I, W = tetra_weights(points, *axis_tables(grid), m)
+    A = sp.csr_matrix((W.ravel(), I.ravel(), np.arange(0, 4 * len(points) + 1, 4,
+                                                    dtype=np.int32)),
+                      shape=(len(points), m ** 3))
+    A.eliminate_zeros()
+    transpose = (A if weights is None else A.multiply(weights[:, None])).T.tocsr()
+    return (transpose @ A).tocsr(), transpose
+
+
+@lru_cache(maxsize=2)
+def _stratified_system(grid_key: bytes, m: int, seed: int):
     grid = np.frombuffer(grid_key).reshape(3, m)
-    points = stratified_points(seed)
-    H, _ = normal_equations(points, np.zeros((len(points), 3), np.uint8), None, grid)
-    return H
+    H, transpose = _tetra_system(stratified_points(seed), grid)
+    # Preserve the sorted column order of the former COO assembler. Tiny CG
+    # reduction-order differences can change weakly constrained integer nodes.
+    H.sort_indices()
+    return H, transpose
 
 
 def fit_stratified_tetra(T, grid, seed=0x533138, *, diagnostics=None):
@@ -531,18 +547,209 @@ def fit_stratified_tetra(T, grid, seed=0x533138, *, diagnostics=None):
     points = stratified_points(seed)
     target = T[points[:, 0], points[:, 1], points[:, 2]]
     m = grid.shape[1]
-    H = _stratified_H(np.ascontiguousarray(grid, np.float64).tobytes(), m, seed)
-    I, W = tetra_weights(points, *axis_tables(grid), m)
-    b = np.empty((m ** 3, 3))
-    for channel in range(3):
-        b[:, channel] = np.bincount(I.ravel(), weights=(W * target[:, channel, None]).ravel(),
-                                    minlength=m ** 3)
+    H, transpose = _stratified_system(np.ascontiguousarray(grid, np.float64).tobytes(), m, seed)
+    b = transpose @ target.astype(np.float64)
     x0 = fit_ls_sep(T, grid, "hat").reshape(-1, 3)
     report = {} if diagnostics is None else diagnostics
     report.update({"sample_scheme": "one_jittered_point_per_4x4x4_block", "sample_seed": seed,
-                   "sample_count": len(points)})
+                   "sample_count": len(points),
+                   "normal_equations_assembly": "CSR design, sorted Hessian columns matching legacy COO"})
     x = solve_spd(H, b, x0, diagnostics=report.setdefault("solver", {}))
     return x.reshape(m, m, m, 3), H, b
+
+
+@lru_cache(maxsize=1)
+def boundary_complete_points(seed: int = 0x533231) -> tuple[np.ndarray, np.ndarray]:
+    """Exact RGB-cube boundary plus unbiased, volume-weighted interior strata.
+
+    Each of the 64^3 width-four blocks contributes one uniformly drawn interior
+    colour, weighted by its interior population / 64. Every boundary colour is
+    included exactly once with weight 1/64. The total weight is therefore 64^3,
+    the same normalization as ordinary jitter LS. Boundary coverage changes the
+    sampling variance, not the intended uniform full-cube objective.
+    """
+    base = np.stack(np.meshgrid(*(np.arange(0, 256, 4, dtype=np.int16),) * 3,
+                               indexing="ij"), -1).reshape(-1, 3)
+    low, high = np.maximum(base, 1), np.minimum(base + 4, 255)
+    rng = np.random.default_rng(seed)
+    interior = rng.integers(low, high, dtype=np.uint8)
+    interior_weight = np.prod(high - low, axis=1).astype(np.float64) / 64
+    all_values = np.arange(256, dtype=np.uint8)
+    inside = np.arange(1, 255, dtype=np.uint8)
+    ends = np.asarray([0, 255], dtype=np.uint8)
+    # Disjoint face partitions: R faces own all edges/corners, G faces exclude
+    # those R endpoints, and B faces exclude both R and G endpoints.
+    boundary = [np.stack(np.meshgrid(*axes, indexing="ij"), -1).reshape(-1, 3)
+                for axes in ((ends, all_values, all_values),
+                             (inside, ends, all_values), (inside, inside, ends))]
+    points = np.concatenate([interior, *boundary])
+    weights = np.concatenate([interior_weight, np.full(256 ** 3 - 254 ** 3, 1 / 64)])
+    points.setflags(write=False)
+    weights.setflags(write=False)
+    return points, weights
+
+
+@lru_cache(maxsize=2)
+def _boundary_system(grid_key: bytes, m: int, seed: int):
+    """Reuse a weighted sparse design instead of expanding 16 COO pairs/row."""
+    grid = np.frombuffer(grid_key).reshape(3, m)
+    points, weights = boundary_complete_points(seed)
+    return _tetra_system(points, grid, weights)
+
+
+def fit_boundary_tetra(T, grid, seed=0x533231, *, diagnostics=None):
+    """Independent-stage tetra LS with exact coverage of all input faces."""
+    points, weights = boundary_complete_points(seed)
+    target = T[points[:, 0], points[:, 1], points[:, 2]].astype(np.float64)
+    m = grid.shape[1]
+    H, weighted_transpose = _boundary_system(np.ascontiguousarray(grid, np.float64).tobytes(), m, seed)
+    b = weighted_transpose @ target
+    x0 = fit_ls_sep(T, grid, "hat").reshape(-1, 3)
+    report = {} if diagnostics is None else diagnostics
+    diagonal = H.diagonal()
+    report.update({"sample_scheme": "exact_boundary_and_weighted_stratified_interior",
+        "sample_seed": seed, "sample_count": len(points), "interior_sample_count": 64 ** 3,
+        "exact_boundary_count": 256 ** 3 - 254 ** 3, "sample_weight_sum": float(weights.sum()),
+        "weight_scope": "uniform full-cube measure; exact boundary, unbiased interior quadrature",
+        "normal_equations_nnz": int(H.nnz), "weighted_transpose_nnz": int(weighted_transpose.nnz),
+        "zero_diagonal_nodes": int(np.count_nonzero(diagonal == 0)),
+        "minimum_diagonal": float(diagonal.min())})
+    x = solve_spd(H, b, x0, diagnostics=report.setdefault("solver", {}))
+    return x.reshape(m, m, m, 3), H, b
+
+
+@lru_cache(maxsize=1)
+def supported_points(grid_key: bytes, m: int, seed: int = 0x533231):
+    """Exact boundary/grid vertices and unbiased sampling of the remainder.
+
+    The integer grid is a subset of the RGB8 input domain. Every grid vertex
+    gets its own exact observation with weight 1/64, giving H >= I/64 before
+    regularisation. The rest of each width-four interior stratum is sampled
+    uniformly with its remaining population / 64; no anchor is counted twice.
+    """
+    grid = np.frombuffer(grid_key, dtype=np.float64).reshape(3, m)
+    if (not 2 <= m <= 256 or not np.all(np.isfinite(grid)) or np.any(np.diff(grid, axis=1) <= 0)
+            or np.any(grid[:, 0] != 0) or np.any(grid[:, -1] != 255) or np.any(grid != np.rint(grid))):
+        raise ValueError("supported fitting requires an integer grid with endpoints 0 and 255")
+    membership = np.zeros((3, 256), dtype=np.uint8)
+    for axis in range(3):
+        membership[axis, grid[axis].astype(np.intp)] = 1
+    prefix = np.pad(np.cumsum(membership, axis=1, dtype=np.int16), ((0, 0), (1, 0)))
+    base = np.stack(np.meshgrid(*(np.arange(0, 256, 4, dtype=np.int16),) * 3,
+                               indexing="ij"), -1).reshape(-1, 3)
+    low, high = np.maximum(base, 1), np.minimum(base + 4, 255)
+    population = np.prod(high - low, axis=1)
+    anchors = np.prod(np.stack([prefix[a, high[:, a]] - prefix[a, low[:, a]] for a in range(3)], 1), axis=1)
+    remaining = population - anchors
+    active = remaining > 0
+    low, high = low[active], high[active]
+    rng = np.random.default_rng(seed)
+    interior = rng.integers(low, high, dtype=np.uint8)
+    # Conditional uniform sampling. Empty remainders were removed above, so
+    # densely clustered integer grids cannot cause an impossible rejection loop.
+    rejected = np.flatnonzero(np.all(np.stack([membership[a, interior[:, a]] for a in range(3)], 1), axis=1))
+    while len(rejected):
+        interior[rejected] = rng.integers(low[rejected], high[rejected], dtype=np.uint8)
+        rejected = rejected[np.all(np.stack([membership[a, interior[rejected, a]] for a in range(3)], 1), axis=1)]
+    boundary = boundary_complete_points()[0][64 ** 3:]
+    vertices = np.stack(np.meshgrid(*(grid[a, 1:-1].astype(np.uint8) for a in range(3)), indexing="ij"), -1).reshape(-1, 3)
+    points = np.concatenate((interior, boundary, vertices))
+    weights = np.concatenate((remaining[active].astype(np.float64) / 64,
+                              np.full(len(boundary) + len(vertices), 1 / 64)))
+    points.setflags(write=False)
+    weights.setflags(write=False)
+    return points, weights
+
+
+@lru_cache(maxsize=2)
+def _supported_system(grid_key: bytes, m: int, seed: int):
+    grid = np.frombuffer(grid_key, dtype=np.float64).reshape(3, m)
+    points, weights = supported_points(grid_key, m, seed)
+    return _tetra_system(points, grid, weights)
+
+
+def fit_supported_tetra(T, grid, seed: int = 0x533231, *, diagnostics=None):
+    """Independent-stage LS with a uniform-measure, fully supported design."""
+    m = grid.shape[1]
+    key = np.ascontiguousarray(grid, np.float64).tobytes()
+    points, weights = supported_points(key, m, seed)
+    H, transpose = _supported_system(key, m, seed)
+    target = T[points[:, 0], points[:, 1], points[:, 2]].astype(np.float64)
+    b = transpose @ target
+    report = {} if diagnostics is None else diagnostics
+    report.update({"sample_scheme": "exact_boundary_and_grid_vertices_with_remaining_interior_strata",
+        "sample_seed": seed, "sample_count": len(points), "full_grid_vertex_count": m ** 3,
+        "exact_boundary_count": 256 ** 3 - 254 ** 3, "exact_interior_vertex_count": (m - 2) ** 3,
+        "random_interior_count": len(points) - (256 ** 3 - 254 ** 3) - (m - 2) ** 3,
+        "sample_weight_sum": float(weights.sum()), "normal_equations_nnz": int(H.nnz),
+        "zero_diagonal_nodes": int(np.count_nonzero(H.diagonal() == 0)),
+        "minimum_diagonal": float(H.diagonal().min()), "data_hessian_eigenvalue_lower_bound": 1 / 64,
+        "lower_bound_scope": "integer grid; each vertex observed exactly once with weight 1/64; before regularisation",
+        "weight_scope": "uniform full-cube measure; exact boundary and vertices, unbiased remaining interior"})
+    x0 = fit_ls_sep(T, grid, "hat").reshape(-1, 3)
+    x = solve_spd(H, b, x0, diagnostics=report.setdefault("solver", {}))
+    return x.reshape(m, m, m, 3), H, b
+
+
+def fit_full_tetra(T, grid, threads: int = 4, *, diagnostics=None):
+    """Independent-stage exact full-domain LS, with unchanged CG and refinement."""
+    from . import fullfit
+    H, b, assembly = fullfit.normal_equations(T, grid, threads)
+    report = {} if diagnostics is None else diagnostics
+    report.update(assembly)
+    report["weight_scope"] = "exact uniform full-cube measure; every colour once with weight 1/64"
+    x0 = fit_ls_sep(T, grid, "hat").reshape(-1, 3)
+    x = solve_spd(H, b, x0, diagnostics=report.setdefault("solver", {}))
+    return x.reshape((grid.shape[1],) * 3 + (3,)), H, b
+
+
+def fit_full_box_tetra(T, grid, threads: int = 4, *, diagnostics=None):
+    """Box-constrained full-domain LS with exact integer-objective selection."""
+    from . import box
+    report = {} if diagnostics is None else diagnostics
+    raw, H, b = fit_full_tetra(T, grid, threads, diagnostics=report)
+    m = grid.shape[1]
+    baseline = quantize(int_refine(raw, H, b)).reshape(-1, 3)
+    continuous = box.solve_box(H, b, baseline, diagnostics=report.setdefault("box_solver", {}))
+    report["box_solver"]["continuous_data_objective_gap_upper_bound"] = (
+        .5 * report["box_solver"]["projected_gradient_l2_squared"] / report["data_hessian_eigenvalue_lower_bound"])
+    report["box_solver"]["gap_scope"] = "continuous box problem and H>=I/64; floating-point KKT evaluation, not final-chain accuracy"
+    candidate = quantize(int_refine(continuous, H, b)).reshape(-1, 3)
+    numerator = box.integer_sse_change_numerator(H, b, baseline, candidate)
+    accepted = numerator < 0
+    report["integer_objective_selection"] = {"baseline": "ls_tetra_full", "candidate_sse_change_numerator": str(numerator),
+        "full_cube_sse_denominator_power": 32, "accepted": accepted,
+        "baseline_node_sha256": hashlib.sha256(memoryview(baseline)).hexdigest(),
+        "choice": "box_integer" if accepted else "baseline_integer", "comparison": "exact dyadic moments and Python integer reduction"}
+    return (candidate if accepted else baseline).reshape(m, m, m, 3), H, b
+
+
+def fit_structured_tetra(T, grid, *, diagnostics=None, general_method="boundary"):
+    """Fit proved 1D channels; select an explicit independent 3D LS strategy."""
+    fitters = {"boundary": fit_boundary_tetra, "supported": fit_supported_tetra, "full": fit_full_tetra,
+               "full_box": fit_full_box_tetra}
+    if general_method not in fitters:
+        raise ValueError("unknown general three-dimensional fitting strategy")
+    report = {} if diagnostics is None else diagnostics
+    channels = curve.separable_channels(T)
+    m = grid.shape[1]
+    if channels is None:
+        report["route"] = f"general_{general_method}_ls"
+        fitter = fitters[general_method]
+        x, H, b = fitter(T, grid, diagnostics=report.setdefault("least_squares", {}))
+        if general_method == "full_box":
+            return x  # already refined and compared exactly against the R25 integer result
+        return quantize(int_refine(x, H, b).reshape(m, m, m, 3))
+    report.update(route="verified_axis_separable", verified_source_colors=256 ** 3, channels=[])
+    index, fraction = axis_tables(grid)
+    nodes = np.empty((m, m, m, 3), dtype=np.uint8)
+    for channel, (axis, values) in enumerate(channels):
+        fitted, certificate = curve.fit_integer_curve(values, index[axis], fraction[axis], m)
+        shape = [1, 1, 1]
+        shape[axis] = m
+        nodes[..., channel] = fitted.reshape(shape)
+        report["channels"].append({"channel": channel, "input_axis": axis, **certificate})
+    return nodes
 
 
 def q16_refine_guarded(nodes, points, targets, grid, sweeps=3, *, guard_points=None,
@@ -812,6 +1019,8 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
     t0 = time.perf_counter()
     grid = uniform_grid(m) if grid is None else grid
     info: dict = {}
+    if method == "adaptive_full":
+        raise ValueError("adaptive_full requires fit_model so its authoritative axis tables are preserved")
     if method == "sample":
         x = fit_sample(T, grid)
     elif method == "sample_interp":
@@ -830,6 +1039,17 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
     elif method == "ls_tetra_jitter":
         x, H, b = fit_stratified_tetra(T, grid, diagnostics=info.setdefault("least_squares", {}))
         x = int_refine(x, H, b)
+    elif method == "ls_tetra_boundary":
+        x, H, b = fit_boundary_tetra(T, grid, diagnostics=info.setdefault("least_squares", {}))
+        x = int_refine(x, H, b)
+    elif method == "ls_tetra_structured":
+        x = fit_structured_tetra(T, grid, diagnostics=info.setdefault("structured", {}))
+    elif method == "ls_tetra_supported":
+        x = fit_structured_tetra(T, grid, diagnostics=info.setdefault("structured", {}), general_method="supported")
+    elif method == "ls_tetra_full":
+        x = fit_structured_tetra(T, grid, diagnostics=info.setdefault("structured", {}), general_method="full")
+    elif method == "ls_tetra_full_box":
+        x = fit_structured_tetra(T, grid, diagnostics=info.setdefault("structured", {}), general_method="full_box")
     elif method == "ls_tetra_guarded":
         x = fit_guarded_tetra(T, grid, diagnostics=info)
     elif method == "irls_tetra":
@@ -840,3 +1060,30 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
         raise KeyError(method)
     info["fit_s"] = round(time.perf_counter() - t0, 3)
     return quantize(x.reshape(m, m, m, 3)), grid, info
+
+
+def fit_model(T, m, method, grid=None, *, reachable_inputs=None):
+    """Model-aware entry preserving any explicitly constructed axis weights."""
+    if method != "adaptive_full":
+        nodes, positions, info = fit(T, m, method, grid=grid)
+        return SparseLut(positions, nodes), info
+    if grid is not None:
+        raise ValueError("adaptive_full chooses its own proved or fallback DP grid")
+    from . import step
+    started = time.perf_counter()
+    info = {}
+    model = step.exact_lower_hold(T, m, diagnostics=info.setdefault("partition", {}))
+    if model is not None:
+        route = "exact_lower_hold"
+    else:
+        model = step.aligned_vertices(T, m, reachable_inputs, diagnostics=info.setdefault("alignment", {}))
+        if model is not None:
+            route = "exact_reachable_vertices"
+        else:
+            positions = adaptive_dp_grid(T, m)
+            nodes, positions, fallback = fit(T, m, "ls_tetra_full", grid=positions)
+            model = SparseLut(positions, nodes)
+            info["fallback_fit"] = fallback
+            route = "full_domain_fallback"
+    info.update(model_route=route, target_semantics="own_original_LUT", fit_s=round(time.perf_counter() - started, 3))
+    return model, info

@@ -44,10 +44,18 @@ def fit_cascade_sequential(
     chain = []
     stage_times = []
     stage_info = []
+    palette = None
+    if base_method == "adaptive_full" and (use_adaptive_grid or grid_mode not in (None, "dp")):
+        raise ValueError("adaptive_full uses proof-selected grids with DP fallback")
     for k, T in enumerate(tables):
-        grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
-        nodes, grid, info = fit_mod.fit(T, m, base_method, grid=grid)
-        chain.append(io.SparseLut(grid, nodes))
+        if base_method == "adaptive_full":
+            from . import step
+            model, info = fit_mod.fit_model(T, m, base_method, reachable_inputs=palette)
+            palette = step.next_palette(model, palette, diagnostics=info.setdefault("output_palette", {}))
+        else:
+            grid = _grid_for(T, m, use_adaptive_grid, grid_mode)
+            model, info = fit_mod.fit_model(T, m, base_method, grid=grid)
+        chain.append(model)
         stage_times.append(info["fit_s"])
         stage_info.append(info)
     return chain, {"fit_s": round(time.perf_counter() - t0, 3), "stage_s": stage_times,

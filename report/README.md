@@ -1,5 +1,7 @@
 # 极速焕彩：中文 Typst 探索报告
 
+最新已完成测试版本另见[R27技术评估PDF](../output/pdf/problem16-latest-tested-report.pdf)，覆盖题目指标、三个评分项、OpenColorIO实测与开源论文对照。它由`scripts/build_latest_tested_pdf.py`读取已冻结的R27 JSON生成；依赖ReportLab及Windows等线字体，不会触发数值重测。数据与指纹在`output/pdf/`，可恢复证据见[data/r27](data/r27/README.md)。下文是保留的历史探索报告说明。
+
 主文件为 `exploration.typ`，交付 PDF 为 `exploration.pdf`。正文从题面和首个 Git 提交讲起，按阶段记录算法、失败路线、工程审计、当前 24 候选严格门禁、Zig 性能调参、选题判断和团队复现流程。`generated/` 包含由日志生成的 Typst 表格与图；`data/` 包含原始运行记录归档、数据清单归档、逐图 CSV、最坏颜色 CSV 和完整台账。
 
 这是基于 `codex/zig-default-pixi` 分支和独立实验日志冻结的报告，随 Codeberg 默认 `main` 一起提供阅读。`main` 保留较早的实现；需要复现实验或更新数值时先切到该实验分支，并取回 `experiment-logs` 日志分支。

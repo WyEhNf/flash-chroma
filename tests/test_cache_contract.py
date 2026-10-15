@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from lutlab import cache, cli, fit, io, selection
+from lutlab import box, cache, cli, fit, fullfit, io, selection
 
 
 def test_verified_cache_contract_and_concurrent_batches(tmp_path: Path, monkeypatch):
@@ -88,6 +88,16 @@ def test_r18_entry_parameters_and_wrapped_defaults_are_identity_bound(tmp_path: 
         cli._source_paths(args, create=False)
     identity = cache.build_identity(sources, parameters)
     assert cache.build_identity(copies, parameters) == identity  # path is not an algorithm parameter
+    # A transient Windows WMI failure used to publish a batch the parent could
+    # not find. Bind stable interpreter architecture, independent of this probe.
+    with monkeypatch.context() as patch:
+        patch.setattr(cache.platform, "machine", lambda: "")
+        assert cache.build_identity(sources, parameters) == identity
+        patch.setattr(cache.platform, "machine", lambda: "AMD64")
+        assert cache.build_identity(sources, parameters) == identity
+        patch.setattr(cache.sysconfig, "get_platform", lambda: "different-interpreter-platform")
+        assert cache.identity_key(cache.build_identity(sources, parameters)) != cache.identity_key(identity)
+    assert identity["solver_environment"]["pointer_bits"] in (32, 64)
     controls = identity["algorithm_settings"]
     assert controls["training"]["seed"] == 0x533138
     assert controls["training"]["sample_count"] == 262144
@@ -102,6 +112,69 @@ def test_r18_entry_parameters_and_wrapped_defaults_are_identity_bound(tmp_path: 
     args.method = "ls_tetra_guarded"
     guarded = cache.algorithm_settings(cli.fit_parameters(args))["q16_refinement"]
     assert (guarded["sweeps"], guarded["guard_count"], guarded["guard_seed"]) == (3, 65536, 0x473138)
+    args.method = "ls_tetra_boundary"
+    boundary = cache.algorithm_settings(cli.fit_parameters(args))["training"]
+    assert (boundary["sample_count"], boundary["exact_boundary_count"]) == (652296, 390152)
+    assert boundary["weight_sum"] == 262144 and boundary["boundary_weight"] == 1 / 64
+    assert selection.PROFILES["dp_boundary"] == ("seq", "ls_tetra_boundary", "dp", "auto")
+    assert "dp_boundary" not in selection.DEFAULT_PROFILES
+    args.method = "ls_tetra_structured"
+    structured = cache.algorithm_settings(cli.fit_parameters(args))
+    assert structured["structured"]["max_node_value"] == 255
+    assert structured["training"]["scope"] == "general three-dimensional fallback only"
+    assert "curve.py" in cache.source_fingerprint()
+    assert selection.PROFILES["dp_structured"] == ("seq", "ls_tetra_structured", "dp", "auto")
+    assert "dp_structured" not in selection.DEFAULT_PROFILES
+    args.method = "ls_tetra_supported"
+    supported = cache.algorithm_settings(cli.fit_parameters(args))
+    assert supported["training"]["full_grid_vertex_count"] == 18 ** 3
+    assert supported["training"]["data_hessian_eigenvalue_lower_bound"] == 1 / 64
+    assert supported["training"]["seed"] == 0x533231
+    assert selection.PROFILES["dp_supported"] == ("seq", "ls_tetra_supported", "dp", "auto")
+    assert "dp_supported" not in selection.DEFAULT_PROFILES
+    args.grid = "uniform"
+    with pytest.raises(ValueError, match="requires --grid dp"):
+        cli.fit_parameters(args)
+    args.grid = "dp"
+    args.method = "ls_tetra_full"
+    with monkeypatch.context() as patch:
+        patch.setattr(fullfit, "trainer_fingerprint", lambda: {"abi_version": 1, "library_sha256": "baseline"})
+        parameters = cli.fit_parameters(args)
+        full = cache.algorithm_settings(parameters)
+        assert full["training"]["sample_count"] == 256 ** 3
+        assert full["training"]["requested_threads"] == 4
+        before = cache.build_identity(sources, parameters)
+        patch.setattr(fullfit, "trainer_fingerprint", lambda: {"abi_version": 1, "library_sha256": "new-binary"})
+        assert cache.identity_key(cache.build_identity(sources, parameters)) != cache.identity_key(before)
+    assert selection.PROFILES["dp_full"] == ("seq", "ls_tetra_full", "dp", "auto")
+    assert "dp_full" not in selection.DEFAULT_PROFILES
+    args.method = "ls_tetra_full_box"
+    with monkeypatch.context() as patch:
+        patch.setattr(fullfit, "trainer_fingerprint", lambda: {"abi_version": 1, "library_sha256": "box-control"})
+        controls = cache.algorithm_settings(cli.fit_parameters(args))
+        assert controls["least_squares"]["lambda"] == 0
+        assert controls["least_squares"]["bounds"] == [0, 255]
+        assert controls["least_squares"]["maxiter"] == 500
+        assert controls["least_squares"]["scaled_kkt_tolerance"] == 1e-5
+        before = cache.build_identity(sources, cli.fit_parameters(args))
+        patch.setattr(box.solve_box, "__kwdefaults__", {**box.solve_box.__kwdefaults__, "tol": 2e-5})
+        assert cache.identity_key(cache.build_identity(sources, cli.fit_parameters(args))) != cache.identity_key(before)
+    assert selection.PROFILES["dp_full_box"] == ("seq", "ls_tetra_full_box", "dp", "auto")
+    assert "dp_full_box" not in selection.DEFAULT_PROFILES
+    args.method = "adaptive_full"
+    with monkeypatch.context() as patch:
+        patch.setattr(fullfit, "trainer_fingerprint", lambda: {"abi_version": 1, "library_sha256": "adaptive-control"})
+        controls = cache.algorithm_settings(cli.fit_parameters(args))
+        assert controls["training"]["scope"] == "full-domain fallback only"
+        assert controls["adaptive_model"]["target_semantics"].startswith("each model samples/fits its own")
+        assert "step.py" in cache.source_fingerprint()
+        assert controls["training"]["sample_count"] == 256 ** 3
+    assert selection.PROFILES["adaptive_full"] == ("seq", "adaptive_full", "dp", "auto")
+    assert "adaptive_full" not in selection.DEFAULT_PROFILES
+    args.mode = "composite"
+    with pytest.raises(ValueError, match="four independent"):
+        cli.fit_parameters(args)
+    args.mode, args.method = "seq", "ls_tetra_full_box"
     args.mode = "residual"
     with pytest.raises(ValueError, match="residual fitting supports"):
         cli.fit_parameters(args)
