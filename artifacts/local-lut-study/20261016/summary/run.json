@@ -1,0 +1,148 @@
+{
+  "identity": {
+    "source_sha256": {
+      "python\\lutlab\\compatibility.py": "f16165c183e36348eb470c201761ab9005582db44bacc1d5956d411056ee7e50",
+      "python\\lutlab\\source_lut.py": "e84f2b416b071e6e0bed2624cb04cb21c31d36d117fd8b82f09300c0fb7932fd",
+      "python\\lutlab\\study_kernels.py": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+      "python\\lutlab\\fit.py": "7d539a52600807ce1dacd09660c33e14ae23871a35d3a710ac8f427438255371",
+      "python\\lutlab\\interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+      "python\\lutlab\\io.py": "e7d09894bfcff4f8ecb3c68cc5949c9fc5081699be13c7cb785f9df7bdf38c1e",
+      "python\\lutlab\\curve.py": "79006f7818a359d53e5cdb035e33330287a7089c575b3196697a66b1af99e335"
+    },
+    "lut_manifest": "f519b4b94891b74e1d1321338f669d9a1ab5c96c88a0e673c56f5b83a3ae756f",
+    "image_manifest": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+    "sizes": [
+      17,
+      33
+    ],
+    "screen_pixels_per_image": 4096,
+    "threads": 4,
+    "reps": 3,
+    "extended": true,
+    "profiles": {
+      "sample_tetra": [
+        "sample",
+        "uniform",
+        "tetra"
+      ],
+      "sample_tri": [
+        "sample",
+        "uniform",
+        "tri"
+      ],
+      "sample_nearest": [
+        "sample",
+        "uniform",
+        "nearest"
+      ],
+      "sample_hold": [
+        "sample",
+        "uniform",
+        "hold"
+      ],
+      "sample_prism": [
+        "sample",
+        "uniform",
+        "prism"
+      ],
+      "subpixel_tri": [
+        "sample_interp",
+        "uniform",
+        "tri"
+      ],
+      "subpixel_tetra": [
+        "sample_interp",
+        "uniform",
+        "tetra"
+      ],
+      "box_tri": [
+        "box",
+        "uniform",
+        "tri"
+      ],
+      "box_tetra": [
+        "box",
+        "uniform",
+        "tetra"
+      ],
+      "ls_tri_tri": [
+        "ls_tri",
+        "uniform",
+        "tri"
+      ],
+      "ls_tri_tetra_mismatch": [
+        "ls_tri",
+        "uniform",
+        "tetra"
+      ],
+      "ls_tetra": [
+        "ls_tetra",
+        "uniform",
+        "tetra"
+      ],
+      "ls_tetra_int": [
+        "ls_tetra_int",
+        "uniform",
+        "tetra"
+      ],
+      "jitter_tetra": [
+        "ls_tetra_jitter",
+        "uniform",
+        "tetra"
+      ],
+      "curvature_int": [
+        "ls_tetra_int",
+        "curvature",
+        "tetra"
+      ],
+      "dp_jitter": [
+        "ls_tetra_jitter",
+        "dp",
+        "tetra"
+      ],
+      "errorgrid_int": [
+        "ls_tetra_int",
+        "error",
+        "tetra"
+      ],
+      "dp_boundary": [
+        "ls_tetra_boundary",
+        "dp",
+        "tetra"
+      ],
+      "dp_supported": [
+        "ls_tetra_supported",
+        "dp",
+        "tetra"
+      ],
+      "tail_tetra": [
+        "tail_tetra_int",
+        "uniform",
+        "tetra"
+      ]
+    }
+  },
+  "identity_sha256": "046e5498fdd631acea7522e22f3469b9c3636497ff674693103d48efb9981387",
+  "created_utc": "2026-10-16T05:13:06.236597+00:00",
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:17:27) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+  "logical_cpu_count": 18,
+  "physical_cpu_count": 14,
+  "ram_bytes": 33777467392,
+  "numba": "0.60.0",
+  "numpy": "1.26.4",
+  "git_commit": "b9e923f14f5ad167168ef803a282561a35b6d7e0",
+  "backend": "Numba LLVM CPU，固定线程数；与现有C++/CUDA历史时间不可直接比较",
+  "timing_scope": "解码和源烘焙/拟合独立计时；图像映射包含输出分配，不含解码、编译、质量统计；输入已预加载",
+  "gate": "无官方Threshold；只报告RGB欧氏mean/RMS/p99/max及阈值扫描，不宣布官方通过",
+  "source_reference": "按素材原网格三线性解释，再clip/round为完整RGB8黄金表；未知摄影色彩域保持未知",
+  "native_build_status": "未发现cmake；本机CodeBlocks g++启动报系统DLL重定位错误；未完成既有C++门禁",
+  "deferred": [
+    "C++/CUDA部署性能",
+    "R25/R26原生全域库",
+    "MLP/SIREN",
+    "高阶样条",
+    "棱锥插值"
+  ]
+}
