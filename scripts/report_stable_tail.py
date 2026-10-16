@@ -14,10 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def batch_audit(global_info,m):
     batch = global_info["batch_search"]
-    singles = [t for t in global_info["trials"] if t["accepted"]]
+    singles = [t for t in global_info["trials"] if len(t["moves"]) == 1 and t["accepted"]]
     expected = [{"node":t["moves"][0]["node"],"value":t["moves"][0]["value"],"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"]} for t in singles]
     if expected != batch["feasible_singles"] or len(expected) > batch["feasible_limit"]:raise ValueError("批次可行单改清单与真实回执不同")
     before = global_info["anchor_loss"]
+    if any(t["before_loss"] != before for t in global_info["trials"]+batch["trials"]+batch["confirmation"]):
+        raise ValueError("批次试探没有保持同一冻结状态")
     def key(moves):return tuple(sorted((part["node"],tuple(part["value"])) for part in moves))
     offers = [(t["loss"],1,key(t["moves"])) for t in singles]
     blocks,overlap = [],0
