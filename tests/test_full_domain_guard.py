@@ -101,3 +101,32 @@ def test_commit_refreshes_suffix_and_rejects_stale_model():
     for model in result:
         current = interp.apply_tetra_q16(model,current)
     np.testing.assert_array_equal(domain.prediction,current)
+
+
+def test_joint_move_covers_new_downstream_support_and_commits():
+    grid = io.uniform_grid(3)
+    values = np.array([0,128,255],np.uint8)
+    identity = np.stack(np.meshgrid(values,values,values,indexing="ij"),-1)
+    models = [io.SparseLut(grid,np.zeros((3,3,3,3),np.uint8)),io.SparseLut(grid,identity)]
+    points = np.stack(np.meshgrid(*([np.array([0,255],np.uint8)]*3),indexing="ij"),-1).reshape(-1,3)
+    domain = fg.DomainGuard(models,points,points)
+    # 后级顶点在旧前缀中完全无支撑，前级变化后才到达，仍须正确计入联合重放。
+    primary,helper = tr.Move(0,26,(255,255,255)),tr.Move(1,26,(17,32,53))
+    assert not len(domain.affected(models,helper))
+    pair = fg.JointMove((primary,helper))
+    trial = domain.trial(models,pair)
+    changed = tr.clone(models)
+    changed[0].nodes.reshape(-1,3)[26] = primary.value
+    changed[1].nodes.reshape(-1,3)[26] = helper.value
+    expected = points.copy()
+    for model in changed:
+        expected = interp.apply_tetra_q16(model,expected)
+    actual = domain.prediction.copy()
+    actual[trial["rows"]] = trial["prediction"]
+    np.testing.assert_array_equal(actual,expected)
+    assert domain.consider(models,pair)["accepted"]
+    for model,other in zip(models,changed):
+        model.nodes[:] = other.nodes
+    domain.commit(models,pair)
+    np.testing.assert_array_equal(domain.prediction,expected)
+    assert len(domain.affected(models,helper)) == 1

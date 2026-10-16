@@ -88,6 +88,12 @@ def main():
     if plan.get("full_domain_guard"):
         metadata["identity"]["stage_source_sha256"]["python/lutlab/full_domain_guard.py"] = digest(ROOT / "python/lutlab/full_domain_guard.py")
         metadata["identity"]["negative_control_integrity_sha256"] = digest(ROOT / "report/data/tail-repair-v1/integrity.json")
+    if plan.get("paired_search"):
+        metadata["identity"]["stage_source_sha256"]["python/lutlab/joint_tail_repair.py"] = digest(ROOT / "python/lutlab/joint_tail_repair.py")
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        metadata["identity"]["warm_start_sha256"] = {p.name:digest(p) for p in
+            [warm / name for name in ("run.json","selection.json","full-domain.json")] + sorted(warm.glob("repaired-stage*.slut"))}
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     study_provenance.claim_run(out / "run.json", metadata)
     # 快照绑定实测原始字节；后续仅前置检查/报告修补不冒充重新执行数值代码。
@@ -211,6 +217,31 @@ def main():
         write_json(out / "negative-control.json",negative)
         print("负对照已因完整mean预算被拒绝，开始带全域保护的节点选择",flush=True)
     models, active, rounds = tr.clone(initial), np.empty(0, np.int64), []
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        old_selection = json.loads((warm / "selection.json").read_text(encoding="utf-8"))
+        replayed = []
+        for record in old_selection["rounds"]:
+            for move in record["search"]["accepted"]:
+                update = tr.Move(move["stage"]-1,move["node"],tuple(move["after_node"]))
+                proof = domain_guard.consider(models,update)
+                if not proof["accepted"]:
+                    raise AssertionError("冻结前四步未通过同一全域预算，不能热启动")
+                models[update.stage].nodes.reshape(-1,3)[update.node] = update.value
+                domain_guard.commit(models,update)
+                replayed.append(proof)
+        for k,expected in enumerate(old_selection["model_sha256"]):
+            if digest(warm / f"repaired-stage{k+1}.slut") != expected:
+                raise ValueError("热启动冻结模型SHA不同")
+            if not np.array_equal(models[k].nodes,io.load_sparse(warm / f"repaired-stage{k+1}.slut").nodes):
+                raise AssertionError("热启动节点重放与冻结模型不同")
+        old_domain = json.loads((warm / "full-domain.json").read_text(encoding="utf-8"))
+        if domain_guard.report()["prediction_sha256"] != old_domain["prediction_sha256"]:
+            raise AssertionError("热启动完整流与冻结单节点阶段不同")
+        prior_points = json.loads((ROOT / "report/data/tail-repair-v1/training-violations.json").read_text(encoding="utf-8"))["records"]
+        active = tr.encode(ea.neighbourhood(np.asarray([r["rgb"] for r in prior_points],np.uint8)))
+        active = active[caps[active] != np.iinfo(np.uint32).max]
+        write_json(out / "warm-start.json",{"replayed":replayed,"source":plan["warm_start"],"active_colours":len(active)})
     bad, initial_scan = scan(models, keys, caps, truth)
     print(f"完整训练颜色初始超限：{len(bad)}/{len(keys)}", flush=True)
     for iteration in range(plan["separation_rounds"]):
@@ -223,11 +254,17 @@ def main():
         hard = {"points": points, "truth": ea.exact_chain(tables, points), "caps": caps[active]}
         models, detail = tr.repair(models, banks, hard, guards, limits,
             steps=plan["steps_per_round"], focus_count=plan["focus_count"], domain_guard=domain_guard)
+        paired = None
+        if plan.get("paired_search") and tr.State(models,hard["points"],hard["truth"],hard["caps"]).loss()[0] > 0:
+            from lutlab import joint_tail_repair
+            models,paired = joint_tail_repair.repair_pair(models,banks,hard,guards,limits,domain_guard,
+                radius=plan["paired_search"]["radius"],helper_limit=plan["paired_search"]["helper_limit"])
         bad, separation = scan(models, keys, caps, truth)
-        rounds.append({"round": iteration+1, "active_colours": len(active), "search": detail, "full_training_scan": separation})
+        rounds.append({"round": iteration+1, "active_colours": len(active), "search": detail,
+                       **({"paired_search":paired} if paired is not None else {}), "full_training_scan": separation})
         write_json(out / f"round{iteration+1}.json", rounds[-1])
         print(f"约束分离第{iteration+1}轮：接受{len(detail['accepted'])}次节点选择；剩余{len(bad)}个超限颜色", flush=True)
-        if not detail["accepted"]:
+        if not detail["accepted"] and not (paired is not None and paired["accepted"]):
             break
     feasible = not len(bad)
     if domain_guard is not None:

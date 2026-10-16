@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import itertools
 import math
+from dataclasses import dataclass
 from functools import lru_cache
 
 import numpy as np
@@ -100,6 +101,15 @@ def signature(models):
     return h.hexdigest()
 
 
+@dataclass(frozen=True)
+class JointMove:
+    moves: tuple
+
+    def __post_init__(self):
+        if len(self.moves) != 2 or len({(m.stage,m.node) for m in self.moves}) != 2:
+            raise ValueError("联合试探必须包含两个不同节点")
+
+
 class DomainGuard:
     """全颜色前缀、立方体倒排和误差直方图；保护参考在所有步之间固定。"""
     def __init__(self, models, points, truth, *, numerator=1005, denominator=1000, max_cache_bytes=1536 << 20):
@@ -145,20 +155,24 @@ class DomainGuard:
     def trial(self, models, move):
         if signature(models) != self.model_signature:
             raise ValueError("全域前缀与当前模型不同，拒绝使用陈旧倒排")
-        rows = self.affected(models, move)
-        node = models[move.stage].nodes.reshape(-1,3)[move.node]
-        old = node.copy()
+        moves = move.moves if isinstance(move,JointMove) else (move,)
+        rows = np.unique(np.concatenate([self.affected(models,m) for m in moves]))
+        nodes = [models[m.stage].nodes.reshape(-1,3)[m.node] for m in moves]
+        old = [node.copy() for node in nodes]
         updates = []
-        current = self.inputs[move.stage][rows]
+        first = min(m.stage for m in moves)
+        current = self.inputs[first][rows]
         try:
-            node[:] = move.value
-            for k in range(move.stage,len(models)):
+            for node,m in zip(nodes,moves):
+                node[:] = m.value
+            for k in range(first,len(models)):
                 current = ea.Operator([models[k]])(current)
                 if k+1 < len(models):
                     updates.append((k+1,current))
             expected_signature = signature(models)
         finally:
-            node[:] = old
+            for node,value in zip(nodes,old):
+                node[:] = value
         delta = current.astype(np.int32)-self.truth[rows].astype(np.int32)
         squared = np.sum(delta*delta,axis=1,dtype=np.int32)
         hist = self.hist.copy()
@@ -173,8 +187,11 @@ class DomainGuard:
         self._pending = None
         trial = self.trial(models,move)
         proof = certify(self.reference,summary(trial["hist"]),self.numerator,self.denominator)
-        proof.update(stage=move.stage+1,node=move.node,value=list(move.value),
-            affected_colours=len(trial["rows"]), changed_final_colours=int(np.count_nonzero(np.any(
+        if isinstance(move,JointMove):
+            proof["moves"] = [{"stage":m.stage+1,"node":m.node,"value":list(m.value)} for m in move.moves]
+        else:
+            proof.update(stage=move.stage+1,node=move.node,value=list(move.value))
+        proof.update(affected_colours=len(trial["rows"]), changed_final_colours=int(np.count_nonzero(np.any(
                 trial["prediction"] != self.prediction[trial["rows"]],axis=1))))
         self.records.append(proof)
         if proof["accepted"]:
