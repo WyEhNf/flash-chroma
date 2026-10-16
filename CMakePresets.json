@@ -1,0 +1,48 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "CPU 默认构建与完整正确性测试",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTING": "ON",
+        "JSHC_ENABLE_OPENMP": "ON",
+        "JSHC_ENABLE_AVX2": "ON",
+        "JSHC_ENABLE_FULL_FIT": "ON",
+        "JSHC_ENABLE_CPP_SIMD": "OFF",
+        "JSHC_ENABLE_ZIG": "OFF",
+        "JSHC_ENABLE_RUST": "OFF"
+      }
+    },
+    {
+      "name": "scalar",
+      "displayName": "无 AVX2、无 OpenMP 的标量回退",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build-scalar",
+      "cacheVariables": {
+        "JSHC_ENABLE_OPENMP": "OFF",
+        "JSHC_ENABLE_AVX2": "OFF"
+      }
+    },
+    {
+      "name": "simd",
+      "displayName": "可选 C++ SIMD、Zig 与 Rust 对照后端",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build-simd",
+      "cacheVariables": {
+        "JSHC_ENABLE_CPP_SIMD": "ON",
+        "JSHC_ENABLE_ZIG": "ON",
+        "JSHC_ENABLE_RUST": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "default", "configurePreset": "default", "jobs": 2 },
+    { "name": "scalar", "configurePreset": "scalar", "jobs": 2 },
+    { "name": "simd", "configurePreset": "simd", "jobs": 2 }
+  ]
+}

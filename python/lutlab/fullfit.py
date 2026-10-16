@@ -36,10 +36,12 @@ def resolve_library():
         return path
     names = ("jshc_full_fit.dll", "libjshc_full_fit.dll") if os.name == "nt" else (
         "libjshc_full_fit.dylib" if os.sys.platform == "darwin" else "libjshc_full_fit.so",)
-    for name in names:
-        path = ROOT / "build-fit" / name
-        if path.is_file():
-            return path.resolve()
+    # 默认构建同时生成运行时与拟合库；旧实验目录仅作兼容回退。
+    for directory in (ROOT / "build", ROOT / "build" / "Release", ROOT / "build-fit"):
+        for name in names:
+            path = directory / name
+            if path.is_file():
+                return path.resolve()
     raise FileNotFoundError("full-domain fit requires a JSHC_ENABLE_FULL_FIT=ON build; set JSHC_FULL_FIT_LIB")
 
 

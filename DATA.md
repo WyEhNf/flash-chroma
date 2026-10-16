@@ -1,6 +1,6 @@
 # 测试数据集与四级色彩空间仿真设计 (`DATA.md`)
 
-需要先查看或运行普通摄影小样本时，可使用已纳入版本库的[五张日常照片](assets/photos/kodak/README.md)：商品、帆船、花草建筑、街景和沙滩人物。原图与1024×768 RGB8副本均保留，附来源、摄影者、SHA-256及可显式传入的[图片列表](assets/photos/kodak/eval.txt)。这是已有Kodak家族的子集，不改变下述标准评测数据集。
+需要先查看或运行普通摄影样本时，可使用已纳入版本库的[100张日常照片](assets/photos/README.md)：5张Kodak、14张DPED手机照片及81张DIV2K自然照片，涵盖人物、风景、街景、建筑、餐饮/商品和花草动物。统一提供1024×768 RGB8 PNG，附逐图来源、使用范围、SHA-256及可显式传入的[图片列表](assets/photos/eval.txt)。这是独立的实用照片清单，不改变下述标准评测数据集。
 
 由于正式比赛测试集与 `Threshold` 将在赛中统一公布，为了在赛前获得**高度接近真实手机 ISP / 车载流媒体色彩管线**且同时涵盖**数学病态边界**的严格基准，我们在 [luts.py](python/lutlab/luts.py) 与 [data.py](python/lutlab/data.py) 中构建了完整的评测数据集生成器（`pixi run gen-data`）。
 
