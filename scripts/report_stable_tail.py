@@ -18,8 +18,10 @@ def main():
     parser.add_argument("--warm",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--study",choices=("stable","primary"),default="stable")
+    parser.add_argument("--diagnosis",type=Path)
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧归档")
+    if args.study == "primary" and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
     names = ("guard","aware") if args.study == "stable" else ("tail","constraints")
     sources = dict(zip(names,(args.guard,args.aware)))
     plans = {arm:ROOT / (f"experiments/stable-tail-{arm}-v1.json" if args.study == "stable" else f"experiments/primary-budget-{arm}-v1.json") for arm in sources}
@@ -49,6 +51,17 @@ def main():
             if digest(ROOT / "scripts" / name) != h:raise ValueError("独立反例复算源码变化")
         shutil.copyfile(counterexamples,out / "counterexamples.json")
         shutil.copyfile(counterexamples.with_suffix(".log"),out / "counterexamples.log")
+    else:
+        diagnostic = load(args.diagnosis / "analysis.json")
+        for name,h in diagnostic["inputs_sha256"].items():
+            if digest(Path(name)) != h:raise ValueError("独立主提案归因输入变化")
+        for name,h in diagnostic["sources_sha256"].items():
+            if digest(ROOT / "scripts" / name) != h:raise ValueError("独立主提案归因源码变化")
+        destination = out / "independent-diagnosis"
+        destination.mkdir()
+        for path in args.diagnosis.glob("*"):
+            if path.is_file():shutil.copyfile(path,destination / path.name)
+        shutil.copyfile(args.diagnosis.with_suffix(".log"),out / "diagnosis.log")
     for name in ("photo-inventory.json","photo-partition.json"):shutil.copyfile(args.guard / name,out / name)
     contract_log = "stable-tail-contracts-v1.log" if args.study == "stable" else "primary-budget-contracts-v1.log"
     shutil.copyfile(ROOT / "artifacts" / contract_log,out / "contract-tests.log")
@@ -144,7 +157,7 @@ def main():
         for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
     if diagnostic is not None:
         with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
-            for name in diagnostic["source_sha256"]:z.write(ROOT / "scripts" / name,name)
+            for name in diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"]:z.write(ROOT / "scripts" / name,name)
     if primary_rows:write_csv(out / "primary-trials.csv",primary_rows)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
