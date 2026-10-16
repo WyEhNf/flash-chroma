@@ -104,6 +104,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         accepted = None
         accepted_compensation = None
         accepted_source = "hotspot"
+        primary_cache = {}
         for _,move in ranked[:trial_limit]:
             totals["single_trials"] += 1
             result = consider(move)
@@ -127,8 +128,15 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
                     accepted = (move,*result)
                     break
         if accepted is None and global_search and len(global_log) < global_search["rounds"]:
-            from . import quantile_global
-            ranked,info = quantile_global.ranked(model,domain,photos,max_array_bytes=global_search["max_array_bytes"])
+            method = global_search.get("method","lower_bound")
+            if method == "primary_budget":
+                from . import primary_budget
+                ranked,info = primary_budget.ranked(model,domain,photos,ordering=global_search["ordering"],cache=primary_cache,
+                    trial_limit=trial_limit,max_array_bytes=global_search["max_array_bytes"])
+            elif method == "lower_bound":
+                from . import quantile_global
+                ranked,info = quantile_global.ranked(model,domain,photos,max_array_bytes=global_search["max_array_bytes"])
+            else:raise ValueError("未知全局主提案方法")
             ranked_scope = "global"
             info.update(accepted=False,trials=[])
             for score,move in ranked[:trial_limit]:
@@ -163,10 +171,13 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             elif method == "continuous":
                 from . import quantile_compensation as helper_backend
             else:raise ValueError("未知辅助节点排序方法")
-            helper_cache = {}
+            helper_cache = primary_cache if primary_cache else {}
             kwargs = dict(primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
                 trial_limit=trial_limit,max_array_bytes=compensation["max_array_bytes"])
-            if compensation.get("block_order",2) == 3:
+            if "primary_order" in compensation:
+                if method != "rounded":raise ValueError("指定主提案顺序需要舍入预算辅助")
+                kwargs["primary_order"] = compensation["primary_order"]
+            if compensation.get("block_order",2) == 3 or helper_cache:
                 if method != "rounded":raise ValueError("三节点搜索需要真实舍入预算统计")
                 kwargs["cache"] = helper_cache
             candidates,info = helper_backend.pairs(model,domain,photos,ranked,**kwargs)
@@ -232,6 +243,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         if accepted is None:
             stop = "no_guarded_improving_move_in_finite_bank"
             break
+        primary_cache.clear()
         move,photo_trial,proof = accepted
         before = photos.loss
         moves = fg.components(move)

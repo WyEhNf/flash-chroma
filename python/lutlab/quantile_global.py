@@ -51,6 +51,7 @@ def ranked(model,domain,photos,chunk=1 << 18,max_array_bytes=2684354560):
     """当前缺口处紧的候选下界；不保证排名最优候选可行，更不替代真实联合验收。"""
     score_bytes = model.m**3*3*2*np.dtype(np.int64).itemsize
     persistent = domain.cache_bytes+sum(a.nbytes for a in vars(photos).values() if isinstance(a,np.ndarray))+sum(g.nbytes for g in photos.aggregate_groups)
+    if photos.stability is not None:persistent += photos.stability.cache_array_bytes
     if persistent+score_bytes > max_array_bytes:raise MemoryError("全节点排序数组超过冻结预算")
     anchor = int(_anchor(photos.hist,photos.thresholds,photos.budgets,photos.cutoffs))
     if anchor != photos.loss:raise AssertionError("冻结截断下界没有在当前缺口处取等")
