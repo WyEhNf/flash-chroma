@@ -31,6 +31,14 @@ def main():
     if load(args.aware / "photo-inventory.json") != inventory:raise ValueError("两臂颜色倒排输入不同")
     out = args.output
     out.mkdir(parents=True)
+    counterexamples = ROOT / "artifacts/stable-tail-counterexamples-v1.json"
+    diagnostic = load(counterexamples)
+    for name,h in diagnostic["inputs_sha256"].items():
+        if digest(Path(name)) != h:raise ValueError("独立反例复算输入变化")
+    for name,h in diagnostic["source_sha256"].items():
+        if digest(ROOT / "scripts" / name) != h:raise ValueError("独立反例复算源码变化")
+    shutil.copyfile(counterexamples,out / "counterexamples.json")
+    shutil.copyfile(counterexamples.with_suffix(".log"),out / "counterexamples.log")
     for name in ("photo-inventory.json","photo-partition.json"):shutil.copyfile(args.guard / name,out / name)
     shutil.copyfile(ROOT / "artifacts/stable-tail-contracts-v1.log",out / "contract-tests.log")
     summary,photo_rows,regressions,diagnosis,provenance,parity = [],[],[],[],[],[]
@@ -67,10 +75,18 @@ def main():
                     trials.extend({"family":label,**t} for t in entries)
                 rounds.append({k:v for k,v in round_info.items() if k not in ("trials","block_search")})
             rejection = Counter(key for t in trials for key in t["photo_failed"]+t["full_failed"]+t.get("stability_full_failed",[]))
+            breakdown = {}
+            for family in ("pair","triple"):
+                entries = [t for t in trials if t["family"] == family]
+                breakdown[family] = {"trials":len(entries),"decisions":dict(Counter(t["decision"] for t in entries)),
+                    "with_stability_rms_failure":sum(any(k.startswith("stability.") and k.endswith(".rms") for k in t["photo_failed"]) for t in entries),
+                    "with_stability_mean_failure":sum(any(k.startswith("stability.") and k.endswith(".mean_bound") for k in t["photo_failed"]) for t in entries),
+                    "with_stability_tail_failure":sum(any(k.startswith("stability.") and ".tail" in k for k in t["photo_failed"]) for t in entries),
+                    "with_stability_but_no_old_photo_failure":sum(any(k.startswith("stability.") for k in t["photo_failed"]) and not any(not k.startswith("stability.") for k in t["photo_failed"]) for t in entries)}
             diagnosis.append({"arm":arm,"case":cid,"warm_loss":case["warm_loss"],"final_loss":case["final_loss"],
                 "constraints":constraints(final,inventory),"new_steps":[s for s in search["accepted"] if not s.get("replayed")],
                 "search_counts":{k:v for k,v in search.items() if k not in ("accepted","compensation_rounds","global_rounds")},
-                "rounds":rounds,"helper_decisions":dict(Counter(t["decision"] for t in trials)),
+                "rounds":rounds,"helper_decisions":dict(Counter(t["decision"] for t in trials)),"helper_breakdown":breakdown,
                 "helper_failed_conditions":dict(rejection.most_common()),"helper_trials":trials,"host_memory":full["host_memory"],
                 "persistent_array_bytes":full["combined_cache_array_bytes"]})
             profiles = [("historical",case["historical"],True),("warm",old["final"],True)] if arm == "guard" else []
@@ -103,6 +119,8 @@ def main():
             "current_source_same":{name:(ROOT / name).exists() and digest(ROOT / name) == h for name,h in expected.items()}})
     with zipfile.ZipFile(out / "verification-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
         for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
+    with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
+        for name in diagnostic["source_sha256"]:z.write(ROOT / "scripts" / name,name)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
     write_json(out / "photo-regressions.json",regressions)
