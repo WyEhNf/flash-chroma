@@ -43,7 +43,7 @@ def ranked_proposals(model,banks,points,priority,truth):
     return sorted(ranked)
 
 
-def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None,global_search=None):
+def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None,global_search=None,pair_prefix_expected=None):
     """有限、确定性搜索；每次严格降低整数缺口，保持整个阶段固定的均值/RMS预算。"""
     models = [model]
     for other in banks:
@@ -53,7 +53,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         raise ValueError("图片与完整域状态不匹配")
     log,rejections,compensation_log,global_log = [],{},[],[]
     totals = {"single_trials":0,"pair_trials":0,"generated_single_proposals":0,"compensated_pair_trials":0,
-        "global_single_trials":0,"global_pair_trials":0}
+        "global_single_trials":0,"global_pair_trials":0,"three_node_trials":0,"proper_subset_trials":0}
 
     def consider(move,trace=None,lower_bound=None):
         full_trial = domain.trial(models,move)
@@ -61,7 +61,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         photo_trial = photos.trial(rows,domain.squared[rows],full_trial["squared"])
         if lower_bound is not None and photo_trial.loss-photos.loss < lower_bound:
             raise AssertionError("全节点单通道代理超过真实缺口变化，不再是下界")
-        item = {"moves":[{"node":p.node,"value":list(p.value)} for p in (move.moves if isinstance(move,fg.JointMove) else (move,))],
+        item = {"moves":[{"node":p.node,"value":list(p.value)} for p in fg.components(move)],
             "before_loss":photos.loss,"loss":photo_trial.loss,"photo_failed":list(photo_trial.failed),"lower_bound_delta":lower_bound,
             "full_failed":[],"accepted":False,"decision":None}
         if trace is not None:trace.append(item)
@@ -156,9 +156,13 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             elif method == "continuous":
                 from . import quantile_compensation as helper_backend
             else:raise ValueError("未知辅助节点排序方法")
-            candidates,info = helper_backend.pairs(model,domain,photos,ranked,
-                primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
+            helper_cache = {}
+            kwargs = dict(primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
                 trial_limit=trial_limit,max_array_bytes=compensation["max_array_bytes"])
+            if compensation.get("block_order",2) == 3:
+                if method != "rounded":raise ValueError("三节点搜索需要真实舍入预算统计")
+                kwargs["cache"] = helper_cache
+            candidates,info = helper_backend.pairs(model,domain,photos,ranked,**kwargs)
             info["accepted"] = False
             info["before_loss"] = photos.loss
             info["trials"] = []
@@ -173,13 +177,57 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
                     accepted_source = ranked_scope+"_compensation"
                     info.update(accepted=True,selected=roles)
                     break
+            if not compensation_log and pair_prefix_expected is not None:
+                if info["statistics_sha256"] != pair_prefix_expected["statistics_sha256"] or info["trials"] != pair_prefix_expected["trials"]:
+                    raise AssertionError("扩展节点块前原两节点候选前缀不同")
+            if accepted is None and compensation.get("block_order",2) == 3:
+                from . import rounded_blocks
+                blocks,block_info = rounded_blocks.triples(model,domain,photos,helper_cache,
+                    first_limit=compensation["first_helpers"],second_limit=compensation["second_helpers"])
+                block_info.update(trials=[],subset_trials=[],confirmation=[])
+                info["block_search"] = block_info
+                for moves,roles in blocks:
+                    totals["three_node_trials"] += 1
+                    move = fg.combine(moves)
+                    result = consider(move,block_info["trials"])
+                    block_info["trials"][-1]["compensation"] = roles
+                    if result is None:continue
+                    feasible = [(result[0].loss,3,moves,move)]
+                    for size in (1,2):
+                        for subset in itertools.combinations(moves,size):
+                            totals["proper_subset_trials"] += 1
+                            subset_move = fg.combine(subset)
+                            subset_result = consider(subset_move,block_info["subset_trials"])
+                            if subset_result is not None:feasible.append((subset_result[0].loss,size,subset,subset_move))
+                    _,size,chosen,chosen_move = min(feasible,key=lambda x:x[:3])
+                    confirmation = consider(chosen_move,block_info["confirmation"])
+                    if confirmation is None:raise AssertionError("节点块子集选择的确认与试探不同")
+                    roles = {**roles,"committed_node_count":size,"selected_subset_nodes":[p.node for p in chosen],
+                        "all_proper_subsets_rejected":len(feasible) == 1}
+                    if size < 3:
+                        for field in ("predicted_full_sse_delta","predicted_full_mean_upper_q24_delta"):
+                            roles["proposed_"+field] = roles.pop(field)
+                    elif roles["disjoint_cell_support_certificate"]:
+                        before = fg.summary(domain.hist)
+                        after = confirmation[1]["candidate"]
+                        if (int(after["sum_squared_error"])-int(before["sum_squared_error"]) != int(roles["predicted_full_sse_delta"])
+                                or int(after["sum_upper_q24"])-int(before["sum_upper_q24"]) != int(roles["predicted_full_mean_upper_q24_delta"])):
+                            raise AssertionError("三节点不相交预算证书与真实整块不一致")
+                        roles["additive_certificate_checked"] = True
+                    accepted = (chosen_move,*confirmation)
+                    accepted_compensation = roles
+                    accepted_source = ranked_scope+("_three_node" if size == 3 else "_block_subset")
+                    info.update(accepted=True,selected=roles)
+                    block_info.update(accepted=True,selected=roles)
+                    break
+            helper_cache.clear()
             compensation_log.append(info)
         if accepted is None:
             stop = "no_guarded_improving_move_in_finite_bank"
             break
         move,photo_trial,proof = accepted
         before = photos.loss
-        moves = move.moves if isinstance(move,fg.JointMove) else (move,)
+        moves = fg.components(move)
         changes = []
         for part in moves:
             node = model.nodes.reshape(-1,3)[part.node]

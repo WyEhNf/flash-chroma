@@ -130,7 +130,7 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         if initial_report != old_initial:raise ValueError("热启动初态图片阈值/预算或来源不同")
         for record in warm_case["selection"]["search"]["accepted"]:
             moves = tuple(tr.Move(0,m["node"],tuple(m["after"])) for m in record["moves"])
-            move = moves[0] if len(moves) == 1 else fg.JointMove(moves)
+            move = fg.combine(moves)
             full_trial = domain.trial([model],move)
             photo_trial = photos.trial(full_trial["rows"],domain.squared[full_trial["rows"]],full_trial["squared"])
             if photos.loss != record["before_loss"] or photo_trial.loss != record["after_loss"] or photo_trial.failed:
@@ -156,10 +156,14 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         io.save_sparse(path,current)
         write_json(path.with_suffix(".json"),{**record,"model_sha256":digest(path),
             "violating_groups":np.flatnonzero(np.any(photos.costs > 0,axis=1)).tolist()})
-    print(f"[{cid}] 初始整数缺口{photos.loss}；开始固定预算单/双节点修复",flush=True)
+    print(f"[{cid}] 初始整数缺口{photos.loss}；开始固定预算节点块修复",flush=True)
+    prefix_expected = None
+    if plan.get("pair_prefix_reference"):
+        reference = json.loads((ROOT / plan["pair_prefix_reference"]).read_text(encoding="utf-8"))
+        prefix_expected = next(c for c in reference["cases"] if c["case"]["id"] == cid)["selection"]["search"]["compensation_rounds"][0]
     search = qr.repair(model,bank,domain,photos,steps=plan["steps"],focus_count=plan["focus_count"],
         trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted,compensation=plan.get("compensation"),
-        global_search=plan.get("global_search"))
+        global_search=plan.get("global_search"),pair_prefix_expected=prefix_expected)
     new_accepted = len(search["accepted"])
     search["accepted"] = replayed+[{**r,"step":r["step"]+len(replayed)} for r in search["accepted"]]
     search.update(replayed_steps=len(replayed),new_accepted_steps=new_accepted)
@@ -222,6 +226,7 @@ def main():
         ROOT / "scripts/run_chain_error_study.py",ROOT / "scripts/run_joint_box_study.py",ROOT / "scripts/run_tail_repair.py"]
     if plan.get("compensation"):extra.append(ROOT / "python/lutlab/quantile_compensation.py")
     if plan.get("compensation",{}).get("method") == "rounded":extra.append(ROOT / "python/lutlab/rounded_budget.py")
+    if plan.get("compensation",{}).get("block_order",2) == 3:extra.append(ROOT / "python/lutlab/rounded_blocks.py")
     if plan.get("global_search"):extra.append(ROOT / "python/lutlab/quantile_global.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
@@ -234,6 +239,8 @@ def main():
         metadata["identity"]["warm_files"] = {n:digest(warm / n) for n in ("run.json","results.json","photo-inventory.json")}
     if plan.get("replay_reference"):
         metadata["identity"]["replay_reference_sha256"] = digest(ROOT / plan["replay_reference"])
+    if plan.get("pair_prefix_reference"):
+        metadata["identity"]["pair_prefix_reference_sha256"] = digest(ROOT / plan["pair_prefix_reference"])
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     metadata.update(backend="Numba研究4线程，标量/AVX2终验单线程",timing_scope="不比较性能",deferred=["硬件加速","官方评分","未知图像泛化"])
     study_provenance.claim_run(args.output / "run.json",metadata)
@@ -263,6 +270,13 @@ def main():
                 if a[field] != b[field]:raise AssertionError("诊断复现的原候选判定数量不同")
             if [r["statistics_sha256"] for r in a["compensation_rounds"]] != [r["statistics_sha256"] for r in b["compensation_rounds"]]:
                 raise AssertionError("诊断复现的真实舍入统计哈希不同")
+    if plan.get("pair_prefix_reference"):
+        reference = json.loads((ROOT / plan["pair_prefix_reference"]).read_text(encoding="utf-8"))
+        for current in results:
+            old = next(c for c in reference["cases"] if c["case"]["id"] == current["case"]["id"])
+            a,b = [c["selection"]["search"]["compensation_rounds"][0] for c in (current,old)]
+            if a["statistics_sha256"] != b["statistics_sha256"] or a["trials"] != b["trials"]:
+                raise AssertionError("三节点扩展前原128对候选/判定或统计SHA已改变")
     write_json(args.output / "results.json",{"run_identity":metadata["identity_sha256"],"cases":results})
     print("分位/最大误差约束阶段结束；不提升默认",flush=True)
 
