@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 import numpy as np
 import scipy.sparse as sp
-from . import box, fit, interp, io
+from . import box, fit, interp, io, support_certificate
 
 
 def photo_moments(model,points,targets):
@@ -62,15 +62,17 @@ def fit_equal_mass(table,model,points,H,b,*,full_count=256**3,diagnostics=None):
     target = table(points) if callable(table) else table[points[:,0],points[:,1],points[:,2]]
     Hq,bq = photo_moments(model,points,target)
     system,rhs,mass = equal_mass_system(H,b,Hq,bq,full_count,len(points))
-    if H.diagonal().min() < 1/64:
-        raise ValueError("完整域矩缺少整数节点的正定支撑下界")
+    support = support_certificate.certify(model.grid,*model.tables())
+    lower_bound = support["hessian_eigenvalue_lower_bound"]
+    if H.diagonal().min() < lower_bound:
+        raise ValueError("完整域矩对角小于当前Q16设计的支撑证书下界")
     start = model.nodes.reshape(-1,3)
     continuous = box.solve_box(system,rhs,start,diagnostics=report.setdefault("solver",{}))
     candidate = fit.quantize(fit.int_refine(continuous,system,rhs)).reshape(-1,3)
     change = exact_change(H,b,Hq,bq,start,candidate,full_count,len(points))
     accepted = int(change["equal_mass_change_numerator"]) < 0
-    report.update(mass=mass,integer_selection=change,accepted=accepted,lambda_prior=0.,
-        continuous_gap_upper_bound=.5*report["solver"]["projected_gradient_l2_squared"]/(mass["full_coefficient"][0]/mass["full_coefficient"][1]/64),
+    report.update(mass=mass,integer_selection=change,accepted=accepted,lambda_prior=0.,support_certificate=support,
+        continuous_gap_upper_bound=.5*report["solver"]["projected_gradient_l2_squared"]/(mass["full_coefficient"][0]/mass["full_coefficient"][1]*lower_bound),
         target_semantics="本级原完整LUT，逐样本RGB8标签；重复像素不去重，不用残差/复合标签",
         gap_scope="浮点KKT和完整域支撑下界的连续目标诊断，非RGB8精度证书")
     idx,frac = model.tables()

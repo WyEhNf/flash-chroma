@@ -713,7 +713,7 @@ def fit_full_box_tetra(T, grid, threads: int = 4, *, diagnostics=None):
     continuous = box.solve_box(H, b, baseline, diagnostics=report.setdefault("box_solver", {}))
     report["box_solver"]["continuous_data_objective_gap_upper_bound"] = (
         .5 * report["box_solver"]["projected_gradient_l2_squared"] / report["data_hessian_eigenvalue_lower_bound"])
-    report["box_solver"]["gap_scope"] = "continuous box problem and H>=I/64; floating-point KKT evaluation, not final-chain accuracy"
+    report["box_solver"]["gap_scope"] = "当前Q16支撑证书下界与浮点KKT的连续目标诊断，不保证最终RGB8精度"
     candidate = quantize(int_refine(continuous, H, b)).reshape(-1, 3)
     numerator = box.integer_sse_change_numerator(H, b, baseline, candidate)
     accepted = numerator < 0
