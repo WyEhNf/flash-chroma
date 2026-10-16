@@ -57,8 +57,14 @@ struct SparseLut {
   // This is a model-memory estimate, not peak process RSS or allocator overhead.
   size_t runtime_bytes() const;
 
+  // Desktop bridge owns one immutable serialized copy for the borrowed C99
+  // model. The standalone embedded API can borrow ROM without this copy.
+  struct PortableTables;
+  const PortableTables& portable_tables() const;
+
  private:
   mutable std::shared_ptr<const PackedTables> packed_cache_;
+  mutable std::shared_ptr<const PortableTables> portable_cache_;
 };
 
 enum class Kernel {
@@ -74,6 +80,8 @@ enum class Kernel {
   TetraAvx2Madd,
   TetraAvx2ScalarGather,
   TetraAvx2ExactFloat,
+  TetraC99,
+  TetraStructuredAvx2,
   TetraAsm,
   TriFloat,
 };
@@ -85,6 +93,17 @@ Kernel default_kernel();
 Kernel resolve_kernel(Kernel k);
 // Maximum block workspace per worker; excludes stack frames and model tables.
 size_t kernel_scratch_bytes(Kernel k);
+
+// Complete stored-node proofs; no image-dependent routing or approximation.
+// Path codes: 0=tetra, 1=curve, 2=vertex, 3=constant, as in portable C ABI v1.
+struct StructuredChainPlan {
+  std::array<uint8_t, 4> path{};
+  std::array<uint8_t, 4> effective_one_hot{};
+  std::array<uint32_t, 4> model_flags{};
+  size_t serialized_copy_bytes = 0;
+  size_t prepared_workspace_bytes = 0;
+};
+StructuredChainPlan inspect_structured_chain(const std::vector<const SparseLut*>& chain);
 
 // In-place colour mapping of n interleaved RGB pixels through a chain of sparse LUTs.
 void apply_chain(const std::vector<const SparseLut*>& chain, uint8_t* rgb, size_t n,

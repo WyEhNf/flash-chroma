@@ -25,7 +25,7 @@ from pathlib import Path
 from . import io
 
 SCHEMA_VERSION = 1
-SOURCE_FILES = ("box.py", "cache.py", "cli.py", "cascade.py", "curve.py", "fit.py", "fullfit.py", "interp.py", "io.py", "step.py")
+SOURCE_FILES = ("axisbins.py", "box.py", "cache.py", "cli.py", "cascade.py", "curve.py", "fit.py", "fullfit.py", "interp.py", "io.py", "step.py")
 
 
 def file_sha256(path: str | Path) -> str:
@@ -49,9 +49,9 @@ def source_fingerprint() -> dict:
 
 def fitting_defaults() -> dict:
     """Record callable defaults as well as the source hashes of internal constants."""
-    from . import box, cascade, curve, fit, fullfit, step
+    from . import axisbins, box, cascade, curve, fit, fullfit, step
     defaults = {}
-    for module in (fit, cascade, curve, fullfit, box, step):
+    for module in (fit, cascade, curve, fullfit, box, step, axisbins):
         for name, value in sorted(vars(module).items()):
             # lru_cache wraps sampling/grid helpers in a callable object. Its
             # underlying defaults still govern the actual fit and must be bound.
@@ -84,6 +84,21 @@ def algorithm_settings(parameters: dict) -> dict:
         return inspect.signature(function).parameters[name].default
 
     settings = {}
+    from .axisbins import PROFILES as BIN_PROFILES
+    if parameters.get("method") in BIN_PROFILES:
+        lookahead,reachable=BIN_PROFILES[parameters["method"]]
+        fallback=algorithm_settings({**parameters,"method":"adaptive_full"})
+        fallback["R27_source_fallback"]=fallback.pop("adaptive_model")
+        fallback["axis_bin_model"]={
+            "precedence":["complete own-source slice bins","own-source constant on complete prefix set","own-source vertex alignment",
+                          "certified own-source finite-domain fit if enabled","proved next-source classification pair if enabled","unchanged R27 source-only fallback"],
+            "lookahead_enabled":lookahead,"reachable_fitting_enabled":reachable,
+            "geometry":"one representative per contiguous integer bin; canonical cell indices; Q16 selectors 0 or 65536",
+            "targets":"current original LUT only; lookahead supplies partitions, never composite/residual RGB node labels",
+            "finite_fit":{"row_limit":"m^3 unique inputs","ridge":[1e-4,1e-6,1e-8],"cg_rtol":1e-10,"cg_maxiter":1000,"integer_sweeps":8,
+                          "acceptance":"every reachable actual Q16 RGB output equals its own-source label"},
+            "runtime":"four ordinary SLUT v1 integer Q16 tetra maps; no kernel or model-format change"}
+        return fallback
     if parameters.get("method") == "adaptive_full":
         fallback = algorithm_settings({**parameters, "method": "ls_tetra_full"})
         fallback["adaptive_model"] = {

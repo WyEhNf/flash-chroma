@@ -170,6 +170,43 @@ inline void transform(const Avx2LutView& L, Rgb8& rgb) noexcept {
   }
 }
 
+inline void unpack_packed(__m256i value, Rgb8& rgb) noexcept {
+  const __m256i mask = _mm256_set1_epi32(255);
+  rgb.r = _mm256_and_si256(value, mask);
+  rgb.g = _mm256_and_si256(_mm256_srli_epi32(value, 8), mask);
+  rgb.b = _mm256_srli_epi32(value, 16);
+}
+
+inline void structured_transform(const StructuredLutView& L, Rgb8& rgb) noexcept {
+  if (L.path == 3) {
+    unpack_packed(_mm256_set1_epi32(static_cast<int32_t>(L.constant_rgb)), rgb);
+  } else if (L.path == 1) {
+    const __m256i r = gather<true>(L.curves[0], rgb.r);
+    const __m256i g = gather<true>(L.curves[1], rgb.g);
+    const __m256i b = gather<true>(L.curves[2], rgb.b);
+    unpack_packed(_mm256_or_si256(_mm256_or_si256(r, g),
+      _mm256_or_si256(b, _mm256_set1_epi32(static_cast<int32_t>(L.constant_rgb)))), rgb);
+  } else if (L.path == 2) {
+    const auto& V = L.generic;
+    const __m256i r = gather<true>(V.axis, rgb.r);
+    const __m256i g = gather<true>(V.axis + 256, rgb.g);
+    const __m256i b = gather<true>(V.axis + 512, rgb.b);
+    // Every reachable fraction is exactly 0 or 65536. Bit 16 therefore
+    // chooses the upper endpoint, while bits 17+ retain the lower cell index.
+    const __m256i one = _mm256_set1_epi32(1);
+    const auto endpoint = [&](const __m256i value) {
+      return _mm256_add_epi32(_mm256_srli_epi32(value, 17),
+                              _mm256_and_si256(_mm256_srli_epi32(value, 16), one));
+    };
+    const __m256i index = _mm256_add_epi32(
+      _mm256_mullo_epi32(endpoint(r), _mm256_set1_epi32(V.sr)),
+      _mm256_add_epi32(_mm256_mullo_epi32(endpoint(g), _mm256_set1_epi32(V.sg)), endpoint(b)));
+    unpack_packed(gather<true>(V.nodes, index), rgb);
+  } else {
+    transform<false, true>(L.generic, rgb);
+  }
+}
+
 template<bool use_madd, bool scalar_gather, bool exact_float = false>
 void chain_impl(const Avx2LutView* chain, size_t stages, const uint8_t* in,
                  uint8_t* out, size_t n) noexcept {
@@ -209,5 +246,18 @@ void avx2_chain_scalar_gather(const Avx2LutView* chain, size_t stages, const uin
 void avx2_chain_exact_float(const Avx2LutView* chain, size_t stages, const uint8_t* in,
                             uint8_t* out, size_t n) noexcept {
   chain_impl<false, false, true>(chain, stages, in, out, n);
+}
+
+void avx2_structured_chain(const StructuredLutView* chain, const uint8_t* in,
+                           uint8_t* out, size_t n) noexcept {
+  for (size_t i = 0; i < n; i += 8) {
+    Rgb8 rgb;
+    load_rgb8(in + 3 * i, rgb);
+    structured_transform(chain[0], rgb);
+    structured_transform(chain[1], rgb);
+    structured_transform(chain[2], rgb);
+    structured_transform(chain[3], rgb);
+    store_rgb8(out + 3 * i, rgb);
+  }
 }
 }  // namespace jshc::detail

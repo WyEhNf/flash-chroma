@@ -17,6 +17,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "jshc/image_contract.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
@@ -159,7 +160,8 @@ struct Image {
 static Image load_rgb8(const std::string& path, bool competition) {
   Image image;
   int channels = 0;
-  if (stbi_is_16_bit(path.c_str()) || stbi_is_hdr(path.c_str()))
+  if (stbi_is_16_bit(path.c_str()) || stbi_is_hdr(path.c_str()) ||
+      !jshc::detail::png_source_rgb8_or_other_container(path))
     throw std::runtime_error("image must have 8-bit RGB channels: " + path);
   std::unique_ptr<uint8_t, decltype(&stbi_image_free)> pixels(
       stbi_load(path.c_str(), &image.width, &image.height, &channels, 0), stbi_image_free);

@@ -1,5 +1,6 @@
 #include "jshc/lut.hpp"
 #include "lut_simd_avx2.hpp"
+#include "portable_bridge.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -24,6 +25,16 @@
 namespace jshc {
 
 namespace {
+
+void validate_grid_metadata(const SparseLut& lut) {
+  for (const auto& axis : lut.grid) {
+    if (axis.size() != lut.m || axis.front() > 0 || axis.back() < 255)
+      throw std::runtime_error("sparse grid must cover [0,255]");
+    for (size_t i = 0; i < axis.size(); ++i)
+      if (!std::isfinite(axis[i]) || (i && axis[i] <= axis[i - 1]))
+        throw std::runtime_error("sparse grid must be finite and strictly increasing");
+  }
+}
 
 std::vector<uint8_t> read_binary_file(const std::string& path) {
   FILE* f = std::fopen(path.c_str(), "rb");
@@ -113,6 +124,10 @@ bool is_avx2_kernel(Kernel k) {
          k == Kernel::TetraAvx2ScalarGather || k == Kernel::TetraAvx2ExactFloat;
 }
 
+bool is_structured_kernel(Kernel k) {
+  return k == Kernel::TetraC99 || k == Kernel::TetraStructuredAvx2;
+}
+
 }  // namespace
 
 // ---- File I/O & Table Preparation -----------------------------------------------------
@@ -175,8 +190,7 @@ SparseLut SparseLut::load(const std::string& path) {
 void SparseLut::save(const std::string& path) const {
   if (m < 2 || m > 256 || nodes.size() != static_cast<size_t>(m) * m * m * 3)
     throw std::runtime_error("cannot save malformed sparse LUT: " + path);
-  for (const auto& axis : grid)
-    if (axis.size() != m) throw std::runtime_error("cannot save malformed grid: " + path);
+  validate_grid_metadata(*this);
   FILE* f = std::fopen(path.c_str(), "wb");
   if (!f) throw std::runtime_error("cannot write " + path);
   bool written = true;
@@ -199,6 +213,7 @@ void SparseLut::save(const std::string& path) const {
 void SparseLut::prepare() {
   if (m < 2 || m > 256 || nodes.size() != static_cast<size_t>(m) * m * m * 3)
     throw std::runtime_error("bad sparse LUT shape");
+  validate_grid_metadata(*this);
   stride[0] = static_cast<int32_t>(m * m);
   stride[1] = static_cast<int32_t>(m);
   stride[2] = 1;
@@ -212,6 +227,7 @@ void SparseLut::prepare() {
   }
 
   std::atomic_store(&packed_cache_, std::shared_ptr<const PackedTables>{});
+  std::atomic_store(&portable_cache_, std::shared_ptr<const PortableTables>{});
 }
 
 const SparseLut::PackedTables& SparseLut::packed_tables() const {
@@ -240,8 +256,21 @@ size_t SparseLut::runtime_bytes() const {
   for (const auto& axis : grid) bytes += axis.capacity() * sizeof(float);
   const auto tables = std::atomic_load(&packed_cache_);
   if (tables) bytes += sizeof(PackedTables) + tables->nodes.capacity() * sizeof(uint32_t);
+#if defined(JSHC_HAVE_PORTABLE_C)
+  const auto portable = std::atomic_load(&portable_cache_);
+  if (portable) bytes += sizeof(PortableTables) + portable->serialized.capacity();
+#endif
   return bytes;
 }
+
+#if !defined(JSHC_HAVE_PORTABLE_C)
+const SparseLut::PortableTables& SparseLut::portable_tables() const {
+  throw std::runtime_error("C99 bridge was disabled at build time");
+}
+StructuredChainPlan inspect_structured_chain(const std::vector<const SparseLut*>&) {
+  throw std::runtime_error("C99 bridge was disabled at build time");
+}
+#endif
 
 // ---- External Portable SIMD Symbols (C++26 <simd>, Zig @Vector, Rust std::simd) -------
 
@@ -285,6 +314,8 @@ Kernel parse_kernel(const std::string& s) {
   if (s == "tetra_avx2_madd" || s == "avx2_madd") return Kernel::TetraAvx2Madd;
   if (s == "tetra_avx2_scalar_gather" || s == "avx2_scalar_gather") return Kernel::TetraAvx2ScalarGather;
   if (s == "tetra_avx2_exact_float" || s == "avx2_exact_float") return Kernel::TetraAvx2ExactFloat;
+  if (s == "tetra_c99") return Kernel::TetraC99;
+  if (s == "tetra_structured_avx2") return Kernel::TetraStructuredAvx2;
   if (s == "tetra_asm" || s == "asm") return Kernel::TetraAsm;
   if (s == "tri" || s == "tri_float") return Kernel::TriFloat;
   throw std::runtime_error("unknown kernel " + s);
@@ -304,6 +335,8 @@ const char* kernel_name(Kernel k) {
     case Kernel::TetraAvx2Madd: return "tetra_avx2_madd";
     case Kernel::TetraAvx2ScalarGather: return "tetra_avx2_scalar_gather";
     case Kernel::TetraAvx2ExactFloat: return "tetra_avx2_exact_float";
+    case Kernel::TetraC99: return "tetra_c99";
+    case Kernel::TetraStructuredAvx2: return "tetra_structured_avx2";
     case Kernel::TetraAsm: return "tetra_asm";
     case Kernel::TriFloat: return "tri_float";
   }
@@ -343,6 +376,12 @@ bool kernel_available(Kernel k) {
     case Kernel::TetraAuto:
     case Kernel::TetraScalar:
     case Kernel::TriFloat: return true;
+#if defined(JSHC_HAVE_PORTABLE_C)
+    case Kernel::TetraC99: return true;
+#if defined(JSHC_HAVE_AVX2)
+    case Kernel::TetraStructuredAvx2: return avx2_available();
+#endif
+#endif
 #if defined(JSHC_HAVE_AVX2)
     case Kernel::TetraAvx2:
     case Kernel::TetraAvx2Madd:
@@ -383,7 +422,7 @@ Kernel resolve_kernel(Kernel k) {
 
 size_t kernel_scratch_bytes(Kernel k) {
   k = resolve_kernel(k);
-  return (k == Kernel::TetraScalar || is_avx2_kernel(k)) ? 0 : 2 * block_pixels() * 3;
+  return (k == Kernel::TetraScalar || is_avx2_kernel(k) || is_structured_kernel(k)) ? 0 : 2 * block_pixels() * 3;
 }
 
 void tetra_scalar(const SparseLut& L, const uint8_t* in, uint8_t* out, size_t n) {
@@ -549,6 +588,8 @@ static void apply_images(const std::vector<const SparseLut*>& chain,
                           Kernel k, int threads) {
   k = resolve_kernel(k);
   const size_t num_stages = chain.size();
+  if (is_structured_kernel(k) && num_stages != 4)
+    throw std::runtime_error("C99/structured kernels require exactly four sparse LUTs");
   if (num_stages == 0 || image_count == 0) return;
   const size_t kBlockPixels = block_pixels();
   // A prefix of virtual block indices avoids concatenating image bytes or
@@ -581,19 +622,41 @@ static void apply_images(const std::vector<const SparseLut*>& chain,
   for (size_t i = 1; i < ranges.size(); ++i)
     if (ranges[i].first < ranges[i - 1].second)
       throw std::runtime_error("batch RGB image views must not overlap");
+#if defined(JSHC_HAVE_PORTABLE_C)
+  jshc_p_chain portable_chain{};
+  std::array<detail::StructuredLutView, 4> structured_views{};
+  std::atomic<int> portable_status{0};
+  if (is_structured_kernel(k)) {
+    detail::prepare_portable_chain(chain, portable_chain);
+    for (size_t i = 0; i < image_count; ++i) detail::validate_portable_image(portable_chain, images[i]);
+  }
+#endif
   if (num_blocks == 0) return;
-  const bool fused = k == Kernel::TetraScalar || is_avx2_kernel(k);
+  const bool fused = k == Kernel::TetraScalar || is_avx2_kernel(k) || is_structured_kernel(k);
   std::vector<detail::Avx2LutView> views;
   if (is_avx2_kernel(k)) views.reserve(num_stages);
+#if defined(JSHC_HAVE_PORTABLE_C)
+  size_t stage_index = 0;
+#endif
   for (const SparseLut* L : chain) {
     if (!L) throw std::runtime_error("null sparse LUT in chain");
-    if (k != Kernel::TetraScalar && k != Kernel::TriFloat) {
+    if (k != Kernel::TetraScalar && k != Kernel::TriFloat && k != Kernel::TetraC99) {
       // Prepare once before entering OpenMP: no first-use allocations/locks in
       // AVX2 pixel loops, and all worker references remain stable.
       const auto& packed = L->packed_tables();
       if (is_avx2_kernel(k))
         views.push_back({packed.axis.data(), packed.nodes.data(), L->stride[0], L->stride[1]});
+#if defined(JSHC_HAVE_PORTABLE_C)
+      if (k == Kernel::TetraStructuredAvx2) {
+        const auto* model = portable_chain.models[stage_index];
+        structured_views[stage_index] = {{packed.axis.data(), packed.nodes.data(), L->stride[0], L->stride[1]},
+          {model->curve[0], model->curve[1], model->curve[2]}, model->constant_rgb, portable_chain.path[stage_index]};
+      }
+#endif
     }
+#if defined(JSHC_HAVE_PORTABLE_C)
+    ++stage_index;
+#endif
   }
 
 #if defined(JSHC_HAVE_AVX2)
@@ -633,6 +696,23 @@ static void apply_images(const std::vector<const SparseLut*>& chain,
         scalar_chain(chain, block_rgb, len);
         continue;
       }
+#if defined(JSHC_HAVE_PORTABLE_C)
+      if (k == Kernel::TetraC99) {
+        const size_t bytes = len * 3;
+        const auto status = jshc_p_apply_rgb8(&portable_chain, block_rgb, bytes, bytes,
+                                             block_rgb, bytes, bytes, len, 1);
+        if (status != JSHC_P_OK) portable_status.store(static_cast<int>(status), std::memory_order_relaxed);
+        continue;
+      }
+#if defined(JSHC_HAVE_AVX2)
+      if (k == Kernel::TetraStructuredAvx2) {
+        const size_t vec_n = len & ~size_t{7};
+        detail::avx2_structured_chain(structured_views.data(), block_rgb, block_rgb, vec_n);
+        scalar_chain(chain, block_rgb + 3 * vec_n, len - vec_n);
+        continue;
+      }
+#endif
+#endif
 #if defined(JSHC_HAVE_AVX2)
       if (is_avx2_kernel(k)) {
         const size_t vec_n = len & ~size_t{7};
@@ -659,6 +739,11 @@ static void apply_images(const std::vector<const SparseLut*>& chain,
       }
     }
   }
+#if defined(JSHC_HAVE_PORTABLE_C)
+  if (portable_status.load(std::memory_order_relaxed) != 0)
+    throw std::runtime_error(std::string("C99 image execution: ") +
+      jshc_p_status_string(static_cast<jshc_p_status>(portable_status.load(std::memory_order_relaxed))));
+#endif
   (void)threads;
 }
 

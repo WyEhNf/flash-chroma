@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#include <limits>
 #include <random>
 #include <stdexcept>
 #include <vector>
@@ -104,6 +105,17 @@ int main(int argc, char** argv) try {
   const bool full = argc == 2 && std::strcmp(argv[1], "--full") == 0;
   const size_t n = size_t(1) << (full ? 24 : 16);
   const auto backends = enabled_backends();
+  auto chain_backends = backends;
+  for (Kernel k : {Kernel::TetraC99, Kernel::TetraStructuredAvx2}) {
+    if (kernel_available(k)) {
+      chain_backends.push_back(k);
+      CHECK(kernel_scratch_bytes(k) == 0, "structured paths need no block scratch");
+    } else {
+      bool rejected = false;
+      try { (void)resolve_kernel(k); } catch (const std::runtime_error&) { rejected = true; }
+      CHECK(rejected, "disabled structured backend must fail explicitly");
+    }
+  }
   CHECK(kernel_available(default_kernel()), "auto resolves to an available backend");
   CHECK(resolve_kernel(Kernel::TetraAuto) == default_kernel(), "auto dispatch");
   CHECK(!kernel_available(Kernel::TetraAsm), "no fake assembly backend");
@@ -159,7 +171,7 @@ int main(int argc, char** argv) try {
     const std::vector<const SparseLut*> chain{&A, &B, &C, &D};
     std::vector<uint8_t> ref(cube), tmp(n * 3), out;
     for (const auto* L : chain) { oracle(*L, ref.data(), tmp.data(), n); ref.swap(tmp); }
-    for (Kernel k : backends) {
+    for (Kernel k : chain_backends) {
       for (int threads : {1, 4}) {
         out = cube;
         apply_chain(chain, out.data(), n, k, threads);
@@ -214,7 +226,7 @@ int main(int argc, char** argv) try {
       auto& output = expected.back();
       for (const auto* L : chain) oracle(*L, output.data() + 3, output.data() + 3, len);
     }
-    for (Kernel k : backends) {
+    for (Kernel k : chain_backends) {
       for (int threads : {1, 4}) {
         auto outputs = inputs;
         std::vector<RgbImageView> views;
@@ -232,12 +244,73 @@ int main(int argc, char** argv) try {
     CHECK(rejected, "overlapping batch views must be rejected before parallel mutation");
   }
 
+  // A complete-node curve proof, global one-hot selection, prefix-only one-hot
+  // proof and generic stage in the same four-stage chain. The oracle remains
+  // unaware of these shortcuts and compares all RGB inputs in the phase gate.
+  if (kernel_available(Kernel::TetraC99)) {
+    auto A = make_lut(17, false, 351, true);
+    auto B = make_lut(18, false, 352);
+    auto C = make_lut(25, false, 353, true);
+    auto D = make_lut(33, false, 354);
+    for (size_t node = 0; node < A.nodes.size() / 3; ++node) {
+      const uint32_t g = static_cast<uint32_t>((node / A.m) % A.m);
+      A.nodes[3 * node] = static_cast<uint8_t>(13 * g + 17);
+      A.nodes[3 * node + 1] = static_cast<uint8_t>(7 * g + 23);
+      A.nodes[3 * node + 2] = 51;
+    }
+    for (auto& channel : B.nodes) channel = channel & 1 ? 255 : 0;
+    for (auto& axis : B.frac) for (size_t x = 0; x < 256; ++x)
+      axis[x] = x & 1 ? kOne : 0;
+    A.prepare(); B.prepare();
+    const std::vector<const SparseLut*> chain{&A, &B, &C, &D};
+    const auto plan = inspect_structured_chain(chain);
+    CHECK((plan.path == std::array<uint8_t, 4>{1, 2, 2, 0}), "curve/vertex/prefix-vertex/tetra routing");
+    CHECK((plan.effective_one_hot == std::array<uint8_t, 4>{0, 1, 1, 0}), "prefix proof never becomes a global model flag");
+    std::vector<uint8_t> ref(cube), tmp(n * 3);
+    for (const auto* L : chain) { oracle(*L, ref.data(), tmp.data(), n); ref.swap(tmp); }
+    for (Kernel k : {Kernel::TetraC99, Kernel::TetraStructuredAvx2}) if (kernel_available(k)) {
+      for (int threads : {1, 4}) {
+        auto out = cube;
+        apply_chain(chain, out.data(), n, k, threads);
+        CHECK(out == ref, "all structured routes / full RGB / integer oracle");
+      }
+      const std::vector<uint8_t> before(cube.begin(), cube.begin() + 3 * 32);
+      auto unchanged = before;
+      bool rejected = false;
+      try { apply_chain({&A}, unchanged.data(), 7, k, 4); }
+      catch (const std::runtime_error&) { rejected = true; }
+      CHECK(rejected && unchanged == before, "four-stage requirement rejects before any write");
+      auto illegal = make_lut(2, false, 355);
+      rejected = false;
+      try { apply_chain({&A, &B, &illegal, &D}, unchanged.data(), 7, k, 4); }
+      catch (const std::runtime_error&) { rejected = true; }
+      CHECK(rejected && unchanged == before, "C99 size requirement rejects before any write");
+    }
+    // Broadcast is also checked with an odd tail and a canonical metadata cache
+    // invalidation: the C99 and packed caches must both rebuild after editing.
+    for (size_t node = 0; node < D.nodes.size() / 3; ++node) {
+      D.nodes[3 * node] = 255; D.nodes[3 * node + 1] = 0; D.nodes[3 * node + 2] = 129;
+    }
+    D.prepare();
+    CHECK(inspect_structured_chain(chain).path[3] == 3, "edited model re-proves constant path");
+    for (Kernel k : {Kernel::TetraC99, Kernel::TetraStructuredAvx2}) if (kernel_available(k)) {
+      auto out = cube;
+      apply_chain(chain, out.data(), 4097, k, 4);
+      bool exact = true;
+      for (size_t i = 0; i < 4097; ++i)
+        exact = exact && out[3*i] == 255 && out[3*i+1] == 0 && out[3*i+2] == 129;
+      CHECK(exact && std::equal(out.begin() + 3 * 4097, out.end(), cube.begin() + 3 * 4097),
+            "constant broadcast / tail / no overwrite / cache invalidation");
+    }
+  }
+
   // Lazy cache invalidation and serialization preserve the authoritative Q16 tables.
   {
     auto L = make_lut(18, false, 99, true);
     const size_t scalar_bytes = L.runtime_bytes();
     (void)L.packed_tables();
     CHECK(L.runtime_bytes() > scalar_bytes, "SIMD nodes materialize lazily");
+    if (kernel_available(Kernel::TetraC99)) (void)L.portable_tables();
     L.nodes[0] ^= 255;
     L.prepare();
     CHECK(L.runtime_bytes() == scalar_bytes, "prepare releases stale derived tables");
@@ -250,6 +323,28 @@ int main(int argc, char** argv) try {
     CHECK(L.nodes == roundtrip.nodes, "node serialization");
     CHECK(std::memcmp(L.frac, roundtrip.frac, sizeof(L.frac)) == 0, "Q16 table serialization");
     CHECK(std::memcmp(L.idx, roundtrip.idx, sizeof(L.idx)) == 0, "cell table serialization");
+  }
+
+  // Invalid metadata must fail before preparation or opening a destination file.
+  // Axis tables remain authoritative; this never recomputes their fractions.
+  {
+    const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
+    const auto path = std::filesystem::temp_directory_path() / ("jshc-invalid-grid-" + std::to_string(stamp) + ".slut");
+    for (int kind = 0; kind < 6; ++kind) {
+      auto bad = make_lut(17, false, 93);
+      if (kind == 0) bad.grid[0][3] = std::numeric_limits<float>::quiet_NaN();
+      if (kind == 1) bad.grid[1][3] = std::numeric_limits<float>::infinity();
+      if (kind == 2) bad.grid[2][3] = bad.grid[2][2];
+      if (kind == 3) bad.grid[0][0] = 1;
+      if (kind == 4) bad.grid[1].back() = 254;
+      if (kind == 5) bad.grid[2].clear();
+      bool prepare_rejected = false, save_rejected = false;
+      try { bad.prepare(); } catch (const std::runtime_error&) { prepare_rejected = true; }
+      try { bad.save(path.string()); } catch (const std::runtime_error&) { save_rejected = true; }
+      CHECK(prepare_rejected, "prepare rejects invalid grid metadata");
+      CHECK(save_rejected && !std::filesystem::exists(path), "invalid save does not create an output");
+      if (std::filesystem::exists(path)) std::filesystem::remove(path);
+    }
   }
 
   // Preserve the pre-existing native fitter acceptance check in the full phase gate.

@@ -1,5 +1,7 @@
 # 极速焕彩：第 16 题算法探索与可复现实验工程
 
+**2026-10-16 同步检查点：** 当前矩阵控制器已停止，原计划已尝试4,471/7,917项，其中4,465条有效色域观测、6项拟合阶段失败；留出尚未启动。完整停止快照见[检查点](datasets/problem16-v1/matrix-checkpoint.json)。R51新增观测已在无活动写入器时归并，总账本4,602条；既有质量冠军保持不变。此状态不代表全量测试完成。
+
 本仓库针对 **【2026 Hackathon 决赛】第 16 题「极速焕彩」**：把四个 `256³` RGB 整数 LUT 稀疏化到边长 `17–33` 的网格，在图像上执行四级整数色彩映射。当前采用 Python 离线拟合、独立可构建的 C++17 运行时、运行时检测的 AVX2 加速与标量回退；Zig、C++ SIMD、Rust 是可选对照后端。
 
 **当前统一入口：`python -m lutlab`。** 支持任意四张原始 LUT 的 `fit --inputs ... --grid dp --method ls_tetra_jitter`，以及 CPU/CUDA 共用的 `apply`、`cube`、`verify`、`bench-models`、`validate`、`accept` 和严格配对 `compare`。先设置 `PYTHONPATH=python`；CPU 程序用 `JSHC_BIN`，可选 CUDA 程序用 `JSHC_CUDA_BIN` 或显式 `--executable`。接口、完整复现及本机 100 图结果见 [R19 统一交付与严格验收](docs/r19-delivery-results.md)。旧入口继续可用，历史时间不与当前结果混排。
@@ -20,26 +22,53 @@
 
 **R27阶梯插值与可达布点：** 显式候选`adaptive_full`保持四张独立m³表，压力源全色mean由4.1478降至0.3767，100图最差mean由6.2241降至0.7870；固定配置10/13通过示例门槛。当前模型100图CPU16/CUDA宿主往返86.864/67.7566 ms，OCIO同模型四线程接入另作实测。[方法、反例及证据](docs/r27-step-interpolation.md)；[最新完整PDF报告](output/pdf/problem16-latest-tested-report.pdf)。
 
+**R28数据与case账本：** 200条完整四级LUT链、320张分类合成图、23组探针已完成完整审计；常量链与重复最终变换单独标记。`corpus`、`casebook`子命令维护数据、失败、mean/max最优与容量Pareto。9策略×3尺寸×200case的5400候选矩阵已开始；首个case的27项结果不能代表类别sweet zone。[范围与状态](docs/r28-corpus-program.md) · [数据目录](datasets/problem16-v1/README.md)。远端补充的五张Kodak自然照片保留独立来源与引用队列。
+
+**R30/R31端侧运行时：** 新增独立无堆分配、无I/O和无浮点的[C99库](portable/README.md)，支持行步长、分块、原地处理和经证明的常量/曲线/节点捷径。3组完整RGB立方体与冻结原生结果一致；AArch64大小端模拟执行的12个完整输出流也一致。实体手机性能、功耗及新库配对速度尚未测量。[集中验收及边界](docs/r30-portable-runtime.md)。现有C++默认AVX2路径保持原实现。
+
+**R32格式门禁：** CPU补齐网格元数据检查，CPU/CUDA在竞赛入口检查PNG原始RGB8类型。集中拒绝全部30/27个适用负样本；有效模型完整色域及每后端100合成图+5自然照片保持一致。[修复与复用证明](docs/r32-format-contract.md)。
+
+**R33/R34新算法与阶段比较：** 一箱一节点的单调选择让17/33箱控制在合法m内零误差；两级前瞻仍以各自原表为节点标签，stress-13/m33的全色域max由38.4187降至2.2361，mean降至0.30875。实际100图最差mean1.0，五张照片在CPU/CUDA/C99上逐字节一致。7对同资源比较确认AVX2相对标量加速2.0709倍，未证明新模型映射提速。[算法及拒绝的候选](docs/r33-monotone-bins.md) · [严格阶段结果](docs/r34-candidate-results.md)。这些结果只覆盖预声明先导case；原5400矩阵与新策略的类别留出研究仍未完成。PDF仍为R27冻结报告。
+
+**R35结构化运行时接入：** 新增显式`tetra_c99`、`tetra_structured_avx2`及统一`plan`诊断。完整节点/前缀证明用于常量、曲线、单节点和通用路径。两个构建的完整独立参考门禁、9个真实完整色域输出流和每新内核100+5图像均通过；尚无新内核配对速度结论。桌面桥接副本与缓存计入运行内存。[部署与验收](docs/r35-structured-runtime.md)。R36的2517项扩展计划已预声明，两套训练阶段完成并冻结联合规则前均不执行留出。
+
+**R39/R40结构化性能与case选择：** 3模型×3后端的9项比较共162次计时已完成，统一16线程、固定100图，双侧符号检验对九项作Holm校正。结构AVX2相对普通AVX2在新压力与17箱模型上分别加速1.96477/3.17268倍，通用clip模型未证明显著改善。九项配置已绑定正确性证据登记到case账本，区分观测最快、证实最快和耗时/模型内存Pareto。[全部结果、内存代价及边界](docs/r39-structured-performance.md)。默认auto仍保持原有选择，矩阵留出研究和实体手机性能尚未完成。
+
+**R41矩阵恢复：** 修复Windows控制器路径键导致的启动错误，基线和扩展均已有实际运行的开发/校准/回归进程。联合规则工具可检查完整4,680项训练覆盖；正式冻结与留出评估仍待完整训练完成。[恢复证据位置、规则口径及操作命令](docs/r41-matrix-resume.md)。
+
+**R42类别训练对照：** 固定快照包含2083项训练记录，42/180组已完成双seed全13策略对照。mean与max经常选择不同策略，多个指标存在并列最优，并观察到m增大后最终误差反而增大的case；覆盖不足组不排名。[实际比较与边界](docs/r42-training-comparison.md)。这不是留出sweet zone结论。
+
+**R43 ROM部署：** 新增`python -m lutlab.portable_export`，生成保留原四表字节与来源的C99只读数组，固件无需模型文件系统或Python。m17/m33两套编译数组及完整色域结果均匹配冻结原生输出，四种freestanding目标对象编译通过，三线性模型明确拒绝。[部署接口、资源开销与验收](docs/r43-rom-export.md)。本轮没有实体手机性能测量。
+
+**矩阵里程碑：** R36开发720、校准720、回归357项均已完成，控制器正常退出；扩展留出720项尚未启动。R29基线仍在运行，两矩阵训练齐备并冻结联合规则前不查看留出输出。
+
+**R44/R45适用区域与图像边界：** 四个新策略的180组训练对照全部齐备，组合策略相对adaptive_bins在9组改变指标，其余171组四指标相同；恒定最终链单独标记。[类别差异与容量反例](docs/r44-new-policy-regions.md)。三个代表源已完成6条完整色域流、600次标准图与五照片多后端核对；其中一个源的100图最差mean仍为14.0382，保留本地精度失败。[实际图像结果及待导入状态](docs/r45-representative-images.md)。这些结果不替代全13策略与留出评估。
+
+**R47混合阶段容量：** 18个曲线训练源各枚举81种四级尺寸，1458个完整解析配置与54个既有均匀原生结果一致；45条新原生色域流完成CPU/CUDA/C99部署核对。9源的mean优于各自全13策略×3尺寸参照，5源同时节省节点存储；135条类别／预算指南已在任何留出输出前冻结。[精确方法、来源包装及边界](docs/r47-mixed-capacity.md)。原7917项矩阵保留，混合研究729个留出配置尚未评价。
+
+**R50矩阵续跑与总账本归并：** 按完整case分片的执行器通过一次集中验证，复用52条记录、仅新增2条完整色域流，模型、输出SHA、全部误差及23组探针与原数值版本一致。旧控制器保存检查点并受控退出，新控制器以最多4个普通子进程续跑。R45/R47的45条记录已正式导入，总账本中9个混合训练源降低最优mean，另4个同误差节省节点存储。[实际凭据与边界](docs/r50-case-shards-and-canonical-import.md)。全量训练、规则冻结与留出比较尚未完成。
+
+**R51求解器恢复与噪声边界：** 新增显式离线`python -m lutlab.robust_fit`，不放宽容差，以有界续算恢复一个随机对抗m33拟合；四个成功配置保持旧模型字节，恢复模型在CPU/CUDA/编译C99的完整色域输出一致。其mean128.839、max413.079仍高，保留已有mean与尾部最优策略。五配置追加独立边界标签，原失败及7917项分母不改。[全部指标、部署与限制](docs/r51-bounded-cg-recovery.md)。
+
 **2026-10-15 R17 历史阶段：** 原生 Windows/AMD 8945HX 已完成阶段验收。新增真实 Q16 精化、内容绑定的模型缓存、明确范围的误差门禁，以及四级寄存器融合 AVX2。[阶段优化与实测](docs/r17-optimization-results.md) · [R17构建说明](docs/r17-delivery.md) · [算法推导](docs/r17-algorithm.md)。统一入口和基础部署见R19，新增拟合与当前实测见R25；[R19验收归档](report/data/r19/README.md)保留其冻结阶段的摘要、原始记录及模型。下文保留上游历史报告与数据获取背景，现有成果不能推算官方成绩。
 
 **目前结论：有条件可选。** 本地 `isp-0` 模拟场景上已有通过示例门槛的四级候选；官方 LUT 格式、色差阈值及其统计口径、计时边界、单级复合是否合法仍需确认。本仓库的“通过”和速度数字都不是官方验收结果。
 
 ## 完整报告
 
-**[阅读最新已测版本报告 PDF](output/pdf/problem16-latest-tested-report.pdf)**：R27完整精度、100图配对性能、内存、三个评分项和OpenColorIO/AdaInt/SVDLUT对比。官方数据与阈值未取得，不据此判定官方分数。
+**[阅读R27完整报告 PDF](output/pdf/problem16-latest-tested-report.pdf)**：R27完整精度、100图配对性能、内存、三个评分项和OpenColorIO/AdaInt/SVDLUT对比。后续数据与端侧阶段见上方文档，尚未合入这份冻结PDF。官方数据与阈值未取得，不据此判定官方分数。
 
 **[历史中文探索报告 PDF](report/exploration.pdf)**（11 页，已纳入 Git；在 Codeberg 默认 `main` 也能打开）。它从题面和首个版本讲起，说明 20 条技术路线、历史24个候选的精度与速度、失败场景、可移植 SIMD 实验、三人分工及最终选题判断。
 
 需要核对数字时看 [报告数据索引](report/data/DATA_INDEX.md)：其中有原始运行记录归档、696 条逐图结果、最坏颜色和 SHA-256。要修改或重建版式，请看 [Typst 源与复现说明](report/README.md)。这是固定实验记录的报告；后来代码或官方数据有变化时，须重新验证，不能直接沿用其中的性能结论。
 
-## 从 Codeberg 开始
+## 获取仓库
 
-Codeberg 的默认 `main` 保留较早的代码版本。当前本地`codex/zig-default-pixi`开发线包含R17–R26源码、统一入口及小型验收归档，本轮尚未推送；远端版本不能代替本地交付证据。原生 Windows 的 CMake 构建已实测，命令见[当前交付入口](docs/r19-delivery-results.md)。原有 Pixi 清单仍仅覆盖 Linux 与macOS ARM，后者未在本轮验证。
+主要仓库为[GitHub flash-chroma](https://github.com/WyEhNf/flash-chroma)，旧Codeberg保留上游历史。GitHub的R27及五张照片更新已纳入本地；后续R28–R31工作是否已发布，以实际Git提交和远端状态为准。原生Windows的CMake构建见[统一交付入口](docs/r19-delivery-results.md)，新独立C库见`portable/`。原有Pixi清单仍仅覆盖Linux与macOS ARM，不能据此认定macOS设备已经验收。
 
 ```bash
-git clone https://codeberg.org/Mooooonk/problem_probe_16.git
-cd problem_probe_16
-git switch --track origin/codex/zig-default-pixi
+git clone https://github.com/WyEhNf/flash-chroma.git
+cd flash-chroma
 git status --short --branch
 ```
 

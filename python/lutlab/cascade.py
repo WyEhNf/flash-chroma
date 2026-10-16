@@ -40,6 +40,12 @@ def fit_cascade_sequential(
     grid_mode: str | None = None,
 ) -> tuple[list[io.SparseLut], dict]:
     """Fit 4 stages sequentially without cross-stage compensation."""
+    from . import axisbins
+    if base_method in axisbins.PROFILES:
+        if use_adaptive_grid or grid_mode not in (None,"dp"):
+            raise ValueError("bin/prefix candidates select their own proved grids with DP fallback")
+        lookahead,reachable=axisbins.PROFILES[base_method]
+        return axisbins.fit_chain(tables,m,lookahead=lookahead,reachable=reachable)
     t0 = time.perf_counter()
     chain = []
     stage_times = []
