@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "purpose": "定位单级尾部误差与四级误差传播，检验敏感颜色加权和热点Q16整数精化；非性能扫描",
+  "metric": "rgb_l2_code_value",
+  "m": 33,
+  "threads": 4,
+  "discovery": {
+    "count": 262144,
+    "seed": 2026101631
+  },
+  "guard": {
+    "count": 65536,
+    "seed": 2026101632
+  },
+  "evaluation": {
+    "count": 262144,
+    "seed": 2026101633,
+    "selection_use": false
+  },
+  "hotspot_k": 128,
+  "hotspot_neighbourhood": "Chebyshev ±1 RGB码值",
+  "hotspot_repeats": 8,
+  "q16_sweeps": 2,
+  "sensitivity_weight_cap": 32,
+  "weighted_fit_mass_ratio": 1.0,
+  "selected_stage": "逐级替换为本级完整表，按最终CVaR1%改善、mean改善、级号选择；替换收益不作可加贡献",
+  "promotion": "guard的mean/RMS/p99/max均不增且至少一项严格改善；未达要求保留baseline",
+  "full_cube": "四例baseline用于归因/热点发现，冻结后只展开选中候选；控制例额外展开既有lookahead_bins；不是全方法矩阵",
+  "photos": "100张历史照片，仅baseline与选中模型；不是独立盲测，不计时",
+  "cases": [
+    {
+      "id": "lomo-purple2",
+      "kind": "single",
+      "grid": "uniform",
+      "sources": [
+        {
+          "path": "assets/LUT/sources/stripedpurple/Film Simulations/Lomography/Lomochrome Purple 2.cube",
+          "sha256": "e4f0872b25081f97dae1da0cb39f08e4c177952032aca4f158ecc395840b555b",
+          "format": "cube",
+          "grid_size": 64,
+          "domain_min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "domain_max": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "velvia-vivid",
+      "kind": "single",
+      "grid": "curvature",
+      "sources": [
+        {
+          "path": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+          "sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+          "format": "hald_tiff",
+          "grid_size": 144
+        }
+      ]
+    },
+    {
+      "id": "cinema-chain2",
+      "kind": "chain",
+      "grid": "curvature",
+      "sources": [
+        {
+          "path": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1910s.cube",
+          "sha256": "2ae2f4c62d028e41cf132f0d87f9098240fb8232195e602ed316c94cc0d38538",
+          "format": "cube",
+          "grid_size": 64,
+          "domain_min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "domain_max": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "path": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1920s.cube",
+          "sha256": "8f4f6ece25f0979b952c77e0d62a0e695310201a882fa8d7002471af0ff430f4",
+          "format": "cube",
+          "grid_size": 64,
+          "domain_min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "domain_max": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "path": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1930s.cube",
+          "sha256": "a82f33eaeb5e834c15d845e3ce2cda26d9f2aadb179af3dd25b79cceec838bf9",
+          "format": "cube",
+          "grid_size": 64,
+          "domain_min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "domain_max": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "path": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1940s.cube",
+          "sha256": "d568987e472432d63afba500d4daa26022c86d1db1739056c19431e5175baee7",
+          "format": "cube",
+          "grid_size": 64,
+          "domain_min": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "domain_max": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cascade-zoom-d8",
+      "kind": "hack-chain",
+      "grid": "uniform",
+      "dataset": "datasets/problem16-hack-v2/catalog.json",
+      "case_id": "cascade-zoom-d8",
+      "existing_control": "lookahead_bins"
+    }
+  ],
+  "semantics": "每级拟合标签始终是本级完整LUT在实际该级输入上的值；不使用残差/复合颜色作节点标签；单级case不计为比赛四级成绩",
+  "unknowns": [
+    "官方Threshold及统计粒度",
+    "外部创意LUT摄影色彩域兼容性"
+  ],
+  "limits": "只对固定四例给出结论；guard属于选择集；全色域覆盖不是未知LUT泛化证明",
+  "winner_order": [
+    "guard.max",
+    "guard.p99",
+    "guard.mean",
+    "guard.rms"
+  ],
+  "baseline_method": "ls_tetra_int；沿用各例声明的网格，独立新运行，不冒充PR9冻结模型复现",
+  "ablations": [
+    "baseline",
+    "distribution_ls",
+    "sensitive_ls",
+    "hotspot_integer",
+    "combined"
+  ],
+  "diagnostic_control": "控制例另测既有lookahead_bins全域；若已有方法更优，明确披露"
+}
