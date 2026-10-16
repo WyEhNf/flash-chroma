@@ -77,8 +77,8 @@ def main():
     outcomes = [verify(reference,proof) for proof in proofs]
     if not outcomes[-2] or outcomes[-1] or "mean" not in negative["failed"]:
         raise ValueError("最终候选或已知超预算负对照未达到声明的验收口径")
-    result = {"verified":True,"checked_certificates":len(proofs),"accepted_candidates":sum(outcomes),
-        "rejected_candidates":len(outcomes)-sum(outcomes),"n":256**3,"python":sys.version,
+    result = {"verified":True,"checked_certificates":len(proofs),"accepted_certificates":sum(outcomes),
+        "rejected_certificates":len(outcomes)-sum(outcomes),"n":256**3,"python":sys.version,
         "external_dependencies_loaded":any(name in sys.modules for name in ("numpy","scipy","numba")),
         "verifier_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "input_sha256":{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
@@ -87,7 +87,8 @@ def main():
         if args.output.exists():
             raise ValueError("不覆盖已有证书复核记录")
         args.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(json.dumps(result,ensure_ascii=False))
+    # 隔离模式会忽略UTF8环境变量；标准输出用JSON转义保证跨Windows代码页可读。
+    print(json.dumps(result,ensure_ascii=True))
 
 
 if __name__ == "__main__":

@@ -263,7 +263,8 @@ def main():
         rounds.append({"round": iteration+1, "active_colours": len(active), "search": detail,
                        **({"paired_search":paired} if paired is not None else {}), "full_training_scan": separation})
         write_json(out / f"round{iteration+1}.json", rounds[-1])
-        print(f"约束分离第{iteration+1}轮：接受{len(detail['accepted'])}次节点选择；剩余{len(bad)}个超限颜色", flush=True)
+        paired_count = len(paired["moves"]) if paired is not None and paired["accepted"] else 0
+        print(f"约束分离第{iteration+1}轮：接受{len(detail['accepted'])}次单节点选择、{paired_count}个联合节点；剩余{len(bad)}个超限颜色", flush=True)
         if not detail["accepted"] and not (paired is not None and paired["accepted"]):
             break
     feasible = not len(bad)
