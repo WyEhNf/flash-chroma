@@ -1,0 +1,63 @@
+{
+  "schema": 8,
+  "purpose": "固定PR26候选队列，延迟到实际提交时加入最坏1%均值保护",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/primary-budget-constraints-v1",
+  "cases": [
+    "velvia-vivid"
+  ],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {
+    "method": "rounded",
+    "rounds": 1,
+    "primary_limit": 8,
+    "helper_limit": 16,
+    "max_array_bytes": 2684354560,
+    "block_order": 3,
+    "first_helpers": 4,
+    "second_helpers": 4,
+    "primary_order": "ranked"
+  },
+  "stability": {
+    "tail_ranking": false
+  },
+  "full_domain_guard": {
+    "mean_numerator": 1005,
+    "mean_denominator": 1000,
+    "precision_bits": 24
+  },
+  "memory_array_budget_bytes": 2684354560,
+  "reference": "先重放48步并绑定PR25终态SHA cdbc18badb6ae3450a4cd28eadb9b941bf6d4ef243f72ccf2a693f78b0271bed，初始缺口1613；原历史目标、原混合预算保留，额外四指标参照在本阶段起点一次冻结",
+  "search": "前8个原四指标可行单改仍保留为组合材料；CVaR超预算者不能单独提交，但允许由同块其他节点补偿。原64组合和1次确认均执行固定起点CVaR保护。其他路径同样保护",
+  "evaluation": "复用PR26无CVaR对照；只对新终态一次完整256³、100图和标量/AVX2整数oracle终验，逐新步骤标准库复核CVaR；独立重放所选7子集，后验复核相同72候选，不扫描参数或计时",
+  "limits": "本阶段起点和历史主阈值保持；CVaR是新增固定门禁，Q24充分条件可能保守。允许主缺口略差于1582以降低尾部风险。只对同一冻结8种子/64组合队列比较，不推断过滤后重新搜128项的结果。20审计历史已观察非盲验，无官方Threshold，不修改默认/冠军/后端",
+  "global_search": {
+    "method": "primary_budget",
+    "ordering": "constraints",
+    "rounds": 1,
+    "max_array_bytes": 2684354560,
+    "batch": {
+      "feasible_limit": 8,
+      "max_order": 3
+    }
+  },
+  "cvar_guard": {
+    "fraction": [
+      1,
+      100
+    ],
+    "precision_bits": 24,
+    "seed_policy": "defer_commit"
+  },
+  "cohort_reference": {
+    "path": "artifacts/primary-batch-joint-v1",
+    "plan": "experiments/primary-batch-joint-v1.json",
+    "risk": "report/data/primary-batch-v1/tail-risk.json"
+  }
+}

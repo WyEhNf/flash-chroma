@@ -43,9 +43,11 @@ def ranked_proposals(model,banks,points,priority,truth):
     return sorted(ranked)
 
 
-def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None,global_search=None,pair_prefix_expected=None):
+def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None,global_search=None,pair_prefix_expected=None,cvar_guard=None):
     """有限、确定性搜索；每次严格降低整数缺口，保持整个阶段固定的均值/RMS预算。"""
     models = [model]
+    if cvar_guard is not None and (cvar_guard.reference["n"] != len(domain.points) or cvar_guard.model_signature != domain.model_signature):
+        raise ValueError("CVaR冻结参照与当前起点的像素数或模型签名不同")
     batch_config = global_search.get("batch") if global_search else None
     if batch_config is not None:
         from . import primary_batch
@@ -61,7 +63,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         "global_single_trials":0,"global_pair_trials":0,"three_node_trials":0,"proper_subset_trials":0}
     if batch_config is not None:totals.update(global_batch_trials=0,global_batch_confirmations=0)
 
-    def consider(move,trace=None,lower_bound=None):
+    def consider(move,trace=None,lower_bound=None,allow_seed=False):
         full_trial = domain.trial(models,move)
         rows = full_trial["rows"]
         photo_trial = photos.trial(rows,domain.squared[rows],full_trial["squared"])
@@ -70,6 +72,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         item = {"moves":[{"node":p.node,"value":list(p.value)} for p in fg.components(move)],
             "before_loss":photos.loss,"loss":photo_trial.loss,"photo_failed":list(photo_trial.failed),"lower_bound_delta":lower_bound,
             "full_failed":[],"accepted":False,"decision":None}
+        if cvar_guard is not None:item.update(four_metric_eligible=False,seed_eligible=False,commit_eligible=False)
         if trace is not None:trace.append(item)
         if photo_trial.loss >= photos.loss:
             item["decision"] = "tail_loss"
@@ -91,6 +94,18 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             if failed:
                 item["decision"] = "stability_full"
                 for key in failed:rejections[key] = rejections.get(key,0)+1
+                return None
+        if cvar_guard is not None:
+            item["four_metric_eligible"] = True
+            item["cvar"] = cvar_guard.certify(full_trial["hist"])
+            item["commit_eligible"] = item["cvar"]["accepted"]
+            item["seed_eligible"] = allow_seed
+            if not item["commit_eligible"]:
+                if allow_seed:
+                    item["decision"] = "seed_only_cvar"
+                    return photo_trial,proof
+                item["decision"] = "cvar_guard"
+                for key in item["cvar"]["failed"]:rejections[key] = rejections.get(key,0)+1
                 return None
         item["accepted"] = True
         item["decision"] = "accepted"
@@ -150,7 +165,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
                 def batch_evaluate(move,trace,lower_bound,kind):
                     field = {"single":"global_single_trials","block":"global_batch_trials","confirmation":"global_batch_confirmations"}[kind]
                     totals[field] += 1
-                    return consider(move,trace,lower_bound)
+                    return consider(move,trace,lower_bound,allow_seed=kind == "single")
                 accepted,details = primary_batch.select(model,ranked[:trial_limit],batch_evaluate,info["trials"],before_loss=photos.loss,**batch_config)
                 info["batch_search"] = details
                 if accepted is not None:
@@ -281,6 +296,9 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             if not record["stability"]["accepted"]:raise AssertionError("接受后固定参考稳定性证书失败")
         if accepted_compensation is not None:record["compensation"] = accepted_compensation
         if accepted_batch is not None:record["primary_batch"] = accepted_batch
+        if cvar_guard is not None:
+            record["cvar"] = cvar_guard.certify(domain.hist)
+            if not record["cvar"]["accepted"]:raise AssertionError("提交后完整域CVaR固定保护失败")
         log.append(record)
         print(f"接受第{step+1}步：{len(moves)}节点，整数尾部缺口 {before} → {photos.loss}",flush=True)
         if on_accept is not None:on_accept(record,model)
