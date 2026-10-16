@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "status": "extended_and_merged_data_verified",
+  "captured_utc": "2026-10-16T03:50:43.225929+00:00",
+  "base_commit": "b89b88fce1e16563b83ce72df9d8461725d5553c",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12",
+    "numpy": "2.4.6",
+    "pillow": "11.1.0"
+  },
+  "merged_catalog_sha256": "0b27bde23f6b347387cdd364c4d49f11b485bf957f1a7dd864aeda5def2ee780",
+  "generator_sha256": "1e76992c12ba260842b0483413ebe8affa61184dee6456f718cdd6e6804024c5",
+  "counts": {
+    "cases": 274,
+    "cases_by_namespace": {
+      "corpus-v1": 200,
+      "axis-bins-v1": 3,
+      "legacy": 9,
+      "hack-v1": 26,
+      "hack-v2": 36
+    },
+    "unique_ordered_source_chains": 273,
+    "cases_without_final_target_hash": 12,
+    "image_aliases": 460,
+    "unique_image_contents": 455
+  },
+  "image_cohort_counts": {
+    "corpus-v1": 320,
+    "corpus-development": 80,
+    "corpus-calibration": 80,
+    "corpus-holdout": 160,
+    "hack-v1": 14,
+    "hack-v2": 21,
+    "stress": 35,
+    "natural100": 100,
+    "photos-v1": 5,
+    "all-inventory": 455,
+    "development": 115,
+    "benchmark100-legacy": 100
+  },
+  "extension": {
+    "new_cases": 36,
+    "development": 28,
+    "reserved_validation": 8,
+    "new_images": 21,
+    "unique_stage_hashes": 43,
+    "replay_colours": 151
+  },
+  "source_identity_audit": {
+    "new_complete_composite_hashes": 62,
+    "known_source_chain_split_conflicts": 0,
+    "known_final_target_split_conflicts": 0,
+    "known_image_split_conflicts": 0,
+    "unknown_historical_final_targets": 12,
+    "scope": "新源真值完整字节哈希用于去重，不是拟合误差扫描"
+  },
+  "file_audit": {
+    "pass": true,
+    "actual_image_files": 455,
+    "rgb8_size": [
+      1024,
+      768
+    ],
+    "stress_multiset_groups": 11,
+    "frozen_models": 12,
+    "full_source_bytes_rehashed": false
+  },
+  "python_gate": {
+    "command": "python scripts/check_correctness.py --build-dir build-r52-sync --only python",
+    "passed": 28,
+    "failed": 0,
+    "seconds": 28.62
+  },
+  "runtime_probe_replays": {
+    "kernels": [
+      "tetra_scalar",
+      "tetra_avx2",
+      "tetra_avx2_madd",
+      "tetra_avx2_scalar_gather",
+      "tetra_avx2_exact_float",
+      "tetra_c99",
+      "tetra_structured_avx2"
+    ],
+    "native_apply_calls": 21,
+    "mismatched_bytes": 0,
+    "new_coupled_probe_count": 151,
+    "generic_tetra_stage_verified": [
+      "tetra_c99",
+      "tetra_structured_avx2"
+    ],
+    "executable_sha256": "6762f9cd298d4b92e0c546e0a70143434921e074ee5cc7f2680e9888698b8395",
+    "scope": "三组固定探针回放，没有重复完整色域验证"
+  },
+  "export_check": {
+    "case": "hack-v2--box-peak-w1",
+    "source_bytes": 201326592,
+    "lookup_colours": 43,
+    "pass": true
+  },
+  "restore_regression": "隔离目录恢复一张冻结原图、重复恢复不覆写、损坏字节拒绝覆盖；没有重建整批320张原图",
+  "fixed_input_adapter_failure": {
+    "failure": "旧CSV含UTF-8 BOM导致case_id列读取失败",
+    "fix": "使用utf-8-sig解码，原CSV不修改",
+    "first_failure_preserved": true,
+    "regression_added": true
+  },
+  "preserved_numerical_sources": {
+    "count": 22,
+    "changed": []
+  },
+  "legacy_casebook_and_7917_plan_unchanged": true,
+  "not_executed": [
+    "完整拟合方法/容量矩阵",
+    "预留源的拟合精度评价",
+    "全色域稀疏误差扫描",
+    "性能扫描",
+    "本轮Linux/Pixi、Docker、CUDA验证"
+  ],
+  "remote_distribution": "统一索引、哈希、来源、生成器、35张压力图与三组小模型；原320张合成图和大LUT保持在忽略的data目录，按显式命令恢复"
+}

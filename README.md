@@ -52,6 +52,10 @@ pixi run --locked lutlab accept --help
 
 已有带来源和哈希记录的 [100 张日常照片](assets/photos/README.md)，包含 Kodak、DPED 和 DIV2K 子集，可显式传入 `assets/photos/eval.txt`。它们不自动替换模拟数据清单，也不替代全色域验收；各来源的使用范围见样本说明。
 
+[hack image/LUT 压力子集](datasets/problem16-hack-v1/README.md)提供独立的边界配方、同像素多重集图片及小型整数回放，通过 `python -m lutlab hackset` 构造和核对；拟合矩阵与全色域压力评价仍需显式执行。
+
+当前统一入口是[合并数据集 v1](datasets/problem16-unified-v1/README.md)：原语料、历史控制、两批压力子集和自然照片合计登记 274 个 LUT case、455 份不同图片内容。`python -m lutlab dataset` 提供命名空间查询、分队列核对和原合成图恢复；保留旧划分和 7,917 项计划，不自动转移历史验收资格。
+
 ## 模拟数据与实验
 
 模拟场景只用于本地研究。以下命令会下载 Kodak 图片并生成图像、四级 LUT 与清单，占用较多时间和磁盘空间；它们不属于首次构建或 CI：

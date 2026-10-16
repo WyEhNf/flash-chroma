@@ -4,6 +4,10 @@
 
 ## 当前接口与规则
 
+- [合并数据集 v1](../datasets/problem16-unified-v1/README.md)：274 个 LUT case、455 份图片内容；保留原身份和划分，提供分队列清单、哈希核对及原合成图恢复。[第二批压力扩展](../datasets/problem16-hack-v2/README.md)追加三维峰谷、斜薄带、周期与舍入/串联场景。
+
+- [hack image/LUT 压力子集](../datasets/problem16-hack-v1/README.md)：独立的可复现配方、边界图片与小型整数回放；[验收口径](../datasets/problem16-hack-v1/acceptance.json)明确区分运行时差异、近似误差与参考跳变，完整扫描尚未执行。
+
 - [原题整理](../PROBLEM.md)、[选题判断与待确认规则](../DECISION.md)。
 - [数据格式、来源与生成](../DATA.md)。
 - [独立实验日志与交接](LOGGING.md)。

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\__main__.py", line 4, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\entry.py", line 15, in main
+    return dataset.main(argv[1:])
+           ~~~~~~~~~~~~^^^^^^^^^^
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\dataset.py", line 314, in main
+    result = build()["counts"]
+             ~~~~~^^
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\dataset.py", line 174, in build
+    cases, images = collect_cases(), collect_images()
+                    ~~~~~~~~~~~~~^^
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\dataset.py", line 68, in collect_cases
+    inventory = {r["case_id"]: r for r in csv_rows(h.ROOT / "report/data/r28/case-inventory.csv")}
+                 ~^^^^^^^^^^^
+KeyError: 'case_id'

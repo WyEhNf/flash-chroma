@@ -1,0 +1,1152 @@
+{
+  "schema": 1,
+  "name": "problem16-hack-v1",
+  "generator_sha256": "d2ee9bfe3e59583c442d0034e7b833a87578857baf2a6155cf6f1842a3584448",
+  "metric": "rgb_l2_code_value",
+  "dev_seed": 2026101601,
+  "reserved_seed": 2026101691,
+  "cases": [
+    {
+      "id": "identity-roundtrip",
+      "family": "baseline",
+      "scope": "explainable_control",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "invert",
+          "mask": 1
+        },
+        {
+          "op": "invert",
+          "mask": 2
+        },
+        {
+          "op": "invert",
+          "mask": 4
+        },
+        {
+          "op": "invert",
+          "mask": 7
+        }
+      ],
+      "recipe_sha256": "7e111dcdcc6d92961dcaf5058eb3cc150c6c0d2acdabf1a5d9d94898112a1b05",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "channel-permutation",
+      "family": "baseline",
+      "scope": "explainable_control",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "f684f4c1207e1d7a2103b7fcaec88de757bbe8b86f1d68f2609451ba208cbf80",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "invert",
+      "family": "baseline",
+      "scope": "explainable_control",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "invert",
+          "mask": 7
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "72dffa5c295ab55702bdfa8189ab00aa68f4c6fed976151529e7f81140650193",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "smooth-gamma2",
+      "family": "baseline",
+      "scope": "explainable_control",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "gamma2"
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "c0ae0ce1b7c14fb1fb84f30958892a8b22f2ebd8b3b1193301a3f3de96eeeeba",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "smooth-ccm",
+      "family": "baseline",
+      "scope": "explainable_control",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "affine",
+          "matrix": [
+            [
+              260,
+              -4,
+              0
+            ],
+            [
+              0,
+              248,
+              8
+            ],
+            [
+              4,
+              0,
+              252
+            ]
+          ],
+          "denominator": 256,
+          "bias": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "427245715ce3d9cef20e9ba3bbf942d4e66daae82b0c0361c5a70c4ffa9b8a73",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "highlight-clip",
+      "family": "clip_step",
+      "scope": "isp_analogue",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "affine",
+          "matrix": [
+            [
+              3,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              3
+            ]
+          ],
+          "denominator": 2,
+          "bias": [
+            -64,
+            -64,
+            -64
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "fac0b4a33a8f06bbf0f9656cb07057adff8bb58edacc773c79ba845675a75945",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "step-127",
+      "family": "clip_step",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "grid_sizes": [
+          17,
+          33
+        ],
+        "nearest_integer_to_grid_node": 128,
+        "offset": -1
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "step",
+          "cut": 127,
+          "amplitude": 64
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "65ed91b06148f4718a11d56233cb6065708ec304bbebde7c2c3f7fbb9a37675e",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "step-128",
+      "family": "clip_step",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "grid_sizes": [
+          17,
+          33
+        ],
+        "nearest_integer_to_grid_node": 128,
+        "offset": 0
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "step",
+          "cut": 128,
+          "amplitude": 64
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "8983b068b2c5f0c81a1a8de2e89aa3eb16ff77d7e68a7ed3047b8d8fe79adf55",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "step-129",
+      "family": "clip_step",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "grid_sizes": [
+          17,
+          33
+        ],
+        "nearest_integer_to_grid_node": 128,
+        "offset": 1
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "step",
+          "cut": 129,
+          "amplitude": 64
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "7f4f5b8921ca457b4f9f2c394ef6ed2e33815c80d6b91293c3d449505961af3d",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "staircase-17",
+      "family": "clip_step",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "quantize",
+          "levels": 17
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "f3eb0506cbc7a0f4fe53812d2a31739b9453d08825a221b277b7c61eb0739270",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "interior-peak-w1",
+      "family": "local_pulse",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "start": 122,
+        "width": 1,
+        "grid_sizes": [
+          17,
+          33
+        ]
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 122,
+          "width": 1,
+          "amplitude": 96
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "978b7e35a93864403304e73e8ee1bfed266f7e936792c8302f4cecb66b41bfaf",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "interior-peak-w2",
+      "family": "local_pulse",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "start": 122,
+        "width": 2,
+        "grid_sizes": [
+          17,
+          33
+        ]
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 122,
+          "width": 2,
+          "amplitude": 96
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "4a3e48060725fed9819b5e165faa891138b4e7e2872e52e41c34d24ca588ee9c",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "interior-peak-w4",
+      "family": "local_pulse",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "start": 122,
+        "width": 4,
+        "grid_sizes": [
+          17,
+          33
+        ]
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 122,
+          "width": 4,
+          "amplitude": 96
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "a896ccfc96a6820d2c0033e9e5f98a778f77bc58ba80eac099eb5d57275fec03",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "interior-valley-w2",
+      "family": "local_pulse",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 122,
+          "width": 2,
+          "amplitude": -96
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "e61f9128ea28fb1679a30b5db4961a2e532c4a6755f8e4f0d06e6d610bee6e26",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "coupled-sum",
+      "family": "cross_channel",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "route_policy": "require_byte_proof_before_separable_dispatch"
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "coupled_step",
+          "weights": [
+            1,
+            1,
+            0
+          ],
+          "cut": 255,
+          "amplitude": 80
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "999217684a78d5555e2463b4e22ef318cbff97e8d9e0e8fa173b1a3d9d3a5ef7",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "coupled-difference",
+      "family": "cross_channel",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {
+        "route_policy": "require_byte_proof_before_separable_dispatch"
+      },
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "coupled_step",
+          "weights": [
+            1,
+            0,
+            -1
+          ],
+          "cut": 0,
+          "amplitude": 80
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "c879fcb39fef29dc87ea536cf0bf48d30a4351a8bb85a7f92f70f922f0c61d59",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "compress-amplify",
+      "family": "cascade",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "compress",
+          "divisor": 4,
+          "offset": 96
+        },
+        {
+          "op": "affine",
+          "matrix": [
+            [
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              4
+            ]
+          ],
+          "denominator": 1,
+          "bias": [
+            -384,
+            -384,
+            -384
+          ]
+        },
+        {
+          "op": "step",
+          "cut": 128,
+          "amplitude": 48
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            1,
+            0
+          ]
+        }
+      ],
+      "recipe_sha256": "b729bb44881ba8200898133953e6be7a79b05a768b09f71f7f195997fb72f0f8",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "clip-amplify",
+      "family": "cascade",
+      "scope": "isp_stress",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "affine",
+          "matrix": [
+            [
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              2
+            ]
+          ],
+          "denominator": 1,
+          "bias": [
+            -64,
+            -64,
+            -64
+          ]
+        },
+        {
+          "op": "compress",
+          "divisor": 2,
+          "offset": 32
+        },
+        {
+          "op": "gamma2"
+        },
+        {
+          "op": "affine",
+          "matrix": [
+            [
+              3,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              3
+            ]
+          ],
+          "denominator": 2,
+          "bias": [
+            -24,
+            -24,
+            -24
+          ]
+        }
+      ],
+      "recipe_sha256": "3b12f41cf03547ce12cdb5050d30e4932df7b71f1fadfa22632eb3bf77137b07",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "checkerboard",
+      "family": "high_frequency",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "checker",
+          "phase": 0
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "c6baa9262d5ea7b4c26f39e7530ed4ef898fd6878f6c28cb55834acb57d1a2c1",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "xor",
+      "family": "high_frequency",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "xor"
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "2d629682958675e6c879436ab54175a258880de94a94a6e451ff230782c475c3",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "hashed-random",
+      "family": "high_frequency",
+      "scope": "representation_boundary",
+      "split": "development",
+      "seed": 2026101601,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "hashed_random",
+          "seed": 2026101601
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "d1040037785a144361269955f8e0bc2b0bebb5af759496b3ac0582fcb1351b68",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "reserved-step",
+      "family": "step",
+      "scope": "reserved_validation",
+      "split": "reserved_validation",
+      "seed": 2026101691,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "step",
+          "cut": 93,
+          "amplitude": 57
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "0c50eeb21375e8f80e6e355f627f8c4dc3591699de6050715e56634b2d57d65e",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "reserved-peak",
+      "family": "peak",
+      "scope": "reserved_validation",
+      "split": "reserved_validation",
+      "seed": 2026101691,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 186,
+          "width": 2,
+          "amplitude": 83
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "7925440ef0a7f3b0d264f8234629effc8b21da61df36a98e480dd43d1fee16e1",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "reserved-valley",
+      "family": "valley",
+      "scope": "reserved_validation",
+      "split": "reserved_validation",
+      "seed": 2026101691,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "pulse",
+          "start": 58,
+          "width": 4,
+          "amplitude": -71
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "06c2d5869e73e3b8b32103c0942922387a2706b17a916b849bddd41b1116e907",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "reserved-coupling",
+      "family": "coupling",
+      "scope": "reserved_validation",
+      "split": "reserved_validation",
+      "seed": 2026101691,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "coupled_step",
+          "weights": [
+            1,
+            -1,
+            1
+          ],
+          "cut": 173,
+          "amplitude": 69
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "73a6ff858851f3bde4f1061cd0be82178703a835afb59b6fcc1fd89762b08b7b",
+      "accuracy_status": "unmeasured",
+      "official": false
+    },
+    {
+      "id": "reserved-random",
+      "family": "random",
+      "scope": "reserved_validation",
+      "split": "reserved_validation",
+      "seed": 2026101691,
+      "parameters": {},
+      "stages": [
+        {
+          "op": "identity"
+        },
+        {
+          "op": "hashed_random",
+          "seed": 2026101691
+        },
+        {
+          "op": "permute",
+          "axes": [
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "op": "permute",
+          "axes": [
+            2,
+            0,
+            1
+          ]
+        }
+      ],
+      "recipe_sha256": "921db55caa2d69679f8445c052211529fa7be26a200675daf34343a3aabac8b6",
+      "accuracy_status": "unmeasured",
+      "official": false
+    }
+  ],
+  "source_format": {
+    "shape": [
+      256,
+      256,
+      256,
+      3
+    ],
+    "dtype": "uint8",
+    "order": "RGB; R major, B minor; C contiguous",
+    "bytes": 50331648
+  },
+  "pilot_plan": {
+    "status": "declared_not_executed",
+    "grid": "uniform",
+    "sizes": [
+      17,
+      33
+    ],
+    "methods": [
+      "sample",
+      "ls_tetra_int"
+    ],
+    "runtime": "tetra_q16",
+    "stages": 4,
+    "accuracy_threshold": null,
+    "performance_scan": false
+  },
+  "reference": "four_sequential_RGB8_lookups; every stage already quantized",
+  "legacy_dataset_policy": "append_only; no change to corpus-v1, benchmark100 or casebook"
+}

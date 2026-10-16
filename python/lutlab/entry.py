@@ -10,6 +10,15 @@ from .reportio import write_report as _write_report
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "dataset":
+        from . import dataset
+        return dataset.main(argv[1:])
+    if argv and argv[0] == "hackextend":
+        from . import hackextend
+        return hackextend.main(argv[1:])
+    if argv and argv[0] == "hackset":
+        from . import hackset
+        return hackset.main(argv[1:])
     if argv and argv[0] == "corpus":
         from . import corpus
         return corpus.main(argv[1:])
@@ -44,7 +53,10 @@ def main(argv=None):
                             ("compare", "run balanced paired CPU/CUDA/OCIO comparison"),
                             ("accept", "verify source binding and problem-16 numerical requirements"),
                             ("corpus", "construct and inspect labelled versioned test data"),
-                            ("casebook", "maintain evidence-bound per-case champions")):
+                            ("casebook", "maintain evidence-bound per-case champions"),
+                            ("hackset", "构造及核对独立压力输入与最小反例候选"),
+                            ("hackextend", "追加三维与串联压力配方"),
+                            ("dataset", "读取、重建和核对合并后的版本化数据集")):
         commands.add_parser(name, help=help_text)
     for name in ("info", "plan", "apply", "cube", "verify", "bench-models", "validate"):
         command = commands.add_parser(name)
