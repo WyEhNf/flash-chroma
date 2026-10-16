@@ -43,7 +43,7 @@ def ranked_proposals(model,banks,points,priority,truth):
     return sorted(ranked)
 
 
-def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None):
+def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None):
     """有限、确定性搜索；每次严格降低整数缺口，保持整个阶段固定的均值/RMS预算。"""
     models = [model]
     for other in banks:
@@ -51,8 +51,8 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             raise ValueError("节点候选库必须使用完全相同的权威轴表")
     if fg.signature(models) != domain.model_signature or not np.array_equal(domain.squared,photos.current):
         raise ValueError("图片与完整域状态不匹配")
-    log,rejections = [],{}
-    totals = {"single_trials":0,"pair_trials":0,"generated_single_proposals":0}
+    log,rejections,compensation_log = [],{},[]
+    totals = {"single_trials":0,"pair_trials":0,"generated_single_proposals":0,"compensated_pair_trials":0}
 
     def consider(move):
         full_trial = domain.trial(models,move)
@@ -81,6 +81,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         ranked = ranked_proposals(model,banks,domain.points[keys],priority,truth)
         totals["generated_single_proposals"] += len(ranked)
         accepted = None
+        accepted_compensation = None
         for _,move in ranked[:trial_limit]:
             totals["single_trials"] += 1
             result = consider(move)
@@ -103,6 +104,22 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
                 if result is not None:
                     accepted = (move,*result)
                     break
+        if accepted is None and compensation and len(compensation_log) < compensation["rounds"]:
+            from . import quantile_compensation
+            candidates,info = quantile_compensation.pairs(model,domain,photos,ranked,
+                primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
+                trial_limit=trial_limit,max_array_bytes=compensation["max_array_bytes"])
+            info["accepted"] = False
+            for moves,roles in candidates:
+                totals["compensated_pair_trials"] += 1
+                move = fg.JointMove(moves)
+                result = consider(move)
+                if result is not None:
+                    accepted = (move,*result)
+                    accepted_compensation = roles
+                    info.update(accepted=True,selected=roles)
+                    break
+            compensation_log.append(info)
         if accepted is None:
             stop = "no_guarded_improving_move_in_finite_bank"
             break
@@ -120,8 +137,10 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             raise AssertionError("接受后图片平方误差与完整域缓存不一致")
         record = {"step":step+1,"moves":changes,"before_loss":before,"after_loss":photos.loss,
             "focus_colours":len(keys),"full_domain":proof}
+        if accepted_compensation is not None:record["compensation"] = accepted_compensation
         log.append(record)
         print(f"接受第{step+1}步：{len(moves)}节点，整数尾部缺口 {before} → {photos.loss}",flush=True)
         if on_accept is not None:on_accept(record,model)
     photos.recheck()
-    return {"stop":stop,"tail_feasible":photos.loss == 0,"accepted":log,"rejections":rejections,**totals}
+    return {"stop":stop,"tail_feasible":photos.loss == 0,"accepted":log,"rejections":rejections,
+        "compensation_rounds":compensation_log,**totals}

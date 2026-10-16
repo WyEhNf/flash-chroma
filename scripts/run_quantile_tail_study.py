@@ -122,14 +122,46 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
     sampled = io.SparseLut(grid.copy(),sample_nodes,*(a.copy() for a in model.tables()))
     bank = [models["historical"],models["fractional_full"],models["fractional_mixed"],sampled]
     io.save_sparse(folder / "sampled-nodes.slut",sampled)
+    replayed,warm_case = [],None
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        warm_case = next(c for c in json.loads((warm / "results.json").read_text(encoding="utf-8"))["cases"] if c["case"]["id"] == cid)
+        old_initial = json.loads((warm / cid / "initial-groups.json").read_text(encoding="utf-8"))
+        if initial_report != old_initial:raise ValueError("热启动初态图片阈值/预算或来源不同")
+        for record in warm_case["selection"]["search"]["accepted"]:
+            moves = tuple(tr.Move(0,m["node"],tuple(m["after"])) for m in record["moves"])
+            move = moves[0] if len(moves) == 1 else fg.JointMove(moves)
+            full_trial = domain.trial([model],move)
+            photo_trial = photos.trial(full_trial["rows"],domain.squared[full_trial["rows"]],full_trial["squared"])
+            if photos.loss != record["before_loss"] or photo_trial.loss != record["after_loss"] or photo_trial.failed:
+                raise AssertionError("冻结步骤重放的图片缺口或保护不同")
+            if not domain.consider([model],move)["accepted"]:raise AssertionError("冻结步骤重放不通过原完整域预算")
+            for part,change in zip(moves,record["moves"]):
+                node = model.nodes.reshape(-1,3)[part.node]
+                if node.tolist() != change["before"]:raise AssertionError("热启动节点前值不同")
+                node[:] = part.value
+            domain.commit([model],move)
+            photos.commit(photo_trial)
+            replayed.append({**record,"replayed":True})
+        warm_path = folder / "warm-replayed.slut"
+        io.save_sparse(warm_path,model)
+        if digest(warm_path) != warm_case["selection"]["model_sha256"] or array_sha(domain.prediction) != warm_case["final"]["cube"]["prediction_sha256"]:
+            raise AssertionError("热启动重放模型/完整流与v1不同")
+        write_json(folder / "warm-start.json",{"source":plan["warm_start"],"replayed_steps":len(replayed),
+            "warm_loss":photos.loss,"model_sha256":digest(warm_path),"full_prediction_sha256":array_sha(domain.prediction)})
+    warm_loss = photos.loss
     def accepted(record,current):
+        record = {**record,"step":record["step"]+len(replayed)}
         path = folder / f"checkpoint{record['step']:03d}.slut"
         io.save_sparse(path,current)
         write_json(path.with_suffix(".json"),{**record,"model_sha256":digest(path),
             "violating_groups":np.flatnonzero(np.any(photos.costs > 0,axis=1)).tolist()})
     print(f"[{cid}] 初始整数缺口{photos.loss}；开始固定预算单/双节点修复",flush=True)
     search = qr.repair(model,bank,domain,photos,steps=plan["steps"],focus_count=plan["focus_count"],
-        trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted)
+        trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted,compensation=plan.get("compensation"))
+    new_accepted = len(search["accepted"])
+    search["accepted"] = replayed+[{**r,"step":r["step"]+len(replayed)} for r in search["accepted"]]
+    search.update(replayed_steps=len(replayed),new_accepted_steps=new_accepted)
     final_groups = photos.report()
     if not final_groups["guards_accepted"]:raise AssertionError("最终照片mean/RMS固定保护失败")
     full = domain.report()
@@ -144,7 +176,7 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
     selection = {"search":search,"tail_feasible":photos.loss == 0,"model_sha256":digest(final_path),
         "full_domain_certificate":full["certificate"],"scope":"在最终100图之前冻结；缺口未清零仍如实标为部分修复"}
     write_json(folder / "selection-before-photos.json",selection)
-    if search["accepted"]:
+    if new_accepted:
         print(f"[{cid}] 冻结最终检查点，可行={photos.loss == 0}；一次完整终验",flush=True)
         cube = cube_evaluate(table_list,ea.Operator([model]),folder / "repaired.rgb",128)
         if cube["prediction_sha256"] != full["prediction_sha256"]:raise AssertionError("完整重建与增量缓存不同")
@@ -156,11 +188,12 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
             if any(abs(value-actual[meta["image"]][k]) > 1e-12 for k,value in record["metrics"].items()):
                 raise AssertionError("最终完整照片与增量图片直方图不同")
     else:
-        old = previous["bank"]["fractional_mixed"]
-        if digest(final_path) != old["model_sha256"]:raise AssertionError("无接受却改变了初态模型")
+        old = warm_case["final"] if warm_case is not None else previous["bank"]["fractional_mixed"]
+        expected_model = warm_case["selection"]["model_sha256"] if warm_case is not None else old["model_sha256"]
+        if digest(final_path) != expected_model:raise AssertionError("无新接受却改变了固定检查点模型")
         final = {"cube":old["cube"],"photos":old["photos"],"native":old["native"],"reused":True}
     result = {"case":previous["case"],"sources":sources,"selection":selection,"initial_loss":initial_report["loss"],
-        "final_loss":photos.loss,"tail_feasible":photos.loss == 0,"final":final,
+        "warm_loss":warm_loss,"final_loss":photos.loss,"tail_feasible":photos.loss == 0,"final":final,
         "historical":previous["bank"]["historical"],"initial":previous["bank"]["fractional_mixed"],"scope":plan["limits"]}
     write_json(folder / "results.json",result)
     return result
@@ -186,9 +219,16 @@ def main():
     extra = [Path(__file__),ROOT / "python/lutlab/quantile_constraints.py",ROOT / "python/lutlab/quantile_repair.py",
         ROOT / "python/lutlab/full_domain_guard.py",ROOT / "python/lutlab/tail_repair.py",ROOT / "python/lutlab/error_analysis.py",
         ROOT / "scripts/run_chain_error_study.py",ROOT / "scripts/run_joint_box_study.py",ROOT / "scripts/run_tail_repair.py"]
+    if plan.get("compensation"):extra.append(ROOT / "python/lutlab/quantile_compensation.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
         parent_files={n:digest(parent / n) for n in ("results.json","environment.json","photo-partition.json","models-and-selection.zip","archive-index.json")})
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        old_run = json.loads((warm / "run.json").read_text(encoding="utf-8"))
+        if old_run["identity"]["environment"] != metadata["identity"]["environment"]:
+            raise ValueError("热启动数值环境不同，不混用旧来源")
+        metadata["identity"]["warm_files"] = {n:digest(warm / n) for n in ("run.json","results.json","photo-inventory.json")}
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     metadata.update(backend="Numba研究4线程，标量/AVX2终验单线程",timing_scope="不比较性能",deferred=["硬件加速","官方评分","未知图像泛化"])
     study_provenance.claim_run(args.output / "run.json",metadata)
@@ -199,6 +239,9 @@ def main():
             if hashlib.sha256(data).hexdigest() != expected:raise ValueError("源码快照变化")
             z.writestr(name.replace("\\","/"),data)
     inverse,inventory = build_groups(rows,partition,plan,args.output)
+    if plan.get("warm_start"):
+        old_inventory = json.loads((ROOT / plan["warm_start"] / "photo-inventory.json").read_text(encoding="utf-8"))
+        if inventory != old_inventory:raise ValueError("热启动图片倒排和频数输入不同")
     with zipfile.ZipFile(parent / "models-and-selection.zip") as z:
         index = json.loads((parent / "archive-index.json").read_text(encoding="utf-8"))
         if set(index) != set(z.namelist()) or any(hashlib.sha256(z.read(n)).hexdigest() != h for n,h in index.items()):raise ValueError("父归档变化")
