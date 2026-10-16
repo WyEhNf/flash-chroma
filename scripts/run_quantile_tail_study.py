@@ -232,6 +232,8 @@ def main():
         if old_run["identity"]["environment"] != metadata["identity"]["environment"]:
             raise ValueError("热启动数值环境不同，不混用旧来源")
         metadata["identity"]["warm_files"] = {n:digest(warm / n) for n in ("run.json","results.json","photo-inventory.json")}
+    if plan.get("replay_reference"):
+        metadata["identity"]["replay_reference_sha256"] = digest(ROOT / plan["replay_reference"])
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     metadata.update(backend="Numba研究4线程，标量/AVX2终验单线程",timing_scope="不比较性能",deferred=["硬件加速","官方评分","未知图像泛化"])
     study_provenance.claim_run(args.output / "run.json",metadata)
@@ -250,6 +252,17 @@ def main():
         if set(index) != set(z.namelist()) or any(hashlib.sha256(z.read(n)).hexdigest() != h for n,h in index.items()):raise ValueError("父归档变化")
         results = [process(next(c for c in previous["cases"] if c["case"]["id"] == cid),plan,args.output.resolve(),
             args.cache.resolve(),args.executable.resolve(),z,inverse,inventory) for cid in plan["cases"]]
+    if plan.get("replay_reference"):
+        reference = json.loads((ROOT / plan["replay_reference"]).read_text(encoding="utf-8"))
+        for current in results:
+            old = next(c for c in reference["cases"] if c["case"]["id"] == current["case"]["id"])
+            if current["selection"]["model_sha256"] != old["selection"]["model_sha256"] or current["final_loss"] != old["final_loss"]:
+                raise AssertionError("只补记回执却改变了冻结模型或缺口")
+            a,b = current["selection"]["search"],old["selection"]["search"]
+            for field in ("single_trials","pair_trials","compensated_pair_trials","rejections"):
+                if a[field] != b[field]:raise AssertionError("诊断复现的原候选判定数量不同")
+            if [r["statistics_sha256"] for r in a["compensation_rounds"]] != [r["statistics_sha256"] for r in b["compensation_rounds"]]:
+                raise AssertionError("诊断复现的真实舍入统计哈希不同")
     write_json(args.output / "results.json",{"run_identity":metadata["identity_sha256"],"cases":results})
     print("分位/最大误差约束阶段结束；不提升默认",flush=True)
 

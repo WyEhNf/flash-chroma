@@ -62,20 +62,25 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         if lower_bound is not None and photo_trial.loss-photos.loss < lower_bound:
             raise AssertionError("全节点单通道代理超过真实缺口变化，不再是下界")
         item = {"moves":[{"node":p.node,"value":list(p.value)} for p in (move.moves if isinstance(move,fg.JointMove) else (move,))],
-            "loss":photo_trial.loss,"photo_failed":list(photo_trial.failed),"lower_bound_delta":lower_bound,"full_failed":[],"accepted":False}
+            "before_loss":photos.loss,"loss":photo_trial.loss,"photo_failed":list(photo_trial.failed),"lower_bound_delta":lower_bound,
+            "full_failed":[],"accepted":False,"decision":None}
         if trace is not None:trace.append(item)
         if photo_trial.loss >= photos.loss:
+            item["decision"] = "tail_loss"
             rejections["tail_loss"] = rejections.get("tail_loss",0)+1
             return None
         if photo_trial.failed:
+            item["decision"] = "photo_guard"
             for key in photo_trial.failed:rejections[key] = rejections.get(key,0)+1
             return None
         proof = domain.consider(models,move)
         item["full_failed"] = proof["failed"]
         if not proof["accepted"]:
+            item["decision"] = "full_guard"
             for key in proof["failed"]:rejections["full."+key] = rejections.get("full."+key,0)+1
             return None
         item["accepted"] = True
+        item["decision"] = "accepted"
         return photo_trial,proof
 
     stop = "step_limit"
@@ -155,10 +160,13 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
                 primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
                 trial_limit=trial_limit,max_array_bytes=compensation["max_array_bytes"])
             info["accepted"] = False
+            info["before_loss"] = photos.loss
+            info["trials"] = []
             for moves,roles in candidates:
                 totals["compensated_pair_trials"] += 1
                 move = fg.JointMove(moves)
-                result = consider(move)
+                result = consider(move,info["trials"])
+                info["trials"][-1]["compensation"] = roles
                 if result is not None:
                     accepted = (move,*result)
                     accepted_compensation = roles
