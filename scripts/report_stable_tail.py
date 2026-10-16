@@ -87,7 +87,7 @@ def main():
                 "constraints":constraints(final,inventory),"new_steps":[s for s in search["accepted"] if not s.get("replayed")],
                 "search_counts":{k:v for k,v in search.items() if k not in ("accepted","compensation_rounds","global_rounds")},
                 "rounds":rounds,"helper_decisions":dict(Counter(t["decision"] for t in trials)),"helper_breakdown":breakdown,
-                "helper_failed_conditions":dict(rejection.most_common()),"helper_trials":trials,"host_memory":full["host_memory"],
+                "helper_failed_conditions":dict(rejection.most_common()),"host_memory":full["host_memory"],
                 "persistent_array_bytes":full["combined_cache_array_bytes"]})
             profiles = [("historical",case["historical"],True),("warm",old["final"],True)] if arm == "guard" else []
             profiles += [(arm,case["final"],case["final"]["reused"])]
