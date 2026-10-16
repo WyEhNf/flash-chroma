@@ -11,7 +11,7 @@ def setup():
     truth = np.array([[101,100,100],[100,100,100],[101,100,100]],np.uint8)
     inverse = qc.invert(np.array([0,1,2],np.uint32),np.array([0,1,1],np.uint8),np.array([1,2,3],np.uint32),3,2)
     domain = fg.DomainGuard([model],points,truth)
-    photos = qc.GroupState(inverse,2,np.array([0,0,1],np.int32),domain.squared,[[0,1]])
+    photos = qc.GroupState(inverse,2,np.array([0,0,1],np.int32),domain.squared,[[0,1]],bins=64)
     return model,points,truth,domain,photos
 
 
@@ -38,6 +38,7 @@ def test_global_helper_repairs_tail_without_relaxing_rms_guard():
         compensation={"rounds":1,"primary_limit":4,"helper_limit":8,"max_array_bytes":1 << 28})
     assert result["accepted"] and photos.loss == 0 and result["compensation_rounds"][0]["accepted"]
     assert result["accepted"][0]["compensation"]["helper_node"] == 7
-    assert photos.report()["guards_accepted"]
+    report = photos.report()
+    assert report["guards_accepted"] and report["groups"][0]["metrics"]["mean"] == 0
     np.testing.assert_array_equal(domain.prediction,interp.apply_tetra_q16(model,points))
     np.testing.assert_array_equal(photos.current,domain.squared)

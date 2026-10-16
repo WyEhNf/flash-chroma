@@ -222,9 +222,14 @@ class GroupState:
             raise AssertionError("图片增量直方图或整数归约与完整重建不同")
 
     def report(self):
+        def metrics(hist):
+            # 小型合同可缩短桶数；既有RGB指标器要求完整距离表，补零不改变分布。
+            if len(hist) != len(ea.ROOT_DISTANCE):
+                hist = np.pad(hist,(0,len(ea.ROOT_DISTANCE)-len(hist)))
+            return ea.hist_metrics(hist)
         records = []
         for g,hist in enumerate(self.hist):
-            records.append({"group":g,"metrics":ea.hist_metrics(hist),"costs":self.costs[g].tolist(),
+            records.append({"group":g,"metrics":metrics(hist),"costs":self.costs[g].tolist(),
                 "constraints":[{"threshold_squared":int(t),"allowed_tail_pixels":int(b),"actual_tail_pixels":int(n)}
                     for t,b,n in zip(self.thresholds[g],self.budgets[g],self.tails[g]) if b >= 0],
                 "histogram":[[int(d),int(hist[d])] for d in np.flatnonzero(hist)],
@@ -233,7 +238,7 @@ class GroupState:
                 "mean_sum_lower_q24":str(int(self.low[g])),"mean_sum_upper_q24":str(int(self.high[g])),
                 "mean_limit_lower_q24":str(int(self.mean_limit_low[g])),
                 "sse":str(int(self.sse[g])),"sse_limit":str(int(self.sse_limit[g])),
-                "original_metrics":ea.hist_metrics(self.original_hist[g]),"initial_metrics":ea.hist_metrics(self.initial_hist[g])})
+                "original_metrics":metrics(self.original_hist[g]),"initial_metrics":metrics(self.initial_hist[g])})
         aggregates = [{"groups":g.tolist(),"initial_sum_lower_q24":str(mean),"initial_sse":str(sse),
             "final_sum_upper_q24":str(int(self.high[g].sum())),"final_sse":str(int(self.sse[g].sum()))}
             for g,(mean,sse) in zip(self.aggregate_groups,self.aggregate_limits)]
