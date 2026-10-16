@@ -59,9 +59,11 @@ def main():
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--study",choices=("stable","primary","batch"),default="stable")
     parser.add_argument("--diagnosis",type=Path)
+    parser.add_argument("--tail-risk",type=Path)
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧归档")
     if args.study in ("primary","batch") and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
+    if args.study == "batch" and args.tail_risk is None:raise ValueError("批次归档必须给出最坏1%独立复算")
     names = {"stable":("guard","aware"),"primary":("tail","constraints"),"batch":("first","joint")}[args.study]
     sources = dict(zip(names,(args.guard,args.aware)))
     prefix = {"stable":"stable-tail","primary":"primary-budget","batch":"primary-batch"}[args.study]
@@ -84,6 +86,16 @@ def main():
     out = args.output
     out.mkdir(parents=True)
     diagnostic = None
+    risk = None
+    if args.tail_risk is not None:
+        risk = load(args.tail_risk)
+        if risk["external_dependencies_loaded"]:raise ValueError("最坏1%复算不应载入外部数值依赖")
+        for name,h in risk["inputs_sha256"].items():
+            if digest(Path(name)) != h:raise ValueError("最坏1%复算输入变化")
+        for name,h in risk["sources_sha256"].items():
+            if digest(ROOT / "scripts" / name) != h:raise ValueError("最坏1%复算源码变化")
+        shutil.copyfile(args.tail_risk,out / "tail-risk.json")
+        shutil.copyfile(args.tail_risk.with_suffix(".log"),out / "tail-risk.log")
     if args.study == "stable":
         counterexamples = ROOT / "artifacts/stable-tail-counterexamples-v1.json"
         diagnostic = load(counterexamples)
@@ -215,7 +227,8 @@ def main():
         for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
     if diagnostic is not None:
         with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
-            for name in diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"]:z.write(ROOT / "scripts" / name,name)
+            diagnostic_sources = {**diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"],**(risk["sources_sha256"] if risk else {})}
+            for name in diagnostic_sources:z.write(ROOT / "scripts" / name,name)
     if primary_rows:write_csv(out / "primary-trials.csv",primary_rows)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
@@ -226,7 +239,7 @@ def main():
     write_json(out / "source-provenance.json",provenance)
     write_json(out / "archive-summary.json",{"profiles":len(summary),"photo_rows":len(photo_rows),"native_receipts":len(parity),
         "bytes":sum(p.stat().st_size for p in out.rglob("*") if p.is_file()),"archiver_sha256":digest(Path(__file__)),
-        "scope":"仅Velvia固定两臂研究，新增尾部统计成本单列，复用数据显式标记；无默认升级、官方评分或性能声明"})
+        "scope":"仅Velvia固定两臂研究，额外统计及试探成本单列，复用数据显式标记；无默认升级、官方评分或性能声明"})
     print("两臂误差与候选拒绝证据归档完成")
 
 
