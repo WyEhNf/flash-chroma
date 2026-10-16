@@ -39,7 +39,7 @@ def test_exact_budget_boundary_and_quantile_equality():
 
 def test_cell_inverse_local_trial_matches_independent_chain():
     rng = np.random.default_rng(2026101731)
-    grid = io.uniform_grid(3)
+    grid = np.array([[0.,37.125,255.],[0.,148.03,255.],[0.,200.875,255.]])
     models = [io.SparseLut(grid,rng.integers(0,256,(3,3,3,3),dtype=np.uint8)) for _ in range(4)]
     points = rng.integers(0,256,(701,3),dtype=np.uint8)
     guard = fg.DomainGuard(models,points,points)
@@ -64,27 +64,40 @@ def test_cell_inverse_local_trial_matches_independent_chain():
 
 
 def test_commit_refreshes_suffix_and_rejects_stale_model():
-    grid = io.uniform_grid(2)
-    models = [io.SparseLut(grid,np.full((2,2,2,3),100,np.uint8))]
+    grid = np.tile([0.,99.5,255.],(3,1))
+    levels = np.array([0,100,255],np.uint8)
+    identity = np.stack(np.meshgrid(levels,levels,levels,indexing="ij"),-1)
+    models = [io.SparseLut(grid,np.full((3,3,3,3),100,np.uint8))] + [io.SparseLut(grid,identity.copy()) for _ in range(3)]
     points = np.stack(np.meshgrid(*([np.array([0,255],np.uint8)]*3),indexing="ij"),-1).reshape(-1,3)
     truth = np.full_like(points,99)
     guard = fg.DomainGuard(models,points,truth)
-    for node in range(8):
+    corners = [0,2,6,8,18,20,24,26]
+    for node in corners:
         move = tr.Move(0,node,(99,99,99))
         assert guard.consider(models,move)["accepted"]
         models[0].nodes.reshape(-1,3)[node] = move.value
         guard.commit(models,move)
-        np.testing.assert_array_equal(guard.prediction,interp.apply_tetra_q16(models[0],points))
+        current = points.copy()
+        for stage,model in enumerate(models):
+            np.testing.assert_array_equal(guard.inputs[stage],current)
+            indices,weights = interp.tetra_index_weights_q(current,*model.tables(),model.m)
+            expected_rows = np.flatnonzero(np.any((indices == 0)&(weights > 0),axis=1))
+            np.testing.assert_array_equal(np.sort(guard.affected(models,tr.Move(stage,0,(0,0,0)))),expected_rows)
+            current = interp.apply_tetra_q16(model,current)
+        np.testing.assert_array_equal(guard.prediction,current)
     assert guard.report()["final"]["max_squared_error"] == 0
     bad = tr.clone(models)
     bad[0].nodes.reshape(-1,3)[0] = 97
     with pytest.raises(ValueError,match="陈旧倒排"):
         guard.trial(bad,tr.Move(0,0,(99,99,99)))
     # 同一接入点验证旧小集合搜索确实调用全域回执并提交缓存。
-    start = [io.SparseLut(grid,np.full((2,2,2,3),100,np.uint8))]
+    start = [io.SparseLut(grid,np.full((3,3,3,3),100,np.uint8))] + [io.SparseLut(grid,identity.copy()) for _ in range(3)]
     domain = fg.DomainGuard(start,points,truth)
-    result,detail = tr.repair(start,[{"baseline":models[0]}],dict(points=points,truth=truth,caps=np.zeros(8,np.uint32)),
+    result,detail = tr.repair(start,[{"baseline":m} for m in models],dict(points=points,truth=truth,caps=np.zeros(8,np.uint32)),
         {"uniform":dict(points=points,truth=truth)},{"uniform":dict(mean=2.,rms=2.,p99=2.,max=2.)},steps=9,domain_guard=domain)
     assert len(detail["accepted"]) == 8
     assert all(move["full_domain"]["accepted"] for move in detail["accepted"])
-    np.testing.assert_array_equal(domain.prediction,interp.apply_tetra_q16(result[0],points))
+    current = points.copy()
+    for model in result:
+        current = interp.apply_tetra_q16(model,current)
+    np.testing.assert_array_equal(domain.prediction,current)
