@@ -1,8 +1,14 @@
-# Cortex-M / FreeRTOS 嵌入式运行时（WIP）
+# Cortex-M / RISC-V / Cortex-A 嵌入式运行时（WIP）
 
-本目录提供可独立构建的 C99 静态库 `jshc_embedded`，及 Cortex-M3 / FreeRTOS / QEMU 验证固件。主机侧 Python/C++ 负责离线拟合；端侧只读取既有 `.slut` v1 模型并执行四级 Q16 四面体映射，每级都独立取整到 RGB8，不合成四张 LUT。
+本目录提供可独立构建的 C99 静态库 `jshc_embedded`，及三个 QEMU 系统级验证目标。主机侧 Python/C++ 负责离线拟合；端侧只读取既有 `.slut` v1 模型并执行四级 Q16 四面体映射，每级都独立取整到 RGB8，不合成四张 LUT。
 
-目前验证目标为 QEMU `mps2-an385`（Cortex-M3）与 FreeRTOS-Kernel V11.2.0 的 GCC ARM_CM3 端口。RISC-V、其他 Cortex-M、具体芯片 BSP、DMA/缓存一致性、ISR 内调用和实板均未验证；QEMU 结果不代表设备吞吐量、功耗或实时截止期。
+| 目标 | OS / 端口 | QEMU 机器 | 覆盖 |
+| --- | --- | --- | --- |
+| Cortex-M3 | FreeRTOS V11.2.0 / GCC ARM_CM3 | `mps2-an385` | 静态任务、SysTick、心跳、共用 LUT 契约 |
+| RV32IMAC + Zicsr / ILP32 | FreeRTOS V11.2.0 / GCC RISC-V | `virt`，单 hart、M-mode | 静态任务、CLINT mtime、心跳、同一 LUT 契约 |
+| Cortex-A53 / AArch64 | Linux 6.12.51-0-virt | `virt`，单核 | 启动 Linux，以静态 PID 1 执行同一 LUT 契约 |
+
+具体芯片 BSP、其他 Cortex-M、RV64、DMA/缓存一致性、ISR 内调用和实板均未验证；QEMU 结果不代表设备吞吐量、功耗或实时截止期。
 
 ## 运行时边界
 
@@ -22,7 +28,7 @@ cmake --build build-embedded-host --parallel 2
 ctest --test-dir build-embedded-host --output-on-failure --no-tests=error
 ```
 
-库位于 `build-embedded-host/libjshc_embedded.a`，公开头为 `embedded/include/jshc_embedded.h`。作为子项目接入时可 `add_subdirectory(embedded)`，并链接 `jshc_embedded`。设置 `BUILD_TESTING=OFF` 只构建库，不要求 QEMU 或 FreeRTOS。
+库位于 `build-embedded-host/libjshc_embedded.a`，公开头为 `embedded/include/jshc_embedded.h`。作为子项目接入时可 `add_subdirectory(embedded)`，并链接 `jshc_embedded`。在两个 QEMU 选项均关闭时，设置 `BUILD_TESTING=OFF` 只构建库，不要求 QEMU 或 FreeRTOS。
 
 仓库根目录默认构建也包含该库、共用 C 契约测试以及桌面互操作测试；`JSHC_ENABLE_EMBEDDED=OFF` 可关闭新增部分。原来的桌面构建和拟合功能继续按原入口使用。
 
@@ -61,6 +67,40 @@ python3 embedded/freertos/run_qemu.py \
   --elf build-embedded-qemu/freertos/jshc_rtos.elf
 ```
 
+### RV32 / FreeRTOS
+
+Ubuntu 24.04 使用 `gcc-riscv64-unknown-elf libnewlib-dev qemu-system-misc`，另需通用的 CMake/Ninja/Python。`libnewlib-dev` 只提供上游内核要求的标准头，自动从 `/usr/include/newlib` 查找，不链接其运行时。Arch Linux 对应 `riscv64-elf-gcc riscv64-elf-newlib qemu-system-riscv`。编译器必须提供 `rv32imac/ilp32` 的 `libgcc` 多库；程序虽由名为 riscv64 的工具链编译，实际生成 ELF32 RV32 指令。
+
+```bash
+cmake -S embedded -B build-embedded-riscv -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=cmake/riscv32.cmake \
+  -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON
+cmake --build build-embedded-riscv --parallel 2
+ctest --test-dir build-embedded-riscv --verbose --no-tests=error
+```
+
+运行器选择 `qemu-system-riscv32 -M virt -cpu rv32 -smp 1 -m 16M -bios none`。最小启动代码设置栈和 `mtvec`，使用上游 RISC-V 端口及 `RV32I_CLINT_no_extensions`。CLINT mtime 时基固定 10 MHz，UART 输出诊断，SiFive test finisher 给出退出码，不使用 OpenSBI。两个 RTOS 目标复用同一任务入口和契约，任务栈均按 16 字节对齐。GCC 会报告上游 `port.c` 中已知的 u64 定时器地址转 RV32 指针警告；该平台地址在 32 位范围内，保留上游原文，不屏蔽告警。
+
+### Cortex-A53 / Linux
+
+Cortex-A 选择 Linux，以验证常见的 Linux 用户态集成方式。测试使用完整系统模拟器启动真实内核，未使用 QEMU user-mode 替代内核；也未安装一套完整发行版用户空间。只构建静态测试 init，并生成含 `/init` 和 `/dev/console` 的确定性 newc initramfs，无 shell、磁盘或客户机网络。
+
+Ubuntu 24.04 使用 `gcc-aarch64-linux-gnu libc6-dev-arm64-cross qemu-system-arm`；Arch Linux 使用 `aarch64-linux-gnu-gcc qemu-system-aarch64`，另需通用构建依赖：
+
+```bash
+cmake -S embedded -B build-embedded-linux -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-linux.cmake \
+  -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_LINUX_QEMU=ON
+cmake --build build-embedded-linux --parallel 2
+ctest --test-dir build-embedded-linux --verbose --no-tests=error
+```
+
+首次测试按 [kernel-lock.json](linux/kernel-lock.json) 下载 Alpine 3.22.2 的 Linux `6.12.51-0-virt`（约 9 MiB），核验固定 SHA-256，再从 EFI zboot 中提取 gzip 内容并核验 ARM64 Image 头。缓存每次重验哈希；不在仓库提交内核二进制，也不使用滚动的 `latest` 下载地址。内核的发行构建来源、配置链接和许可证记录在锁文件中。
+
+运行器固定 `qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 1 -m 256M`，传入内核和 initramfs。客户机核验 `PID=1`、`uname.machine=aarch64`，报告内核版本后执行共用 LUT 契约，成功才打印标记并关机。客户机失败、内核 panic、缺少成功标记或 60 秒超时都不会被当成通过。静态 init 的 libc 依赖属于测试支持层；C99 映射库仍不依赖 libc。
+
+这一路径只验证该 C99 库在 Linux 下的集成；没有在 AArch64 运行桌面 CLI、完整拟合库、Python 门禁或全色域桌面互操作测试。三个目标的代码体积、BSS 与 libc 不同，不宜直接比较。
+
 ## 接入应用与内存预算
 
 调用者从自己的存储系统取得四张 `.slut` 字节，分别初始化四个视图：
@@ -81,7 +121,7 @@ if (jshc_embedded_apply(chain, 4, rgb_block, block_pixels) != JSHC_EMBEDDED_OK) 
 }
 ```
 
-32 位 Cortex-M 上每个视图为 16 字节；函数只用固定局部变量，不复制节点、不申请整帧或块级中间缓冲。模型本身仍需要存储，不能用“零堆分配”推断模型无需 RAM/Flash：
+32 位 Cortex-M/RV32 上每个视图为 16 字节，AArch64 上为 32 字节；函数只用固定局部变量，不复制节点、不申请整帧或块级中间缓冲。模型本身仍需要存储，不能用“零堆分配”推断模型无需 RAM/Flash：
 
 | 网格 | 单张 `.slut` 字节 | 四张同网格字节 |
 | --- | ---: | ---: |
@@ -100,6 +140,8 @@ QEMU 契约固件为了生成随机模型、破坏模型和检查拒绝行为，
 
 桌面门禁另用 `SparseLut::save` 生成实际 `.slut`，分块穷举全部 `2²⁴` RGB，比较四级 C99 输出与桌面标量输出。桌面原有内核测试继续以独立 oracle 检查后端正确性。QEMU 只运行有界契约，未在仿真器中穷举全色域，也不评估真实 LUT 的拟合精度。
 
-后续须由具体目标约束驱动：实板 BSP/存储接入、预抢占场景与栈预算深化、RISC-V RTOS 端口及对应 QEMU 机器。NEON/RVV 优化、性能测量和 DMA 接入不属于当前结果。
+后续须由具体目标约束驱动：实板 BSP/存储接入、预抢占场景与栈预算深化、RV64 和其他核心配置。NEON/RVV 优化、性能测量和 DMA 接入不属于当前结果。
 
 参考：[QEMU AN385 平台说明](https://www.qemu.org/docs/master/system/arm/mps2.html)、[FreeRTOS 支持的官方示例](https://github.freertos.org/Documentation/02-Kernel/03-Supported-devices/04-Demos/02-Supported-demos)。
+
+新增平台参考：[QEMU RISC-V virt](https://www.qemu.org/docs/master/system/riscv/virt.html)、[FreeRTOS RISC-V 移植说明](https://compatibility.freertos.org/Using-FreeRTOS-on-RISC-V)、[QEMU Arm virt](https://www.qemu.org/docs/master/system/arm/virt)。

@@ -1,4 +1,4 @@
-name: 嵌入式 RTOS 检查
+name: 嵌入式兼容检查
 
 on:
   push:
@@ -14,8 +14,47 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  cortex-m3:
-    name: FreeRTOS / Cortex-M3 / QEMU
+  freertos:
+    name: FreeRTOS / ${{ matrix.target }} / QEMU
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: cortex-m3
+            compiler: arm-none-eabi-gcc
+            prefix: arm-none-eabi
+            packages: gcc-arm-none-eabi libnewlib-arm-none-eabi qemu-system-arm
+          - target: riscv32
+            compiler: riscv64-unknown-elf-gcc
+            prefix: riscv64-unknown-elf
+            packages: gcc-riscv64-unknown-elf libnewlib-dev qemu-system-misc
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: 安装裸机工具链与 QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ${{ matrix.packages }} ninja-build
+          ${{ matrix.compiler }} --version
+          qemu-system-${{ matrix.target == 'riscv32' && 'riscv32' || 'arm' }} --version
+          cmake --version
+      - name: 交叉构建无堆分配的 FreeRTOS 固件
+        run: |
+          cmake -S embedded -B build-embedded-qemu -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/${{ matrix.target }}.cmake \
+            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON
+          cmake --build build-embedded-qemu --parallel 2
+          ${{ matrix.prefix }}-size build-embedded-qemu/freertos/jshc_rtos.elf
+          ${{ matrix.prefix }}-nm -u build-embedded-qemu/freertos/jshc_rtos.elf
+      - name: 在 QEMU 中运行调度器与 LUT 契约测试
+        run: ctest --test-dir build-embedded-qemu --verbose --no-tests=error
+
+  cortex-a53-linux:
+    name: Linux / Cortex-A53 / QEMU
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -23,20 +62,18 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: 安装 ARM 裸机工具链与 QEMU
+      - name: 安装 Linux 交叉工具链与 QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y gcc-arm-none-eabi libnewlib-arm-none-eabi qemu-system-arm ninja-build
-          arm-none-eabi-gcc --version
-          qemu-system-arm --version
-          cmake --version
-      - name: 交叉构建无堆分配的 FreeRTOS 固件
+          sudo apt-get install --no-install-recommends -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross qemu-system-arm ninja-build
+          aarch64-linux-gnu-gcc --version
+          qemu-system-aarch64 --version
+      - name: 构建静态 init 与最小 initramfs
         run: |
-          cmake -S embedded -B build-embedded-qemu -G Ninja \
-            -DCMAKE_TOOLCHAIN_FILE=cmake/cortex-m3.cmake \
-            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON
-          cmake --build build-embedded-qemu --parallel 2
-          arm-none-eabi-size build-embedded-qemu/freertos/jshc_rtos.elf
-          arm-none-eabi-nm -u build-embedded-qemu/freertos/jshc_rtos.elf
-      - name: 在 QEMU 中运行调度器与 LUT 契约测试
-        run: ctest --test-dir build-embedded-qemu --verbose --no-tests=error
+          cmake -S embedded -B build-embedded-linux -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-linux.cmake \
+            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_LINUX_QEMU=ON
+          cmake --build build-embedded-linux --parallel 2
+          aarch64-linux-gnu-size build-embedded-linux/linux/jshc_linux_init
+      - name: 启动 AArch64 Linux 并验证 PID 1 中的 LUT 契约
+        run: ctest --test-dir build-embedded-linux --verbose --no-tests=error

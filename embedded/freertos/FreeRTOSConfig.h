@@ -4,7 +4,15 @@
 void jshc_platform_fail(void);
 #define configUSE_PREEMPTION 1
 #define configUSE_TIME_SLICING 1
+#if defined(__riscv)
+/* virt 的 mtime 时基为 10 MHz，独立于指令执行速度。 */
+#define configCPU_CLOCK_HZ 10000000UL
+#define configMTIME_BASE_ADDRESS 0x0200bff8UL
+#define configMTIMECMP_BASE_ADDRESS 0x02004000UL
+#define configISR_STACK_SIZE_WORDS 256
+#else
 #define configCPU_CLOCK_HZ 25000000UL
+#endif
 #define configTICK_RATE_HZ 1000
 #define configMAX_PRIORITIES 3
 #define configMINIMAL_STACK_SIZE 256

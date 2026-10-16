@@ -7,7 +7,9 @@ void jshc_platform_number(uint32_t value);
 void jshc_platform_exit(uint32_t status);
 
 static StaticTask_t worker_tcb, observer_tcb, idle_tcb;
-static StackType_t worker_stack[2048], observer_stack[256], idle_stack[256];
+static StackType_t worker_stack[2048] __attribute__((aligned(16)));
+static StackType_t observer_stack[256] __attribute__((aligned(16)));
+static StackType_t idle_stack[256] __attribute__((aligned(16)));
 static volatile uint32_t heartbeat;
 
 void vApplicationGetIdleTaskMemory(StaticTask_t **tcb, StackType_t **stack, uint32_t *depth)
@@ -30,7 +32,7 @@ static void worker(void *argument)
     int result;
     TickType_t start = xTaskGetTickCount();
     (void)argument;
-    jshc_platform_write("FreeRTOS：开始 Cortex-M3 LUT 契约测试\n");
+    jshc_platform_write("FreeRTOS：开始 " JSHC_RTOS_TARGET " LUT 契约测试\n");
     result = jshc_embedded_contract(checkpoint);
     jshc_platform_write("失败行="); jshc_platform_number((uint32_t)result);
     jshc_platform_write("，心跳="); jshc_platform_number(heartbeat);
@@ -39,7 +41,7 @@ static void worker(void *argument)
     jshc_platform_number((uint32_t)uxTaskGetStackHighWaterMark(NULL));
     jshc_platform_write("\n");
     if (result || !heartbeat || xTaskGetTickCount() == start) jshc_platform_fail();
-    jshc_platform_write("PASS: FreeRTOS Cortex-M3 LUT contract\n");
+    jshc_platform_write("PASS: FreeRTOS " JSHC_RTOS_TARGET " LUT contract\n");
     jshc_platform_exit(0);
 }
 int main(void)

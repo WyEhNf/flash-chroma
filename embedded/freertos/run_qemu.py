@@ -7,14 +7,22 @@ import sys
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--qemu", default="qemu-system-arm")
+    parser.add_argument("--qemu")
+    parser.add_argument("--target", choices=("cortex-m3", "riscv32"), default="cortex-m3")
     parser.add_argument("--elf", type=Path, required=True)
     parser.add_argument("--timeout", type=float, default=30)
     args = parser.parse_args()
-    command = [args.qemu, "-M", "mps2-an385", "-cpu", "cortex-m3",
-               "-display", "none", "-monitor", "none", "-serial", "none",
-               "-semihosting-config", "enable=on,target=native",
-               "-kernel", str(args.elf.resolve())]
+    if args.target == "cortex-m3":
+        command = [args.qemu or "qemu-system-arm", "-M", "mps2-an385", "-cpu", "cortex-m3",
+                   "-display", "none", "-monitor", "none", "-serial", "none",
+                   "-semihosting-config", "enable=on,target=native"]
+        marker = b"PASS: FreeRTOS Cortex-M3 LUT contract"
+    else:
+        command = [args.qemu or "qemu-system-riscv32", "-M", "virt", "-cpu", "rv32",
+                   "-m", "16M", "-smp", "1", "-bios", "none",
+                   "-display", "none", "-monitor", "none", "-serial", "stdio"]
+        marker = b"PASS: FreeRTOS RV32 LUT contract"
+    command += ["-kernel", str(args.elf.resolve())]
     try:
         result = subprocess.run(command, capture_output=True, timeout=args.timeout)
     except subprocess.TimeoutExpired as error:
@@ -23,7 +31,6 @@ def main():
         return 1
     output = result.stdout + result.stderr
     sys.stdout.buffer.write(output)
-    marker = b"PASS: FreeRTOS Cortex-M3 LUT contract"
     return 0 if result.returncode == 0 and marker in output else 1
 
 

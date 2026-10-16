@@ -30,7 +30,7 @@ pixi run --locked lutlab info
 
 GitHub Actions 对 PR（含 Draft）、`main` push 和手动触发运行默认、标量回退及 Docker 正确性检查。CUDA 与可选 SIMD 不属于当前 CI 门禁；配置、覆盖和原生 CMake 用法见 [TOOLCHAIN.md](TOOLCHAIN.md)。
 
-嵌入式目标另提供 [C99 / Cortex-M3 / FreeRTOS 方案（WIP）](embedded/README.md)：不依赖堆分配、文件系统或 C++ 运行时，直接读取 `.slut` 模型。默认门禁含桌面全 RGB 色域互操作验证；独立 RTOS 工作流交叉构建并在 QEMU 中运行静态任务和契约测试。目前不代表实板或 RISC-V 已通过验证。
+嵌入式目标另提供 [C99 / FreeRTOS / Linux 方案（WIP）](embedded/README.md)：不依赖堆分配、文件系统或 C++ 运行时，直接读取 `.slut` 模型。默认门禁含桌面全 RGB 色域互操作验证；独立嵌入式工作流交叉构建并在 QEMU 中验证 Cortex-M3/FreeRTOS、RV32/FreeRTOS 和 Cortex-A53/Linux。实板尚未验证。
 
 ## 使用四张实际 LUT
 
@@ -86,7 +86,7 @@ docker run --rm flash-chroma
 | [python/lutlab](python/lutlab) | 拟合、模型格式、验收与统一 CLI |
 | [cpp](cpp)、[gpu](gpu)、[zig](zig)、[rust](rust) | CPU、可选 CUDA 和可选 SIMD 实现 |
 | [tests](tests)、[cpp/tests](cpp/tests) | Python 契约与 C++ 内核正确性测试 |
-| [embedded](embedded/README.md) | 独立 C99 端侧运行时、FreeRTOS Cortex-M3 固件与 QEMU 门禁（WIP） |
+| [embedded](embedded/README.md) | 独立 C99 运行时，Cortex-M3/RV32 FreeRTOS 与 Cortex-A53 Linux 的 QEMU 门禁（WIP） |
 | [docs/README.md](docs/README.md) | 技术文档、R17–R27 历史实验与报告索引 |
 | [docs/LOGGING.md](docs/LOGGING.md) | 独立实验日志与团队交接 |
 | [report/README.md](report/README.md) | 冻结报告、数据证据与重建边界 |

@@ -91,7 +91,7 @@ cmake --build build-runtime --parallel 2
 2. Linux 无 AVX2/OpenMP 门禁 `pixi run --locked test-scalar`。
 3. Docker 镜像构建及容器中的默认门禁。
 
-独立的 [嵌入式工作流](.github/workflows/embedded.yml) 使用 ARM 裸机 GCC 和 `qemu-system-arm`，构建 Cortex-M3 / FreeRTOS 静态任务测试固件并运行 QEMU 门禁。运行时独立构建只要求 C99，不使用桌面 Pixi 环境；工具链、模型存储预算与当前覆盖范围见 [embedded/README.md](embedded/README.md)。
+独立的 [嵌入式工作流](.github/workflows/embedded.yml) 分别使用 ARM/RISC-V 裸机 GCC 和 AArch64 Linux GCC，在 QEMU 系统模拟器中验证 Cortex-M3/FreeRTOS、RV32/FreeRTOS、Cortex-A53/Linux。Linux 目标启动锁定内核及最小 initramfs。运行时独立构建只要求 C99，不使用桌面 Pixi 环境；工具链、模型存储预算与当前覆盖范围见 [embedded/README.md](embedded/README.md)。
 
 CI 固定 Pixi 版本，按锁文件只安装默认环境，不运行 benchmark，不下载实验数据。CUDA 与可选 SIMD 需在具备相应环境的机器上单独验证。
 
