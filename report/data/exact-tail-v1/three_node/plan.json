@@ -1,0 +1,22 @@
+{
+  "schema": 5,
+  "purpose": "依据118/128辅助对被照片保护拒绝的诊断，保留原两节点前缀后追加有限三节点块",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/quantile-tail-v3",
+  "pair_prefix_reference": "artifacts/velvia-candidate-trace-v1/results.json",
+  "cases": ["velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {"method":"rounded","rounds":2,"primary_limit":8,"helper_limit":16,"max_array_bytes":2684354560,"block_order":3,"first_helpers":4,"second_helpers":4},
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24},
+  "memory_array_budget_bytes": 2684354560,
+  "reference": "原混合初态、101组阈值及预算保持不变；首次原128对候选及判定/统计SHA必须与诊断前缀完全一致，再追加三节点，非等成本对照",
+  "search": "先原单改/普通双改/128辅助对，再最多8主×4首辅×4次辅去重块，最多两轮；同轮复用351895104字节统计。首个可行三节点块再验其六个非空真子集，在可行者中按真实缺口/较少节点选择并重新确认提交",
+  "evaluation": "只对最终变化模型一次完整256³/100图/整数oracle/标量AVX2；完整计数与证书独立标准库复核。未改变则复用同字节旧终验",
+  "limits": "新增候选成本显式披露；真子集失败只证明该组节点值的局部必要性，不证明任意两节点无解。无新网格/权重/全局轮次/硬件性能扫描，默认/冠军不改，无官方Threshold"
+}
