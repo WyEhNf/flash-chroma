@@ -37,6 +37,7 @@ def test_relaxed_witness_and_joint_integer_changes_use_actual_rgb_rounding():
 
 
 def test_guard_assessment_accepts_unchanged_short_histogram(monkeypatch):
+    pytest.importorskip("numba",reason="入口的照片保护复用可选Numba研究模块")
     import runpy
     from pathlib import Path
     from lutlab import cvar_guard,full_domain_guard
