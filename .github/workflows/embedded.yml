@@ -1,0 +1,42 @@
+name: 嵌入式 RTOS 检查
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: embedded-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cortex-m3:
+    name: FreeRTOS / Cortex-M3 / QEMU
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: 安装 ARM 裸机工具链与 QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y gcc-arm-none-eabi libnewlib-arm-none-eabi qemu-system-arm ninja-build
+          arm-none-eabi-gcc --version
+          qemu-system-arm --version
+          cmake --version
+      - name: 交叉构建无堆分配的 FreeRTOS 固件
+        run: |
+          cmake -S embedded -B build-embedded-qemu -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/cortex-m3.cmake \
+            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON
+          cmake --build build-embedded-qemu --parallel 2
+          arm-none-eabi-size build-embedded-qemu/freertos/jshc_rtos.elf
+          arm-none-eabi-nm -u build-embedded-qemu/freertos/jshc_rtos.elf
+      - name: 在 QEMU 中运行调度器与 LUT 契约测试
+        run: ctest --test-dir build-embedded-qemu --verbose --no-tests=error

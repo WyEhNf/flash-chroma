@@ -18,6 +18,7 @@ option(JSHC_ENABLE_CPP_SIMD "Build optional C++26/experimental SIMD backend" OFF
 option(JSHC_ENABLE_ZIG "Build optional Zig SIMD backend (requires Zig)" OFF)
 option(JSHC_ENABLE_RUST "Build optional Rust portable_simd backend" OFF)
 option(JSHC_ENABLE_FULL_FIT "Build optional full-domain offline normal-equation library" OFF)
+option(JSHC_ENABLE_EMBEDDED "构建无堆分配的独立 C99 嵌入式运行时" ON)
 
 add_library(jshc_core STATIC cpp/src/lut.cpp cpp/src/fit_r14.cpp)
 target_include_directories(jshc_core PUBLIC cpp/include)
@@ -129,10 +130,18 @@ endif()
 target_link_libraries(jshc PRIVATE jshc_core)
 
 include(CTest)
+if(JSHC_ENABLE_EMBEDDED)
+  add_subdirectory(embedded)
+endif()
 if(BUILD_TESTING)
   add_executable(jshc_tests cpp/tests/test_kernels.cpp)
   target_link_libraries(jshc_tests PRIVATE jshc_core)
   add_test(NAME kernels COMMAND jshc_tests --full)
+  if(JSHC_ENABLE_EMBEDDED)
+    add_executable(jshc_embedded_parity cpp/tests/test_embedded.cpp)
+    target_link_libraries(jshc_embedded_parity PRIVATE jshc_core jshc_embedded)
+    add_test(NAME embedded_desktop_parity COMMAND jshc_embedded_parity)
+  endif()
 
   if(JSHC_ENABLE_FULL_FIT)
     # Python 门禁使用同一次构建的实际目标路径，兼容多配置生成器。

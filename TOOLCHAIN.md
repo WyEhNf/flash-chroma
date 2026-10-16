@@ -17,6 +17,7 @@ pixi run --locked test
 - C++ 全 `2²⁴` RGB 色域与独立整数 oracle 对照、非均匀网格、边界、向量尾部、四级串联和线程一致性。
 - Python/C++ 位精确一致性、模型格式和缓存、拟合约束、实际图片路径、输入位深及全色域验证契约。
 - 完整色域离线拟合库与独立 Python 正规方程组装的对照。
+- 嵌入式 C99 契约，以及桌面序列化模型的四级全 RGB 色域逐字节互操作对照。
 
 CMake 生成 `build/test-artifacts-Release.json`，记录运行时和拟合库的实际目标路径。测试运行器通过 `JSHC_BIN`、`JSHC_FULL_FIT_LIB` 显式绑定这些产物；拟合库缺失或加载失败不能变成测试跳过。默认门禁不读取下载数据，不执行性能扫描。
 
@@ -89,6 +90,8 @@ cmake --build build-runtime --parallel 2
 1. Linux 默认门禁 `pixi run --locked test`。
 2. Linux 无 AVX2/OpenMP 门禁 `pixi run --locked test-scalar`。
 3. Docker 镜像构建及容器中的默认门禁。
+
+独立的 [嵌入式工作流](.github/workflows/embedded.yml) 使用 ARM 裸机 GCC 和 `qemu-system-arm`，构建 Cortex-M3 / FreeRTOS 静态任务测试固件并运行 QEMU 门禁。运行时独立构建只要求 C99，不使用桌面 Pixi 环境；工具链、模型存储预算与当前覆盖范围见 [embedded/README.md](embedded/README.md)。
 
 CI 固定 Pixi 版本，按锁文件只安装默认环境，不运行 benchmark，不下载实验数据。CUDA 与可选 SIMD 需在具备相应环境的机器上单独验证。
 
