@@ -24,7 +24,8 @@ def ranked(model,domain,photos,*,ordering,cache,trial_limit=128,max_array_bytes=
             allowed[move.node,option] = True
             bounds[move] = score
         ranking = rb.rank_helpers(model,domain,photos,deltas,np.zeros(deltas.shape[2:],np.int64),[],trial_limit,
-            tail_cache=cache,primary_changes=np.zeros(deltas.shape[2],np.bool_),allowed=allowed)
+            tail_cache=cache,tail_change=np.zeros(photos.stability.thresholds.shape,np.int64),
+            primary_changes=np.zeros(deltas.shape[2],np.bool_),allowed=allowed)
         selected = [(bounds[move],move) for key,move,role in ranking]
         roles = [{"node":move.node,"value":list(move.value),"lower_bound_delta":bounds[move],
             "predicted_rms_failed_count":role["rank_rms_failed_count"],"predicted_mean_failed_count":role["rank_mean_failed_count"]}

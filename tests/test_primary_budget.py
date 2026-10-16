@@ -6,12 +6,12 @@ from lutlab import io,interp,tail_repair as tr,full_domain_guard as fg,quantile_
 from lutlab.stability import Stability
 
 
-def state(points,truth,counts,groups,original,n_groups,m=2):
+def state(points,truth,counts,groups,original,n_groups,m=2,tail_ranking=False):
     model = io.SparseLut(io.uniform_grid(m),np.full((m,m,m,3),100,np.uint8))
     domain = fg.DomainGuard([model],points,truth)
     inverse = qc.invert(np.arange(len(points),dtype=np.uint32),np.asarray(groups,np.uint8),np.asarray(counts,np.uint32),len(points),n_groups)
     photos = qc.GroupState(inverse,n_groups,np.asarray(original,np.int32),domain.squared,[list(range(n_groups))])
-    photos.stability = Stability(photos,domain,tail_ranking=False)
+    photos.stability = Stability(photos,domain,tail_ranking=tail_ranking)
     return model,domain,photos
 
 
@@ -57,12 +57,13 @@ def test_unchanged_mean_exemption_is_not_added_across_overlapping_rounding():
     assert int(np.sum((new.astype(np.int32)-domain.truth)**2)) == 5 > int(domain.squared[0])
 
 
-def test_primary_budget_selects_safe_colour_with_same_one_trial_limit():
+@pytest.mark.parametrize("tail_ranking",[False,True])
+def test_primary_budget_selects_safe_colour_with_same_one_trial_limit(tail_ranking):
     outcomes = {}
     for ordering in ("tail","constraints"):
         points = np.array([[0,0,0],[127,0,0],[255,255,255]],np.uint8)
         truth = np.array([[101,100,100],[100,100,100],[101,100,100]],np.uint8)
-        model,domain,photos = state(points,truth,[10,100,1],[0,1,2],[0,0,0],3)
+        model,domain,photos = state(points,truth,[10,100,1],[0,1,2],[0,0,0],3,tail_ranking=tail_ranking)
         result = qr.repair(model,[],domain,photos,steps=1,focus_count=1,trial_limit=1,pair_nodes=0,
             global_search={"method":"primary_budget","ordering":ordering,"rounds":1,"max_array_bytes":1 << 28},
             compensation={"method":"rounded","rounds":1,"primary_limit":2,"helper_limit":4,"max_array_bytes":1 << 28,
