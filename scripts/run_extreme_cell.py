@@ -73,6 +73,7 @@ def main():
     parser.add_argument("--frequency-cache",type=Path)
     parser.add_argument("--executable",type=Path,default=ROOT / "build-engineering-alignment/jshc.exe")
     args = parser.parse_args()
+    if args.frequency_cache is not None:args.frequency_cache = args.frequency_cache.resolve()
     if args.output.exists():raise ValueError("不覆盖局部极值研究")
     plan = load(args.plan)
     parent = ROOT / plan["parent"]
