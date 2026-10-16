@@ -221,6 +221,7 @@ def main():
         ROOT / "python/lutlab/full_domain_guard.py",ROOT / "python/lutlab/tail_repair.py",ROOT / "python/lutlab/error_analysis.py",
         ROOT / "scripts/run_chain_error_study.py",ROOT / "scripts/run_joint_box_study.py",ROOT / "scripts/run_tail_repair.py"]
     if plan.get("compensation"):extra.append(ROOT / "python/lutlab/quantile_compensation.py")
+    if plan.get("compensation",{}).get("method") == "rounded":extra.append(ROOT / "python/lutlab/rounded_budget.py")
     if plan.get("global_search"):extra.append(ROOT / "python/lutlab/quantile_global.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
