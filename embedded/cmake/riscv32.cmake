@@ -1,0 +1,8 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR riscv32)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+find_program(JSHC_RISCV_CC NAMES riscv64-unknown-elf-gcc riscv64-elf-gcc REQUIRED)
+set(CMAKE_C_COMPILER "${JSHC_RISCV_CC}")
+set(CMAKE_ASM_COMPILER "${JSHC_RISCV_CC}")
+set(CMAKE_C_FLAGS_INIT "-march=rv32imac_zicsr -mabi=ilp32 -mcmodel=medany -msmall-data-limit=0 -ffreestanding -fno-builtin -ffunction-sections -fdata-sections")
+set(CMAKE_ASM_FLAGS_INIT "-march=rv32imac_zicsr -mabi=ilp32 -mcmodel=medany")

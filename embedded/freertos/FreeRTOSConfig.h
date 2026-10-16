@@ -1,0 +1,40 @@
+#ifndef FREERTOS_CONFIG_H
+#define FREERTOS_CONFIG_H
+#include <stdint.h>
+void jshc_platform_fail(void);
+#define configUSE_PREEMPTION 1
+#define configUSE_TIME_SLICING 1
+#if defined(__riscv)
+/* virt 的 mtime 时基为 10 MHz，独立于指令执行速度。 */
+#define configCPU_CLOCK_HZ 10000000UL
+#define configMTIME_BASE_ADDRESS 0x0200bff8UL
+#define configMTIMECMP_BASE_ADDRESS 0x02004000UL
+#define configISR_STACK_SIZE_WORDS 256
+#else
+#define configCPU_CLOCK_HZ 25000000UL
+#endif
+#define configTICK_RATE_HZ 1000
+#define configMAX_PRIORITIES 3
+#define configMINIMAL_STACK_SIZE 256
+#define configMAX_TASK_NAME_LEN 16
+#define configUSE_16_BIT_TICKS 0
+#define configIDLE_SHOULD_YIELD 1
+#define configSUPPORT_STATIC_ALLOCATION 1
+#define configSUPPORT_DYNAMIC_ALLOCATION 0
+#define configUSE_TIMERS 0
+#define configUSE_MUTEXES 0
+#define configUSE_RECURSIVE_MUTEXES 0
+#define configUSE_COUNTING_SEMAPHORES 0
+#define configQUEUE_REGISTRY_SIZE 0
+#define configUSE_IDLE_HOOK 0
+#define configUSE_TICK_HOOK 0
+#define configCHECK_FOR_STACK_OVERFLOW 2
+#define configUSE_MALLOC_FAILED_HOOK 0
+#define configUSE_TRACE_FACILITY 0
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
+#define configKERNEL_INTERRUPT_PRIORITY 255
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY 128
+#define INCLUDE_vTaskDelay 1
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
+#define configASSERT(x) do { if (!(x)) jshc_platform_fail(); } while (0)
+#endif
