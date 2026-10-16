@@ -11,7 +11,7 @@ def setup():
     truth = np.array([[101,100,100],[100,100,100],[101,100,100]],np.uint8)
     inverse = qc.invert(np.array([0,1,2],np.uint32),np.array([0,1,1],np.uint8),np.array([1,2,3],np.uint32),3,2)
     domain = fg.DomainGuard([model],points,truth)
-    photos = qc.GroupState(inverse,2,np.array([0,0,1],np.int32),domain.squared,[[0,1]],bins=64)
+    photos = qc.GroupState(inverse,2,np.array([0,0,1],np.int32),domain.squared,[[0,1]])
     return model,points,truth,domain,photos
 
 

@@ -44,11 +44,14 @@ def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_lim
             primaries.append((photo.loss,proxy,move,photo.failed))
     primaries = sorted(primaries)[:primary_limit]
     if not primaries:return [],{"primaries":0,"pairs":0,"moment_array_bytes":0}
-    gradient,diagonal = moments(model,domain,photos)
-    moment_bytes = gradient.nbytes+diagonal.nbytes
+    moment_bytes = model.m**3*(len(photos.hist)+1)*4*np.dtype(np.int64).itemsize
     persistent = domain.cache_bytes+sum(a.nbytes for a in vars(photos).values() if isinstance(a,np.ndarray))+sum(g.nbytes for g in photos.aggregate_groups)
     if persistent+moment_bytes > max_array_bytes:raise MemoryError("补偿矩与既有数组超过冻结预算")
-    data_hash = hashlib.sha256(gradient.tobytes()+diagonal.tobytes()).hexdigest()
+    gradient,diagonal = moments(model,domain,photos)
+    hasher = hashlib.sha256()
+    hasher.update(memoryview(gradient).cast("B"))
+    hasher.update(memoryview(diagonal).cast("B"))
+    data_hash = hasher.hexdigest()
     nodes = model.nodes.reshape(-1,3).astype(np.int64)
     n_groups = len(photos.hist)
     generated,seen = [],set()
