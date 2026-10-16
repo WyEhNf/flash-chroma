@@ -111,5 +111,7 @@ docker run --rm flash-chroma
 | [assets/LUT](assets/LUT/README.md) | 68 份外部 LUT、来源锁定与授权信息 |
 | [现成 LUT 研究报告](artifacts/local-lut-study/20261016/report.md) | PR #9 的 22 种配置、单级及四级研究摘要与适用边界 |
 | [本轮同步与后续建议](docs/stages/2026-10-16-sync-pr-roadmap.md) | 主干整合、验证记录与后续阶段验收建议 |
+| [工程对齐阶段](docs/stages/2026-10-16-engineering-alignment.md) | 基线/续跑/账本修复、C99 共同契约及验证边界 |
+| [PR #9 基线勘误](report/data/pr9-baseline-correction/correction.json) | 保留原始测量，另存 8/68 行派生基线修正 |
 
 `data/`、`build/`、`build-*/`、`.pixi/`、`logs/` 与通常的 `artifacts/` 内容是本机产物；`artifacts/local-lut-study/20261016/` 中已纳入版本控制的精简研究证据是例外。历史报告中的分支名、硬件和性能数字描述对应实验阶段；当前开发流程以本 README、工具链说明与仓库配置为准。

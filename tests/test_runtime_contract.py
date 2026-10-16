@@ -39,6 +39,16 @@ def test_runtime_real_backends_and_rgb8_contract(tmp_path: Path, rgb16_png):
         assert np.array_equal(io.load_image(output), expected)
         assert result["backend"] == backend and len(result["models_sha256"]) == 4
         assert len(result["executable_sha256"]) == 64 and result["process_wall_seconds"] > 0
+        if backend == "cpu":
+            cube_path = tmp_path / "reported-kernel.rgb"
+            execution = runtime.cube(models, cube_path, executable=executable,
+                                     kernel="auto", threads=1, competition=True)
+            assert execution["kernel"] == capabilities["default_kernel"]
+            assert execution["pixels"] == 256 ** 3 and execution["stages"] == 4
+            cube = np.memmap(cube_path, dtype=np.uint8, mode="r", shape=(256 ** 3, 3))
+            indices = pixels.reshape(-1, 3).astype(np.int64) @ np.array([65536, 256, 1])
+            np.testing.assert_array_equal(cube[indices], expected.reshape(-1, 3))
+            del cube
 
         # Correct dimensions must not hide 16-to-8-bit decoding. A separate
         # valid-RGB8 short image verifies the competition dimension gate.

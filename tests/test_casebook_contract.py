@@ -33,13 +33,27 @@ def test_casebook_rejects_tampered_primary_evidence_and_wrong_sources(tmp_path):
     book.add_case("fixture",{"family":"fixture","split":"regression","intensity":"control"},hashes)
     cube={"n_colors":256**3,"mean":0.,"rms":0.,"p99":0.,"max":0.}
     primary={"kind":"casebook_native_cube_screen_v1","source_sha256":hashes,"cube":cube,"inputs_unchanged":True,
-        "runtime":{"models_sha256":{str(p):corpus.digest_file(p) for p in entry.paths},"returncode":0}}
+        "runtime":{"models_sha256":{str(p):corpus.digest_file(p) for p in entry.paths},"returncode":0,
+                   "kernel":"tetra_scalar","backend":"cpu"}}
     primary_path=tmp_path/"primary.json";primary_path.write_text(json.dumps(primary))
     value={"case_id":"fixture","source_sha256":hashes,"semantics":"independent","correctness_pass":True,
         "strategy":"fixture","m":[17]*4,"models":list(map(str,entry.paths)),"model_sha256":list(primary["runtime"]["models_sha256"].values()),
         "kernel":"tetra_scalar","node_payload_bytes":sum(m.nodes.nbytes for m in models),"cube":cube,
         "evidence":[{"path":str(primary_path),"sha256":corpus.digest_file(primary_path)}]}
-    path=tmp_path/"observation.json";path.write_text(json.dumps(value));key=book.record(path)
+    path=tmp_path/"observation.json";path.write_text(json.dumps(value))
+    before=(book.index_path.read_bytes(),list((book.root/"observations").iterdir()))
+    for declaration in ({"kernel":"tetra_structured_avx2"},{"backend":"cuda"}):
+        path.write_text(json.dumps({**value,**declaration}))
+        with pytest.raises(ValueError,match="内核/后端"):book.record(path)
+        assert (book.index_path.read_bytes(),list((book.root/"observations").iterdir()))==before
+    for actual in ({"kernel":"auto"},{"kernel":None},{"backend":"cuda"}):
+        changed_primary={**primary,"runtime":{**primary["runtime"],**actual}}
+        primary_path.write_text(json.dumps(changed_primary))
+        bad={**value,"evidence":[{"path":str(primary_path),"sha256":corpus.digest_file(primary_path)}]}
+        path.write_text(json.dumps(bad))
+        with pytest.raises(ValueError,match="内核/后端"):book.record(path)
+        assert (book.index_path.read_bytes(),list((book.root/"observations").iterdir()))==before
+    primary_path.write_text(json.dumps(primary));path.write_text(json.dumps(value));key=book.record(path)
     assert book.index["cases"]["fixture"]["champions"]["best_measured_mean"]==key
     changed=deepcopy(value);changed["cube"]["max"]=1.;path.write_text(json.dumps(changed))
     with pytest.raises(ValueError,match="inconsistent"):book.record(path)

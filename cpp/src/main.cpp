@@ -358,6 +358,7 @@ int main(int argc, char** argv) try {
     const bool written = std::fwrite(buf.data(), 1, buf.size(), f) == buf.size();
     const int closed = std::fclose(f);
     if (!written || closed != 0) throw std::runtime_error("incomplete cube output: " + a.out);
+    std::printf("{\"kernel\":\"%s\",\"pixels\":%zu,\"stages\":%zu}\n", kernel_name(k), n, L.size());
     return 0;
   }
   if (a.cmd == "bench" || a.cmd == "verify") {

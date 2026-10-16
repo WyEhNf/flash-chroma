@@ -74,6 +74,17 @@ int main() try {
     require(jshc_embedded_apply(embedded_chain.data(), 4, actual.data(), 4096) ==
             JSHC_EMBEDDED_OK, "四级嵌入式映射失败");
     require(actual == reference, "嵌入式输出与桌面四级输出不同");
+    for (const auto kernel : {jshc::Kernel::TetraC99, jshc::Kernel::TetraStructuredAvx2}) {
+      if (!jshc::kernel_available(kernel)) continue;
+      for (uint32_t i = 0; i < 4096; ++i) {
+        const auto value = start + i;
+        actual[i * 3] = uint8_t(value >> 16);
+        actual[i * 3 + 1] = uint8_t(value >> 8);
+        actual[i * 3 + 2] = uint8_t(value);
+      }
+      jshc::apply_chain(desktop_chain, actual.data(), 4096, kernel, 1);
+      require(actual == reference, "portable/结构化路径与相同序列化四级模型不同");
+    }
   }
   std::puts("嵌入式/桌面四级全 RGB 色域逐字节一致");
   return 0;

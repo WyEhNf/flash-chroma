@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 
 from . import cache, corpus, io, timingbook
+from .execution_proof import validate_native_kernel
 from .entry import _write_report
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -160,6 +161,7 @@ class Casebook:
                     raise ValueError("normalized image qualification differs from actual execution")
         elif primary.get("kind")=="casebook_native_cube_screen_v1":
             execution=primary["runtime"]
+            validate_native_kernel(execution,value["kernel"],value.get("backend","cpu"))
             if (primary["cube"]!=value["cube"] or primary["source_sha256"]!=value["source_sha256"]
                     or list(execution["models_sha256"].values())!=value["model_sha256"]
                     or execution["returncode"]!=0 or not primary["inputs_unchanged"]):

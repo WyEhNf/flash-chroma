@@ -4,8 +4,10 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import csv
+import contextlib
 from datetime import datetime, timezone
 import hashlib
+import io as textio
 import json
 import os
 from pathlib import Path
@@ -21,8 +23,10 @@ import numpy as np
 import numba
 from PIL import Image
 import psutil
+from llvmlite import binding as llvm
 
 from . import fit, interp, io, source_lut, study_kernels as kernels
+from . import study_provenance
 
 ROOT = Path(__file__).resolve().parents[2]
 KINDS = {"tetra": 0, "tri": 1, "nearest": 2, "hold": 3, "prism": 4}
@@ -92,13 +96,21 @@ class PeakRSS:
 
 def environment(args):
     files = [ROOT / "python/lutlab" / name for name in
-             ("compatibility.py", "source_lut.py", "study_kernels.py", "fit.py", "interp.py", "io.py", "curve.py")]
+             ("compatibility.py", "source_lut.py", "study_kernels.py", "fit.py", "interp.py", "io.py", "curve.py", "study_provenance.py")]
     fingerprint = {str(p.relative_to(ROOT)): digest(p) for p in files}
-    identity = {"source_sha256": fingerprint, "lut_manifest": digest(ROOT / "assets/LUT/manifest.json"),
+    numpy_config = textio.StringIO()
+    with contextlib.redirect_stdout(numpy_config):
+        np.__config__.show()
+    execution_environment = study_provenance.environment_fingerprint()
+    execution_environment.update(numpy_build=numpy_config.getvalue(),
+        llvm_cpu_name=llvm.get_host_cpu_name(), llvm_cpu_features=llvm.get_host_cpu_features().flatten(),
+        numba_threads=numba.get_num_threads(), numba_threading_layer=numba.threading_layer())
+    identity = {"schema": 2, "environment": execution_environment,
+                "source_sha256": fingerprint, "lut_manifest": digest(ROOT / "assets/LUT/manifest.json"),
                 "image_manifest": digest(ROOT / "assets/photos/manifest.json"), "sizes": args.sizes,
                 "screen_pixels_per_image": args.screen_pixels, "threads": args.threads,
                 "reps": args.reps, "extended": args.extended, "profiles": PROFILES}
-    return {"identity": identity, "identity_sha256": hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest(),
+    return {"identity": identity, "identity_sha256": study_provenance.identity_digest(identity),
             "created_utc": datetime.now(timezone.utc).isoformat(), "python": sys.version,
             "platform": platform.platform(), "processor": platform.processor(),
             "logical_cpu_count": psutil.cpu_count(), "physical_cpu_count": psutil.cpu_count(logical=False),
@@ -108,7 +120,7 @@ def environment(args):
             "timing_scope": "解码和源烘焙/拟合独立计时；图像映射包含输出分配，不含解码、编译、质量统计；输入已预加载",
             "gate": "无官方Threshold；只报告RGB欧氏mean/RMS/p99/max及阈值扫描，不宣布官方通过",
             "source_reference": "按素材原网格三线性解释，再clip/round为完整RGB8黄金表；未知摄影色彩域保持未知",
-            "native_build_status": "未发现cmake；本机CodeBlocks g++启动报系统DLL重定位错误；未完成既有C++门禁",
+            "native_build_status": "本研究入口不自动执行原生门禁；以对应阶段实际记录为准",
             "deferred": ["C++/CUDA部署性能", "R25/R26原生全域库", "MLP/SIREN", "高阶样条", "棱锥插值"]}
 
 
@@ -118,9 +130,7 @@ def run(args):
     out.mkdir(parents=True, exist_ok=True)
     meta = environment(args)
     previous = out / "run.json"
-    if previous.exists() and json.loads(previous.read_text(encoding="utf-8"))["identity_sha256"] != meta["identity_sha256"]:
-        raise ValueError("已有结果身份不同，请指定新的output目录，不混用旧结果")
-    write_json(previous, meta)
+    study_provenance.claim_run(previous, meta)
     image_manifest = json.loads((ROOT / "assets/photos/manifest.json").read_text(encoding="utf-8"))
     image_rows = image_manifest["images"]
     images = []

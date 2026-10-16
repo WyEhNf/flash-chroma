@@ -3,6 +3,7 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" OR NOT CMAKE_SYSTEM_PROCESSOR STREQUAL
 endif()
 add_executable(jshc_linux_init init.c ../tests/contract.c)
 target_link_libraries(jshc_linux_init PRIVATE jshc_embedded)
+jshc_attach_portable_contract(jshc_linux_init)
 target_compile_options(jshc_linux_init PRIVATE -Wall -Wextra -Werror)
 target_link_options(jshc_linux_init PRIVATE -static)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
