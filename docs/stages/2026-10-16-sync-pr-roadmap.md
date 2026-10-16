@@ -140,7 +140,10 @@ git diff --check github/main
 - 本机详细日志保存在忽略目录 `artifacts/sync-pr-roadmap/`（`configure.log`、`build.log`、`correctness.log`、`integrity-audit.json`）；CTest 明细位于 `build-sync-pr-roadmap/Testing/Temporary/LastTest.log`。本文件记录可持久审查的命令、环境和结果，日志路径不代表新检出仓库含完整缓存。
 - 未执行：新的 LUT 拟合、压力参数矩阵、照片/全色域拟合误差扫描、性能比较、官方评分、CUDA、其他可选 SIMD、QEMU 本机复跑及实板测试。运行时穷举通过不代表任意稀疏模型对完整 LUT 都有小误差。
 
-Agent：Codex  
-Operator：本次会话的项目用户  
-Task：同步远端并根据最新 PR 规划后续工作  
+Agent：Codex
+
+Operator：本次会话的项目用户
+
+Task：同步远端并根据最新 PR 规划后续工作
+
 Status：本轮本地整合与规划完成，集成 PR 保持 Draft；三个相关缺陷待修复，建议实验尚未实施
