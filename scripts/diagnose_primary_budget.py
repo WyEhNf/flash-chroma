@@ -1,6 +1,5 @@
 """局部独立重放唯一新接受主改，绑定原128提案截断、误差来源与固定保护。"""
 import argparse
-import hashlib
 from pathlib import Path
 from diagnose_quantile_bounds import process
 from report_quantile_tail_study import load
@@ -49,7 +48,7 @@ def main():
         raise ValueError("不能证明新主改位于原128项之后")
     before,after = [load(p / cid / "final-groups.json") for p in (args.warm,args.constraints)]
     changed = []
-    for g,(start,end) in enumerate(zip(before["groups"],after["groups"]))):
+    for g,(start,end) in enumerate(zip(before["groups"],after["groups"])):
         if start["histogram"] == end["histogram"]:continue
         sse_delta = int(end["sse"])-int(start["sse"])
         mean_upper = int(end["mean_sum_upper_q24"])-int(start["mean_sum_lower_q24"])
