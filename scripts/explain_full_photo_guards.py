@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT / "python"))
 import numpy as np
 from lutlab import error_analysis as ea, io
-from run_chain_error_study import digest, encoded
+from run_chain_error_study import digest, encoded, cube_evaluate
 from run_joint_box_study import photo_samples
 from lutlab.compatibility import write_json
 
@@ -17,12 +17,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--plan",type=Path,default=ROOT / "experiments/full-photo-v1.json")
+    parser.add_argument("--profiles",nargs="+",default=["control_mixed","grid_mixed"])
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("不覆盖已有反例说明")
     result = json.loads((args.input / "results.json").read_text(encoding="utf-8"))
     partition = json.loads((args.input / "photo-partition.json").read_text(encoding="utf-8"))
-    plan = json.loads((ROOT / "experiments/full-photo-v1.json").read_text(encoding="utf-8"))
+    plan = json.loads(args.plan.read_text(encoding="utf-8"))
     manifest = {r["id"]:r for r in json.loads((ROOT / "assets/photos/manifest.json").read_text(encoding="utf-8"))["images"]}
     rows = [manifest[r["id"]] for r in partition["guard"]["images"]]
     points,info = photo_samples(rows,plan)
@@ -40,7 +42,12 @@ def main():
             raise ValueError("完整参考表SHA变化")
         table = io.load_full(source,mmap=True)
         truth = table[points[:,0],points[:,1],points[:,2]]
-        paths = {"historical":args.input / cid / "historical.rgb",**{n:args.input / cid / n / "cube.rgb" for n in ("control_mixed","grid_mixed")}}
+        historical_path = args.input / cid / "historical.rgb"
+        if not historical_path.exists():
+            # 新时期可能只带版本化模型；恢复本目录缓存，不依赖旧忽略目录。
+            model = io.load_sparse(args.input / cid / "historical.slut")
+            cube_evaluate([table],ea.Operator([model]),historical_path,128)
+        paths = {"historical":historical_path,**{n:args.input / cid / n / "cube.rgb" for n in args.profiles}}
         predictions = {}
         for name,path in paths.items():
             if path.stat().st_size != 256**3*3 or digest(path) != case["bank"][name]["cube"]["prediction_sha256"]:
@@ -50,7 +57,7 @@ def main():
             if any(measured[k] != case["bank"][name]["guard"][k] for k in measured):
                 raise AssertionError("冻结流复算的选择指标不同")
         old_d2 = np.sum((predictions["historical"].astype(np.int32)-truth)**2,axis=1)
-        for name in ("control_mixed","grid_mixed"):
+        for name in args.profiles:
             new_d2 = np.sum((predictions[name].astype(np.int32)-truth)**2,axis=1)
             difference = new_d2-old_d2
             top,seen = [],set()
@@ -75,7 +82,7 @@ def main():
                 "top_squared_increases":top,"per_image":per_image})
     write_json(args.output,{"input_results_sha256":digest(args.input / "results.json"),"source_sha256":digest(Path(__file__)),
         "guard_samples_sha256":info["samples_sha256"],"records":records,
-        "scope":"后验只读诊断，同一冻结选择像素与已保存完整流；未重拟合或调门槛，不用完整100图反选模型"})
+        "scope":"后验诊断，同一冻结选择像素与完整流；缺少基线缓存时按版本化模型恢复并核对旧SHA，未重拟合或调门槛，不用完整100图反选模型"})
     print("固定选择像素与完整流指标复算一致，已保存尾部反例")
 
 
