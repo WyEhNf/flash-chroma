@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "purpose": "固定两例及两个网格，以同一等质量目标联合完整色域和照片测度，隔离照片退化的分布原因",
+  "parent": "report/data/tail-grid-v1",
+  "partition": "report/data/joint-box-v1/photo-partition.json",
+  "cases": [{"id":"lomo-purple2","grid":"line_minimax"},{"id":"velvia-vivid","grid":"line_sse"}],
+  "profiles": ["rounded_control", "declared_grid"],
+  "m": 33,
+  "threads": 4,
+  "photo_mass": "完整域/照片各1/2；完整矩已有1/64标度，先校正质量；不扫描比例",
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "training": "沿用60张历史训练图，保留重复像素；20张选择、20张只作本轮审计，历史全已观察",
+  "fitter": "真实box约束，无额外先验；连续KKT后4轮既有整数精化；分别用原生/照片整数矩精确比较混合未舍入SSE，非RGB8精度证书",
+  "guards": "完整256^3 mean/RMS/p99/max不超过PR13历史模型，mean用Q24界；20图选择样本mean/RMS/p99/max及最差单图p99不超历史；不合格回退历史",
+  "choice": "历史、整数对照纯完整域、新网格纯完整域、两个新混合模型组成固定五选一；先过完整域/照片门禁，再比全域/照片最差相对mean、相对mean和、名字；完整100图不参与选择",
+  "evaluation": "两个新候选全部冻结后各一次完整256^3、独立整数oracle及标量/AVX2、100张完整照片；历史输出为全域证书另重建并核对旧SHA；另外纯完整域两配置复用PR17证据",
+  "limits": "两例为单级误差诊断，非比赛四级成绩；保留失败，不调门槛、不改默认/冠军，不做硬件/性能扫描；无官方Threshold；混合精确SSE选择不保证最终mean/max"
+}
