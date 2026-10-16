@@ -34,3 +34,23 @@ def test_relaxed_witness_and_joint_integer_changes_use_actual_rgb_rounding():
     assert int(np.max(np.sum((interp.apply_tetra_q16(integer,points).astype(int)-targets)**2,axis=1))) == 81
     none,info = lm.minimum_change(model,points,targets,rgb_max=7,max_delta=2)
     assert none is None and not info["success"]
+
+
+def test_guard_assessment_accepts_unchanged_short_histogram(monkeypatch):
+    import runpy
+    from pathlib import Path
+    from lutlab import cvar_guard,full_domain_guard
+    root = Path(__file__).resolve().parents[1]
+    monkeypatch.syspath_prepend(str(root / "scripts"))
+    assess = runpy.run_path(str(root / "scripts/run_extreme_cell.py"))["assess"]
+    bins = [[1,100]]
+    base = {"histogram":bins,"initial_histogram":bins,"original_histogram":bins,
+        "sse_limit":"100","mean_limit_lower_q24":str(100 << 24),"constraints":[{"threshold_squared":1,"allowed_tail_pixels":0}]}
+    photos = {"groups":[base]*101,"aggregates":[],"loss":0}
+    hist = np.zeros(3*255**2+1,np.int64)
+    hist[1] = 256**3
+    value = full_domain_guard.summary(hist)
+    result = assess(np.array([1],np.int32),np.array([1],np.int32),np.ones((101,1),np.int64),photos,
+        {"reference":value,"final":value},cvar_guard.CvarGuard(hist,"固定模型"))
+    assert result["accepted"] and result["primary_loss"] == 0 and len(result["groups"]) == 101
+    assert all(g["metrics"]["max"] == 1 and g["metrics"]["n"] == 100 for g in result["groups"])

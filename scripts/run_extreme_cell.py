@@ -40,7 +40,7 @@ def fixed_checks(old,new,prefix):
 def assess(old,new,weights,photos,domain,guard):
     failed,groups,stats,loss = [],[],[],0
     for g,base in enumerate(photos["groups"]):
-        hist = replace_hist(base["histogram"],old,new,weights[g])
+        hist = replace_hist(base["histogram"],old,new,weights[g],True)
         bins = pairs(hist)
         value = summary(bins)
         stats.append(value)
@@ -70,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan",type=Path,default=ROOT / "experiments/extreme-cell-v1.json")
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--frequency-cache",type=Path)
     parser.add_argument("--executable",type=Path,default=ROOT / "build-engineering-alignment/jshc.exe")
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖局部极值研究")
@@ -94,6 +95,13 @@ def main():
     refs += [parent / cid / n for n in ("full-domain.json","final-groups.json","repaired.slut","repaired.rgb")]+[table_path]
     identity = {"environment":env,"plan_sha256":digest(args.plan),"source_sha256":{n:digest(ROOT / n) for n in sources},
         "parent_files":{str(p.relative_to(ROOT)):digest(p) for p in refs},"executable_sha256":digest(args.executable)}
+    if args.frequency_cache is not None:
+        cached_identity = load(args.frequency_cache / "run.json")["identity"]
+        for field in ("environment","plan_sha256","parent_files"):
+            if cached_identity[field] != identity[field]:raise ValueError("局部频数缓存的环境/计划/输入不同")
+        for name in ("scripts/diagnose_quantile_bounds.py","scripts/run_tail_repair.py","python/lutlab/interp.py","python/lutlab/io.py","python/lutlab/tail_repair.py"):
+            if cached_identity["source_sha256"][name] != identity["source_sha256"][name]:raise ValueError("频数构建或支撑语义不同")
+        identity["frequency_cache"] = {str((args.frequency_cache / n).relative_to(ROOT)):digest(args.frequency_cache / n) for n in ("run.json","support.json","frequencies.csv")}
     metadata = {"identity":identity,"identity_sha256":study_provenance.identity_digest(identity),
         "git_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),"numba_threads":numba.get_num_threads(),
         "ram_bytes":psutil.virtual_memory().total,"backend":"SciPy绑定的HiGHS LP/MILP；求解器内部线程未独立测量，非性能实验",
@@ -123,6 +131,11 @@ def main():
     integer,integer_info = lm.minimum_change(model,points,target,rgb_max=plan["rgb_max"],max_delta=plan["max_delta"],time_limit=plan["milp_time_limit"])
     write(args.output / "certificate.json",continuous_info["certificate"])
     variants = {"baseline":(model,{}),"minimax_rounded":(continuous,continuous_info),"minimum_change":(integer,integer_info)}
+    for name,(candidate,info) in variants.items():
+        checkpoint = args.output / name
+        checkpoint.mkdir()
+        write(checkpoint / "solver.json",info)
+        if candidate is not None:io.save_sparse(checkpoint / "model.slut",candidate)
     all_nodes = lm.design(model,points)[0].tolist()
     support = affected(model,all_nodes)
     if len(support) > plan["max_support_colours"]:raise ValueError("联合变量完整支撑超过冻结上限")
@@ -134,8 +147,20 @@ def main():
     old = np.sum((prediction.astype(np.int32)-truth)**2,axis=1)
     inventory,partition = [load(parent / n) for n in ("photo-inventory.json","photo-partition.json")]
     rows = {r["id"]:r for r in load(ROOT / "assets/photos/manifest.json")["images"]}
-    print(f"全部{len(all_nodes)}个单元节点的完整支撑{len(support)}色；建立一次101组局部频数",flush=True)
-    weights = frequency(keys,inventory,partition,plan,rows)
+    print(f"全部{len(all_nodes)}个单元节点的完整支撑{len(support)}色；准备101组局部频数",flush=True)
+    if args.frequency_cache is None:
+        weights = frequency(keys,inventory,partition,plan,rows)
+    else:
+        cached = load(args.frequency_cache / "support.json")
+        if cached["points"] != support.tolist() or cached["nodes"] != all_nodes:raise ValueError("局部频数缓存的颜色支撑不同")
+        weights = np.zeros((101,len(keys)),np.int64)
+        positions = {int(k):i for i,k in enumerate(keys)}
+        with (args.frequency_cache / "frequencies.csv").open(encoding="utf-8",newline="") as f:
+            for row in csv.DictReader(f):
+                g,k,n = [int(row[v]) for v in ("group","key","count")]
+                if not 0 <= g < 101 or k not in positions or n <= 0 or weights[g,positions[k]]:raise ValueError("缓存频数格式错误")
+                weights[g,positions[k]] = n
+        if hashlib.sha256(weights.tobytes()).hexdigest() != cached["frequency_sha256"]:raise ValueError("缓存频数字节不同")
     write(args.output / "support.json",{"nodes":all_nodes,"points":support.tolist(),"baseline_sha256":hashlib.sha256(prediction.tobytes()).hexdigest(),
         "frequency_sha256":hashlib.sha256(weights.tobytes()).hexdigest()})
     with (args.output / "frequencies.csv").open("w",encoding="utf-8",newline="") as f:
@@ -150,7 +175,7 @@ def main():
     records = []
     for name,(candidate,info) in variants.items():
         folder = args.output / name
-        folder.mkdir()
+        folder.mkdir(exist_ok=True)
         if candidate is None:
             write(folder / "solver.json",info)
             records.append({"name":name,"generated":False,"solver":info})
