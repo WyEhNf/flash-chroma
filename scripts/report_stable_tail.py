@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 import hashlib
 import itertools
+import math
 from pathlib import Path
 import shutil
 import zipfile
@@ -107,6 +108,9 @@ def main():
     contract_log = {"stable":"stable-tail-contracts-v1.log","primary":"primary-budget-contracts-v1.log","batch":"primary-batch-contracts-v1.log"}[args.study]
     shutil.copyfile(ROOT / "artifacts" / contract_log,out / "contract-tests.log")
     summary,photo_rows,regressions,diagnosis,provenance,parity = [],[],[],[],[],[]
+    split_rows = []
+    splits = {"training":[r["id"] for r in partition["training"]["images"]],
+        "selection":[r["id"] for r in partition["guard"]["images"]],"audit":partition["audit_ids"]}
     primary_rows = []
     for arm,(run,result,expected) in checked.items():
         source = sources[arm]
@@ -179,6 +183,13 @@ def main():
                     **{f"cube_{k}":value["cube"][k] for k in ("mean","rms","p99","max","cvar_1pct","fraction_ge_1","fraction_ge_2","fraction_ge_3","fraction_ge_5")},
                     **{f"photos_{k}":value["photos"][k] for k in ("mean","rms","worst_image_p99","max")}})
                 photo_rows.extend({"profile":name,"reused_metrics":reused,**r} for r in value["photos"]["per_image"])
+                for split,ids in splits.items():
+                    images = [r for r in value["photos"]["per_image"] if r["image"] in ids]
+                    if len(images) != len(ids):raise ValueError("逐图分组数据缺失")
+                    split_rows.append({"profile":name,"split":split,"n_images":len(images),"reused_metrics":reused,
+                        "mean":math.fsum(r["mean"] for r in images)/len(images),
+                        "rms":math.sqrt(math.fsum(r["rms"]**2 for r in images)/len(images)),
+                        "worst_image_p99":max(r["p99"] for r in images),"max":max(r["max"] for r in images)})
                 regressions.append({"profile":name,"vs_warm":compare(old["final"]["photos"],value["photos"]),
                     "vs_historical":compare(case["historical"]["photos"],value["photos"])})
             parity.extend({"arm":arm,"reused":case["final"]["reused"],**p} for p in case["final"]["native"])
@@ -208,6 +219,7 @@ def main():
     if primary_rows:write_csv(out / "primary-trials.csv",primary_rows)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
+    write_csv(out / "photo-splits.csv",split_rows)
     write_json(out / "photo-regressions.json",regressions)
     write_json(out / "native-parity.json",parity)
     write_json(out / "constraint-diagnosis.json",diagnosis)
