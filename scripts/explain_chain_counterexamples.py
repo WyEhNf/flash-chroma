@@ -10,13 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
 import numba
 import numpy as np
-from lutlab import error_analysis as ea, error_certificate, io
+from lutlab import error_analysis as ea, error_certificate, interp, io, runtime
 from lutlab.compatibility import write_json
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
+    parser.add_argument("--executable", type=Path)
     args = parser.parse_args()
     numba.set_num_threads(4)
     results = json.loads((args.input / "results.json").read_text(encoding="utf-8"))
@@ -67,13 +68,36 @@ def main():
             allocation.append(value)
         if abs(sum(allocation) - costs[0]) > 1e-8:
             raise AssertionError("有限干预的MSE分配不守恒")
+        control_parity = []
+        if case.get("existing_control") and args.executable:
+            paths = [folder / f"existing-control-stage{k+1}.slut" for k in range(count)]
+            control_models = [io.load_sparse(path) for path in paths]
+            expected = hashlib.sha256()
+            for start in range(0, 256 ** 3, 1 << 16):
+                ids = np.arange(start, start + (1 << 16), dtype=np.int64)
+                rgb = np.stack((ids >> 16, (ids >> 8) & 255, ids & 255), axis=1).astype(np.uint8)
+                for model in control_models:
+                    rgb = interp.apply_tetra_q16(model, rgb)
+                expected.update(rgb.tobytes())
+            if expected.hexdigest() != case["existing_control"]["cube"]["prediction_sha256"]:
+                raise AssertionError("既有控制方法与独立整数oracle不同")
+            for kernel in ("tetra_scalar", "tetra_avx2", "tetra_c99"):
+                destination = folder / "control-native.rgb"
+                execution = runtime.cube(paths, destination, executable=args.executable, kernel=kernel,
+                                         threads=1, competition=True)
+                with destination.open("rb") as stream:
+                    actual = hashlib.file_digest(stream, "sha256").hexdigest()
+                if actual != expected.hexdigest():
+                    raise AssertionError("既有控制方法的原生输出不一致")
+                control_parity.append({"kernel": execution["kernel"], "sha256": actual,
+                    "executable_sha256": execution["executable_sha256"], "byte_mismatches": 0})
         answer["cases"].append({"case": case["case"]["id"], "selected_stage": selected+1,
             "fixed_weights_lower_bound": certificate, "interventions": coalition,
-            "mse_shapley_allocation": allocation,
+            "mse_shapley_allocation": allocation, "control_native_parity": control_parity,
             "scope": "固定262144颜色的干预分配，含阶段交互；不是运行方案或未知输入的物理贡献保证"})
         print(case["case"]["id"], "固定权重单级max必要下界", None if certificate is None else certificate["rgb_l2_max_lower_bound"],
               "MSE干预分配", allocation, flush=True)
-    write_json(args.input / "explanations.json", answer)
+    write_json(args.input / "explanations-with-parity.json", answer)
 
 
 if __name__ == "__main__":
