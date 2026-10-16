@@ -5,6 +5,29 @@ pytest.importorskip("numba", reason="尾部修复研究使用可选Numba环境")
 from lutlab import error_analysis as ea, interp, io, tail_repair as tr
 
 
+def test_changed_image_manifest_rejects_old_caps(tmp_path, monkeypatch):
+    import importlib.util
+    import json
+    from pathlib import Path
+    scripts = Path(__file__).resolve().parents[1] / "scripts"
+    monkeypatch.syspath_prepend(str(scripts))
+    spec = importlib.util.spec_from_file_location("tail_repair_runner_fixture", scripts / "run_tail_repair.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    parent = tmp_path / "parent"
+    parent.mkdir()
+    actual = module.digest(module.ROOT / "assets/photos/manifest.json")
+    path = parent / "run.json"
+    path.write_text(json.dumps({"identity": {"image_manifest": actual}}))
+    module.validate_parent_images(parent)
+    path.write_text(json.dumps({"identity": {"image_manifest": "0"*64}}))
+    before = path.read_bytes()
+    with pytest.raises(ValueError, match="不能复用旧逐图max"):
+        module.validate_parent_images(parent)
+    assert path.read_bytes() == before
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["parent"]
+
+
 def test_caps_use_strictest_image_for_shared_colours():
     caps = np.full(256**3, np.iinfo(np.uint32).max, np.uint32)
     tr.update_caps(caps, np.array([[1, 2, 3], [1, 2, 3], [4, 5, 6]], np.uint8), 25)

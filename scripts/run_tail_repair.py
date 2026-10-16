@@ -32,6 +32,13 @@ def read_image(row):
     return pixels
 
 
+def validate_parent_images(parent):
+    """旧逐图上限只能用于同一图片清单；在任何输出发布前拒绝更换输入。"""
+    previous = json.loads((parent / "run.json").read_text(encoding="utf-8"))
+    if digest(ROOT / "assets/photos/manifest.json") != previous["identity"]["image_manifest"]:
+        raise ValueError("图片清单已变化，不能复用旧逐图max上限；请先建立新的基线证据")
+
+
 def sample(rgb, image_id, plan):
     seed = int.from_bytes(hashlib.sha256((str(plan["pixel_seed"])+":"+image_id).encode()).digest()[:8], "little")
     indices = np.random.default_rng(seed).choice(len(rgb), plan["pixels_per_image"], replace=False)
@@ -66,6 +73,7 @@ def main():
         raise ValueError("本阶段不覆盖已有目录；恢复模型用版本化ZIP，重新研究请使用新目录")
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
     parent = ROOT / plan["parent"]
+    validate_parent_images(parent)
     integrity = json.loads((parent / "integrity.json").read_text(encoding="utf-8"))
     for name, expected in integrity["files"].items():
         if digest(parent / name) != expected:
@@ -79,6 +87,13 @@ def main():
              ROOT / "scripts/run_chain_error_study.py", ROOT / "scripts/run_joint_box_study.py")})
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     study_provenance.claim_run(out / "run.json", metadata)
+    # 快照绑定实测原始字节；后续仅前置检查/报告修补不冒充重新执行数值代码。
+    with zipfile.ZipFile(out / "measured-source.zip", "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, expected in sorted({**metadata["identity"]["source_sha256"], **metadata["identity"]["stage_source_sha256"]}.items()):
+            raw = (ROOT / name).read_bytes()
+            if hashlib.sha256(raw).hexdigest() != expected:
+                raise ValueError("发布源码快照时文件已变化")
+            archive.writestr(name.replace("\\", "/"), raw)
     model_dir = out / "input-models"
     model_dir.mkdir()
     index = json.loads((parent / "archive-index.json").read_text(encoding="utf-8"))
