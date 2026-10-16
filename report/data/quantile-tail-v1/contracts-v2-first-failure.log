@@ -1,0 +1,60 @@
+.F                                                                       [100%]
+================================== FAILURES ===================================
+_________ test_global_helper_repairs_tail_without_relaxing_rms_guard __________
+
+    def test_global_helper_repairs_tail_without_relaxing_rms_guard():
+        model,points,truth,domain,photos = setup()
+        baseline = qr.repair(model,[],domain,photos,steps=1,focus_count=1,trial_limit=32,pair_nodes=0)
+        assert not baseline["accepted"] and photos.loss == 1
+        # 只有节点0有尾部缺口，但它的R+1会伤害图片1的多数像素；节点7在焦点支撑之外。
+        result = qr.repair(model,[],domain,photos,steps=1,focus_count=1,trial_limit=32,pair_nodes=0,
+            compensation={"rounds":1,"primary_limit":4,"helper_limit":8,"max_array_bytes":1 << 28})
+        assert result["accepted"] and photos.loss == 0 and result["compensation_rounds"][0]["accepted"]
+        assert result["accepted"][0]["compensation"]["helper_node"] == 7
+>       assert photos.report()["guards_accepted"]
+               ^^^^^^^^^^^^^^^
+
+tests\test_quantile_compensation.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+python\lutlab\quantile_constraints.py:227: in report
+    records.append({"group":g,"metrics":ea.hist_metrics(hist),"costs":self.costs[g].tolist(),
+                                        ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+hist = array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      dtype=int64)
+
+    def hist_metrics(hist):
+        n = int(hist.sum())
+        if not n:
+            raise ValueError("不能汇总空颜色集合")
+        cumulative = np.cumsum(hist)
+        rank = .99 * (n - 1)
+        lo, hi = int(np.floor(rank)), int(np.ceil(rank))
+        p_lo, p_hi = np.searchsorted(cumulative, [lo, hi], side="right")
+        largest = int(np.flatnonzero(hist)[-1])
+        count = max(1, int(np.ceil(n * .01)))
+        remaining = count
+        upper = 0.
+        for d2 in np.flatnonzero(hist)[::-1]:
+            take = min(remaining, int(hist[d2]))
+            upper += take * ROOT_DISTANCE[d2]
+            remaining -= take
+            if not remaining:
+                break
+>       return {"n": n, "mean": float(hist @ ROOT_DISTANCE / n),
+                                      ^^^^^^^^^^^^^^^^^^^^
+                "rms": float(np.sqrt(hist @ np.arange(len(hist), dtype=np.int64) / n)),
+                "p99": float(ROOT_DISTANCE[p_lo] + (rank - lo) * (ROOT_DISTANCE[p_hi] - ROOT_DISTANCE[p_lo])),
+                "max": float(ROOT_DISTANCE[largest]), "cvar_1pct": upper / count,
+                **{f"fraction_ge_{t}": float(hist[t*t:].sum() / n) for t in (1, 2, 3, 5)}}
+E       ValueError: matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 195076 is different from 64)
+
+python\lutlab\error_analysis.py:91: ValueError
+---------------------------- Captured stdout call -----------------------------
+接受第1步：2节点，整数尾部缺口 1 → 0
+=========================== short test summary info ===========================
+FAILED tests/test_quantile_compensation.py::test_global_helper_repairs_tail_without_relaxing_rms_guard
+1 failed, 1 passed in 4.09s

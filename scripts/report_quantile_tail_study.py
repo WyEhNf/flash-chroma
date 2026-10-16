@@ -142,7 +142,7 @@ def main():
         with zipfile.ZipFile(folder / "evidence.zip") as z:
             if set(index) != set(z.namelist()) or any(hashlib.sha256(z.read(n)).hexdigest() != h for n,h in index.items()):
                 raise ValueError("归档成员变化")
-        source_changes.append({"epoch":epoch,"git":run.get("git"),"executed_source_sha256":expected,
+        source_changes.append({"epoch":epoch,"git_commit":run["git_commit"],"executed_source_sha256":expected,
             "current_source_same":{name:(ROOT / name).exists() and digest(ROOT / name) == h for name,h in expected.items()}})
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)

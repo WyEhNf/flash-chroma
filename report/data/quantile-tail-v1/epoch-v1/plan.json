@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "purpose": "在原轴表混合模型上修复真实逐图max及p99秩端点，保留像素频率和已获均值收益",
+  "parent": "report/data/fractional-fit-v1",
+  "cases": ["lomo-purple2", "velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "groups": "60张完整训练图+20张完整选择图，另保留20张选择图各4096像素和其合并组，共101组；20审计图不反馈，全部历史已观察",
+  "tails": "每组相对历史模型的max和p99两个秩端点非增；端点条件充分而非必要，保留允许超限的尾部像素预算，不要求全像素小于p99",
+  "loss": "每个阈值将超预算的像素质量中最小(d2-threshold)加权求和；全组求和为非负整数，零当且仅当全部冻结端点/max计数条件满足",
+  "photo_guards": "每组mean/RMS不得超过历史与初态的较大值；完整80图及合并选择样本的mean相对初态各最多+0.5%，RMS不增，整个阶段固定；mean用Q24整数界保守判定",
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24,"scope":"完整RGB域相对当前混合初态固定mean预算+0.5%，RMS/p99/max非增"},
+  "steps": 64,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "candidates": "热点正支撑节点的RGB±1邻域、同原轴表历史/纯完整域/原始节点采样/混合初态及一半混合值；只用本级原表候选，无残差标签",
+  "search": "按精确整数热点代理排序，至多128个单节点；停滞后16个不同节点各最佳代理提案组成至多120对，真实重算整对，不能相加收益；每次严格减loss且通过全部固定保护",
+  "memory_array_budget_bytes": 2684354560,
+  "final": "每例仅对最终变动检查点作一次完整256^3/100图/独立整数oracle及标量AVX2；可行与否如实标明；若没有接受任何修改则复用原终验，不重复测试",
+  "limits": "有限库停滞不代表无解；端点门禁可能保守；单级不算比赛四级成绩；无官方Threshold，不替换默认/冠军，不做性能硬件扫描"
+}
