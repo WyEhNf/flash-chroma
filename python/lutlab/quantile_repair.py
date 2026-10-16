@@ -79,6 +79,13 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             item["decision"] = "full_guard"
             for key in proof["failed"]:rejections["full."+key] = rejections.get("full."+key,0)+1
             return None
+        if photos.stability is not None:
+            failed = photos.stability.check_full(full_trial["hist"],proof["candidate"])
+            item["stability_full_failed"] = failed
+            if failed:
+                item["decision"] = "stability_full"
+                for key in failed:rejections[key] = rejections.get(key,0)+1
+                return None
         item["accepted"] = True
         item["decision"] = "accepted"
         return photo_trial,proof
@@ -239,6 +246,9 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             raise AssertionError("接受后图片平方误差与完整域缓存不一致")
         record = {"step":step+1,"moves":changes,"before_loss":before,"after_loss":photos.loss,
             "focus_colours":len(keys),"full_domain":proof,"proposal_source":accepted_source}
+        if photos.stability is not None:
+            record["stability"] = photos.stability.certificate(photos,domain.hist,proof["candidate"])
+            if not record["stability"]["accepted"]:raise AssertionError("接受后固定参考稳定性证书失败")
         if accepted_compensation is not None:record["compensation"] = accepted_compensation
         log.append(record)
         print(f"接受第{step+1}步：{len(moves)}节点，整数尾部缺口 {before} → {photos.loss}",flush=True)

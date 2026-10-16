@@ -150,6 +150,14 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         write_json(folder / "warm-start.json",{"source":plan["warm_start"],"replayed_steps":len(replayed),
             "warm_loss":photos.loss,"model_sha256":digest(warm_path),"full_prediction_sha256":array_sha(domain.prediction)})
     warm_loss = photos.loss
+    if plan.get("stability"):
+        from lutlab.stability import Stability
+        if warm_case is None:raise ValueError("本阶段稳定性比较必须指定已验证热启动")
+        photos.stability = Stability(photos,domain,tail_ranking=plan["stability"]["tail_ranking"])
+        write_json(folder / "stability-reference.json",photos.stability.reference_report(digest(warm_path)))
+        if not photos.stability.certificate(photos,domain.hist)["accepted"]:raise AssertionError("冻结参照本身没有通过稳定性检查")
+        persistent_bytes += photos.stability.cache_array_bytes
+        if persistent_bytes > plan["memory_array_budget_bytes"]:raise MemoryError("稳定性参照超过冻结数组预算")
     def accepted(record,current):
         record = {**record,"step":record["step"]+len(replayed)}
         path = folder / f"checkpoint{record['step']:03d}.slut"
@@ -178,6 +186,10 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
     write_json(folder / "full-domain.json",full)
     final_path = folder / "repaired.slut"
     io.save_sparse(final_path,model)
+    if photos.stability is not None:
+        certificate = photos.stability.certificate(photos,domain.hist,full["final"])
+        if not certificate["accepted"]:raise AssertionError("最终固定参考稳定性证书失败")
+        write_json(folder / "stability-final.json",{**certificate,"model_sha256":digest(final_path)})
     selection = {"search":search,"tail_feasible":photos.loss == 0,"model_sha256":digest(final_path),
         "full_domain_certificate":full["certificate"],"scope":"在最终100图之前冻结；缺口未清零仍如实标为部分修复"}
     write_json(folder / "selection-before-photos.json",selection)
@@ -228,6 +240,7 @@ def main():
     if plan.get("compensation",{}).get("method") == "rounded":extra.append(ROOT / "python/lutlab/rounded_budget.py")
     if plan.get("compensation",{}).get("block_order",2) == 3:extra.append(ROOT / "python/lutlab/rounded_blocks.py")
     if plan.get("global_search"):extra.append(ROOT / "python/lutlab/quantile_global.py")
+    if plan.get("stability"):extra.append(ROOT / "python/lutlab/stability.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
         parent_files={n:digest(parent / n) for n in ("results.json","environment.json","photo-partition.json","models-and-selection.zip","archive-index.json")})

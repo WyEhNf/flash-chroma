@@ -144,6 +144,7 @@ class GroupState:
         self.aggregate_limits = [(int(self.low[g].sum()),int(self.sse[g].sum())) for g in self.aggregate_groups]
         self.numerator,self.denominator = numerator,denominator
         self.generation = 0
+        self.stability = None
 
     @property
     def loss(self):return int(self.costs.sum())
@@ -159,11 +160,15 @@ class GroupState:
             if int(self.high[indices].sum())*self.denominator > mean_low*self.numerator:
                 failed.append(f"aggregate{k}.mean")
             if int(self.sse[indices].sum()) > sse_limit:failed.append(f"aggregate{k}.rms")
+        if self.stability is not None:
+            failed.extend(self.stability.check_photos(self.hist,self.low,self.high,self.sse,touched))
         return tuple(failed)
 
     def _apply(self,rows,old,new):
-        return _update(self.hist,self.low,self.high,self.sse,self.tails,*self.offsets_groups_counts,
+        touched = _update(self.hist,self.low,self.high,self.sse,self.tails,*self.offsets_groups_counts,
             rows,old,new,self.thresholds,self.budgets,self.roots_low,self.roots_high)
+        if self.stability is not None:self.stability.apply(rows,old,new)
+        return touched
 
     @property
     def offsets_groups_counts(self):return self.offsets,self.groups,self.counts
@@ -220,6 +225,7 @@ class GroupState:
                 and np.array_equal(self.hist @ self.roots_high,self.high)
                 and np.array_equal(self.hist @ np.arange(self.hist.shape[1],dtype=np.int64),self.sse)):
             raise AssertionError("图片增量直方图或整数归约与完整重建不同")
+        if self.stability is not None:self.stability.recheck(self)
 
     def report(self):
         def metrics(hist):
@@ -245,5 +251,6 @@ class GroupState:
         return {"loss":self.loss,"feasible":self.loss == 0,"generation":self.generation,"groups":records,
             "aggregate_mean_ratio":[self.numerator,self.denominator],"aggregates":aggregates,
             "guards_accepted":not self._guards(np.ones(len(self.hist),bool)),
-            "cache_array_bytes":sum(a.nbytes for a in vars(self).values() if isinstance(a,np.ndarray))+sum(g.nbytes for g in self.aggregate_groups),
+            "cache_array_bytes":sum(a.nbytes for a in vars(self).values() if isinstance(a,np.ndarray))+sum(g.nbytes for g in self.aggregate_groups)
+                +(self.stability.cache_array_bytes if self.stability is not None else 0),
             "scope":"给定图片/频数上max及p99两个秩端点的充分约束；mean/RMS保护上限固定，不是未知图片保证"}
