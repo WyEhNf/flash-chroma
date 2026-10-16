@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--warm",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--plan",type=Path,default=ROOT / "experiments/primary-batch-joint-v1.json")
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖批次独立归因")
     result,run = [load(args.input / n) for n in ("results.json","run.json")]
@@ -28,7 +29,7 @@ def main():
     cid = case["case"]["id"]
     search = case["selection"]["search"]
     records = [r for r in search["accepted"] if not r.get("replayed")]
-    plan_path = ROOT / "experiments/primary-batch-joint-v1.json"
+    plan_path = args.plan
     if digest(plan_path) != run["identity"]["plan_sha256"]:raise ValueError("批次归因计划不同")
     for n,h in run["identity"]["warm_files"].items():
         if digest(args.warm / n) != h:raise ValueError("批次热启动来源不同")
@@ -62,6 +63,11 @@ def main():
     full_verify = runpy.run_path(str(ROOT / "scripts/verify_full_domain_guard.py"))["verify"]
     reference = [summarize(g["histogram"]) for g in groups["groups"]]
     full_reference = summarize(full["final"]["histogram"])
+    cvar = None
+    if load(plan_path).get("cvar_guard"):
+        cvar = runpy.run_path(str(ROOT / "scripts/verify_cvar_guard.py"))
+        sources["verify_cvar_guard.py"] = digest(ROOT / "scripts/verify_cvar_guard.py")
+        cvar_reference = cvar["tail_summary"](full["final"]["histogram"])
     info = search["global_rounds"][0]
     trace = info["trials"]+info["batch_search"]["trials"]
     def move_key(moves):return frozenset((m["node"],tuple(m.get("value",m.get("after")))) for m in moves)
@@ -103,6 +109,11 @@ def main():
                 if sum(n for d,n in summary["histogram"] if d > t) > b:full_failed.append(f"stability.full.tail{j}")
             decision = "tail_loss" if loss >= record["before_loss"] else "photo_guard" if failed else "full_guard" if not proof["accepted"] else "stability_full" if full_failed else "accepted"
             original = next(t for t in trace if move_key(t["moves"]) == move_key(subset))
+            cvar_info = {}
+            if cvar is not None and decision == "accepted":
+                eligible = cvar["verify_certificate"](cvar_reference,summary["histogram"],original["cvar"])
+                cvar_info = {"cvar":original["cvar"]}
+                if not eligible:decision = "seed_only_cvar" if original.get("seed_eligible") else "cvar_guard"
             if loss != original["loss"] or decision != original["decision"] or set(failed) != set(original["photo_failed"]):
                 raise AssertionError("独立子集缺口或保护与冻结试探不同")
             if size == len(record["moves"]):
@@ -110,7 +121,7 @@ def main():
                 io.save_sparse(checkpoint,candidate)
                 if digest(checkpoint) != load(args.input / cid / f"checkpoint{record['step']:03d}.json")["model_sha256"]:raise AssertionError("局部选定块模型SHA不同")
             records_out.append({"nodes":[m["node"] for m in subset],"loss":loss,"decision":decision,"photo_failed":failed,
-                "full_failed":proof["failed"],"stability_full_failed":full_failed,
+                "full_failed":proof["failed"],"stability_full_failed":full_failed,**cvar_info,
                 "sse_delta_80":str(sum(stats[g]["sse"]-reference[g]["sse"] for g in range(80))),
                 "full_sse_delta":str(s["sse"]-full_reference["sse"]),"full_mean_delta_upper_q24":str(s["upper"]-full_reference["lower"])})
     output = {"selected_batch":True,"case":cid,"step":record["step"],"moves":record["moves"],"union_colours":len(points),

@@ -15,14 +15,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def batch_audit(global_info,m):
     batch = global_info["batch_search"]
-    singles = [t for t in global_info["trials"] if len(t["moves"]) == 1 and t["accepted"]]
-    expected = [{"node":t["moves"][0]["node"],"value":t["moves"][0]["value"],"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"]} for t in singles]
+    singles = [t for t in global_info["trials"] if len(t["moves"]) == 1 and t.get("seed_eligible",t["accepted"])]
+    expected = [{"node":t["moves"][0]["node"],"value":t["moves"][0]["value"],"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"],
+        **({"commit_eligible":t["commit_eligible"]} if "commit_eligible" in t else {})} for t in singles]
     if expected != batch["feasible_singles"] or len(expected) > batch["feasible_limit"]:raise ValueError("批次可行单改清单与真实回执不同")
     before = global_info["anchor_loss"]
     if any(t["before_loss"] != before for t in global_info["trials"]+batch["trials"]+batch["confirmation"]):
         raise ValueError("批次试探没有保持同一冻结状态")
     def key(moves):return tuple(sorted((part["node"],tuple(part["value"])) for part in moves))
-    offers = [(t["loss"],1,key(t["moves"])) for t in singles]
+    offers = [(t["loss"],1,key(t["moves"])) for t in singles if t["accepted"]]
     blocks,overlap = [],0
     for size in range(2,batch["max_order"]+1):
         for subset in itertools.combinations(singles,size):
@@ -57,23 +58,24 @@ def main():
     parser.add_argument("--aware",type=Path,required=True)
     parser.add_argument("--warm",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
-    parser.add_argument("--study",choices=("stable","primary","batch"),default="stable")
+    parser.add_argument("--study",choices=("stable","primary","batch","cvar"),default="stable")
     parser.add_argument("--diagnosis",type=Path)
     parser.add_argument("--tail-risk",type=Path)
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧归档")
-    if args.study in ("primary","batch") and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
-    if args.study == "batch" and args.tail_risk is None:raise ValueError("批次归档必须给出最坏1%独立复算")
-    names = {"stable":("guard","aware"),"primary":("tail","constraints"),"batch":("first","joint")}[args.study]
+    if args.study in ("primary","batch","cvar") and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
+    if args.study in ("batch","cvar") and args.tail_risk is None:raise ValueError("批次归档必须给出最坏1%独立复算")
+    names = {"stable":("guard","aware"),"primary":("tail","constraints"),"batch":("first","joint"),"cvar":("unprotected","guarded")}[args.study]
     sources = dict(zip(names,(args.guard,args.aware)))
-    prefix = {"stable":"stable-tail","primary":"primary-budget","batch":"primary-batch"}[args.study]
-    plans = {arm:ROOT / f"experiments/{prefix}-{arm}-v1.json" for arm in sources}
+    prefix = {"stable":"stable-tail","primary":"primary-budget","batch":"primary-batch","cvar":"cvar-commit"}[args.study]
+    plans = {arm:ROOT / f"experiments/{prefix}-{arm}-v1.json" for arm in sources} if args.study != "cvar" else {
+        "unprotected":ROOT / "experiments/primary-batch-joint-v1.json","guarded":ROOT / "experiments/cvar-commit-v1.json"}
     checked = {arm:check_epoch(path,plans[arm]) for arm,path in sources.items()}
     if checked[names[0]][0]["identity"]["environment"] != checked[names[1]][0]["identity"]["environment"]:raise ValueError("两臂环境不同")
     a,b = [load(plans[arm]) for arm in sources]
     for field in ("parent","warm_start","cases","threads","pixels_per_image","pixel_seed","steps","focus_count","trial_limit","pair_nodes","compensation","full_domain_guard","memory_array_budget_bytes"):
         if a[field] != b[field]:raise ValueError("目标排序之外的实验配置不同")
-    if args.study in ("primary","batch"):
+    if args.study in ("primary","batch","cvar"):
         varying = "ordering" if args.study == "primary" else "batch"
         if a["stability"] != b["stability"] or {k:v for k,v in a["global_search"].items() if k != varying} != {k:v for k,v in b["global_search"].items() if k != varying}:
             raise ValueError("主提案排序之外的保护或全局配置不同")
@@ -83,6 +85,18 @@ def main():
     warm = load(args.warm / "results.json")
     inventory,partition = [load(args.guard / n) for n in ("photo-inventory.json","photo-partition.json")]
     if load(args.aware / "photo-inventory.json") != inventory:raise ValueError("两臂颜色倒排输入不同")
+    if args.study == "cvar":
+        from run_quantile_tail_study import check_cohort
+        old_case,new_case = [checked[arm][1]["cases"][0] for arm in names]
+        cohort = check_cohort(new_case["selection"]["search"],old_case)
+        if cohort != load(args.aware / new_case["case"]["id"] / "cohort-replay.json"):raise ValueError("CVaR固定队列复核不同")
+        certificate = load(args.aware / "cvar-verification.json")
+        if not certificate["verified"] or certificate["external_dependencies_loaded"]:raise ValueError("CVaR独立复核失败")
+        for name,h in certificate["input_sha256"].items():
+            if digest(args.aware / name) != h:raise ValueError("CVaR复核输入变化")
+        for name,h in certificate["reference_sha256"].items():
+            if digest(args.warm / name) != h:raise ValueError("CVaR复核参照变化")
+        if certificate["verifier_sha256"] != digest(ROOT / "scripts/verify_cvar_guard.py"):raise ValueError("CVaR复核源码变化")
     out = args.output
     out.mkdir(parents=True)
     diagnostic = None
@@ -117,8 +131,10 @@ def main():
             if path.is_file():shutil.copyfile(path,destination / path.name)
         shutil.copyfile(args.diagnosis.with_suffix(".log"),out / "diagnosis.log")
     for name in ("photo-inventory.json","photo-partition.json"):shutil.copyfile(args.guard / name,out / name)
-    contract_log = {"stable":"stable-tail-contracts-v1.log","primary":"primary-budget-contracts-v1.log","batch":"primary-batch-contracts-v1.log"}[args.study]
+    contract_log = {"stable":"stable-tail-contracts-v1.log","primary":"primary-budget-contracts-v1.log","batch":"primary-batch-contracts-v1.log","cvar":"cvar-commit-contracts-v1.log"}[args.study]
     shutil.copyfile(ROOT / "artifacts" / contract_log,out / "contract-tests.log")
+    if args.study == "cvar":
+        shutil.copyfile(ROOT / "report/data/primary-batch-v1/contract-tests.log",out / "reused-control-contract-tests.log")
     summary,photo_rows,regressions,diagnosis,provenance,parity = [],[],[],[],[],[]
     split_rows = []
     splits = {"training":[r["id"] for r in partition["training"]["images"]],
@@ -142,6 +158,9 @@ def main():
         shutil.copyfile(source.with_suffix(".log"),folder / "experiment.log")
         shutil.copyfile(plans[arm],folder / "plan.json")
         members = ["run.json","results.json","verification.json","stability-verification.json","photo-inventory.json","photo-partition.json","measured-source.zip"]
+        if args.study == "cvar" and arm == "guarded":
+            members.append("cvar-verification.json")
+            shutil.copyfile(source / "cvar-verification.json",folder / "cvar-verification.json")
         for case in result["cases"]:
             cid = case["case"]["id"]
             old = next(c for c in warm["cases"] if c["case"]["id"] == cid)
@@ -189,7 +208,8 @@ def main():
                 "helper_failed_conditions":dict(rejection.most_common()),"host_memory":full["host_memory"],
                 "persistent_array_bytes":full["combined_cache_array_bytes"]})
             profiles = [("historical",case["historical"],True),("warm",old["final"],True)] if arm == names[0] else []
-            profiles += [(arm,case["final"],case["final"]["reused"])]
+            reused_final = case["final"]["reused"] or (args.study == "cvar" and arm == "unprotected")
+            profiles += [(arm,case["final"],reused_final)]
             for name,value,reused in profiles:
                 summary.append({"case":cid,"profile":name,"reused_metrics":reused,
                     **{f"cube_{k}":value["cube"][k] for k in ("mean","rms","p99","max","cvar_1pct","fraction_ge_1","fraction_ge_2","fraction_ge_3","fraction_ge_5")},
@@ -204,7 +224,7 @@ def main():
                         "worst_image_p99":max(r["p99"] for r in images),"max":max(r["max"] for r in images)})
                 regressions.append({"profile":name,"vs_warm":compare(old["final"]["photos"],value["photos"]),
                     "vs_historical":compare(case["historical"]["photos"],value["photos"])})
-            parity.extend({"arm":arm,"reused":case["final"]["reused"],**p} for p in case["final"]["native"])
+            parity.extend({"arm":arm,"reused":reused_final,**p} for p in case["final"]["native"])
             members.extend(p.relative_to(source).as_posix() for p in sorted((source / cid).glob("*")) if p.suffix in (".json",".slut") and p.name != "selected-stage1.slut")
         index = {}
         with zipfile.ZipFile(folder / "evidence.zip","w",zipfile.ZIP_DEFLATED) as z:
@@ -224,7 +244,7 @@ def main():
         provenance.append({"arm":arm,"git_commit":run["git_commit"],"source_sha256":expected,
             "current_source_same":{name:(ROOT / name).exists() and digest(ROOT / name) == h for name,h in expected.items()}})
     with zipfile.ZipFile(out / "verification-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
-        for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
+        for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py")+(("verify_cvar_guard.py",) if args.study == "cvar" else ()):z.write(ROOT / "scripts" / name,name)
     if diagnostic is not None:
         with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
             diagnostic_sources = {**diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"],**(risk["sources_sha256"] if risk else {})}
