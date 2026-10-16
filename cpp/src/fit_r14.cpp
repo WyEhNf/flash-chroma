@@ -438,7 +438,7 @@ LovaszStencilSystem assemble_lovasz_stencil(const SparseLut& L,
 }
 
 void solve_jacobi_cg(const LovaszStencilSystem& sys, const std::vector<RgbFloat>& x0,
-                     int num_threads, RgbFloat* x_padded) {
+                     [[maybe_unused]] int num_threads, RgbFloat* x_padded) {
   const size_t M = sys.diag.size();
   constexpr float kLambda = 1e-4f;
 

@@ -58,4 +58,4 @@ R25 原生全色域法方程没有修改；在源文件、包装器、测试、�
 
 入口：`python -m lutlab fit --inputs <四张源表> --m 33 --grid dp --method adaptive_full`；候选`select --profiles adaptive_full`。仍为显式候选，默认候选不变。阶段脚本为`scripts/r27_step_study.py`与`scripts/r27_industry_study.py`。
 
-[完整PDF报告](../output/pdf/problem16-latest-tested-report.pdf)覆盖题目指标、三个评分项及开源方案可比性。[证据归档](../report/data/r27/README.md)保留结果、模型、脚本和源码快照。官方数据、Threshold及统计口径未知，因此不评定官方分数或行业SOTA排名。
+[完整PDF报告](../report/latest/problem16-latest-tested-report.pdf)覆盖题目指标、三个评分项及开源方案可比性。[证据归档](../report/data/r27/README.md)保留结果、模型、脚本和源码快照。官方数据、Threshold及统计口径未知，因此不评定官方分数或行业SOTA排名。

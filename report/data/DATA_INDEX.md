@@ -12,7 +12,7 @@
 
 最新的同模型CPU后端配对比较为[R39](r39/README.md)：三类模型、三种后端、9项比较、162次计时；压力与17箱模型证实结构AVX2更快，clip模型未决。[R40](r40/README.md)把九项配置与完整色域正确性证明登记到逐case速度组，保留点最优、证实最快与耗时/模型内存Pareto。[全部结果](../../docs/r39-structured-performance.md)。两阶段不代表完整策略矩阵或实体移动设备验证，PDF仍为R27冻结范围。
 
-最近包含完整100图及CPU/CUDA严格性能对照的阶段为[R34](r34/README.md)：R33新压力候选的完整色域/100图、五张自然照片及7对比较；新模型精度改善，但新旧模型速度差异未被证明。同16线程的SIMD/标量配对加速中位数2.07091倍。[R27](r27/README.md)仍为最近的完整PDF冻结范围，另含OpenColorIO对照。[R27完整PDF](../../output/pdf/problem16-latest-tested-report.pdf)。下文为历史探索报告的固定数据索引。
+最近包含完整100图及CPU/CUDA严格性能对照的阶段为[R34](r34/README.md)：R33新压力候选的完整色域/100图、五张自然照片及7对比较；新模型精度改善，但新旧模型速度差异未被证明。同16线程的SIMD/标量配对加速中位数2.07091倍。[R27](r27/README.md)仍为最近的完整PDF冻结范围，另含OpenColorIO对照。[R27完整PDF](../latest/problem16-latest-tested-report.pdf)。下文为历史探索报告的固定数据索引。
 
 后续阶段另列：[R28完整扩展数据与账本](r28/README.md)、[R29首个case的27候选快照](r29/README.md)、[R30独立C99接口验收](r30/README.md)、[R31 AArch64大小端模拟执行](r31/README.md)。R29仍为完整5400计划的一部分；R30/R31不包含实体移动设备速度/功耗结论。这些新增阶段尚未写入R27冻结PDF。
 
