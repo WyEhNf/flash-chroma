@@ -64,11 +64,15 @@ def test_primary_budget_selects_safe_colour_with_same_one_trial_limit():
         truth = np.array([[101,100,100],[100,100,100],[101,100,100]],np.uint8)
         model,domain,photos = state(points,truth,[10,100,1],[0,1,2],[0,0,0],3)
         result = qr.repair(model,[],domain,photos,steps=1,focus_count=1,trial_limit=1,pair_nodes=0,
-            global_search={"method":"primary_budget","ordering":ordering,"rounds":1,"max_array_bytes":1 << 28})
+            global_search={"method":"primary_budget","ordering":ordering,"rounds":1,"max_array_bytes":1 << 28},
+            compensation={"method":"rounded","rounds":1,"primary_limit":2,"helper_limit":4,"max_array_bytes":1 << 28,
+                "primary_order":"ranked","block_order":3,"first_helpers":2,"second_helpers":2})
         outcomes[ordering] = (photos.loss,result)
         assert photos.stability.certificate(photos,domain.hist)["accepted"]
         np.testing.assert_array_equal(domain.prediction,interp.apply_tetra_q16(model,points))
     assert outcomes["tail"][0] == 11 and not outcomes["tail"][1]["accepted"]
+    empty = outcomes["tail"][1]["compensation_rounds"][0]
+    assert empty["primaries"] == 0 and empty["block_search"]["triples"] == 0
     assert outcomes["constraints"][0] == 10
     accepted = outcomes["constraints"][1]["accepted"][0]
     assert accepted["proposal_source"] == "global_single" and accepted["moves"][0]["node"] == 7

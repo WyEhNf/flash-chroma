@@ -189,7 +189,10 @@ def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_lim
         if photo.loss < photos.loss:primaries.append((photo.loss,proxy,move))
     if primary_order not in ("loss","ranked"):raise ValueError("未知主候选排序模式")
     primaries = (sorted(primaries) if primary_order == "loss" else primaries)[:primary_limit]
-    if not primaries:return [],{"method":"rounded","primaries":0,"pairs":0,"statistics_array_bytes":0}
+    if not primaries:
+        # 主排序可能已预构建大统计；没有真实改善主改时不能将半初始化缓存传给三节点阶段。
+        if cache is not None:cache.clear()
+        return [],{"method":"rounded","primaries":0,"pairs":0,"statistics_array_bytes":0}
     stats_cache = cache if cache is not None else {}
     reused = "deltas" in stats_cache
     if reused:
