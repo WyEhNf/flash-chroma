@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import runpy
 import shutil
 import subprocess
 import sys
@@ -118,6 +119,7 @@ def main():
                 ("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
                 ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","tests/test_histogram_delta.py","tests/test_stability.py","scripts/report_extreme_cell.py")):
             z.write(ROOT / name,"current/"+name)
+        if args.study == "working":z.write(ROOT / "scripts/diagnose_working_set.py","current/scripts/diagnose_working_set.py")
         if args.prior_run is not None:
             old_commit = load(args.prior_run / "run.json")["git_commit"]
             for name in ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","python/lutlab/stability.py"):
@@ -183,6 +185,8 @@ def main():
                 "max":math.sqrt(value[0]),"primary_loss":value[1],"full_sse":value[2],"l1":value[3],"winner":label == w["comparison"]["winner"]})
         with (out / "controlled-comparison.csv").open("w",encoding="utf-8",newline="") as f:
             writer = csv.DictWriter(f,list(rows[0]),lineterminator="\n");writer.writeheader();writer.writerows(rows)
+        diagnosis = runpy.run_path(str(ROOT / "scripts/diagnose_working_set.py"))["diagnose"](args.input)
+        write(out / "compensation-structure.json",diagnosis)
     if args.study in ("compensation","automatic","joint","minimax","working"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
