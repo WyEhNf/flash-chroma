@@ -150,6 +150,20 @@ def main():
             raise ValueError("联合完整覆盖没有绑定独立复核源")
         shutil.copyfile(args.input / "joint-search.json",out / "joint-search.json")
         shutil.copyfile(args.input / "node-evidence.json",out / "node-evidence.json")
+        tree = load(args.input / "joint-search.json")
+        subset_witnesses = []
+        if tree["incumbent"] is not None:
+            best = tree["incumbent"]["deltas"]
+            active = [i for i,d in enumerate(best) if d]
+            for mask in range((1 << len(active))-1):
+                chosen = {active[j] for j in range(len(active)) if mask & (1 << j)}
+                deltas = [d if i in chosen else 0 for i,d in enumerate(best)]
+                matches = [t for t in tree["terminals"] if deltas[:len(t["deltas"])] == t["deltas"]]
+                if len(matches) != 1 or matches[0]["kind"] not in ("rgb_max","rms","mean","tail","outside_max"):
+                    raise ValueError("最小L1解的真子块没有独立必要界拒绝见证")
+                subset_witnesses.append({"nodes":[tree["nodes"][i] for i in sorted(chosen)],"deltas":deltas,"terminal_certificate":matches[0]})
+        write(out / "proper-subset-witnesses.json",{"new_model_evaluations":0,"proper_subsets":subset_witnesses,
+            "scope":"只把所选块的真子集映射至已独立核对的覆盖证书；不重新映射模型或拟合，不证明所有其他同节点数方案不可行"})
     if args.study in ("compensation","automatic","joint"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
