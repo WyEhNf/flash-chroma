@@ -127,6 +127,17 @@ def main():
     if cell["targets"] != truth or cell["baseline"] != [model.apply(p) for p in points]:raise ValueError("单元参考或基线oracle不同")
     nodes = sorted({n for p in points for n,w in zip(*model.weights(p)) if w})
     config = plan.get("local_compensation")
+    if plan.get("automatic_compensation"):
+        automatic = load(folder / "automatic.json")
+        primary = Model(folder / "primary/model.slut")
+        primary_nodes = [n for n in range(model.m**3) if primary.data[model.node_offset+3*n:model.node_offset+3*n+3] != model.data[model.node_offset+3*n:model.node_offset+3*n+3]]
+        helpers = set()
+        for n in primary_nodes:
+            xyz = (n//model.m**2,n//model.m%model.m,n%model.m)
+            helpers.update((p[0]*model.m+p[1])*model.m+p[2] for p in itertools.product(*(range(max(0,c-1),min(model.m,c+2)) for c in xyz)))
+        helpers -= set(primary_nodes)
+        if sorted(helpers) != automatic["helper_nodes"] or len(helpers) > plan["max_neighbor_nodes"]:raise ValueError("自动邻域不同或超过冻结上限")
+        nodes = sorted(set(nodes)|set(primary_nodes)|helpers)
     expected_variants = {}
     if config:
         primary,helper = config["primary"],config["helper"]
@@ -302,6 +313,10 @@ def main():
         "verifier_sha256":digest(Path(__file__).read_bytes()),"run_identity":result["run_identity"],"input_result_sha256":digest((folder / "results.json").read_bytes()),
         "external_dependencies_loaded":any(n in sys.modules for n in ("numpy","scipy","numba")),"python":sys.version,
         "scope":"标准库独立解析SLUT/权重/舍入，证明固定表示必要界，枚举完整非零支撑重放候选与完整频数，复算101组已记录照片频数和全部保护；未独立解码80张照片或重新拟合，不据此证明其他候选不可行"}
+    if plan.get("automatic_compensation"):
+        helper = Path(__file__).with_name("verify_automatic_compensation.py")
+        output["automatic"] = runpy.run_path(str(helper))["verify_trace"](folder,plan,automatic,model,source,relevant,frequencies,photos,domain,records_by_name)
+        output["automatic_verifier_sha256"] = digest(helper.read_bytes())
     args.output.write_text(json.dumps(output,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(output,ensure_ascii=True))
 

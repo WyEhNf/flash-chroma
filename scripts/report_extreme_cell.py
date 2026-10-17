@@ -32,7 +32,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--first-failure",type=Path)
-    parser.add_argument("--study",choices=("extreme","compensation"),default="extreme")
+    parser.add_argument("--study",choices=("extreme","compensation","automatic"),default="extreme")
     parser.add_argument("--prior-run",type=Path)
     parser.add_argument("--additional-contract-log",type=Path)
     parser.add_argument("--output",type=Path,required=True)
@@ -100,14 +100,16 @@ def main():
     if args.study == "extreme":logs += [(args.first_failure.with_suffix(".log"),"first-failure.log"),
         (ROOT / "artifacts/extreme-cell-contracts-v1.log","contracts-initial.log"),(ROOT / "artifacts/extreme-cell-contracts-fix-v1.log","contracts-fix.log"),
         (ROOT / "artifacts/extreme-cell-verify-v2.log","verification.log")]
-    else:logs += [(ROOT / "artifacts/local-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/local-compensation-verify-v1.log","verification.log")]
+    elif args.study == "compensation":logs += [(ROOT / "artifacts/local-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/local-compensation-verify-v1.log","verification.log")]
+    else:logs += [(ROOT / "artifacts/automatic-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/automatic-compensation-verify-v1.log","verification.log")]
     for path,target in logs:
         shutil.copyfile(path,out / target)
     with zipfile.ZipFile(out / "contracts-and-report-sources.zip","x",zipfile.ZIP_DEFLATED) as z:
         for commit,label in ((("bc5568b","initial"),("a86dba0","fix")) if args.study == "extreme" else ()):
             data = subprocess.run(["git","show",commit+":tests/test_local_minimax.py"],cwd=ROOT,check=True,capture_output=True).stdout
             z.writestr(label+"/test_local_minimax.py",data)
-        for name in (("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
+        for name in (("tests/test_automatic_compensation.py","tests/test_local_minimax.py","tests/test_histogram_delta.py","scripts/report_extreme_cell.py") if args.study == "automatic" else
+                ("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
                 ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","tests/test_histogram_delta.py","tests/test_stability.py","scripts/report_extreme_cell.py")):
             z.write(ROOT / name,"current/"+name)
         if args.prior_run is not None:
@@ -136,9 +138,13 @@ def main():
             writer = csv.DictWriter(f,list(rows[0]),lineterminator="\n")
             writer.writeheader()
             writer.writerows(rows)
-    if args.study == "compensation":
+    if args.study == "automatic":
+        if (not verification["automatic"]["tree_complete"] or verification["automatic_verifier_sha256"] != digest((ROOT / "scripts/verify_automatic_compensation.py").read_bytes())):
+            raise ValueError("自动完整候选树没有绑定独立复核源")
+        shutil.copyfile(args.input / "automatic.json",out / "automatic.json")
+    if args.study in ("compensation","automatic"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
-        shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
+        if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
         write(out / "signed-mean-rechecks.json",[{"candidate":r["name"],**p} for r in result["records"] for p in r.get("signed_mean_rechecks",[])])
         if result["selection"]["selected"] is not None and not verification.get("full_stream_checked"):raise ValueError("新终态归档前未核对实际完整流")
         parent_case = next(c for c in load(args.input / "reference/results.json")["cases"] if c["case"]["id"] == load(args.input / "plan.json")["case"])

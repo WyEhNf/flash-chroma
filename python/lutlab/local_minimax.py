@@ -40,10 +40,10 @@ def design(model,points):
     return nodes,matrix
 
 
-def changed(model,nodes,values):
+def changed(model,nodes,values,channel=2):
     idx,frac = model.tables()
     result = io.SparseLut(model.grid.copy(),model.nodes.copy(),idx.copy(),frac.copy())
-    result.nodes.reshape(-1,3)[nodes,2] = values
+    result.nodes.reshape(-1,3)[nodes,channel] = values
     return result
 
 
@@ -68,19 +68,21 @@ def relaxed_minimax(model,points,targets,*,dual_scale=1000000):
         "scope":"连续B通道局部最小最大解仅用于产生整数见证和证书；不把求解器浮点最优标记当作必要下界"}
 
 
-def minimum_change(model,points,targets,*,rgb_max,max_delta,time_limit=60):
+def minimum_change(model,points,targets,*,rgb_max,max_delta,time_limit=60,channel=2):
     if type(rgb_max) is not int or rgb_max < 0 or type(max_delta) is not int or not 0 <= max_delta <= 255:
         raise ValueError("局部RGB上限与修改范围必须为合法整数")
+    if type(channel) is not int or channel not in (0,1,2):raise ValueError("主改通道必须为R/G/B之一")
     nodes,matrix = design(model,points)
     count = len(nodes)
-    current = model.nodes.reshape(-1,3)[nodes,2].astype(float)
+    current = model.nodes.reshape(-1,3)[nodes,channel].astype(float)
     prediction = interp.apply_tetra_q16(model,points).astype(np.int32)
-    rg = np.sum((prediction[:,:2]-targets[:,:2].astype(np.int32))**2,axis=1)
+    other = [c for c in range(3) if c != channel]
+    rg = np.sum((prediction[:,other]-targets[:,other].astype(np.int32))**2,axis=1)
     remaining = rgb_max**2-rg
-    if np.any(remaining < 0):return None,{"success":False,"reason":"固定R/G本身已经超出RGB目标"}
+    if np.any(remaining < 0):return None,{"success":False,"reason":"其余固定通道本身已经超出RGB目标"}
     allowance = np.array([math.isqrt(int(v)) for v in remaining])
-    lower = np.maximum(0,targets[:,2].astype(int)-allowance)*65536-32768
-    upper = (np.minimum(255,targets[:,2].astype(int)+allowance)+1)*65536-32769
+    lower = np.maximum(0,targets[:,channel].astype(int)-allowance)*65536-32768
+    upper = (np.minimum(255,targets[:,channel].astype(int)+allowance)+1)*65536-32769
     # 输出为floor((整数累加+32768)/65536)，上界减1保留严格端点，不能写成连续闭区间近似。
     a = np.vstack((np.column_stack((matrix,np.zeros_like(matrix))),np.column_stack((np.eye(count),-np.eye(count))),
         np.column_stack((-np.eye(count),-np.eye(count)))))
@@ -88,12 +90,12 @@ def minimum_change(model,points,targets,*,rgb_max,max_delta,time_limit=60):
     result = milp(np.r_[np.zeros(count),np.ones(count)],integrality=np.r_[np.ones(count),np.zeros(count)],
         bounds=Bounds(np.r_[np.maximum(0,current-max_delta),np.zeros(count)],np.r_[np.minimum(255,current+max_delta),np.full(count,max_delta)]),
         constraints=constraints,options={"time_limit":time_limit,"mip_rel_gap":0.})
-    info = {"success":bool(result.success),"status":int(result.status),"solver_message":result.message,"rgb_max":rgb_max,"max_delta":max_delta,
-        "scope":"只求固定单元内B整数节点的最小L1修改；尚未满足照片/完整域保护，实际Q16输出必须重放"}
+    info = {"success":bool(result.success),"status":int(result.status),"solver_message":result.message,"rgb_max":rgb_max,"max_delta":max_delta,"channel":channel,
+        "scope":"只求固定单元内选定通道整数节点的最小L1修改；尚未满足照片/完整域保护，实际Q16输出必须重放"}
     if not result.success:return None,info
     values = np.rint(result.x[:count])
     if np.max(np.abs(values-result.x[:count])) > 1e-5:raise ValueError("MILP返回的节点不满足整数契约")
-    candidate = changed(model,nodes,values.astype(np.uint8))
+    candidate = changed(model,nodes,values.astype(np.uint8),channel)
     squared = np.sum((interp.apply_tetra_q16(candidate,points).astype(np.int32)-targets)**2,axis=1)
     if np.any(squared > rgb_max**2):raise AssertionError("MILP候选真实Q16输出未满足RGB上限")
     info.update(node_ids=nodes.tolist(),l1_change=int(np.sum(np.abs(values-current))),mip_gap=float(result.mip_gap))
