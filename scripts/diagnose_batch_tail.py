@@ -48,7 +48,7 @@ def main():
     ref = tail(warm["final"])
     info = result["selection"]["search"]["global_rounds"][0]
     batch = info["batch_search"]
-    candidates = [t for t in info["trials"]+batch["trials"] if t["accepted"]]
+    candidates = [t for t in info["trials"]+batch["trials"] if t.get("four_metric_eligible",t["accepted"])]
     proofs = {}
     for proof in domain["checks"]:
         moves = proof.get("moves",[{"node":proof.get("node"),"value":proof.get("value")}])
@@ -81,9 +81,14 @@ def main():
     chosen = next(r for r in records if r["nodes"] == chosen_nodes)
     eligible = [r for r in records if r["nonincrease_proved"]]
     best = min(eligible,key=lambda r:(r["loss"],len(r["nodes"]),r["nodes"])) if eligible else None
+    safe_nodes = {r["nodes"][0] for r in records if len(r["nodes"]) == 1 and r["nonincrease_proved"]}
+    early_filtered = [r for r in eligible if set(r["nodes"]) <= safe_nodes]
+    early_best = min(early_filtered,key=lambda r:(r["loss"],len(r["nodes"]),r["nodes"])) if early_filtered else None
     inputs = [args.input / "results.json",args.input / cid / "full-domain.json",args.warm / cid / "full-domain.json",args.diagnosis / "analysis.json"]
     output = {"selected":chosen,"reference":ref,"candidate_count":len(records),"proved_increases":sum(r["increase_proved"] for r in records),
-        "best_saved_candidate_with_nonincrease_proof":best,"candidates":records,"inputs_sha256":{str(p):digest(p) for p in inputs},
+        "best_saved_candidate_with_nonincrease_proof":best,"same_cohort_early_seed_filter":{"safe_nodes":sorted(safe_nodes),"candidate_count":len(early_filtered),"best":early_best,
+            "scope":"只在同一固定8种子/64组合队列中删掉风险材料；未重新扫描128提案，不能推断重新搜索后的最优"},
+        "candidates":records,"inputs_sha256":{str(p):digest(p) for p in inputs},
         "sources_sha256":{Path(__file__).name:digest(Path(__file__)),verifier_path.name:digest(verifier_path)},
         "external_dependencies_loaded":any(n in __import__("sys").modules for n in ("numpy","scipy","numba")),
         "scope":"仅对已试探且原四指标可行的候选，独立整数复算完整域最坏ceil(N/100)像素的距离和区间；后验比较不构成新搜索/拟合，不提升默认，CVaR不是历史主阈值"}

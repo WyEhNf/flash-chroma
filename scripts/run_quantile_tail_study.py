@@ -20,6 +20,21 @@ from run_tail_repair import read_image
 def array_sha(array):return hashlib.sha256(array.tobytes()).hexdigest()
 
 
+def check_cohort(search,reference):
+    current,old = [value["global_rounds"][0] for value in (search,reference["selection"]["search"])]
+    for key in ("anchor_loss","model_signature","negative_score_proposals","score_sha256","statistics_sha256","hist_changes_sha256","top_proposals"):
+        if current[key] != old[key]:raise AssertionError("新增CVaR保护前的全局主排序或统计不同")
+    def normalize(trials):
+        return [{**{k:t.get(k) for k in ("moves","before_loss","loss","photo_failed","full_failed","stability_full_failed","lower_bound_delta","sum_single_loss_delta")},
+            "four_metric_eligible":t.get("four_metric_eligible",t["accepted"])} for t in trials]
+    if normalize(current["trials"]) != normalize(old["trials"]):raise AssertionError("CVaR种子保留策略改变了原四指标候选")
+    a,b = current["batch_search"],old["batch_search"]
+    if normalize(a["trials"]) != normalize(b["trials"]) or a["overlapping_blocks_skipped"] != b["overlapping_blocks_skipped"]:
+        raise AssertionError("新增CVaR门禁改变了原组合的几何过滤或四指标结果")
+    return {"verified":True,"single_candidates":len(current["trials"]),"block_candidates":len(a["trials"]),
+        "statistics_sha256":current["statistics_sha256"],"scope":"同一冻结状态的原四指标候选/损失/判定逐项相同；CVaR只改变提交资格，不把回执相同称为等计算成本"}
+
+
 def build_groups(rows,partition,plan,out):
     names = [r["id"] for r in partition["training"]["images"]+partition["guard"]["images"]]
     keys,groups,counts,metadata = [],[],[],[]
@@ -158,6 +173,12 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         if not photos.stability.certificate(photos,domain.hist)["accepted"]:raise AssertionError("冻结参照本身没有通过稳定性检查")
         persistent_bytes += photos.stability.cache_array_bytes
         if persistent_bytes > plan["memory_array_budget_bytes"]:raise MemoryError("稳定性参照超过冻结数组预算")
+    cvar_guard = None
+    if plan.get("cvar_guard"):
+        from lutlab.cvar_guard import CvarGuard
+        if warm_case is None:raise ValueError("CVaR研究需要已经冻结的热启动模型")
+        cvar_guard = CvarGuard(domain.hist,domain.model_signature)
+        write_json(folder / "cvar-reference.json",cvar_guard.reference_report(digest(warm_path)))
     def accepted(record,current):
         record = {**record,"step":record["step"]+len(replayed)}
         path = folder / f"checkpoint{record['step']:03d}.slut"
@@ -171,7 +192,11 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         prefix_expected = next(c for c in reference["cases"] if c["case"]["id"] == cid)["selection"]["search"]["compensation_rounds"][0]
     search = qr.repair(model,bank,domain,photos,steps=plan["steps"],focus_count=plan["focus_count"],
         trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted,compensation=plan.get("compensation"),
-        global_search=plan.get("global_search"),pair_prefix_expected=prefix_expected)
+        global_search=plan.get("global_search"),pair_prefix_expected=prefix_expected,cvar_guard=cvar_guard)
+    if plan.get("cohort_reference"):
+        baseline = json.loads((ROOT / plan["cohort_reference"]["path"] / "results.json").read_text(encoding="utf-8"))
+        old = next(c for c in baseline["cases"] if c["case"]["id"] == cid)
+        write_json(folder / "cohort-replay.json",check_cohort(search,old))
     new_accepted = len(search["accepted"])
     search["accepted"] = replayed+[{**r,"step":r["step"]+len(replayed)} for r in search["accepted"]]
     search.update(replayed_steps=len(replayed),new_accepted_steps=new_accepted)
@@ -190,6 +215,10 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
         certificate = photos.stability.certificate(photos,domain.hist,full["final"])
         if not certificate["accepted"]:raise AssertionError("最终固定参考稳定性证书失败")
         write_json(folder / "stability-final.json",{**certificate,"model_sha256":digest(final_path)})
+    if cvar_guard is not None:
+        certificate = cvar_guard.certify(domain.hist)
+        if not certificate["accepted"]:raise AssertionError("最终CVaR固定保护失败")
+        write_json(folder / "cvar-final.json",{**certificate,"model_sha256":digest(final_path)})
     selection = {"search":search,"tail_feasible":photos.loss == 0,"model_sha256":digest(final_path),
         "full_domain_certificate":full["certificate"],"scope":"在最终100图之前冻结；缺口未清零仍如实标为部分修复"}
     write_json(folder / "selection-before-photos.json",selection)
@@ -225,6 +254,8 @@ def main():
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧研究，复现请使用新目录")
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
+    if plan.get("cvar_guard") and plan["cvar_guard"] != {"fraction":[1,100],"precision_bits":24,"seed_policy":"defer_commit"}:
+        raise ValueError("本阶段仅支持固定最坏1%Q24保护及延迟提交判定")
     parent = ROOT / plan["parent"]
     previous = json.loads((parent / "results.json").read_text(encoding="utf-8"))
     parent_env = json.loads((parent / "environment.json").read_text(encoding="utf-8"))
@@ -243,6 +274,7 @@ def main():
     if plan.get("global_search",{}).get("method") == "primary_budget":extra.append(ROOT / "python/lutlab/primary_budget.py")
     if plan.get("global_search",{}).get("batch") is not None:extra.append(ROOT / "python/lutlab/primary_batch.py")
     if plan.get("stability"):extra.append(ROOT / "python/lutlab/stability.py")
+    if plan.get("cvar_guard"):extra.append(ROOT / "python/lutlab/cvar_guard.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
         parent_files={n:digest(parent / n) for n in ("results.json","environment.json","photo-partition.json","models-and-selection.zip","archive-index.json")})
@@ -256,6 +288,17 @@ def main():
         metadata["identity"]["replay_reference_sha256"] = digest(ROOT / plan["replay_reference"])
     if plan.get("pair_prefix_reference"):
         metadata["identity"]["pair_prefix_reference_sha256"] = digest(ROOT / plan["pair_prefix_reference"])
+    if plan.get("cohort_reference"):
+        reference = plan["cohort_reference"]
+        cohort = ROOT / reference["path"]
+        previous_plan = json.loads((ROOT / reference["plan"]).read_text(encoding="utf-8"))
+        for field in ("parent","warm_start","cases","threads","pixels_per_image","pixel_seed","steps","focus_count","trial_limit","pair_nodes","compensation","stability","global_search","full_domain_guard","memory_array_budget_bytes"):
+            if plan[field] != previous_plan[field]:raise ValueError("CVaR之外的候选/保护配置与旧队列不同")
+        cohort_run = json.loads((cohort / "run.json").read_text(encoding="utf-8"))
+        if cohort_run["identity"]["environment"] != metadata["identity"]["environment"]:raise ValueError("旧队列数值环境不同")
+        if digest(ROOT / reference["plan"]) != cohort_run["identity"]["plan_sha256"]:raise ValueError("旧队列冻结计划不同")
+        metadata["identity"]["cohort_files"] = {str(cohort / n):digest(cohort / n) for n in ("run.json","results.json","photo-inventory.json")}
+        metadata["identity"]["cohort_files"].update({reference["plan"]:digest(ROOT / reference["plan"]),reference["risk"]:digest(ROOT / reference["risk"])})
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     metadata.update(backend="Numba研究4线程，标量/AVX2终验单线程",timing_scope="不比较性能",deferred=["硬件加速","官方评分","未知图像泛化"])
     study_provenance.claim_run(args.output / "run.json",metadata)
@@ -269,6 +312,9 @@ def main():
     if plan.get("warm_start"):
         old_inventory = json.loads((ROOT / plan["warm_start"] / "photo-inventory.json").read_text(encoding="utf-8"))
         if inventory != old_inventory:raise ValueError("热启动图片倒排和频数输入不同")
+    if plan.get("cohort_reference"):
+        old_inventory = json.loads((ROOT / plan["cohort_reference"]["path"] / "photo-inventory.json").read_text(encoding="utf-8"))
+        if inventory != old_inventory:raise ValueError("CVaR对照的完整图片/样本频数输入不同")
     with zipfile.ZipFile(parent / "models-and-selection.zip") as z:
         index = json.loads((parent / "archive-index.json").read_text(encoding="utf-8"))
         if set(index) != set(z.namelist()) or any(hashlib.sha256(z.read(n)).hexdigest() != h for n,h in index.items()):raise ValueError("父归档变化")
