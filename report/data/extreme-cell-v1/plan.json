@@ -1,0 +1,21 @@
+{
+  "purpose":"定位PR27残留max54的局部表示下界及联合修改的保护冲突",
+  "parent":"artifacts/cvar-commit-v1",
+  "case":"velvia-vivid",
+  "model_sha256":"f577f0749f7aae56275774d0bdbaad9305d99652ca08ba21cc928c8ff84962c4",
+  "anchor":[251,251,42],
+  "region":"anchor所属权威idx单元的所有RGB8输入；用其全部正权重节点作为有限联合变量",
+  "candidates":["B通道连续minimax后half-up量化","RGB上限53且节点B改动不超过4的整数最小L1修改"],
+  "dual_scale":1000000,
+  "rgb_max":53,
+  "max_delta":4,
+  "milp_time_limit":60,
+  "max_cell_colours":4096,
+  "max_support_colours":131072,
+  "threads":4,
+  "pixels_per_image":4096,
+  "pixel_seed":2026101701,
+  "guard":"保留原历史阈值/预算；另对PR27起点101组及全域mean/RMS/p99端点/max/CVaR固定保护，主缺口不升；全域max严格下降才选中",
+  "evaluation":"两个候选一次局部完整支撑重放并更新完整频数/80图及选择样本；基线空修改必须通过自检。只有保护通过并选中的新模型执行一次256³/100图/oracle/标量AVX2；全部拒绝则不重跑旧模型",
+  "limits":"只研究一个已观察单元、固定B通道及两个联合候选；必要下界适用于任意合法RGB8节点但固定当前轴表；浮点LP/MILP成功不代替整数证书或完整保护；不作参数/性能扫描，不改默认，不把局部改善称全局成功"
+}
