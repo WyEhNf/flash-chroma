@@ -1,4 +1,4 @@
-"""归档固定单元实验、首次失败及拒绝证据，解压后独立重放，不重新拟合。"""
+"""归档有限局部实验及历史对照，解压后独立重放，不重新拟合。"""
 import argparse
 import csv
 import hashlib
@@ -73,7 +73,22 @@ def main():
         first_index = pack(args.first_failure,out / "first-failure-evidence.zip")
         write(out / "first-failure-index.json",first_index)
     prior_index = {}
+    same_prior_candidates = None
     if args.prior_run is not None:
+        prior_result = load(args.prior_run / "results.json")
+        prior_verification = load(args.prior_run / "verification.json")
+        if not prior_verification["verified"] or prior_verification["external_dependencies_loaded"] or prior_verification["input_result_sha256"] != digest((args.prior_run / "results.json").read_bytes()):
+            raise ValueError("首轮实验的独立复核或结果绑定不符")
+        with zipfile.ZipFile(args.prior_run / "measured-source.zip") as prior_sources:
+            if digest(prior_sources.read("scripts/verify_extreme_cell.py")) != prior_verification["verifier_sha256"]:raise ValueError("首轮复核没有对应原始验证源")
+        current_by_name = {r["name"]:r for r in result["records"]}
+        if set(current_by_name) != {r["name"] for r in prior_result["records"]}:raise ValueError("证书改进前后改变了候选队列")
+        for old in prior_result["records"]:
+            new = current_by_name[old["name"]]
+            if (old["model_sha256"] != new["model_sha256"] or old["support_sha256"] != new["support_sha256"] or old["assessment"]["groups"] != new["assessment"]["groups"]
+                    or old["assessment"]["full_domain"] != new["assessment"]["full_domain"] or old["assessment"]["cvar"] != new["assessment"]["cvar"]
+                    or old["assessment"]["primary_loss"] != new["assessment"]["primary_loss"]):raise ValueError("证书改进却改变了模型或精确频数/指标")
+        same_prior_candidates = True
         prior_index = pack(args.prior_run,out / "prior-run-evidence.zip")
         write(out / "prior-run-index.json",prior_index)
         shutil.copyfile(args.prior_run.with_suffix(".log"),out / "prior-experiment.log")
@@ -169,6 +184,7 @@ def main():
     shutil.copyfile(args.roundtrip / "roundtrip-verification.json",out / "roundtrip-verification.json")
     subprocess.run(["git","diff","--exit-code","876e15b","--","AGENTS.md"],cwd=ROOT,check=True,capture_output=True)
     write(out / "archive-audit.json",{"verified":True,"members":len(index),"first_failure_members":len(first_index),"prior_run_members":len(prior_index),"source_git_commit":run["git_commit"],
+        "same_models_outputs_histograms_and_metrics_as_prior":same_prior_candidates,
         "current_numerical_sources_same":True,"legacy_line_ending_only_differences":line_only,"roundtrip_verified":True,
         "no_new_full_domain_execution":result["final"]["reused"],"selected":result["selection"]["selected"],"agents_unchanged":True,
         "archiver_sha256":digest(Path(__file__).read_bytes()),"scope":"归档来源/成员、首次失败和频数缓存保留；解压用已核同字节独立验证器及本机同字节完整源表重放；无新搜索/拟合"})
