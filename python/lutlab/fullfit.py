@@ -16,7 +16,7 @@ import time
 import numpy as np
 import scipy.sparse as sp
 
-from . import io
+from . import io, support_certificate
 
 ROOT = Path(__file__).resolve().parents[2]
 NATIVE_SOURCES = ("cpp/src/full_normals.cpp", "cpp/include/jshc/full_normals.h")
@@ -92,9 +92,10 @@ def normal_equations(table: np.ndarray, grid: np.ndarray, threads: int = 4):
         raise ValueError("expected a complete RGB8 LUT and 1..256 fitting threads")
     index, fraction = io.axis_tables(grid)
     m = grid.shape[1]
-    if (not 17 <= m <= 33 or np.any(grid[:, 0] != 0) or np.any(grid[:, -1] != 255)
-            or np.any(grid != np.rint(grid))):
-        raise ValueError("full-domain fitting requires an integer 17..33 grid with endpoints 0 and 255")
+    if not 17 <= m <= 33 or np.any(grid[:, 0] != 0) or np.any(grid[:, -1] != 255):
+        raise ValueError("完整域拟合需要端点0/255、17至33节点的网格")
+    # 原生组装只使用idx/frac；小数网格必须先取得同一设计的正定证书。
+    support = support_certificate.certify(grid,index,fraction)
     fingerprint = trainer_fingerprint()
     path = resolve_library()
     library, _ = _load(str(path), fingerprint["library_sha256"])
@@ -136,7 +137,8 @@ def normal_equations(table: np.ndarray, grid: np.ndarray, threads: int = 4):
         "r_cell_parity_passes": 2, "integer_accumulator_payload_bytes": diagonal.nbytes + upper.nbytes + rhs.nbytes,
         "integer_system_sha256": raw_sha.hexdigest(), "normal_equations_nnz": int(H.nnz),
         "zero_diagonal_nodes": int(np.count_nonzero(H.diagonal() == 0)), "minimum_diagonal": float(H.diagonal().min()),
-        "data_hessian_eigenvalue_lower_bound": 1 / 64, "target_squared_sum_rgb": metadata[4:].tolist(),
+        "data_hessian_eigenvalue_lower_bound": support["hessian_eigenvalue_lower_bound"],
+        "support_certificate": support, "target_squared_sum_rgb": metadata[4:].tolist(),
         "target_norm_squared_scaled": float(sum(int(v) for v in metadata[4:]) / 64),
         "normalisation": "H = sum(w_q w_q^T) / 2^38; b = sum(w_q y) / 2^22; all 256^3 colours",
         "assembly_seconds": time.perf_counter() - started}
