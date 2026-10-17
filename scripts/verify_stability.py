@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import runpy
 import sys
@@ -11,11 +12,24 @@ def load(path):return json.loads(path.read_text(encoding="utf-8"))
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def signed_mean_upper(reference,current):
+    # 与生产代码分开复算：先合并有符号频数，负系数使用根号下界求整体上界。
+    old,new = dict(reference),dict(current)
+    if sum(old.values()) != sum(new.values()):raise ValueError("mean差值频数不守恒")
+    upper = 0
+    for d in old.keys() | new.keys():
+        count = new.get(d,0)-old.get(d,0)
+        lower = math.isqrt(d*(1 << 48))
+        root_upper = lower+int(lower*lower != d*(1 << 48))
+        upper += count*(root_upper if count > 0 else lower)
+    return upper
+
+
 def checked(reference,current,summarize):
     a,b = summarize(reference),summarize(current)
     if a["n"] != b["n"]:raise ValueError("参照和最终频数不同")
     if b["sse"] > a["sse"]:raise ValueError("RMS相对固定参照退化")
-    if b["upper"] > a["lower"] and current != reference:raise ValueError("mean非退化充分条件失败")
+    if b["upper"] > a["lower"] and signed_mean_upper(reference,current) > 0:raise ValueError("mean非退化充分条件失败")
     tails = [sum(n for d,n in current if d > t) for t,budget in a["constraints"]]
     if any(n > budget for n,(t,budget) in zip(tails,a["constraints"])):raise ValueError("p99端点或max退化")
     return {"sse":str(b["sse"]),"mean_upper_q24":str(b["upper"]),"same_histogram":current == reference,

@@ -1,7 +1,10 @@
 """冻结阶段参考的四指标充分保护；不替换历史误差阈值或原预算。"""
 import numpy as np
 from numba import njit
-from . import full_domain_guard as fg,quantile_constraints as qc
+from . import full_domain_guard as fg,quantile_constraints as qc,histogram_delta as hd
+
+
+def sparse(hist):return [[int(d),int(hist[d])] for d in np.flatnonzero(hist)]
 
 
 @njit(cache=True)
@@ -73,7 +76,7 @@ class Stability:
         failed = []
         for g in np.flatnonzero(touched):
             if sse[g] > self.reference_sse[g]:failed.append(f"stability.group{g}.rms")
-            if high[g] > self.reference_low[g] and not np.array_equal(hist[g],self.reference_hist[g]):
+            if high[g] > self.reference_low[g] and not hd.mean_difference(sparse(self.reference_hist[g]),sparse(hist[g]))["accepted"]:
                 failed.append(f"stability.group{g}.mean_bound")
             for j in range(3):
                 if self.budgets[g,j] >= 0 and self.photo_tails[g,j] > self.budgets[g,j]:failed.append(f"stability.group{g}.tail{j}")
@@ -83,7 +86,7 @@ class Stability:
         failed = []
         ref = self.full_reference
         if int(summary["sum_squared_error"]) > int(ref["sum_squared_error"]):failed.append("stability.full.rms")
-        if int(summary["sum_upper_q24"]) > int(ref["sum_lower_q24"]) and not np.array_equal(hist,self.full_hist):
+        if int(summary["sum_upper_q24"]) > int(ref["sum_lower_q24"]) and not hd.mean_difference(ref["histogram"],summary["histogram"])["accepted"]:
             failed.append("stability.full.mean_bound")
         for j,(t,b) in enumerate(zip(self.thresholds[-1],self.budgets[-1])):
             if b >= 0 and int(hist[t+1:].sum()) > b:failed.append(f"stability.full.tail{j}")
