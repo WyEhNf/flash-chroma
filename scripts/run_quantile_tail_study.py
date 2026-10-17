@@ -240,6 +240,7 @@ def main():
     if plan.get("compensation",{}).get("method") == "rounded":extra.append(ROOT / "python/lutlab/rounded_budget.py")
     if plan.get("compensation",{}).get("block_order",2) == 3:extra.append(ROOT / "python/lutlab/rounded_blocks.py")
     if plan.get("global_search"):extra.append(ROOT / "python/lutlab/quantile_global.py")
+    if plan.get("global_search",{}).get("method") == "primary_budget":extra.append(ROOT / "python/lutlab/primary_budget.py")
     if plan.get("stability"):extra.append(ROOT / "python/lutlab/stability.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},

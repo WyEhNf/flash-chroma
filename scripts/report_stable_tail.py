@@ -17,31 +17,56 @@ def main():
     parser.add_argument("--aware",type=Path,required=True)
     parser.add_argument("--warm",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--study",choices=("stable","primary"),default="stable")
+    parser.add_argument("--diagnosis",type=Path)
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧归档")
-    sources = {"guard":args.guard,"aware":args.aware}
-    plans = {arm:ROOT / f"experiments/stable-tail-{name}-v1.json" for arm,name in (("guard","guard"),("aware","aware"))}
+    if args.study == "primary" and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
+    names = ("guard","aware") if args.study == "stable" else ("tail","constraints")
+    sources = dict(zip(names,(args.guard,args.aware)))
+    plans = {arm:ROOT / (f"experiments/stable-tail-{arm}-v1.json" if args.study == "stable" else f"experiments/primary-budget-{arm}-v1.json") for arm in sources}
     checked = {arm:check_epoch(path,plans[arm]) for arm,path in sources.items()}
-    if checked["guard"][0]["identity"]["environment"] != checked["aware"][0]["identity"]["environment"]:raise ValueError("两臂环境不同")
+    if checked[names[0]][0]["identity"]["environment"] != checked[names[1]][0]["identity"]["environment"]:raise ValueError("两臂环境不同")
     a,b = [load(plans[arm]) for arm in sources]
     for field in ("parent","warm_start","cases","threads","pixels_per_image","pixel_seed","steps","focus_count","trial_limit","pair_nodes","compensation","full_domain_guard","memory_array_budget_bytes"):
-        if a[field] != b[field]:raise ValueError("尾部排序之外的实验配置不同")
+        if a[field] != b[field]:raise ValueError("目标排序之外的实验配置不同")
+    if args.study == "primary":
+        if a["stability"] != b["stability"] or {k:v for k,v in a["global_search"].items() if k != "ordering"} != {k:v for k,v in b["global_search"].items() if k != "ordering"}:
+            raise ValueError("主提案排序之外的保护或全局配置不同")
+        first = [checked[arm][1]["cases"][0]["selection"]["search"]["global_rounds"][0] for arm in names]
+        for key in ("anchor_loss","negative_score_proposals","model_signature","score_sha256","statistics_sha256","hist_changes_sha256","raw_top_proposals"):
+            if first[0][key] != first[1][key]:raise ValueError("两臂首轮主提案库或统计不同")
     warm = load(args.warm / "results.json")
     inventory,partition = [load(args.guard / n) for n in ("photo-inventory.json","photo-partition.json")]
     if load(args.aware / "photo-inventory.json") != inventory:raise ValueError("两臂颜色倒排输入不同")
     out = args.output
     out.mkdir(parents=True)
-    counterexamples = ROOT / "artifacts/stable-tail-counterexamples-v1.json"
-    diagnostic = load(counterexamples)
-    for name,h in diagnostic["inputs_sha256"].items():
-        if digest(Path(name)) != h:raise ValueError("独立反例复算输入变化")
-    for name,h in diagnostic["source_sha256"].items():
-        if digest(ROOT / "scripts" / name) != h:raise ValueError("独立反例复算源码变化")
-    shutil.copyfile(counterexamples,out / "counterexamples.json")
-    shutil.copyfile(counterexamples.with_suffix(".log"),out / "counterexamples.log")
+    diagnostic = None
+    if args.study == "stable":
+        counterexamples = ROOT / "artifacts/stable-tail-counterexamples-v1.json"
+        diagnostic = load(counterexamples)
+        for name,h in diagnostic["inputs_sha256"].items():
+            if digest(Path(name)) != h:raise ValueError("独立反例复算输入变化")
+        for name,h in diagnostic["source_sha256"].items():
+            if digest(ROOT / "scripts" / name) != h:raise ValueError("独立反例复算源码变化")
+        shutil.copyfile(counterexamples,out / "counterexamples.json")
+        shutil.copyfile(counterexamples.with_suffix(".log"),out / "counterexamples.log")
+    else:
+        diagnostic = load(args.diagnosis / "analysis.json")
+        for name,h in diagnostic["inputs_sha256"].items():
+            if digest(Path(name)) != h:raise ValueError("独立主提案归因输入变化")
+        for name,h in diagnostic["sources_sha256"].items():
+            if digest(ROOT / "scripts" / name) != h:raise ValueError("独立主提案归因源码变化")
+        destination = out / "independent-diagnosis"
+        destination.mkdir()
+        for path in args.diagnosis.glob("*"):
+            if path.is_file():shutil.copyfile(path,destination / path.name)
+        shutil.copyfile(args.diagnosis.with_suffix(".log"),out / "diagnosis.log")
     for name in ("photo-inventory.json","photo-partition.json"):shutil.copyfile(args.guard / name,out / name)
-    shutil.copyfile(ROOT / "artifacts/stable-tail-contracts-v1.log",out / "contract-tests.log")
+    contract_log = "stable-tail-contracts-v1.log" if args.study == "stable" else "primary-budget-contracts-v1.log"
+    shutil.copyfile(ROOT / "artifacts" / contract_log,out / "contract-tests.log")
     summary,photo_rows,regressions,diagnosis,provenance,parity = [],[],[],[],[],[]
+    primary_rows = []
     for arm,(run,result,expected) in checked.items():
         source = sources[arm]
         verify = load(source / "stability-verification.json")
@@ -74,6 +99,17 @@ def main():
                 for label,entries in (("pair",round_info["trials"]),("triple",round_info.get("block_search",{}).get("trials",[]))):
                     trials.extend({"family":label,**t} for t in entries)
                 rounds.append({k:v for k,v in round_info.items() if k not in ("trials","block_search")})
+            globals_summary = []
+            for round_index,global_info in enumerate(search["global_rounds"]):
+                entries = global_info["trials"]
+                globals_summary.append({**{k:v for k,v in global_info.items() if k != "trials"},
+                    "trial_count":len(entries),"observed_decisions":dict(Counter(t["decision"] for t in entries))})
+                for rank,t in enumerate(entries):
+                    primary_rows.append({"arm":arm,"round":round_index,"trial":rank+1,"node_count":len(t["moves"]),
+                        "nodes":" ".join(str(m["node"]) for m in t["moves"]),"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"],
+                        "decision":t["decision"],"stability_rms_failed_count":sum(k.startswith("stability.") and k.endswith(".rms") for k in t["photo_failed"]),
+                        "stability_mean_failed_count":sum(k.startswith("stability.") and k.endswith(".mean_bound") for k in t["photo_failed"]),
+                        "stability_tail_failed_count":sum(k.startswith("stability.") and ".tail" in k for k in t["photo_failed"])})
             rejection = Counter(key for t in trials for key in t["photo_failed"]+t["full_failed"]+t.get("stability_full_failed",[]))
             breakdown = {}
             for family in ("pair","triple"):
@@ -86,10 +122,10 @@ def main():
             diagnosis.append({"arm":arm,"case":cid,"warm_loss":case["warm_loss"],"final_loss":case["final_loss"],
                 "constraints":constraints(final,inventory),"new_steps":[s for s in search["accepted"] if not s.get("replayed")],
                 "search_counts":{k:v for k,v in search.items() if k not in ("accepted","compensation_rounds","global_rounds")},
-                "rounds":rounds,"helper_decisions":dict(Counter(t["decision"] for t in trials)),"helper_breakdown":breakdown,
+                "rounds":rounds,"global_rounds":globals_summary,"helper_decisions":dict(Counter(t["decision"] for t in trials)),"helper_breakdown":breakdown,
                 "helper_failed_conditions":dict(rejection.most_common()),"host_memory":full["host_memory"],
                 "persistent_array_bytes":full["combined_cache_array_bytes"]})
-            profiles = [("historical",case["historical"],True),("warm",old["final"],True)] if arm == "guard" else []
+            profiles = [("historical",case["historical"],True),("warm",old["final"],True)] if arm == names[0] else []
             profiles += [(arm,case["final"],case["final"]["reused"])]
             for name,value,reused in profiles:
                 summary.append({"case":cid,"profile":name,"reused_metrics":reused,
@@ -119,8 +155,10 @@ def main():
             "current_source_same":{name:(ROOT / name).exists() and digest(ROOT / name) == h for name,h in expected.items()}})
     with zipfile.ZipFile(out / "verification-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
         for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
-    with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
-        for name in diagnostic["source_sha256"]:z.write(ROOT / "scripts" / name,name)
+    if diagnostic is not None:
+        with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
+            for name in diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"]:z.write(ROOT / "scripts" / name,name)
+    if primary_rows:write_csv(out / "primary-trials.csv",primary_rows)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
     write_json(out / "photo-regressions.json",regressions)

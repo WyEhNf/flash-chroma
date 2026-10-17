@@ -1,0 +1,39 @@
+{
+  "fix_commits": [
+    "901df85",
+    "4493d37"
+  ],
+  "measured_source_commit": "e4a4694",
+  "sources": [
+    {
+      "name": "python/lutlab/rounded_budget.py",
+      "measured_sha256": "b9f152df6757b321c5596026c258a92f241afceb4f0aecb4db9748fbe9d0b69d",
+      "current_sha256": "18d2af5082180df26253467a94822f0955400e56a38a0950eb586c173888cc6e"
+    },
+    {
+      "name": "python/lutlab/primary_budget.py",
+      "measured_sha256": "a07781bffe740d0ecfb673737040767e89995ca81bc81c30c8a8163def644f92",
+      "current_sha256": "5585d5712ae92ccf26841cf5b33cf217e23c2afaa03e6be37d49596cd750ac54"
+    }
+  ],
+  "difference_scope": [
+    "仅在真实改善主改列表为空时清空预建缓存",
+    "主排序若与可选尾部排序组合，明确没有先行主改时的零前缀变化；本轮关闭尾部排序，额外参数不参与统计或排序"
+  ],
+  "measured_compensation_primaries": {
+    "tail": [
+      8
+    ],
+    "constraints": [
+      8
+    ]
+  },
+  "measured_tail_ranking": false,
+  "targeted_tests": [
+    "6 passed in 6.63s",
+    "7 passed in 4.86s"
+  ],
+  "test_source_sha256": "5b7442d9241651e0d29c1750a0c7e49c109642ae8709849d392a6856b9b67586",
+  "numerical_experiment_repeated": false,
+  "scope": "两项修复的触发条件均未用于已测两臂；旧实测快照和数值结果保留，不冒称修复源已经重新运行完整实验"
+}

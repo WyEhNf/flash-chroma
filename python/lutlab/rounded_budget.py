@@ -6,7 +6,7 @@ from . import full_domain_guard as fg,interp,tail_repair as tr
 
 
 @njit(cache=True)
-def _accumulate(start,indices,weights,nodes,prediction,truth,squared,offsets,groups,counts,roots_high,deltas,thresholds,budgets,tail_deltas):
+def _accumulate(start,indices,weights,nodes,prediction,truth,squared,offsets,groups,counts,roots_high,deltas,thresholds,budgets,tail_deltas,hist_changes):
     full_group = deltas.shape[2]-1
     acc = np.zeros(3,np.int64)
     for row in range(len(indices)):
@@ -29,6 +29,7 @@ def _accumulate(start,indices,weights,nodes,prediction,truth,squared,offsets,gro
                     if ((acc[channel]+w*sign+32768) >> 16) == prediction[colour,channel]:continue
                     deltas[node,option,full_group,0] += difference
                     deltas[node,option,full_group,1] += mean_difference
+                    if hist_changes.size:hist_changes[node,option,full_group] = True
                     if tail_deltas.size:
                         for j in range(3):
                             if budgets[full_group,j] >= 0:
@@ -38,6 +39,7 @@ def _accumulate(start,indices,weights,nodes,prediction,truth,squared,offsets,gro
                         group,count = groups[p],np.int64(counts[p])
                         deltas[node,option,group,0] += count*difference
                         deltas[node,option,group,1] += count*mean_difference
+                        if hist_changes.size:hist_changes[node,option,group] = True
                         if tail_deltas.size:
                             for j in range(3):
                                 if budgets[group,j] >= 0:
@@ -59,6 +61,16 @@ def _reduce(rows,sse_delta,mean_delta,offsets,groups,counts,n_groups):
     return result
 
 
+@njit(cache=True)
+def changed_groups(rows,old,new,offsets,groups,counts,n_groups):
+    result = np.zeros(n_groups+1,np.bool_)
+    for i in range(len(rows)):
+        if old[i] == new[i]:continue
+        result[n_groups] = True
+        for p in range(offsets[rows[i]],offsets[rows[i]+1]):result[groups[p]] = True
+    return result
+
+
 def statistics(model,domain,photos,*,chunk=1 << 18,max_array_bytes=2684354560,tail_cache=None):
     """单修改的精确SSE及距离上界整数和变化；重叠组合不能相加冒充真实变化。"""
     size = model.m**3*6*(len(photos.hist)+1)*2*np.dtype(np.int64).itemsize
@@ -67,23 +79,27 @@ def statistics(model,domain,photos,*,chunk=1 << 18,max_array_bytes=2684354560,ta
     if quality is not None:persistent += quality.cache_array_bytes
     want_tail = quality is not None and quality.tail_ranking and tail_cache is not None
     tail_size = model.m**3*6*(len(photos.hist)+1)*3*np.dtype(np.int32).itemsize if want_tail else 0
-    if persistent+size+tail_size > max_array_bytes:raise MemoryError("舍入预算统计超过冻结数组上限")
+    want_changes = tail_cache is not None and tail_cache.get("track_changes",False)
+    change_size = model.m**3*6*(len(photos.hist)+1) if want_changes else 0
+    if persistent+size+tail_size+change_size > max_array_bytes:raise MemoryError("舍入预算统计超过冻结数组上限")
     deltas = np.zeros((model.m**3,6,len(photos.hist)+1,2),np.int64)
     tail_deltas = np.zeros((model.m**3,6,len(photos.hist)+1,3),np.int32) if want_tail else np.empty((0,0,0,0),np.int32)
     thresholds = quality.thresholds if want_tail else np.empty((0,3),np.int32)
     budgets = quality.budgets if want_tail else np.empty((0,3),np.int64)
+    hist_changes = np.zeros((model.m**3,6,len(photos.hist)+1),np.bool_) if want_changes else np.empty((0,0,0),np.bool_)
     nodes = model.nodes.reshape(-1,3)
     roots_high = fg.root_bounds()[1]
     for start in range(0,len(domain.points),chunk):
         stop = min(len(domain.points),start+chunk)
         indices,weights = interp.tetra_index_weights_q(domain.points[start:stop],*model.tables(),model.m)
         _accumulate(start,indices,weights,nodes,domain.prediction,domain.truth,domain.squared,
-            *photos.offsets_groups_counts,roots_high,deltas,thresholds,budgets,tail_deltas)
+            *photos.offsets_groups_counts,roots_high,deltas,thresholds,budgets,tail_deltas,hist_changes)
     if want_tail:tail_cache.update(tail_deltas=tail_deltas,tail_base=quality.current_tails(domain.hist))
+    if want_changes:tail_cache["hist_changes"] = hist_changes
     return deltas
 
 
-def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_cache=None,tail_change=None):
+def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_cache=None,tail_change=None,primary_changes=None,prefix_disjoint=True,allowed=None):
     """共用两/三节点辅助排序；未获不相交证书时，预算相加仅作排序。"""
     full = fg.summary(domain.hist)
     nodes = model.nodes.reshape(-1,3).astype(np.int64)
@@ -94,11 +110,20 @@ def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_
     total = np.zeros_like(worst)
     tail_bad = np.zeros_like(rms_bad)
     quality = photos.stability
+    disjoint = np.ones(len(nodes),bool)
+    for node in excluded:disjoint &= np.any(np.abs(coordinates-coordinates[node]) > 1,axis=1)
+    tracked = tail_cache is not None and "hist_changes" in tail_cache and primary_changes is not None
 
-    def budget(ds,dm,current_sse,current_mean,limit_sse,limit_mean,population):
+    def unchanged(g,same_reference):
+        # 相加的无变化声明也会受重叠舍入破坏，必须三者两两支撑不相交。
+        if not tracked or not same_reference or not prefix_disjoint:return None
+        return (~tail_cache["hist_changes"][:,:,g]) & (not primary_changes[g]) & disjoint[:,None]
+
+    def budget(ds,dm,current_sse,current_mean,limit_sse,limit_mean,population,mean_exempt=None):
         nonlocal rms_bad,mean_bad,worst,total
         sse = ds+current_sse-limit_sse
         mean = dm+current_mean-limit_mean
+        if mean_exempt is not None:mean = np.where(mean_exempt,np.minimum(mean,0),mean)
         rms_bad += sse > 0
         mean_bad += mean > 0
         worst = np.maximum(worst,np.maximum(sse/population,mean/(population*(1 << 24))))
@@ -111,7 +136,9 @@ def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_
             sse_limit = min(sse_limit,int(quality.reference_sse[g]))
             mean_limit = min(mean_limit,int(quality.reference_low[g]))
         budget(deltas[:,:,g,0]+change[g,0],deltas[:,:,g,1]+change[g,1],int(photos.sse[g]),int(photos.high[g]),
-            sse_limit,mean_limit,int(photos.hist[g].sum()))
+            sse_limit,mean_limit,int(photos.hist[g].sum()),unchanged(g,
+                np.array_equal(photos.hist[g],quality.reference_hist[g]) if quality is not None else
+                np.array_equal(photos.hist[g],photos.original_hist[g]) or np.array_equal(photos.hist[g],photos.initial_hist[g])))
     for ids,(mean_limit,sse_limit) in zip(photos.aggregate_groups,photos.aggregate_limits):
         # 比例交叉乘法先用Python整数求整除阈值，避免Q24归约在int64中乘1000。
         budget(deltas[:,:,ids,0].sum(axis=2)+int(change[ids,0].sum()),deltas[:,:,ids,1].sum(axis=2)+int(change[ids,1].sum()),
@@ -123,7 +150,8 @@ def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_
         full_sse_limit = min(full_sse_limit,int(quality.full_reference["sum_squared_error"]))
         full_mean_limit = min(full_mean_limit,int(quality.full_reference["sum_lower_q24"]))
     budget(deltas[:,:,-1,0]+change[-1,0],deltas[:,:,-1,1]+change[-1,1],int(full["sum_squared_error"]),int(full["sum_upper_q24"]),
-        full_sse_limit,full_mean_limit,len(domain.points))
+        full_sse_limit,full_mean_limit,len(domain.points),unchanged(len(photos.hist),
+            np.array_equal(domain.hist,quality.full_hist) if quality is not None else full == domain.reference))
     if tail_cache is not None and "tail_deltas" in tail_cache:
         for g in range(len(quality.thresholds)):
             for j in range(3):
@@ -131,12 +159,11 @@ def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_
                 # 单改压缩存int32，组合估计先提升int64，避免重叠相加的中间值溢出。
                 predicted = tail_cache["tail_deltas"][:,:,g,j].astype(np.int64)+int(tail_cache["tail_base"][g,j])+int(tail_change[g,j])
                 tail_bad += predicted > quality.budgets[g,j]
-    disjoint = np.ones(len(nodes),bool)
-    for node in excluded:disjoint &= np.any(np.abs(coordinates-coordinates[node]) > 1,axis=1)
     choices = []
     for option in range(6):
         channel,sign = option//2,2*(option%2)-1
         valid = (nodes[:,channel]+sign >= 0)&(nodes[:,channel]+sign <= 255)
+        if allowed is not None:valid &= allowed[:,option]
         valid[list(excluded)] = False
         ids = np.flatnonzero(valid)
         order = np.lexsort((ids,total[ids,option],worst[ids,option],~disjoint[ids],mean_bad[ids,option],rms_bad[ids,option],tail_bad[ids,option]))[:helper_limit]
@@ -154,16 +181,24 @@ def rank_helpers(model,domain,photos,deltas,change,excluded,helper_limit,*,tail_
     return sorted(choices)[:helper_limit]
 
 
-def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_limit=128,max_array_bytes=2684354560,cache=None):
+def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_limit=128,max_array_bytes=2684354560,cache=None,primary_order="loss"):
     primaries = []
     for proxy,move in ranked[:trial_limit]:
         trial = domain.trial([model],move)
         photo = photos.trial(trial["rows"],domain.squared[trial["rows"]],trial["squared"])
         if photo.loss < photos.loss:primaries.append((photo.loss,proxy,move))
-    primaries = sorted(primaries)[:primary_limit]
-    if not primaries:return [],{"method":"rounded","primaries":0,"pairs":0,"statistics_array_bytes":0}
+    if primary_order not in ("loss","ranked"):raise ValueError("未知主候选排序模式")
+    primaries = (sorted(primaries) if primary_order == "loss" else primaries)[:primary_limit]
+    if not primaries:
+        # 主排序可能已预构建大统计；没有真实改善主改时不能将半初始化缓存传给三节点阶段。
+        if cache is not None:cache.clear()
+        return [],{"method":"rounded","primaries":0,"pairs":0,"statistics_array_bytes":0}
     stats_cache = cache if cache is not None else {}
-    deltas = statistics(model,domain,photos,max_array_bytes=max_array_bytes,tail_cache=stats_cache)
+    reused = "deltas" in stats_cache
+    if reused:
+        if stats_cache["model_signature"] != fg.signature([model]):raise ValueError("主提案统计已陈旧，不得复用")
+        deltas = stats_cache["deltas"]
+    else:deltas = statistics(model,domain,photos,max_array_bytes=max_array_bytes,tail_cache=stats_cache)
     sha = hashlib.sha256(memoryview(deltas).cast("B")).hexdigest()
     roots_high = fg.root_bounds()[1]
     if cache is not None:cache.update(deltas=deltas,primaries=primaries,model_signature=fg.signature([model]))
@@ -178,7 +213,8 @@ def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_lim
             from .stability import reduce_tails
             tail_change = reduce_tails(trial["rows"],old,trial["squared"],*photos.offsets_groups_counts,
                 photos.stability.thresholds,photos.stability.budgets).astype(np.int64)
-        for key,helper,roles in rank_helpers(model,domain,photos,deltas,change,[primary.node],helper_limit,tail_cache=stats_cache,tail_change=tail_change):
+        primary_changes = changed_groups(trial["rows"],old,trial["squared"],*photos.offsets_groups_counts,len(photos.hist)) if "hist_changes" in stats_cache else None
+        for key,helper,roles in rank_helpers(model,domain,photos,deltas,change,[primary.node],helper_limit,tail_cache=stats_cache,tail_change=tail_change,primary_changes=primary_changes):
             roles = {"primary_node":primary.node,**roles}
             combined = tuple(sorted((primary,helper)))
             if combined in seen:continue
@@ -191,4 +227,7 @@ def pairs(model,domain,photos,ranked,*,primary_limit=8,helper_limit=16,trial_lim
     if "tail_deltas" in stats_cache:
         metadata.update(stability_tail_array_bytes=stats_cache["tail_deltas"].nbytes,
             stability_tail_sha256=hashlib.sha256(memoryview(stats_cache["tail_deltas"]).cast("B")).hexdigest())
+    if "hist_changes" in stats_cache:
+        metadata.update(statistics_reused=reused,primary_order=primary_order,hist_changes_array_bytes=stats_cache["hist_changes"].nbytes,
+            hist_changes_sha256=hashlib.sha256(memoryview(stats_cache["hist_changes"]).cast("B")).hexdigest())
     return [(moves,roles) for key,moves,roles in generated],metadata

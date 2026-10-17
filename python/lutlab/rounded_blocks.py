@@ -22,14 +22,17 @@ def triples(model,domain,photos,cache,*,first_limit=4,second_limit=4):
         change = rb._reduce(trial["rows"],trial["squared"]-old,roots_high[trial["squared"]]-roots_high[old],
             *photos.offsets_groups_counts,len(photos.hist))
         tail_change = None
+        primary_changes = rb.changed_groups(trial["rows"],old,trial["squared"],*photos.offsets_groups_counts,len(photos.hist)) if "hist_changes" in cache else None
         if "tail_deltas" in cache:
             from .stability import reduce_tails
             tail_change = reduce_tails(trial["rows"],old,trial["squared"],*photos.offsets_groups_counts,
                 photos.stability.thresholds,photos.stability.budgets).astype(np.int64)
-        for key_a,first,roles_a in rb.rank_helpers(model,domain,photos,deltas,change,[primary.node],first_limit,tail_cache=cache,tail_change=tail_change):
+        for key_a,first,roles_a in rb.rank_helpers(model,domain,photos,deltas,change,[primary.node],first_limit,tail_cache=cache,tail_change=tail_change,primary_changes=primary_changes):
             conditional = change+deltas[first.node,option(model,first)]
             conditional_tail = tail_change+cache["tail_deltas"][first.node,option(model,first)] if tail_change is not None else None
-            for key_b,second,roles_b in rb.rank_helpers(model,domain,photos,deltas,conditional,[primary.node,first.node],second_limit,tail_cache=cache,tail_change=conditional_tail):
+            conditional_changes = primary_changes|cache["hist_changes"][first.node,option(model,first)] if primary_changes is not None else None
+            for key_b,second,roles_b in rb.rank_helpers(model,domain,photos,deltas,conditional,[primary.node,first.node],second_limit,tail_cache=cache,tail_change=conditional_tail,
+                    primary_changes=conditional_changes,prefix_disjoint=roles_a["disjoint_cell_support_certificate"]):
                 moves = tuple(sorted((primary,first,second)))
                 if moves in seen:continue
                 seen.add(moves)
