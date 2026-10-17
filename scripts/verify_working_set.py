@@ -42,7 +42,12 @@ def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
         actual.append((h["node"],h["channel"],h["delta"]))
     if len(set(actual)) != len(actual) or set(actual) != legal or trace["proposals"] != sorted(trace["proposals"],key=lambda p:tuple(p["rank_key"])):
         raise ValueError("合法坐标探针集合或确定性排名错误")
-    replacement = keep+[trace["proposals"][0]["helper"]["node"]]
+    screening = None
+    if plan.get("feasibility_screen"):
+        screening = runpy.run_path(str(Path(__file__).with_name("verify_working_set_screen.py")))["verify"](folder,plan,trace,model,source,points,frequencies,photos,domain)
+        selected = screening["selected_proposal"]
+    else:selected = trace["proposals"][0]["helper"]
+    replacement = keep+[selected["node"]] if selected else None
     if trace["replacement_nodes"] != replacement:raise ValueError("新联合箱没有采用第一提议的坐标")
     receipt = run["reused_source_audit"]
     if (receipt["path"].replace("\\","/") != plan["warm_run"]+"/source-audit.json" or
@@ -53,6 +58,7 @@ def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
     checks = {}
     referenced = {"baseline"}
     for label,nodes in (("control",control),("replacement",replacement)):
+        if nodes is None:continue
         names = trace["box_records"][label]
         if len(set(names)) != len(names) or any(n in referenced or n not in records or records[n]["solver"]["box"] != label for n in names):raise ValueError("双箱回执归属/唯一性错误")
         referenced.update(names)
@@ -62,8 +68,9 @@ def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
     if referenced != set(records):raise ValueError("双箱模型清单遗漏或多出")
     trees = {label:load(label+"-search.json") for label in checks}
     winner = min(trees,key=lambda label:(tuple(trees[label]["incumbent"]["objective"]),label))
-    comparison = {"control":trees["control"]["incumbent"]["objective"],"replacement":trees["replacement"]["incumbent"]["objective"],"winner":winner,
-        "quality_improved_vs_control":tuple(trees["replacement"]["incumbent"]["objective"][:3]) < tuple(trees["control"]["incumbent"]["objective"][:3]),"before_photos":True}
+    comparison = {"control":trees["control"]["incumbent"]["objective"],"replacement":trees["replacement"]["incumbent"]["objective"] if "replacement" in trees else None,"winner":winner,
+        "quality_improved_vs_control":"replacement" in trees and tuple(trees["replacement"]["incumbent"]["objective"][:3]) < tuple(trees["control"]["incumbent"]["objective"][:3]),"before_photos":True}
     if trace["comparison"] != comparison or load("joint-search.json") != trees[winner]:raise ValueError("双箱比较及选中覆盖证书不同")
-    return {"verified":True,"proposals":len(actual),"checks":checks,"comparison":comparison,"helper_verifier_sha256":hashlib.sha256(helper.read_bytes()).hexdigest(),
+    if set(trace["box_records"]) != set(checks):raise ValueError("箱归属清单与实际求解范围不同")
+    return {"verified":True,"proposals":len(actual),"checks":checks,"comparison":comparison,**({"screening":screening} if screening is not None else {}),"helper_verifier_sha256":hashlib.sha256(helper.read_bytes()).hexdigest(),
         "scope":"独立核全部有限坐标探针和同起点双箱完整覆盖；没有遍历所有替换工作集，不作全局最优或性能声明"}

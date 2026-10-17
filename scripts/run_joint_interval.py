@@ -29,7 +29,9 @@ def main():
     plan = load(args.plan)
     quality = bool(plan.get("joint_minimax"))
     working = bool(plan.get("working_set"))
+    screened = bool(plan.get("feasibility_screen"))
     if working and not quality:raise ValueError("工作集比较必须使用同一质量目标")
+    if screened and not working:raise ValueError("可行性筛查必须启用工作集")
     warm,evidence = [ROOT / plan[k] for k in ("warm_run","evidence_run")]
     frame = snapshot(warm,plan["case"])
     case,photos,domain = [frame[k] for k in ("case","photos","domain")]
@@ -69,6 +71,7 @@ def main():
         ("joint_interval","automatic_compensation","histogram_delta","interp","io","cvar_guard","full_domain_guard","error_analysis","tail_repair","study_provenance","runtime")]
     if quality:sources += ["python/lutlab/joint_minimax.py","scripts/audit_hald_reference.py"]
     if working:sources += ["python/lutlab/working_set.py","scripts/verify_working_set.py"]
+    if screened:sources += ["scripts/verify_working_set_screen.py"]
     refs = [warm / n for n in ("results.json","run.json","verification.json","certificate.json")]+[frame["model_path"],frame["stream_path"],table_path,diagnosis_path,
         evidence / "results.json",evidence / "verification.json",evidence / "automatic.json",evidence / "cell.json",evidence / "certificate.json",cached_model,ROOT / "assets/photos/manifest.json"]
     refs += [warm / "reference" / n for n in ("results.json","run.json","photo-inventory.json","photo-partition.json",plan["case"]+"/final-groups.json",plan["case"]+"/full-domain.json")]
@@ -78,12 +81,18 @@ def main():
         if source_spec["format"] != "hald_tiff" or digest(source_image) != source_spec["sha256"]:raise ValueError("源Hald格式/SHA不同")
         refs += [source_image,warm / "joint-search.json"]
     if working:refs += [warm / "source-audit.json"]
+    if screened:
+        control = ROOT / plan["control_run"]
+        for name,h in plan["control_evidence_sha256"].items():
+            if digest(control / name) != h:raise ValueError("复用对照的发布证据变化")
+            refs.append(control / name)
     identity = {"environment":environment,"image_manifest_sha256":frame["manifest_sha256"],"plan_sha256":digest(args.plan),"source_sha256":{n:digest(ROOT / n) for n in sources},
         "parent_files":{str(p.relative_to(ROOT)):digest(p) for p in refs},"frequency_cache":{str((evidence / n).relative_to(ROOT)):digest(evidence / n) for n in
             ("run.json","support.json","frequencies.csv")},"executable_sha256":digest(args.executable)}
     metadata = {"identity":identity,"identity_sha256":study_provenance.identity_digest(identity),"git_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
         "purpose":plan["purpose"],"backend":"NumPy整数区间分支定界，Numba4仅新终态完整验收；非性能比较"}
     if working:metadata["reused_source_audit"] = {"path":str((warm / "source-audit.json").relative_to(ROOT)),"sha256":digest(warm / "source-audit.json")}
+    if screened:metadata["reused_control"] = {"path":plan["control_run"],"files":plan["control_evidence_sha256"],"scope":"复用原同中心对照覆盖证书，当前隔离验证器逐项重算；没有新对照求解或计时"}
     study_provenance.claim_run(args.output / "run.json",metadata)
     shutil.copyfile(args.plan,args.output / "plan.json")
     ref = args.output / "reference"
@@ -92,6 +101,8 @@ def main():
             (plan["case"]+"/final-groups.json",photos),(plan["case"]+"/full-domain.json",domain)):write(ref / name,value)
     shutil.copyfile(frame["model_path"],ref / plan["case"] / "repaired.slut")
     if working:shutil.copyfile(warm / "results.json",args.output / "warm-results.json")
+    if screened:
+        for name in plan["control_evidence_sha256"]:shutil.copyfile(control / name,args.output / ("control-origin-"+name))
     with zipfile.ZipFile(args.output / "measured-source.zip","w",zipfile.ZIP_DEFLATED) as z:
         for name in sources:z.write(ROOT / name,name)
     for name in ("support.json","frequencies.csv","cell.json","certificate.json"):shutil.copyfile(evidence / name,args.output / name)
@@ -177,10 +188,28 @@ def main():
             last = next(r for r in warm_result["records"] if r["name"] == warm_result["selection"]["selected"])
             state = ac.ConditionalScorer(model,support,truth,frequency,photos,domain["final"]["histogram"],support_record["nodes"])
             proposal = ws.propose(model,nodes,last["moves"],state,support_record["nodes"],channel=plan["channel"],deltas=tuple(plan["proposal_deltas"]),max_fresh_nodes=plan["max_fresh_nodes"])
+            if screened:
+                proposal = ws.screen(proposal,state,max_delta=plan["max_delta"],rgb_max=maximum,max_assignments=plan["max_assignments"])
+                print("必要筛查",proposal["screening"],"选中",proposal["selected_proposal"],flush=True)
             replacement = ji.Problem(model,support,truth,frequency,photos,domain["final"]["histogram"],proposal["replacement_nodes"],max_delta=plan["max_delta"],rgb_max=maximum,
-                channel=plan["channel"],max_assignments=plan["max_assignments"])
+                channel=plan["channel"],max_assignments=plan["max_assignments"]) if proposal["replacement_nodes"] is not None else None
             searches = {}
             for box_label,current_problem in (("control",problem),("replacement",replacement)):
+                if current_problem is None:continue
+                if screened and box_label == "control":
+                    search = load(control / "control-search.json")
+                    old,proof,old_run,old_plan = [load(control / n) for n in ("results.json","verification.json","run.json","plan.json")]
+                    if (old_run["identity"]["environment"] != environment or not proof["verified"] or proof["input_result_sha256"] != digest(control / "results.json") or
+                            old["selection"]["selected"] is not None or not old["final"]["reused"] or len(old["records"]) != 1 or
+                            old["records"][0]["model_sha256"] != plan["model_sha256"] or search["incumbent"]["name"] != "baseline" or
+                            any(old_plan[k] != plan[k] for k in ("model_sha256","warm_run","max_delta","channel","objective","source_probes")) or
+                            search["nodes"] != nodes or search["domains"] != current_problem.domains or search["rgb_max"] != maximum or
+                            any(old_run["identity"]["source_sha256"]["python/lutlab/"+n+".py"] != digest(ROOT / ("python/lutlab/"+n+".py")) for n in ("joint_interval","joint_minimax"))):
+                        raise ValueError("旧对照的环境/中心/域/数值源或基线回执不同")
+                    searches[box_label] = search
+                    shutil.copyfile(control / "control-search.json",args.output / "control-search.json")
+                    print("复用原对照覆盖证书；不重新求解",flush=True)
+                    continue
                 print("受控工作集",box_label,current_problem.nodes,flush=True)
                 searches[box_label] = jm.solve(current_problem,lambda candidate,deltas:evaluate(f"{box_label}_{len(records):04d}",candidate,deltas))
                 write(args.output / (box_label+"-search.json"),searches[box_label])
@@ -188,8 +217,8 @@ def main():
             winner = min(searches,key=lambda label:(tuple(searches[label]["incumbent"]["objective"]),label))
             search = searches[winner]
             proposal.update(box_records={label:[r["name"] for r in records if r["solver"].get("box") == label] for label in searches},
-                comparison={"control":searches["control"]["incumbent"]["objective"],"replacement":searches["replacement"]["incumbent"]["objective"],"winner":winner,
-                    "quality_improved_vs_control":tuple(searches["replacement"]["incumbent"]["objective"][:3]) < tuple(searches["control"]["incumbent"]["objective"][:3]),"before_photos":True})
+                comparison={"control":searches["control"]["incumbent"]["objective"],"replacement":searches["replacement"]["incumbent"]["objective"] if "replacement" in searches else None,"winner":winner,
+                    "quality_improved_vs_control":"replacement" in searches and tuple(searches["replacement"]["incumbent"]["objective"][:3]) < tuple(searches["control"]["incumbent"]["objective"][:3]),"before_photos":True})
             write(args.output / "working-set.json",proposal)
         else:search = jm.solve(problem,lambda candidate,deltas:evaluate(f"joint_{len(records):04d}",candidate,deltas))
     else:search = ji.solve(problem,lambda candidate,deltas:evaluate(f"joint_{len(records):04d}",candidate,deltas))
