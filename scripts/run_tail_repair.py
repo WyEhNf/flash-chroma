@@ -85,6 +85,15 @@ def main():
         executable_sha256=digest(args.executable), stage_source_sha256={str(p.relative_to(ROOT)): digest(p) for p in
             (Path(__file__), ROOT / "python/lutlab/tail_repair.py", ROOT / "python/lutlab/error_analysis.py",
              ROOT / "scripts/run_chain_error_study.py", ROOT / "scripts/run_joint_box_study.py")})
+    if plan.get("full_domain_guard"):
+        metadata["identity"]["stage_source_sha256"]["python/lutlab/full_domain_guard.py"] = digest(ROOT / "python/lutlab/full_domain_guard.py")
+        metadata["identity"]["negative_control_integrity_sha256"] = digest(ROOT / "report/data/tail-repair-v1/integrity.json")
+    if plan.get("paired_search"):
+        metadata["identity"]["stage_source_sha256"]["python/lutlab/joint_tail_repair.py"] = digest(ROOT / "python/lutlab/joint_tail_repair.py")
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        metadata["identity"]["warm_start_sha256"] = {p.name:digest(p) for p in
+            [warm / name for name in ("run.json","selection.json","full-domain.json")] + sorted(warm.glob("repaired-stage*.slut"))}
     metadata["identity_sha256"] = study_provenance.identity_digest(metadata["identity"])
     study_provenance.claim_run(out / "run.json", metadata)
     # 快照绑定实测原始字节；后续仅前置检查/报告修补不冒充重新执行数值代码。
@@ -153,7 +162,86 @@ def main():
             limits[name]["mean"] = start["mean"] * plan["mean_budget_ratio"]
         before[name] = {"baseline": old, "initial": start, "input_sha256": hashlib.sha256(spec["points"].tobytes()).hexdigest()}
     write_json(out / "fixed-guards.json", {"limits": limits, "before": before})
+    domain_guard = None
+    if plan.get("full_domain_guard"):
+        from lutlab import full_domain_guard as fg
+        config = plan["full_domain_guard"]
+        print("构建完整256³参考、前缀与立方体倒排；仅用于离线优化", flush=True)
+        full_points = np.empty((256**3,3),np.uint8)
+        full_truth = np.empty_like(full_points)
+        for start in range(0,256**3,1 << 18):
+            rgb = tr.decode(np.arange(start,start+(1 << 18),dtype=np.int64))
+            full_points[start:start+len(rgb)] = rgb
+            full_truth[start:start+len(rgb)] = ea.exact_chain(tables,rgb)
+        domain_guard = fg.DomainGuard(initial,full_points,full_truth,numerator=config["mean_numerator"],
+            denominator=config["mean_denominator"],max_cache_bytes=config["max_cache_bytes"])
+        if (hashlib.sha256(full_truth.tobytes()).hexdigest() != previous["selected"]["cube"]["reference_sha256"]
+                or hashlib.sha256(domain_guard.prediction.tobytes()).hexdigest() != previous["selected"]["cube"]["prediction_sha256"]):
+            raise AssertionError("全域保护的固定参考/初始模型字节与父阶段不同")
+        # 一份已知超预算旧模型作为负对照；优先读取绑定SHA的旧流，缺失才重建。
+        control_parent = ROOT / "report/data/tail-repair-v1"
+        control_meta = json.loads((control_parent / "results.json").read_text(encoding="utf-8"))
+        expected = control_meta["final"]["cube"]["prediction_sha256"]
+        old_stream = ROOT / "artifacts/tail-repair-v1/repaired.rgb"
+        operator = None
+        if old_stream.exists():
+            if old_stream.stat().st_size != 3*256**3 or digest(old_stream) != expected:
+                raise ValueError("负对照旧流字节不同，拒绝混用")
+            old_prediction = np.memmap(old_stream,dtype=np.uint8,mode="r",shape=(256**3,3))
+        else:
+            control_index = json.loads((control_parent / "archive-index.json").read_text(encoding="utf-8"))
+            paths = []
+            with zipfile.ZipFile(control_parent / "models-and-counterexamples.zip") as archive:
+                for stage in range(4):
+                    name = f"repaired-stage{stage+1}.slut"
+                    raw = archive.read(name)
+                    if hashlib.sha256(raw).hexdigest() != control_index[name]:
+                        raise ValueError("负对照模型字节不同")
+                    path = out / ("control-"+name)
+                    path.write_bytes(raw)
+                    paths.append(path)
+            operator = ea.Operator([io.load_sparse(p,competition=True) for p in paths])
+        control_hist = np.zeros(len(ea.ROOT_DISTANCE),np.int64)
+        control_hash = hashlib.sha256()
+        for start in range(0,256**3,1 << 18):
+            rgb = full_points[start:start+(1 << 18)]
+            prediction = operator(rgb) if operator is not None else old_prediction[start:start+len(rgb)]
+            control_hist += ea.histogram(prediction,full_truth[start:start+len(rgb)])[0]
+            control_hash.update(prediction.tobytes())
+        if control_hash.hexdigest() != expected:
+            raise AssertionError("负对照重放输出不同")
+        negative = fg.certify(domain_guard.reference,fg.summary(control_hist),config["mean_numerator"],config["mean_denominator"])
+        negative.update(prediction_sha256=expected,provenance="PR15冻结流或版本化模型；本轮重新核对直方图与预算，不改历史结果")
+        if negative["accepted"] or "mean" not in negative["failed"]:
+            raise AssertionError("全域保护未拒绝已知0.61349%均值超预算模型")
+        write_json(out / "negative-control.json",negative)
+        print("负对照已因完整mean预算被拒绝，开始带全域保护的节点选择",flush=True)
     models, active, rounds = tr.clone(initial), np.empty(0, np.int64), []
+    if plan.get("warm_start"):
+        warm = ROOT / plan["warm_start"]
+        old_selection = json.loads((warm / "selection.json").read_text(encoding="utf-8"))
+        replayed = []
+        for record in old_selection["rounds"]:
+            for move in record["search"]["accepted"]:
+                update = tr.Move(move["stage"]-1,move["node"],tuple(move["after_node"]))
+                proof = domain_guard.consider(models,update)
+                if not proof["accepted"]:
+                    raise AssertionError("冻结前四步未通过同一全域预算，不能热启动")
+                models[update.stage].nodes.reshape(-1,3)[update.node] = update.value
+                domain_guard.commit(models,update)
+                replayed.append(proof)
+        for k,expected in enumerate(old_selection["model_sha256"]):
+            if digest(warm / f"repaired-stage{k+1}.slut") != expected:
+                raise ValueError("热启动冻结模型SHA不同")
+            if not np.array_equal(models[k].nodes,io.load_sparse(warm / f"repaired-stage{k+1}.slut").nodes):
+                raise AssertionError("热启动节点重放与冻结模型不同")
+        old_domain = json.loads((warm / "full-domain.json").read_text(encoding="utf-8"))
+        if domain_guard.report()["prediction_sha256"] != old_domain["prediction_sha256"]:
+            raise AssertionError("热启动完整流与冻结单节点阶段不同")
+        prior_points = json.loads((ROOT / "report/data/tail-repair-v1/training-violations.json").read_text(encoding="utf-8"))["records"]
+        active = tr.encode(ea.neighbourhood(np.asarray([r["rgb"] for r in prior_points],np.uint8)))
+        active = active[caps[active] != np.iinfo(np.uint32).max]
+        write_json(out / "warm-start.json",{"replayed":replayed,"source":plan["warm_start"],"active_colours":len(active)})
     bad, initial_scan = scan(models, keys, caps, truth)
     print(f"完整训练颜色初始超限：{len(bad)}/{len(keys)}", flush=True)
     for iteration in range(plan["separation_rounds"]):
@@ -165,14 +253,30 @@ def main():
         points = tr.decode(active)
         hard = {"points": points, "truth": ea.exact_chain(tables, points), "caps": caps[active]}
         models, detail = tr.repair(models, banks, hard, guards, limits,
-            steps=plan["steps_per_round"], focus_count=plan["focus_count"])
+            steps=plan["steps_per_round"], focus_count=plan["focus_count"], domain_guard=domain_guard)
+        paired = None
+        if plan.get("paired_search") and tr.State(models,hard["points"],hard["truth"],hard["caps"]).loss()[0] > 0:
+            from lutlab import joint_tail_repair
+            models,paired = joint_tail_repair.repair_pair(models,banks,hard,guards,limits,domain_guard,
+                radius=plan["paired_search"]["radius"],helper_limit=plan["paired_search"]["helper_limit"])
         bad, separation = scan(models, keys, caps, truth)
-        rounds.append({"round": iteration+1, "active_colours": len(active), "search": detail, "full_training_scan": separation})
+        rounds.append({"round": iteration+1, "active_colours": len(active), "search": detail,
+                       **({"paired_search":paired} if paired is not None else {}), "full_training_scan": separation})
         write_json(out / f"round{iteration+1}.json", rounds[-1])
-        print(f"约束分离第{iteration+1}轮：接受{len(detail['accepted'])}次节点选择；剩余{len(bad)}个超限颜色", flush=True)
-        if not detail["accepted"]:
+        paired_count = len(paired["moves"]) if paired is not None and paired["accepted"] else 0
+        print(f"约束分离第{iteration+1}轮：接受{len(detail['accepted'])}次单节点选择、{paired_count}个联合节点；剩余{len(bad)}个超限颜色", flush=True)
+        if not detail["accepted"] and not (paired is not None and paired["accepted"]):
             break
     feasible = not len(bad)
+    if domain_guard is not None:
+        import psutil
+        domain_result = domain_guard.report()
+        memory = psutil.Process().memory_info()
+        domain_result["host_memory"] = {"rss_snapshot": memory.rss, "os_peak_working_set": getattr(memory,"peak_wset",None),
+            "scope": "整个离线研究进程，包含输入/Numba/缓存；无peak字段时仅为RSS快照，不是运行时内存"}
+        if not domain_result["certificate"]["accepted"]:
+            raise AssertionError("最后一轮模型的完整域证书不通过")
+        write_json(out / "full-domain.json",domain_result)
     final_guards = {name: ea.metrics(ea.Operator(models)(spec["points"]), spec["truth"]) for name, spec in guards.items()}
     if any(value[key] > limits[name][key]+1e-12 for name, value in final_guards.items() for key in limits[name]):
         raise AssertionError("最终保护门禁不通过")
@@ -191,6 +295,8 @@ def main():
     if feasible:
         print("模型冻结，进入一次完整色域、完整100图与整数后端验收", flush=True)
         cube = cube_evaluate(tables, ea.Operator(models), out / "repaired.rgb", 128)
+        if domain_guard is not None and cube["prediction_sha256"] != domain_result["prediction_sha256"]:
+            raise AssertionError("冻结后的完整重建与增量全域缓存不同")
         parity = native_verify(models, out, cube["prediction_sha256"], args.executable)
         photos = photos_evaluate(tables, {"repaired": ea.Operator(models)})["repaired"]
         if cube["reference_sha256"] != previous["selected"]["cube"]["reference_sha256"]:

@@ -1,0 +1,27 @@
+{
+  "schema": 2,
+  "purpose": "保持完整域0.5%预算，针对v1单节点停滞的一个训练颜色增加双节点前瞻，不放宽门槛",
+  "case": "cinema-chain2",
+  "parent": "report/data/joint-box-v1",
+  "warm_start": "artifacts/full-domain-guard-v1",
+  "warm_semantics": "仅重放v1已冻结4步并核对节点/完整流SHA，不恢复1245项搜索；原始PR14仍是完整域固定参考，保留全部339色活跃约束",
+  "threads": 4,
+  "steps_per_round": 32,
+  "separation_rounds": 3,
+  "focus_count": 16,
+  "mean_budget_ratio": 1.005,
+  "uniform": {"count": 65536, "seed": 2026101712},
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101711,
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24,"max_cache_bytes":1610612736},
+  "paired_search": {
+    "radius": 1,
+    "helper_limit": 32,
+    "definition": "剩余超限色的实际正权重顶点及各轴±1邻接节点，只用既有本级候选/半混合/单通道值",
+    "helper": "在全部活跃硬约束上损失不增、均匀保护集mean改善的辅助节点，按mean取前32；只用于筛选，不假设可加性",
+    "pair": "任意硬约束改善主节点与辅助节点组合，两个节点不同；按实际双节点硬损失、实际均匀mean、元组排序，逐一验证全部小集合与完整域，首个可行即冻结",
+    "support_proof": "多节点同时变动的实际影响色属于每个节点原前缀正支撑的并集：任一变化路径必在最早变动级命中；从最早级重放整对修改，不把两次单节点输出相加"
+  },
+  "final": "完整训练色约束通过才进入一次完整256^3重建/100图/整数oracle与标量AVX2C99；同时核对增量缓存全流SHA",
+  "limits": "v1失败记录保留；双节点有限前瞻不是全局最优证明；内部预算不是官方阈值；不改默认/冠军，历史照片不称盲测"
+}

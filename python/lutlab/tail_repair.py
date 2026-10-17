@@ -106,7 +106,7 @@ def proposals(state, banks, focus_count):
     return sorted(result)
 
 
-def repair(models, banks, hard, guards, limits, *, steps=32, focus_count=16):
+def repair(models, banks, hard, guards, limits, *, steps=32, focus_count=16, domain_guard=None):
     """有限局部搜索：先比较整数超限损失，再逐一核验固定保护门禁。
 
     保护上限由调用者在整个阶段开始前冻结，不能在约束分离轮次间累积放宽。
@@ -152,17 +152,27 @@ def repair(models, banks, hard, guards, limits, *, steps=32, focus_count=16):
                 for key in failures:
                     rejected[key] = rejected.get(key, 0)+1
             else:
-                accepted = (loss, move, measurements)
+                domain_proof = None
+                if domain_guard is not None:
+                    domain_proof = domain_guard.consider(models, move)
+                    if not domain_proof["accepted"]:
+                        for key in domain_proof["failed"]:
+                            rejected["full_domain."+key] = rejected.get("full_domain."+key, 0)+1
+                        continue
+                accepted = (loss, move, measurements, domain_proof)
                 break
         if accepted is None:
             stop = "no_guarded_improving_local_move"
             break
-        loss, move, measurements = accepted
+        loss, move, measurements, domain_proof = accepted
         node = models[move.stage].nodes.reshape(-1, 3)[move.node]
         previous = node.tolist()
         node[:] = move.value
+        if domain_guard is not None:
+            domain_guard.commit(models, move)
         log.append({"step": iteration+1, "stage": move.stage+1, "node": move.node, "before_node": previous,
                     "after_node": list(move.value), "before_loss": before, "after_loss": loss, "guards": measurements,
-                    "proposals": len(moves), "hard_improving_proposals": len(ranked)})
+                    "proposals": len(moves), "hard_improving_proposals": len(ranked),
+                    **({"full_domain": domain_proof} if domain_proof is not None else {})})
     return models, {"stop": stop, "accepted": log, "generated_moves": generated,
                     "hard_trials": evaluated, "guard_rejections": rejected}

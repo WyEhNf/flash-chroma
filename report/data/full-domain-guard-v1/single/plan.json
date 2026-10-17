@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "purpose": "将PR15抽样mean预算提升为完整RGB有限域保护，同时继续修复全部训练颜色尾部",
+  "case": "cinema-chain2",
+  "parent": "report/data/joint-box-v1",
+  "partition": "沿用冻结60训练/20选择/20历史审计，全部照片已观察，不称盲测",
+  "threads": 4,
+  "steps_per_round": 32,
+  "separation_rounds": 3,
+  "focus_count": 16,
+  "mean_budget_ratio": 1.005,
+  "uniform": {"count": 65536, "seed": 2026101712},
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101711,
+  "full_domain_guard": {
+    "mean_numerator": 1005,
+    "mean_denominator": 1000,
+    "precision_bits": 24,
+    "max_cache_bytes": 1610612736,
+    "reference": "固定PR14联合模型，所有步骤/约束分离轮次共用同一完整256^3参考直方图",
+    "guards": "mean候选上界*1000 <= 参考下界*1005；RMS/p99/max均不超过PR14完整色域",
+    "implementation": "各级实际RGB8前缀的立方体倒排；精确Q16正支撑筛选；只重放受影响颜色并更新完整误差直方图",
+    "negative_control": "PR15冻结修复模型应因完整mean增幅0.61349%被拒绝，旧流字节核验后复用；缺少旧流则从版本化模型重建",
+    "memory_scope": "约1.5GiB离线缓存数组预算，另报宿主OS峰值工作集，不冒充运行时内存"
+  },
+  "cap": "与PR15相同：共享训练RGB取各所在图片原始基线max平方的最小值；所有4668485色约束分离",
+  "moves": "与PR15相同的本级候选/一半节点/单通道有限局部选择，无残差标签；小集合通过后才进入完整域保护",
+  "final": "冻结后一次完整256^3重建，须与增量缓存输出及整数证书一致，再核标量/AVX2/C99与独立整数oracle，并跑完整100图",
+  "limits": "固定已知LUT链，内部0.5%预算不是官方Threshold；有限局部停滞不说明全局无解；不改默认/冠军，不扩展硬件/性能矩阵"
+}
