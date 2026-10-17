@@ -121,6 +121,7 @@ def main():
                 ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","tests/test_histogram_delta.py","tests/test_stability.py","scripts/report_extreme_cell.py")):
             z.write(ROOT / name,"current/"+name)
         if args.study == "working":z.write(ROOT / "scripts/diagnose_working_set.py","current/scripts/diagnose_working_set.py")
+        if args.study == "screened":z.write(ROOT / "scripts/diagnose_screened_working_set.py","current/scripts/diagnose_screened_working_set.py")
         if args.prior_run is not None:
             old_commit = load(args.prior_run / "run.json")["git_commit"]
             for name in ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","python/lutlab/stability.py"):
@@ -193,6 +194,7 @@ def main():
         else:
             if not w["screening"]["verified"]:raise ValueError("筛查没有独立复核")
             write(out / "screening-summary.json",w["screening"])
+            write(out / "conditional-conflicts.json",runpy.run_path(str(ROOT / "scripts/diagnose_screened_working_set.py"))["diagnose"](args.input))
     if args.study in ("compensation","automatic","joint","minimax","working","screened"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
