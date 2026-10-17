@@ -335,7 +335,11 @@ def main():
         helper = Path(__file__).with_name("verify_automatic_compensation.py")
         output["automatic"] = runpy.run_path(str(helper))["verify_trace"](folder,plan,automatic,model,source,relevant,frequencies,photos,domain,records_by_name)
         output["automatic_verifier_sha256"] = digest(helper.read_bytes())
-    if plan.get("joint_interval") or plan.get("joint_minimax"):
+    if plan.get("working_set"):
+        helper = Path(__file__).with_name("verify_working_set.py")
+        output["working_set"] = runpy.run_path(str(helper))["verify"](folder,plan,model,source,relevant,frequencies,photos,domain,records_by_name)
+        output["working_set_verifier_sha256"] = digest(helper.read_bytes())
+    elif plan.get("joint_interval") or plan.get("joint_minimax"):
         helper = Path(__file__).with_name("verify_joint_interval.py")
         output["joint_interval"] = runpy.run_path(str(helper))["verify"](folder,plan,model,source,relevant,frequencies,photos,domain,records_by_name)
         output["joint_verifier_sha256"] = digest(helper.read_bytes())
