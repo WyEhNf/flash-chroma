@@ -36,3 +36,13 @@ python -I -S scripts/report_extreme_cell.py --study automatic --input artifacts/
 main祖先及337a3dd工程修复保留，AGENTS.md只读。创建/更新Draft PR前刷新相关PR正文、完整评论/review/行内线程、#7/#8及主题检索；Discussion4读取缺口如实记录。不合并、不关闭问题。中文提交和阶段PR，Operator为WyEhNf。
 
 官方数据及Threshold仍未取得；所有误差是RGB欧氏码值距离，非CIEDE2000。本阶段有限邻域失败不能证明没有其他联合可行解，局部42必要界不能当成整个色域的可达最优；单级结果不能冒称四级ISP或实板收益。实际结果与提交在执行后补入。
+
+## 冻结实验后的归因范围
+
+源/计划/合同`5a7bcea`执行一次8/8通过（4.66秒，14个既有matplotlib/pyparsing警告），一次局部实验完成，独立复核全部358次条件评分/14模型/7857色完整支撑。没有通过保护的候选，保留原终态，不新增完整色域/100图执行。所有候选都将max推导至52；最少失败三节点`triple_001`仍使group40的mean/RMS退化。
+
+后续只用已有模型、完整参考、频数与排名进行解释，不再产生候选、重新拟合或解码PNG：`diagnose_automatic_conflicts.py`按最少失败/名称选择已冻结三节点反例，对其残余组输出主改、第一辅助、第二辅助的加权颜色SSE/mean变化、前5退化RGB和权重。颜色和必须匹配完整组差值，并以有符号mean下界区分真实退化与误拒。汇总各前缀全部已评分辅助对残余组的最小SSE差和保护失败，观察分步搜索边界。此脚本与范围先提交，再生成解释证据；属于既有结果的有限复算，不扩展数值实验。
+
+```powershell
+python -I -S scripts/diagnose_automatic_conflicts.py --input artifacts/automatic-compensation-v1 --output report/data/automatic-compensation-v1/conflict-diagnosis.json
+```
