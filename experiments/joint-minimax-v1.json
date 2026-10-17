@@ -1,0 +1,20 @@
+{
+  "purpose": "直接优化联合箱内精度目标并独立核验热点源参考，区分目标选择限制与参考/表示残差",
+  "warm_run": "artifacts/joint-interval-v1",
+  "evidence_run": "artifacts/automatic-compensation-v1",
+  "diagnosis": "report/data/automatic-compensation-v1/conflict-diagnosis.json",
+  "case": "velvia-vivid",
+  "model_sha256": "3f9706867425a36ccba62ed6abf79c49e1ef2e805ed109b9b7d09eb2b9a72be6",
+  "joint_minimax": true,
+  "anchor": [251,251,42],
+  "channel": 2,
+  "max_delta": 4,
+  "max_nodes": 4,
+  "max_assignments": 10000,
+  "threads": 4,
+  "source_probes": [[251,251,42],[255,255,42],[255,255,49]],
+  "objective": ["max_squared","historical_loss","full_sse","l1"],
+  "guard": "原历史/固定起点101组及完整域mean/RMS/p99端点/max/CVaR全部保持，历史缺口不升，不强制预设下降一级后停止",
+  "evaluation": "同一父四节点B±4整数箱一次完整质量分支定界，先做独立Pillow/有理数参考审计；复用相同几何和图片的频数，重建新基线。仅一个新最优终态做一次256³/100图/oracle/标量AVX2；不变则复用",
+  "limits": "固定4节点有限箱，不增加外层网格/方法/参数扫描。证明仅限该箱及固定保护，不声称全域模型全局最优。源审计覆盖完整热点支撑、冻结探针±1及RGB角点，不审计全部256³或第三方色彩意图；官方Threshold未知，历史审计已见，不升级默认/冠军"
+}
