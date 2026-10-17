@@ -1,0 +1,22 @@
+{
+  "purpose": "由当前最大误差自动提出最小主改，真实条件排序有限辅助并分析固定保护冲突",
+  "warm_run": "artifacts/local-compensation-v2",
+  "case": "velvia-vivid",
+  "model_sha256": "4fe0dfd4b512e0a17996c5786339a84a452d62c8e05c07bc1256bd685c743cac",
+  "automatic_compensation": true,
+  "anchor": [251,251,42],
+  "primary_delta": 4,
+  "milp_time_limit": 60,
+  "max_cell_colours": 4096,
+  "max_neighbor_nodes": 64,
+  "max_support_colours": 131072,
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "helper_deltas": [-2,-1,1,2],
+  "pair_limit": 4,
+  "second_limit": 2,
+  "guard": "保留全部历史/固定101组及完整域mean/RMS/p99端点/max/CVaR，历史缺口不升；全域max严格下降才选中",
+  "evaluation": "由父终态首个最大误差RGB、最大残差通道及floor(max)-1确定主改；一次MILP。主改变更节点一格完整邻域全部合法单辅助真实Q16评分取前4；全失败才按各真实联合前缀取第二辅助前2并去重。独立标准库复核全部评分、集合和树；只对一个新终态一次256³/100图/oracle/标量AVX2",
+  "limits": "有限确定性局部搜索，最多4双辅助候选及8第二辅助候选；不扩展参数、网格、性能扫描。不证明全域/联合全局最优，不升级默认或冠军，不放宽保护；历史审计已见，官方Threshold未知；指标为RGB欧氏码值而非CIEDE2000"
+}
