@@ -1,0 +1,37 @@
+{
+  "purpose": "将不可补偿的必要界前移到坐标排序前，检查可行性筛查是否改善工作集选择及真实精度",
+  "warm_run": "artifacts/joint-minimax-v1",
+  "evidence_run": "artifacts/automatic-compensation-v1",
+  "control_run": "artifacts/working-set-v1",
+  "diagnosis": "report/data/automatic-compensation-v1/conflict-diagnosis.json",
+  "case": "velvia-vivid",
+  "model_sha256": "9f65bf5fdda5d100178dae4d26729b99a00af82b6cf23b015afd8a8eb2e0028a",
+  "joint_minimax": true,
+  "working_set": true,
+  "feasibility_screen": true,
+  "anchor": [251,251,42],
+  "channel": 2,
+  "max_delta": 4,
+  "max_nodes": 4,
+  "max_assignments": 10000,
+  "max_fresh_nodes": 8,
+  "proposal_deltas": [-2,-1,1,2],
+  "threads": 4,
+  "source_probes": [[251,251,42],[255,255,42],[255,255,49]],
+  "objective": ["max_squared","historical_loss","full_sse","l1"],
+  "parent_evidence_sha256": {
+    "joint-search.json": "c02d19ab76ccadfcddf3c42a45de6e8534fcc282d39e7d51b67a67d4ab6834f4",
+    "verification.json": "8004df6c229891723d02d19c02a39e3497254eac1e986dbaceba67b78f299212",
+    "source-audit.json": "4f6b330942583ccd6ba07dbcdb5a0b8b5d3759d06ccc7c28a8c87dc98b606758"
+  },
+  "control_evidence_sha256": {
+    "control-search.json": "bc643a8ec87020d66cd517a94fe9cc096dcc44c0b62624be22d74184520929b6",
+    "results.json": "8776deeb1e597d672b1843027c35a97e8e5070f37830f1599a49d5df53f80ff0",
+    "verification.json": "f85bd21f23a9e1fffd1f754801ec3462b26ec099b9d9191b74001bf6f841d1f2",
+    "run.json": "3d5b285cb5a53afc365c944b3a8adcaf8fee52415b15b77b1218381089dde480",
+    "plan.json": "0bf01ba443ead87e645d2f81b6bd56c95f14351bb1a5dced7736e74f21bf6100"
+  },
+  "guard": "原历史/固定101组及完整域mean/RMS/p99端点/max/CVaR和缺口不升，不放宽任何保护",
+  "evaluation": "同PR33的8新节点、B探针及旧排序；固定探针让保留3节点自由±4，以RGB上限/SSE/mean/尾部必要界筛除不可补偿者。仅选择第一个未排除探针的新节点，一次自由±4联合箱；无未排除者则停止并复用基线。对照复用PR33同中心覆盖树并独立逐项重放，不重新求解；新终态最多一次256³/100图/oracle/标量AVX2",
+  "limits": "一次必要可行性筛查和至多一个替换箱，不遍历其他工作集，不在失败后追加候选。未排除不等于可行；固定探针失败不排除该节点其他值。复用原对照/源审计/频数不重标时间；原历史审计已见，官方Threshold未知，不作性能声明，不升级默认/冠军或改硬件"
+}
