@@ -145,8 +145,13 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             info.update(accepted=accepted is not None,selection=accepted_source if accepted is not None else None)
             global_log.append(info)
         if accepted is None and compensation and len(compensation_log) < compensation["rounds"]:
-            from . import quantile_compensation
-            candidates,info = quantile_compensation.pairs(model,domain,photos,ranked,
+            method = compensation.get("method","continuous")
+            if method == "rounded":
+                from . import rounded_budget as helper_backend
+            elif method == "continuous":
+                from . import quantile_compensation as helper_backend
+            else:raise ValueError("未知辅助节点排序方法")
+            candidates,info = helper_backend.pairs(model,domain,photos,ranked,
                 primary_limit=compensation["primary_limit"],helper_limit=compensation["helper_limit"],
                 trial_limit=trial_limit,max_array_bytes=compensation["max_array_bytes"])
             info["accepted"] = False
