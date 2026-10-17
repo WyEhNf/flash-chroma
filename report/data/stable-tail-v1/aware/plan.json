@@ -1,0 +1,22 @@
+{
+  "schema": 6,
+  "purpose": "相同固定四指标保护下加入真实±1尾部计数变化的辅助排序，与只加保护的对照臂比较",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/velvia-three-node-v1",
+  "cases": ["velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {"method":"rounded","rounds":2,"primary_limit":8,"helper_limit":16,"max_array_bytes":2684354560,"block_order":3,"first_helpers":4,"second_helpers":4},
+  "stability": {"tail_ranking":true},
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24},
+  "memory_array_budget_bytes": 2684354560,
+  "reference": "与guard臂相同；先完整重放47步并绑定PR23终态SHA，历史目标及原混合预算保留",
+  "search": "与guard臂相同预算，额外以单节点±1实际RGB8尾部超限计数变化优先排序；int32单改缓存、int64组合，重叠只作估计，最终真实重放",
+  "evaluation": "与guard臂同一输入和环境，仅变化终态一次完整终验；标准库独立复核最终完整直方图及参照绑定",
+  "limits": "新增263921328字节统计并增加逐色计算成本，不宣称等计算量或性能提升；固定参照充分条件可能保守；无官方Threshold、不提升默认、不扫描性能或参数"
+}

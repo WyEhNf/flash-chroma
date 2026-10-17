@@ -21,16 +21,22 @@ def triples(model,domain,photos,cache,*,first_limit=4,second_limit=4):
         old = domain.squared[trial["rows"]]
         change = rb._reduce(trial["rows"],trial["squared"]-old,roots_high[trial["squared"]]-roots_high[old],
             *photos.offsets_groups_counts,len(photos.hist))
-        for key_a,first,roles_a in rb.rank_helpers(model,domain,photos,deltas,change,[primary.node],first_limit):
+        tail_change = None
+        if "tail_deltas" in cache:
+            from .stability import reduce_tails
+            tail_change = reduce_tails(trial["rows"],old,trial["squared"],*photos.offsets_groups_counts,
+                photos.stability.thresholds,photos.stability.budgets).astype(np.int64)
+        for key_a,first,roles_a in rb.rank_helpers(model,domain,photos,deltas,change,[primary.node],first_limit,tail_cache=cache,tail_change=tail_change):
             conditional = change+deltas[first.node,option(model,first)]
-            for key_b,second,roles_b in rb.rank_helpers(model,domain,photos,deltas,conditional,[primary.node,first.node],second_limit):
+            conditional_tail = tail_change+cache["tail_deltas"][first.node,option(model,first)] if tail_change is not None else None
+            for key_b,second,roles_b in rb.rank_helpers(model,domain,photos,deltas,conditional,[primary.node,first.node],second_limit,tail_cache=cache,tail_change=conditional_tail):
                 moves = tuple(sorted((primary,first,second)))
                 if moves in seen:continue
                 seen.add(moves)
                 disjoint = roles_a["disjoint_cell_support_certificate"] and roles_b["disjoint_cell_support_certificate"]
                 roles = {**roles_b,"primary_node":primary.node,"helper_nodes":[first.node,second.node],"proposed_node_count":3,
                     "disjoint_cell_support_certificate":disjoint,"pairwise_disjoint_support_certificate":disjoint}
-                key = (loss,key_b[0],key_b[1],not disjoint,key_b[3],key_b[4],moves)
+                key = (loss,key_b[0],key_b[1],key_b[2],not disjoint,key_b[4],key_b[5],moves)
                 candidates.append((key,moves,roles))
     candidates.sort(key=lambda v:v[0])
     return [(moves,roles) for key,moves,roles in candidates],{"triples":len(candidates),"primary_candidates":len(cache["primaries"]),
