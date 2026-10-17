@@ -92,10 +92,15 @@ def main():
     sources = ["scripts/run_extreme_cell.py","scripts/verify_extreme_cell.py","scripts/diagnose_quantile_compensation.py","scripts/diagnose_quantile_bounds.py",
         "scripts/diagnose_three_node.py","scripts/run_tail_repair.py","scripts/verify_quantile_constraints.py","scripts/verify_full_domain_guard.py","scripts/verify_cvar_guard.py"]
     sources += ["python/lutlab/"+n+".py" for n in ("local_minimax","interp","io","cvar_guard","full_domain_guard","error_analysis","tail_repair","study_provenance")]
+    if plan.get("local_compensation"):sources += ["python/lutlab/local_compensation.py","scripts/run_chain_error_study.py","scripts/run_joint_box_study.py","python/lutlab/runtime.py"]
     refs = [parent / n for n in ("results.json","run.json","photo-inventory.json","photo-partition.json")]
     refs += [parent / cid / n for n in ("full-domain.json","final-groups.json","repaired.slut","repaired.rgb")]+[table_path]
     identity = {"environment":env,"plan_sha256":digest(args.plan),"source_sha256":{n:digest(ROOT / n) for n in sources},
         "parent_files":{str(p.relative_to(ROOT)):digest(p) for p in refs},"executable_sha256":digest(args.executable)}
+    if plan.get("local_compensation"):
+        old_local = ROOT / plan["local_compensation"]["reference"]
+        identity["local_reference_files"] = {str(p.relative_to(ROOT)):digest(p) for p in
+            (old_local / "run.json",old_local / "results.json",old_local / "certificate.json",old_local / "minimum_change/model.slut",old_local / "verification.json")}
     if args.frequency_cache is not None:
         cached_identity = load(args.frequency_cache / "run.json")["identity"]
         for field in ("environment","plan_sha256","parent_files"):
@@ -105,7 +110,7 @@ def main():
         identity["frequency_cache"] = {str((args.frequency_cache / n).relative_to(ROOT)):digest(args.frequency_cache / n) for n in ("run.json","support.json","frequencies.csv")}
     metadata = {"identity":identity,"identity_sha256":study_provenance.identity_digest(identity),
         "git_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),"numba_threads":numba.get_num_threads(),
-        "ram_bytes":psutil.virtual_memory().total,"backend":"SciPy绑定的HiGHS LP/MILP；求解器内部线程未独立测量，非性能实验",
+        "ram_bytes":psutil.virtual_memory().total,"backend":("有限块NumPy整数重放；选中后Numba4线程完整终验，非性能实验" if plan.get("local_compensation") else "SciPy绑定的HiGHS LP/MILP；求解器内部线程未独立测量，非性能实验"),
         "purpose":plan["purpose"]}
     study_provenance.claim_run(args.output / "run.json",metadata)
     shutil.copyfile(args.plan,args.output / "plan.json")
@@ -127,17 +132,26 @@ def main():
     target = table[tuple(points.T)]
     baseline = interp.apply_tetra_q16(model,points)
     write(args.output / "cell.json",{"cell":cell,"axes":ranges,"points":points.tolist(),"targets":target.tolist(),"baseline":baseline.tolist()})
-    print(f"固定单元{cell}，{len(points)}色；开始一次连续minimax及一次整数最小修改",flush=True)
-    continuous,continuous_info = lm.relaxed_minimax(model,points,target,dual_scale=plan["dual_scale"])
-    integer,integer_info = lm.minimum_change(model,points,target,rgb_max=plan["rgb_max"],max_delta=plan["max_delta"],time_limit=plan["milp_time_limit"])
-    write(args.output / "certificate.json",continuous_info["certificate"])
-    variants = {"baseline":(model,{}),"minimax_rounded":(continuous,continuous_info),"minimum_change":(integer,integer_info)}
+    if plan.get("local_compensation"):
+        from lutlab import local_compensation as lc
+        variants = lc.family(model,plan["local_compensation"])
+        certificate = load(old_local / "certificate.json")
+        print(f"固定单元{cell}，{len(points)}色；两种冻结辅助幅度及单改/联合反事实",flush=True)
+    else:
+        print(f"固定单元{cell}，{len(points)}色；开始一次连续minimax及一次整数最小修改",flush=True)
+        continuous,continuous_info = lm.relaxed_minimax(model,points,target,dual_scale=plan["dual_scale"])
+        integer,integer_info = lm.minimum_change(model,points,target,rgb_max=plan["rgb_max"],max_delta=plan["max_delta"],time_limit=plan["milp_time_limit"])
+        certificate = continuous_info["certificate"]
+        variants = {"baseline":(model,{}),"minimax_rounded":(continuous,continuous_info),"minimum_change":(integer,integer_info)}
+    write(args.output / "certificate.json",certificate)
     for name,(candidate,info) in variants.items():
         checkpoint = args.output / name
         checkpoint.mkdir()
         write(checkpoint / "solver.json",info)
         if candidate is not None:io.save_sparse(checkpoint / "model.slut",candidate)
     all_nodes = lm.design(model,points)[0].tolist()
+    if plan.get("local_compensation"):
+        all_nodes = sorted(set(all_nodes)|{plan["local_compensation"]["primary"]["node"],plan["local_compensation"]["helper"]["node"]})
     support = affected(model,all_nodes)
     if len(support) > plan["max_support_colours"]:raise ValueError("联合变量完整支撑超过冻结上限")
     keys = tr.encode(support)
@@ -173,7 +187,7 @@ def main():
     for d,n in domain["final"]["histogram"]:hist[d] = n
     guard = cg.CvarGuard(hist,fg.signature([model]))
     write(args.output / "cvar-reference.json",guard.reference_report(digest(source_model)))
-    records = []
+    records,outputs = [],{}
     for name,(candidate,info) in variants.items():
         folder = args.output / name
         folder.mkdir(exist_ok=True)
@@ -184,18 +198,38 @@ def main():
         path = folder / "model.slut"
         io.save_sparse(path,candidate)
         current = interp.apply_tetra_q16(candidate,support)
+        outputs[name] = current
         new = np.sum((current.astype(np.int32)-truth)**2,axis=1)
         assessment = assess(old,new,weights,photos,domain,guard)
         changes = np.flatnonzero(np.any(candidate.nodes.reshape(-1,3) != model.nodes.reshape(-1,3),axis=1))
         record = {"name":name,"generated":True,"model_sha256":digest(path),"solver":info,"assessment":assessment,
             "moves":[{"node":int(n),"before":model.nodes.reshape(-1,3)[n].tolist(),"after":candidate.nodes.reshape(-1,3)[n].tolist()} for n in changes],
             "cell_metrics":ea.metrics(interp.apply_tetra_q16(candidate,points),target),"support_sha256":hashlib.sha256(current.tobytes()).hexdigest()}
+        if plan.get("local_compensation") and name == "primary":
+            old_primary = next(r for r in load(old_local / "results.json")["records"] if r["name"] == "minimum_change")
+            if record["model_sha256"] != old_primary["model_sha256"] or assessment != old_primary["assessment"]:
+                raise AssertionError("固定主改未逐项复现PR28的模型/频数/拒绝")
         write(folder / "result.json",record)
         records.append(record)
         print(name,"单元max",record["cell_metrics"]["max"],"全域max",assessment["cube_metrics"]["max"],"主缺口",assessment["primary_loss"],"保护失败",len(assessment["failed"]),flush=True)
     if not records[0]["assessment"]["accepted"] or records[0]["assessment"]["primary_loss"] != case["final_loss"]:
         raise AssertionError("空修改基线没有通过全部原保护/固定保护")
-    feasible = [r for r in records[1:] if r["generated"] and r["assessment"]["accepted"] and r["assessment"]["cube_metrics"]["max"] < case["final"]["cube"]["max"]]
+    interactions = []
+    if plan.get("local_compensation"):
+        by_name = {r["name"]:r for r in records}
+        for i,delta in enumerate(plan["local_compensation"]["helper"]["deltas"],1):
+            a,b,j = [by_name[n]["assessment"] for n in ("primary",f"helper_{i}",f"joint_{i}")]
+            info = lc.interaction(*(outputs[n] for n in ("baseline","primary",f"helper_{i}",f"joint_{i}")))
+            ids,ws = interp.tetra_index_weights_q(support,*model.tables(),model.m)
+            overlapping = np.any((ids == plan["local_compensation"]["primary"]["node"]) & (ws > 0),axis=1) & np.any((ids == plan["local_compensation"]["helper"]["node"]) & (ws > 0),axis=1)
+            info.update(helper_delta=delta,joint=f"joint_{i}",full_sse_interaction=str(int(j["full_sse_delta"])-int(a["full_sse_delta"])-int(b["full_sse_delta"])),
+                overlapping_nonzero_support_colours=int(np.count_nonzero(overlapping)),
+                photo_sse_interactions=[{"group":g,"delta":str(sum(d*n for d,n in j["groups"][g]["histogram"])-sum(d*n for d,n in a["groups"][g]["histogram"])
+                    -sum(d*n for d,n in b["groups"][g]["histogram"])+sum(d*n for d,n in photos["groups"][g]["histogram"]))} for g in range(101)])
+            interactions.append(info)
+        write(args.output / "interactions.json",interactions)
+    feasible = [r for r in records[1:] if r["generated"] and (not plan.get("local_compensation") or r["solver"]["role"] == "joint")
+        and r["assessment"]["accepted"] and r["assessment"]["cube_metrics"]["max"] < case["final"]["cube"]["max"]]
     selected = min(feasible,key=lambda r:(r["assessment"]["cube_metrics"]["max"],r["assessment"]["primary_loss"],len(r["moves"]),r["name"])) if feasible else None
     selection = {"selected":selected["name"] if selected else None,"before_photos":True,"scope":plan["limits"]}
     write(args.output / "selection-before-photos.json",selection)
@@ -209,10 +243,16 @@ def main():
         for k in ("mean","rms","p99","max","cvar_1pct"):
             if abs(cube[k]-selected["assessment"]["cube_metrics"][k]) > 1e-10:raise AssertionError("完整终验与局部完整频数不同")
         native = native_verify([chosen],folder,cube["prediction_sha256"],args.executable)
-        final = {"cube":cube,"native":native,"photos":photos_evaluate([table],{"selected":ea.Operator([chosen])})["selected"],"reused":False}
+        photo_metrics = photos_evaluate([table],{"selected":ea.Operator([chosen])})["selected"]
+        actual = {r["image"]:r for r in photo_metrics["per_image"]}
+        for g,meta in enumerate(inventory["groups"][:80]):
+            for key in ("mean","rms","p99","max"):
+                if abs(actual[meta["image"]][key]-selected["assessment"]["groups"][g]["metrics"][key]) > 1e-12:
+                    raise AssertionError("完整照片终验与局部完整频数不一致")
+        final = {"cube":cube,"native":native,"photos":photo_metrics,"reused":False}
     write(args.output / "results.json",{"case":case["case"],"parent_identity":load(parent / "run.json")["identity_sha256"],
-        "run_identity":metadata["identity_sha256"],"certificate":continuous_info["certificate"],"records":records,"selection":selection,"final":final,
-        "scope":"有限两候选/单元/完整局部支撑；拒绝结果同样保存；未选中时只复用同字节PR27终态，不重复完整终验"})
+        "run_identity":metadata["identity_sha256"],"certificate":certificate,"records":records,"interactions":interactions,"selection":selection,"final":final,
+        "scope":"冻结有限候选/单元/完整局部支撑；拒绝与单改对照同样保存；未选中时只复用同字节PR27终态，不重复完整终验"})
     print("局部极值阶段结束；选择：",selection["selected"],flush=True)
 
 

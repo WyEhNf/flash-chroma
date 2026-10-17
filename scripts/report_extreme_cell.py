@@ -3,6 +3,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -30,10 +31,12 @@ def pack(source,target):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input",type=Path,required=True)
-    parser.add_argument("--first-failure",type=Path,required=True)
+    parser.add_argument("--first-failure",type=Path)
+    parser.add_argument("--study",choices=("extreme","compensation"),default="extreme")
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--roundtrip",type=Path,required=True)
     args = parser.parse_args()
+    if args.study == "extreme" and args.first_failure is None:raise ValueError("原单元阶段必须保存首次失败")
     if args.output.exists() or args.roundtrip.exists():raise ValueError("不覆盖归档或解压复核")
     run,result,verification = [load(args.input / n) for n in ("run.json","results.json","verification.json")]
     identity = run["identity"]
@@ -46,6 +49,8 @@ def main():
         if digest((ROOT / path).read_bytes()) != h:raise ValueError("已测父输入变化")
     for path,h in identity.get("frequency_cache",{}).items():
         if digest((ROOT / path).read_bytes()) != h:raise ValueError("复用频数的来源变化")
+    for path,h in identity.get("local_reference_files",{}).items():
+        if digest((ROOT / path).read_bytes()) != h:raise ValueError("冻结主改及复用证书的来源变化")
     line_only = []
     with zipfile.ZipFile(args.input / "measured-source.zip") as z:
         if set(z.namelist()) != set(identity["source_sha256"]):raise ValueError("实测数值源码集合不同")
@@ -61,19 +66,25 @@ def main():
     out.mkdir(parents=True)
     index = pack(args.input,out / "evidence.zip")
     write(out / "archive-index.json",index)
-    first_index = pack(args.first_failure,out / "first-failure-evidence.zip")
-    write(out / "first-failure-index.json",first_index)
+    first_index = {}
+    if args.first_failure is not None:
+        first_index = pack(args.first_failure,out / "first-failure-evidence.zip")
+        write(out / "first-failure-index.json",first_index)
     for name in ("run.json","plan.json","certificate.json","verification.json","selection-before-photos.json"):
         shutil.copyfile(args.input / name,out / name)
-    for path,target in ((args.input.with_suffix(".log"),"experiment.log"),(args.first_failure.with_suffix(".log"),"first-failure.log"),
-            (ROOT / "artifacts/extreme-cell-contracts-v1.log","contracts-initial.log"),(ROOT / "artifacts/extreme-cell-contracts-fix-v1.log","contracts-fix.log"),
-            (ROOT / "artifacts/extreme-cell-verify-v2.log","verification.log")):
+    logs = [(args.input.with_suffix(".log"),"experiment.log")]
+    if args.study == "extreme":logs += [(args.first_failure.with_suffix(".log"),"first-failure.log"),
+        (ROOT / "artifacts/extreme-cell-contracts-v1.log","contracts-initial.log"),(ROOT / "artifacts/extreme-cell-contracts-fix-v1.log","contracts-fix.log"),
+        (ROOT / "artifacts/extreme-cell-verify-v2.log","verification.log")]
+    else:logs += [(ROOT / "artifacts/local-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/local-compensation-verify-v1.log","verification.log")]
+    for path,target in logs:
         shutil.copyfile(path,out / target)
     with zipfile.ZipFile(out / "contracts-and-report-sources.zip","x",zipfile.ZIP_DEFLATED) as z:
-        for commit,label in (("bc5568b","initial"),("a86dba0","fix")):
+        for commit,label in ((("bc5568b","initial"),("a86dba0","fix")) if args.study == "extreme" else ()):
             data = subprocess.run(["git","show",commit+":tests/test_local_minimax.py"],cwd=ROOT,check=True,capture_output=True).stdout
             z.writestr(label+"/test_local_minimax.py",data)
-        for name in ("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py"):
+        for name in (("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
+                ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","scripts/report_extreme_cell.py")):
             z.write(ROOT / name,"current/"+name)
     before = load(args.input / "reference" / load(args.input / "plan.json")["case"] / "final-groups.json")
     inventory = load(args.input / "reference/photo-inventory.json")
@@ -97,6 +108,34 @@ def main():
             writer = csv.DictWriter(f,list(rows[0]),lineterminator="\n")
             writer.writeheader()
             writer.writerows(rows)
+    if args.study == "compensation":
+        if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
+        shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
+        parent_case = next(c for c in load(args.input / "reference/results.json")["cases"] if c["case"]["id"] == load(args.input / "plan.json")["case"])
+        profiles = [("baseline",parent_case["final"],True)]
+        if result["selection"]["selected"] is not None:profiles += [("selected",result["final"],False)]
+        photo_rows,split_rows,regressions,native = [],[],[],[]
+        partition = load(args.input / "reference/photo-partition.json")
+        splits = {"training":[v["id"] for v in partition["training"]["images"]],"selection":[v["id"] for v in partition["guard"]["images"]],"audit":partition["audit_ids"]}
+        previous = {v["image"]:v for v in parent_case["final"]["photos"]["per_image"]}
+        for name,value,reused in profiles:
+            photo_rows += [{"profile":name,"reused":reused,**v} for v in value["photos"]["per_image"]]
+            native += [{"profile":name,"reused":reused,**v} for v in value["native"]]
+            for split,ids in splits.items():
+                rows = [v for v in value["photos"]["per_image"] if v["image"] in ids]
+                if len(rows) != len(ids):raise ValueError("完整照片分组清单不符")
+                split_rows.append({"profile":name,"split":split,"reused":reused,"n_images":len(rows),"mean":math.fsum(v["mean"] for v in rows)/len(rows),
+                    "rms":math.sqrt(math.fsum(v["rms"]**2 for v in rows)/len(rows)),"worst_image_p99":max(v["p99"] for v in rows),"max":max(v["max"] for v in rows)})
+            regressions.append({"profile":name,"vs_baseline":{k:{"improved":sum(v[k] < previous[v["image"]][k]-1e-12 for v in value["photos"]["per_image"]),
+                "worse":sum(v[k] > previous[v["image"]][k]+1e-12 for v in value["photos"]["per_image"]),
+                "equal":sum(abs(v[k]-previous[v["image"]][k]) <= 1e-12 for v in value["photos"]["per_image"])} for k in ("mean","rms","p99","max")}})
+        for name,rows in (("photos-per-image.csv",photo_rows),("photo-splits.csv",split_rows)):
+            with (out / name).open("w",encoding="utf-8",newline="") as f:
+                writer = csv.DictWriter(f,list(rows[0]),lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(rows)
+        write(out / "photo-regressions.json",regressions)
+        write(out / "native-parity.json",native)
     args.roundtrip.mkdir(parents=True)
     with zipfile.ZipFile(out / "evidence.zip") as z:
         if set(z.namelist()) != set(index) or len(z.namelist()) != len(index):raise ValueError("归档成员重复或遗漏")
