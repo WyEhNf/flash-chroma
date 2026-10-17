@@ -33,6 +33,8 @@ def main():
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--first-failure",type=Path)
     parser.add_argument("--study",choices=("extreme","compensation"),default="extreme")
+    parser.add_argument("--prior-run",type=Path)
+    parser.add_argument("--additional-contract-log",type=Path)
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--roundtrip",type=Path,required=True)
     args = parser.parse_args()
@@ -70,6 +72,13 @@ def main():
     if args.first_failure is not None:
         first_index = pack(args.first_failure,out / "first-failure-evidence.zip")
         write(out / "first-failure-index.json",first_index)
+    prior_index = {}
+    if args.prior_run is not None:
+        prior_index = pack(args.prior_run,out / "prior-run-evidence.zip")
+        write(out / "prior-run-index.json",prior_index)
+        shutil.copyfile(args.prior_run.with_suffix(".log"),out / "prior-experiment.log")
+        shutil.copyfile(ROOT / "artifacts/local-compensation-initial-verify-v1.log",out / "prior-verification.log")
+    if args.additional_contract_log is not None:shutil.copyfile(args.additional_contract_log,out / "contracts-signed-mean.log")
     for name in ("run.json","plan.json","certificate.json","verification.json","selection-before-photos.json"):
         shutil.copyfile(args.input / name,out / name)
     logs = [(args.input.with_suffix(".log"),"experiment.log")]
@@ -84,8 +93,12 @@ def main():
             data = subprocess.run(["git","show",commit+":tests/test_local_minimax.py"],cwd=ROOT,check=True,capture_output=True).stdout
             z.writestr(label+"/test_local_minimax.py",data)
         for name in (("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
-                ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","scripts/report_extreme_cell.py")):
+                ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","tests/test_histogram_delta.py","tests/test_stability.py","scripts/report_extreme_cell.py")):
             z.write(ROOT / name,"current/"+name)
+        if args.prior_run is not None:
+            old_commit = load(args.prior_run / "run.json")["git_commit"]
+            for name in ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","python/lutlab/stability.py"):
+                z.writestr("initial/"+name,subprocess.run(["git","show",old_commit+":"+name],cwd=ROOT,check=True,capture_output=True).stdout)
     before = load(args.input / "reference" / load(args.input / "plan.json")["case"] / "final-groups.json")
     inventory = load(args.input / "reference/photo-inventory.json")
     summaries,conflicts = [],[]
@@ -111,6 +124,8 @@ def main():
     if args.study == "compensation":
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
+        write(out / "signed-mean-rechecks.json",[{"candidate":r["name"],**p} for r in result["records"] for p in r.get("signed_mean_rechecks",[])])
+        if result["selection"]["selected"] is not None and not verification.get("full_stream_checked"):raise ValueError("新终态归档前未核对实际完整流")
         parent_case = next(c for c in load(args.input / "reference/results.json")["cases"] if c["case"]["id"] == load(args.input / "plan.json")["case"])
         profiles = [("baseline",parent_case["final"],True)]
         if result["selection"]["selected"] is not None:profiles += [("selected",result["final"],False)]
@@ -153,7 +168,7 @@ def main():
     if not receipt["verified"] or receipt["external_dependencies_loaded"]:raise ValueError("解压后独立复核依赖外部数值库")
     shutil.copyfile(args.roundtrip / "roundtrip-verification.json",out / "roundtrip-verification.json")
     subprocess.run(["git","diff","--exit-code","876e15b","--","AGENTS.md"],cwd=ROOT,check=True,capture_output=True)
-    write(out / "archive-audit.json",{"verified":True,"members":len(index),"first_failure_members":len(first_index),"source_git_commit":run["git_commit"],
+    write(out / "archive-audit.json",{"verified":True,"members":len(index),"first_failure_members":len(first_index),"prior_run_members":len(prior_index),"source_git_commit":run["git_commit"],
         "current_numerical_sources_same":True,"legacy_line_ending_only_differences":line_only,"roundtrip_verified":True,
         "no_new_full_domain_execution":result["final"]["reused"],"selected":result["selection"]["selected"],"agents_unchanged":True,
         "archiver_sha256":digest(Path(__file__).read_bytes()),"scope":"归档来源/成员、首次失败和频数缓存保留；解压用已核同字节独立验证器及本机同字节完整源表重放；无新搜索/拟合"})

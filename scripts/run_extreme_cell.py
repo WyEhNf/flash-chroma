@@ -14,7 +14,7 @@ sys.path.insert(0,str(ROOT / "python"))
 import numba
 import numpy as np
 import psutil
-from lutlab import cvar_guard as cg,error_analysis as ea,full_domain_guard as fg,interp,io,local_minimax as lm,study_provenance,tail_repair as tr
+from lutlab import cvar_guard as cg,error_analysis as ea,full_domain_guard as fg,histogram_delta as hd,interp,io,local_minimax as lm,study_provenance,tail_repair as tr
 from diagnose_quantile_compensation import affected
 from diagnose_quantile_bounds import frequency,trimmed
 from diagnose_three_node import replace_hist
@@ -31,7 +31,7 @@ def fixed_checks(old,new,prefix):
     before,after = summary(old),summary(new)
     failed = []
     if after["sse"] > before["sse"]:failed.append(prefix+".rms")
-    if after["upper"] > before["lower"] and old != new:failed.append(prefix+".mean_bound")
+    if after["upper"] > before["lower"] and not hd.mean_difference(old,new)["accepted"]:failed.append(prefix+".mean_bound")
     for j,(t,b) in enumerate(before["constraints"]):
         if sum(n for d,n in new if d > t) > b:failed.append(prefix+f".tail{j}")
     return failed
@@ -90,8 +90,8 @@ def main():
     old_identity = load(parent / "run.json")["identity"]
     if digest(ROOT / "assets/photos/manifest.json") != old_identity["image_manifest"]:raise ValueError("图片清单不同")
     sources = ["scripts/run_extreme_cell.py","scripts/verify_extreme_cell.py","scripts/diagnose_quantile_compensation.py","scripts/diagnose_quantile_bounds.py",
-        "scripts/diagnose_three_node.py","scripts/run_tail_repair.py","scripts/verify_quantile_constraints.py","scripts/verify_full_domain_guard.py","scripts/verify_cvar_guard.py"]
-    sources += ["python/lutlab/"+n+".py" for n in ("local_minimax","interp","io","cvar_guard","full_domain_guard","error_analysis","tail_repair","study_provenance")]
+        "scripts/diagnose_three_node.py","scripts/run_tail_repair.py","scripts/verify_quantile_constraints.py","scripts/verify_full_domain_guard.py","scripts/verify_cvar_guard.py","scripts/verify_stability.py"]
+    sources += ["python/lutlab/"+n+".py" for n in ("local_minimax","interp","io","cvar_guard","full_domain_guard","histogram_delta","stability","error_analysis","tail_repair","study_provenance")]
     if plan.get("local_compensation"):sources += ["python/lutlab/local_compensation.py","scripts/run_chain_error_study.py","scripts/run_joint_box_study.py","python/lutlab/runtime.py"]
     refs = [parent / n for n in ("results.json","run.json","photo-inventory.json","photo-partition.json")]
     refs += [parent / cid / n for n in ("full-domain.json","final-groups.json","repaired.slut","repaired.rgb")]+[table_path]
@@ -205,6 +205,15 @@ def main():
         record = {"name":name,"generated":True,"model_sha256":digest(path),"solver":info,"assessment":assessment,
             "moves":[{"node":int(n),"before":model.nodes.reshape(-1,3)[n].tolist(),"after":candidate.nodes.reshape(-1,3)[n].tolist()} for n in changes],
             "cell_metrics":ea.metrics(interp.apply_tetra_q16(candidate,points),target),"support_sha256":hashlib.sha256(current.tobytes()).hexdigest()}
+        rechecks = []
+        for g,(base,after) in enumerate(zip(photos["groups"],assessment["groups"])):
+            if summary(after["histogram"])["upper"] > summary(base["histogram"])["lower"] and after["histogram"] != base["histogram"]:
+                proof = hd.mean_difference(base["histogram"],after["histogram"])
+                if proof["accepted"]:rechecks.append({"scope":"group","group":g,"proof":proof})
+        if int(assessment["full_domain"]["candidate"]["sum_upper_q24"]) > int(domain["final"]["sum_lower_q24"]) and assessment["full_domain"]["candidate"]["histogram"] != domain["final"]["histogram"]:
+            proof = hd.mean_difference(domain["final"]["histogram"],assessment["full_domain"]["candidate"]["histogram"])
+            if proof["accepted"]:rechecks.append({"scope":"full","proof":proof})
+        record["signed_mean_rechecks"] = rechecks
         if plan.get("local_compensation") and name == "primary":
             old_primary = next(r for r in load(old_local / "results.json")["records"] if r["name"] == "minimum_change")
             if record["model_sha256"] != old_primary["model_sha256"] or assessment != old_primary["assessment"]:

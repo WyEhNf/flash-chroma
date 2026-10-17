@@ -12,6 +12,7 @@ import struct
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+SIGNED_MEAN_UPPER = runpy.run_path(str(Path(__file__).with_name("verify_stability.py")))["signed_mean_upper"]
 
 
 def load(path):return json.loads(path.read_text(encoding="utf-8"))
@@ -75,7 +76,7 @@ def fixed(old,new,prefix,summarize):
     a,b = summarize(old),summarize(new)
     failed = []
     if b["sse"] > a["sse"]:failed.append(prefix+".rms")
-    if b["upper"] > a["lower"] and old != new:failed.append(prefix+".mean_bound")
+    if b["upper"] > a["lower"] and SIGNED_MEAN_UPPER(old,new) > 0:failed.append(prefix+".mean_bound")
     for j,(threshold,budget) in enumerate(a["constraints"]):
         if sum(n for d,n in new if d > threshold) > budget:failed.append(prefix+f".tail{j}")
     return failed
@@ -236,6 +237,14 @@ def main():
         if loss > photos["loss"]:failed.append("primary_loss")
         if loss != assessment["primary_loss"] or failed != assessment["failed"] or bool(not failed) != assessment["accepted"]:
             raise ValueError("候选接受/拒绝或主缺口与独立复算不同")
+        for item in record.get("signed_mean_rechecks",[]):
+            before = photos["groups"][item["group"]]["histogram"] if item["scope"] == "group" else domain["final"]["histogram"]
+            after = assessment["groups"][item["group"]]["histogram"] if item["scope"] == "group" else assessment["full_domain"]["candidate"]["histogram"]
+            changes = [[d,dict(after).get(d,0)-dict(before).get(d,0)] for d in sorted(dict(before).keys() | dict(after).keys()) if dict(after).get(d,0) != dict(before).get(d,0)]
+            proof = item["proof"]
+            if (not proof["accepted"] or proof["changed_counts"] != changes or int(proof["delta_upper_q24"]) != SIGNED_MEAN_UPPER(before,after)
+                    or int(proof["delta_lower_q24"]) != -SIGNED_MEAN_UPPER(after,before) or proof["n"] != sum(n for d,n in before) or proof["precision_bits"] != 24):
+                raise ValueError("有符号mean差值证书没有匹配独立整数重算")
         squared = [sum((a-b)**2 for a,b in zip(candidate.apply(p),t)) for p,t in zip(points,truth)]
         if math.sqrt(max(squared)) != record["cell_metrics"]["max"]:raise ValueError("单元max与独立oracle不同")
         verified.append({"name":name,"accepted":not failed,"primary_loss":loss,"cell_max":math.sqrt(max(squared)),"full_max":math.sqrt(bins[-1][0]),"failed_count":len(failed)})
