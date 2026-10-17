@@ -127,7 +127,7 @@ def main():
     if cell["targets"] != truth or cell["baseline"] != [model.apply(p) for p in points]:raise ValueError("单元参考或基线oracle不同")
     nodes = sorted({n for p in points for n,w in zip(*model.weights(p)) if w})
     config = plan.get("local_compensation")
-    if plan.get("joint_interval"):
+    if plan.get("joint_interval") or plan.get("joint_minimax"):
         evidence = load(folder / "node-evidence.json")
         primary_nodes = [m["node"] for m in evidence["primary_moves"]]
         neighbors = set()
@@ -286,7 +286,15 @@ def main():
             interactions_checked += 1
     eligible = [v for v in verified if v["name"] != "baseline" and (not config or v["name"].startswith("joint_"))
         and v["accepted"] and v["full_max"] < parent_case["final"]["cube"]["max"]]
-    if plan.get("joint_interval"):
+    if plan.get("joint_minimax"):
+        def quality_key(value):
+            row = records_by_name[value["name"]]
+            a = row["assessment"]
+            return (a["full_domain"]["candidate"]["max_squared_error"],a["primary_loss"],int(a["full_domain"]["candidate"]["sum_squared_error"]),
+                sum(sum(abs(x-y) for x,y in zip(m["before"],m["after"])) for m in row["moves"]),value["name"])
+        best = min((v for v in verified if v["accepted"]),key=quality_key)
+        chosen = best if best["name"] != "baseline" else None
+    elif plan.get("joint_interval"):
         chosen = min(eligible,key=lambda v:(sum(sum(abs(a-b) for a,b in zip(m["before"],m["after"])) for m in records_by_name[v["name"]]["moves"]),v["name"])) if eligible else None
     else:chosen = min(eligible,key=lambda v:(v["full_max"],v["primary_loss"],len(records_by_name[v["name"]]["moves"]),v["name"])) if eligible else None
     if result["selection"]["selected"] != (chosen["name"] if chosen else None):raise ValueError("最终选择没有匹配独立重算的完整保护")
@@ -327,7 +335,7 @@ def main():
         helper = Path(__file__).with_name("verify_automatic_compensation.py")
         output["automatic"] = runpy.run_path(str(helper))["verify_trace"](folder,plan,automatic,model,source,relevant,frequencies,photos,domain,records_by_name)
         output["automatic_verifier_sha256"] = digest(helper.read_bytes())
-    if plan.get("joint_interval"):
+    if plan.get("joint_interval") or plan.get("joint_minimax"):
         helper = Path(__file__).with_name("verify_joint_interval.py")
         output["joint_interval"] = runpy.run_path(str(helper))["verify"](folder,plan,model,source,relevant,frequencies,photos,domain,records_by_name)
         output["joint_verifier_sha256"] = digest(helper.read_bytes())

@@ -32,7 +32,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--first-failure",type=Path)
-    parser.add_argument("--study",choices=("extreme","compensation","automatic","joint"),default="extreme")
+    parser.add_argument("--study",choices=("extreme","compensation","automatic","joint","minimax"),default="extreme")
     parser.add_argument("--prior-run",type=Path)
     parser.add_argument("--additional-contract-log",type=Path)
     parser.add_argument("--output",type=Path,required=True)
@@ -102,14 +102,16 @@ def main():
         (ROOT / "artifacts/extreme-cell-verify-v2.log","verification.log")]
     elif args.study == "compensation":logs += [(ROOT / "artifacts/local-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/local-compensation-verify-v1.log","verification.log")]
     elif args.study == "automatic":logs += [(ROOT / "artifacts/automatic-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/automatic-compensation-verify-v1.log","verification.log")]
-    else:logs += [(ROOT / "artifacts/joint-interval-contracts-v1.log","contracts.log"),(ROOT / "artifacts/joint-interval-verify-v1.log","verification.log")]
+    elif args.study == "joint":logs += [(ROOT / "artifacts/joint-interval-contracts-v1.log","contracts.log"),(ROOT / "artifacts/joint-interval-verify-v1.log","verification.log")]
+    else:logs += [(ROOT / "artifacts/joint-minimax-contracts-v1.log","contracts.log"),(ROOT / "artifacts/joint-minimax-verify-v1.log","verification.log")]
     for path,target in logs:
         shutil.copyfile(path,out / target)
     with zipfile.ZipFile(out / "contracts-and-report-sources.zip","x",zipfile.ZIP_DEFLATED) as z:
         for commit,label in ((("bc5568b","initial"),("a86dba0","fix")) if args.study == "extreme" else ()):
             data = subprocess.run(["git","show",commit+":tests/test_local_minimax.py"],cwd=ROOT,check=True,capture_output=True).stdout
             z.writestr(label+"/test_local_minimax.py",data)
-        for name in (("tests/test_joint_interval.py","tests/test_automatic_compensation.py","scripts/report_extreme_cell.py") if args.study == "joint" else
+        for name in (("tests/test_joint_minimax.py","tests/test_joint_interval.py","tests/test_hald_reference_audit.py","scripts/report_extreme_cell.py") if args.study == "minimax" else
+                ("tests/test_joint_interval.py","tests/test_automatic_compensation.py","scripts/report_extreme_cell.py") if args.study == "joint" else
                 ("tests/test_automatic_compensation.py","tests/test_local_minimax.py","tests/test_histogram_delta.py","scripts/report_extreme_cell.py") if args.study == "automatic" else
                 ("tests/test_error_analysis.py","tests/test_local_minimax.py","scripts/report_extreme_cell.py") if args.study == "extreme" else
                 ("tests/test_local_compensation.py","tests/test_local_minimax.py","tests/test_cvar_guard.py","tests/test_histogram_delta.py","tests/test_stability.py","scripts/report_extreme_cell.py")):
@@ -145,14 +147,14 @@ def main():
         if (not verification["automatic"]["tree_complete"] or verification["automatic_verifier_sha256"] != digest((ROOT / "scripts/verify_automatic_compensation.py").read_bytes())):
             raise ValueError("自动完整候选树没有绑定独立复核源")
         shutil.copyfile(args.input / "automatic.json",out / "automatic.json")
-    if args.study == "joint":
+    if args.study in ("joint","minimax"):
         if (not verification["joint_interval"]["verified"] or verification["joint_verifier_sha256"] != digest((ROOT / "scripts/verify_joint_interval.py").read_bytes())):
             raise ValueError("联合完整覆盖没有绑定独立复核源")
         shutil.copyfile(args.input / "joint-search.json",out / "joint-search.json")
         shutil.copyfile(args.input / "node-evidence.json",out / "node-evidence.json")
         tree = load(args.input / "joint-search.json")
         subset_witnesses = []
-        if tree["incumbent"] is not None:
+        if args.study == "joint" and tree["incumbent"] is not None:
             best = tree["incumbent"]["deltas"]
             active = [i for i,d in enumerate(best) if d]
             for mask in range((1 << len(active))-1):
@@ -162,9 +164,10 @@ def main():
                 if len(matches) != 1 or matches[0]["kind"] not in ("rgb_max","rms","mean","tail","outside_max"):
                     raise ValueError("最小L1解的真子块没有独立必要界拒绝见证")
                 subset_witnesses.append({"nodes":[tree["nodes"][i] for i in sorted(chosen)],"deltas":deltas,"terminal_certificate":matches[0]})
-        write(out / "proper-subset-witnesses.json",{"new_model_evaluations":0,"proper_subsets":subset_witnesses,
+        if args.study == "joint":write(out / "proper-subset-witnesses.json",{"new_model_evaluations":0,"proper_subsets":subset_witnesses,
             "scope":"只把所选块的真子集映射至已独立核对的覆盖证书；不重新映射模型或拟合，不证明所有其他同节点数方案不可行"})
-    if args.study in ("compensation","automatic","joint"):
+        else:shutil.copyfile(args.input / "source-audit.json",out / "source-audit.json")
+    if args.study in ("compensation","automatic","joint","minimax"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
         write(out / "signed-mean-rechecks.json",[{"candidate":r["name"],**p} for r in result["records"] for p in r.get("signed_mean_rechecks",[])])
