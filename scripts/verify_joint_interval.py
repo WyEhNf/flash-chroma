@@ -14,11 +14,11 @@ SUMMARY = runpy.run_path(str(HERE / "verify_quantile_constraints.py"))["summary"
 SHARED = runpy.run_path(str(HERE / "verify_automatic_compensation.py"))
 
 
-def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
+def verify(folder,plan,model,source,points,frequencies,photos,domain,records,*,search_name="joint-search.json",expected_nodes=None,proposal_trace=None):
     quality = bool(plan.get("joint_minimax"))
     def load(name):return json.loads((folder / name).read_text(encoding="utf-8"))
     def digest(name):return hashlib.sha256((folder / name).read_bytes()).hexdigest()
-    search,evidence = load("joint-search.json"),load("node-evidence.json")
+    search,evidence = load(search_name),load("node-evidence.json")
     prior,diagnosis = load("prior-results.json"),load("prior-diagnosis.json")
     old_proof = load("prior-verification.json")
     identity = load("run.json")["identity"]
@@ -43,6 +43,10 @@ def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
         for n,w in zip(*model.weights(item["rgb"])):
             if w:add(n)
     for move in evidence["closest_moves"]:add(move["node"])
+    canonical_nodes = load("parent-search.json")["nodes"] if plan.get("working_set") else nodes.copy()
+    nodes = list(expected_nodes) if expected_nodes is not None else canonical_nodes
+    if (not nodes or len(set(nodes)) != len(nodes) or not set(nodes) <= set(load("support.json")["nodes"])):
+        raise ValueError("工作集变量越过完整支撑")
     channel = plan["channel"]
     domains = [sorted((d for d in range(-plan["max_delta"],plan["max_delta"]+1) if 0 <= model.data[model.node_offset+3*n+channel]+d <= 255),key=lambda d:(abs(d),d)) for n in nodes]
     parent = next(c for c in load("reference/results.json")["cases"] if c["case"]["id"] == plan["case"])
@@ -105,11 +109,21 @@ def verify(folder,plan,model,source,points,frequencies,photos,domain,records):
         if loss > photos["loss"]:failed.append("primary_loss")
         return {"fixed_failed":failed,"primary_loss":loss,"max_squared":full[-1][0],"full_sse_delta":str(sum(d*n for d,n in full)-sum(d*n for d,n in histograms["full"])),
             "group_sse_deltas":deltas,"nonimproving_max":full[-1][0] >= histograms["full"][-1][0]}
+    if proposal_trace is not None:
+        if not plan.get("working_set"):raise ValueError("非工作集实验不能注入坐标探针")
+        for item in proposal_trace["proposals"]:
+            helper = item["helper"]
+            candidate = copy.copy(model)
+            data = bytearray(model.data)
+            data[model.node_offset+3*helper["node"]+helper["channel"]] += helper["delta"]
+            candidate.data = bytes(data)
+            score = actual_score(candidate)
+            if any(item["score"].get(k) != value for k,value in score.items()):raise ValueError("工作集探针评分与独立整数重放不同")
     seed = [histograms["full"][-1][0],photos["loss"],full_sse,0]
     incumbent = {"name":"baseline","objective":seed,"deltas":[0]*len(nodes)} if quality else None
     if quality:
         if (search["seed_objective"] != seed or search["objective_schema"] != ["max_squared","historical_loss","full_sse","l1"] or
-                digest("parent-search.json") != parents[plan["warm_run"]+"/joint-search.json"] or load("parent-search.json")["nodes"] != nodes):
+                digest("parent-search.json") != parents[plan["warm_run"]+"/joint-search.json"] or load("parent-search.json")["nodes"] != canonical_nodes):
             raise ValueError("质量目标或父联合节点来源不同")
         audit = load("source-audit.json")
         if (not audit["verified"] or audit["byte_mismatches"] or audit["rational_sha256"] != audit["cached_sha256"] or

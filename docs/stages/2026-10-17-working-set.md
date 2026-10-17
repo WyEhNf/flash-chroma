@@ -1,0 +1,42 @@
+# 尾部反馈工作集的同中心受控比较
+
+Agent：Codex；Operator：WyEhNf；Task：PR32后续联合变量选择；Status：In Progress（执行前冻结）。
+
+## 问题与单一实验范围
+
+PR32证明其四节点箱内质量最优，max51、缺口1579，但输入中心相对PR31有变化，不能只用52→51归因于目标选择。当前父块四变量中35908没有实际修改，另三节点变化。本阶段把问题转为**同一个起点、半径、目标与保护下，替换一个不活跃变量能否改善质量**，不继续只平移同一个箱，也不把单节点探针当作可行改动。
+
+从PR32已验收模型`9f65bf5fdda5d100178dae4d26729b99a00af82b6cf23b015afd8a8eb2e0028a`出发。父搜索、独立复核及源审计字节与44fd531已发布证据逐项相同，SHA在计划中冻结。保持该模型的全部原历史/固定101组及完整域mean/RMS/p99端点/max/CVaR和缺口不升，不改阈值。
+
+对照箱完整保留父四节点。替换箱依父实际终态变更保留三个活跃节点，释放恰一个未改变节点；从已有12节点完整支撑池中且不在旧四节点的最多8个新节点，以B−2/−1/+1/+2的全部合法探针真实重放。按`历史缺口、固定保护失败数、max平方、全域SSE差、节点/通道/幅度`确定性排序，仅选第一提议的节点。记录全部探针、拒绝及排名；提议幅度不固定最终值，联合求解仍自由取±4整数域。
+
+两个箱以完全相同原模型为中心，各4节点、半径±4、同一质量字典序`max平方/历史缺口/全域SSE/L1`，各完整求解一次并保留覆盖证书。没有串行把对照结果当成替换起点，没有试遍工作集，也不在失败后继续换节点。比较前三个质量分量是否严格优于对照，L1平局取舍另记；最后从两箱中选择完整保护通过的最优模型，只有一个最终模型进入完整终验。若替换箱无收益如实保留，不宣称工作集策略优越。
+
+## 实现与独立正确性
+
+`working_set.py`将父工作集、当前模型和实际终态变更绑定，拒绝陈旧签名/节点终值，不手填新节点ID、不截断新节点池。原研究入口通过计划启用双箱，其余单箱模式保持。每个模型回执有箱归属，源/频数一次加载，两个求解共享同一冻结起点。
+
+`verify_working_set.py`仅用标准库从父结果及原模型重建保留/释放/新节点集合，列出完整合法探针域，逐项独立重算全部探针分数、排名和唯一替换节点；分别调用整数区间验证器核两个箱的叶子/保护/质量下界/完整覆盖，检查模型清单无遗漏、无跨箱回执冒用及最终比较/选择。箱内最优不等于所有工作集或模型全局最优。
+
+频数依赖图片/取样和颜色，与节点值无关；继续使用同几何的7857色完整支撑和101组频数，重建新基线并核PR32实际完整流。PR32已独立审计同源/同区域的7865色，代码和源表未变，因此复用其原Pillow回执及哈希，不重解码TIFF或把旧审计时间标成新执行。独立标准库仍复算原有理见证及范围。20历史审计仅最终观察，已见数据不称盲验。
+
+## 测试目的、环境和复现
+
+冻结源/计划后集中7项必要合同：新解析例验证旧变量支撑外的颜色无法改善，而单一坐标替换后可以精确恢复，并比较同中心两个箱的最优目标；另检验陈旧模型/父终值拒绝。回归质量目标2项和区间联合3项。一次正式双箱实验，每箱最多10000赋值，只有最终新模型一次256³/100图/独立NumPy整数oracle/原生scalar和AVX2终验；没有新模型则复用，不扩大参数或测试矩阵。
+
+环境沿父测量：Windows11 10.0.26200、Ryzen9 8945HX16核32线程、RAM33605316608字节；Python3.12.14、NumPy1.26.4、SciPy1.15.2、Numba0.60.0、llvmlite0.43.0。BLAS/MKL/OMP1，Numba4；局部及求解为NumPy整数，完整映射Numba4。既有GCC15.2 Release单线程scalar/AVX2程序SHA `ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a`。目的为变量选择的因果比较、精度和正确性，不作计时性能比较；复用的源审计Pillow10.4.0明确单列。
+
+```powershell
+# python使用artifacts/error-study-py312/Scripts/python.exe，设置上述UTF8/线程环境。
+python -m pytest tests/test_working_set.py tests/test_joint_minimax.py tests/test_joint_interval.py -q
+# 移除NUMBA_NUM_THREADS，由入口设4。
+python scripts/run_joint_interval.py --plan experiments/working-set-v1.json --output artifacts/working-set-v1
+python -I -S scripts/verify_extreme_cell.py --input artifacts/working-set-v1 --output artifacts/working-set-v1/verification.json
+python -I -S scripts/report_extreme_cell.py --study working --input artifacts/working-set-v1 --output report/data/working-set-v1 --roundtrip artifacts/working-set-roundtrip-v1
+```
+
+## 协作与边界
+
+从PR32头44fd531建立分支，fetch确认main仍dec1020且为祖先，337a3dd工程修复保留；AGENTS.md只读，C++运行时、embedded、模型格式、默认/冠军及硬件后端不变。每阶段中文说明/提交/Draft PR，Operator为WyEhNf；操作前刷新相关正文/完整评论/review/行内线程、#7/#8及检索，Discussion4读取缺口保留，不合并/关闭。
+
+官方数据/Threshold未知，误差为RGB欧氏码值，非CIEDE2000。本阶段不是新四级ISP、实板或性能结果。事实、拒绝/收益、实际来源与CI在执行后补记。
