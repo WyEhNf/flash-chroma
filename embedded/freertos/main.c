@@ -1,5 +1,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+#include "jshc_portable.h"
+#endif
 
 int jshc_embedded_contract(void (*checkpoint)(void));
 void jshc_platform_write(const char *message);
@@ -41,6 +44,13 @@ static void worker(void *argument)
     jshc_platform_number((uint32_t)uxTaskGetStackHighWaterMark(NULL));
     jshc_platform_write("\n");
     if (result || !heartbeat || xTaskGetTickCount() == start) jshc_platform_fail();
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+    jshc_platform_write("portable 通用/结构化路径对照通过，单模型对象字节=");
+    jshc_platform_number((uint32_t)jshc_p_model_bytes());
+    jshc_platform_write("，链对象字节=");
+    jshc_platform_number((uint32_t)jshc_p_chain_bytes());
+    jshc_platform_write("\n");
+#endif
     jshc_platform_write("PASS: FreeRTOS " JSHC_RTOS_TARGET " LUT contract\n");
     jshc_platform_exit(0);
 }

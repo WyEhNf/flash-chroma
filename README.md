@@ -54,6 +54,10 @@ pixi run --locked lutlab accept --help
 
 已有带来源和哈希记录的 [100 张日常照片](assets/photos/README.md)，包含 Kodak、DPED 和 DIV2K 子集，可显式传入 `assets/photos/eval.txt`。它们不自动替换模拟数据清单，也不替代全色域验收；各来源的使用范围见样本说明。
 
+[hack image/LUT 压力子集](datasets/problem16-hack-v1/README.md)提供独立的边界配方、同像素多重集图片及小型整数回放，通过 `python -m lutlab hackset` 构造和核对；拟合矩阵与全色域压力评价仍需显式执行。
+
+当前统一入口是[合并数据集 v1](datasets/problem16-unified-v1/README.md)：原语料、历史控制、两批压力子集和自然照片合计登记 274 个 LUT case、455 份不同图片内容。`python -m lutlab dataset` 提供命名空间查询、分队列核对和原合成图恢复；保留旧划分和 7,917 项计划，不自动转移历史验收资格。
+
 ## 模拟数据与实验
 
 模拟场景只用于本地研究。以下命令会下载 Kodak 图片并生成图像、四级 LUT 与清单，占用较多时间和磁盘空间；它们不属于首次构建或 CI：
@@ -77,18 +81,38 @@ docker run --rm flash-chroma
 
 镜像固定 Pixi 版本，仅按锁文件安装默认环境，并运行同一 `test` 门禁。本机构建目录、Pixi 环境、实验数据与日志不进入构建上下文。直接运行镜像即可验证，不必挂载整个仓库覆盖容器中的依赖和构建产物。
 
+## 当前研究成果与检查点
+
+本次已整合 R28–R51 的分类语料、策略比较、C99/结构化 AVX2 后端、ROM 导出与阶段证据。[研究进展](docs/research-progress-r28-r51.md)保留各阶段的已测结论；性能收益仅适用于其声明的输入、机器和资源。
+
+2026-10-16 同步快照：原矩阵已尝试 **4,471/7,917** 项，包含 4,465 条有效色域观测、6 项拟合阶段失败，不能全部称为通过。控制器因一个 case 任务退出而停止，检查点已保留；完整训练、联合规则冻结和留出评价尚未完成。[机器可读检查点](datasets/problem16-v1/matrix-checkpoint.json)。
+
+- 200 条四级 LUT 链、320 张分类合成图及 23 组探针已完成数据审计；逐 case 台账分别维护质量、容量和已验证的速度选择。
+- 混合阶段容量在 18 个已测曲线训练源中，让 9 个源降低最优 mean，另 4 个在相同 mean 下节省节点存储。[方法与边界](docs/r47-mixed-capacity.md)。
+- 独立 C99 核心与 ROM 导出支持端侧部署。[部署说明](portable/README.md)。实体手机速度与功耗尚未测量。
+- 有界 CG 续算恢复一个拟合失败，并通过 CPU/CUDA/C99 完整色域一致性核对；该噪声模型误差仍高，没有替换精度冠军。[全部指标](docs/r51-bounded-cg-recovery.md)。
+
+远端新增的 100 张自然照片保留独立来源与清单。历史 R28–R51 结果仍绑定各自图集，不能视作已对新照片队列全量重测。现有完整 PDF 仍为 R27 冻结范围，后续阶段见文档与证据归档。
+
 ## 项目导航
 
 | 路径 | 内容 |
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | Agent 交流、授权、语言与证据规范 |
 | [TOOLCHAIN.md](TOOLCHAIN.md) | 当前构建配置、测试入口、依赖环境与 CI |
+| [portable](portable/README.md) | 无堆分配的 C99 映射核心与 ROM 部署 |
 | [python/lutlab](python/lutlab) | 拟合、模型格式、验收与统一 CLI |
 | [cpp](cpp)、[gpu](gpu)、[zig](zig)、[rust](rust) | CPU、可选 CUDA 和可选 SIMD 实现 |
 | [tests](tests)、[cpp/tests](cpp/tests) | Python 契约与 C++ 内核正确性测试 |
 | [embedded](embedded/README.md) | 独立 C99 运行时，Cortex-M3/RV32 FreeRTOS 与 Cortex-A53 Linux 的 QEMU 门禁（WIP） |
-| [docs/README.md](docs/README.md) | 技术文档、R17–R27 历史实验与报告索引 |
+| [docs/README.md](docs/README.md) | 技术文档、R17–R51 阶段实验与报告索引 |
 | [docs/LOGGING.md](docs/LOGGING.md) | 独立实验日志与团队交接 |
 | [report/README.md](report/README.md) | 冻结报告、数据证据与重建边界 |
+| [assets/LUT](assets/LUT/README.md) | 68 份外部 LUT、来源锁定与授权信息 |
+| [现成 LUT 研究报告](artifacts/local-lut-study/20261016/report.md) | PR #9 的 22 种配置、单级及四级研究摘要与适用边界 |
+| [本轮同步与后续建议](docs/stages/2026-10-16-sync-pr-roadmap.md) | 主干整合、验证记录与后续阶段验收建议 |
+| [工程对齐阶段](docs/stages/2026-10-16-engineering-alignment.md) | 基线/续跑/账本修复、C99 共同契约及验证边界 |
+| [误差来源研究](docs/stages/2026-10-16-error-causes.md) | 四例全色域归因、固定表示下界、加权/整数精化及照片退化 |
+| [PR #9 基线勘误](report/data/pr9-baseline-correction/correction.json) | 保留原始测量，另存 8/68 行派生基线修正 |
 
-`data/`、`build/`、`build-*/`、`.pixi/`、`logs/` 与 `artifacts/` 是本机产物。历史报告中的分支名、硬件和性能数字描述对应实验阶段；当前开发流程以本 README、工具链说明与仓库配置为准。
+`data/`、`build/`、`build-*/`、`.pixi/`、`logs/` 与通常的 `artifacts/` 内容是本机产物；`artifacts/local-lut-study/20261016/` 中已纳入版本控制的精简研究证据是例外。历史报告中的分支名、硬件和性能数字描述对应实验阶段；当前开发流程以本 README、工具链说明与仓库配置为准。

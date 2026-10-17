@@ -1,8 +1,12 @@
 # 文档索引
 
-当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列 R17–R27 文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。
+当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列阶段文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。
 
 ## 当前接口与规则
+
+- [合并数据集 v1](../datasets/problem16-unified-v1/README.md)：274 个 LUT case、455 份图片内容；保留原身份和划分，提供分队列清单、哈希核对及原合成图恢复。[第二批压力扩展](../datasets/problem16-hack-v2/README.md)追加三维峰谷、斜薄带、周期与舍入/串联场景。
+
+- [hack image/LUT 压力子集](../datasets/problem16-hack-v1/README.md)：独立的可复现配方、边界图片与小型整数回放；[验收口径](../datasets/problem16-hack-v1/acceptance.json)明确区分运行时差异、近似误差与参考跳变，完整扫描尚未执行。
 
 - [原题整理](../PROBLEM.md)、[选题判断与待确认规则](../DECISION.md)。
 - [数据格式、来源与生成](../DATA.md)。
@@ -11,6 +15,12 @@
 - [日常摄影样本](../assets/photos/README.md)。
 
 ## 算法与验收演进
+
+近期阶段： [工程对齐](stages/2026-10-16-engineering-alignment.md)、[四例误差归因](stages/2026-10-16-error-causes.md)、[有界拟合与四级联合选择](stages/2026-10-17-joint-box-objective.md)。最新算法阶段在固定Cinema链取得全色域/100图改善，同时保留两个单级负结果和四张图的max回归；没有替换默认方法。
+
+后续[完整训练颜色约束与尾部修复](stages/2026-10-17-tail-repair.md)以5个节点修复14色反例，使固定100图的四项精度均逐图优于原始基线；相对联合版本仍有均值成本与9张图的max退化，保留两种候选与完整证据。
+
+最新[完整域保护与双节点前瞻](stages/2026-10-17-full-domain-guard.md)保留单节点停滞负结果，用整数根号界严格保护全部256³颜色，再通过双节点联合选择取得更低全域mean与尾部。固定100图仍有相对PR14的逐图冲突，默认策略未改。
 
 | 阶段 | 内容 | 文档 |
 | --- | --- | --- |
@@ -25,6 +35,20 @@
 | R25 | 精确全色域拟合 | [方法与证据](r25-full-domain-fitting.md) |
 | R26 | 箱约束拟合 | [方法与证据](r26-box-constrained-fitting.md) |
 | R27 | 阶梯插值与可达布点 | [方法与证据](r27-step-interpolation.md) |
+
+## R28–R51 分类语料、优化与端侧研究
+
+当前全量矩阵尚未完成，停止快照与未完成事项见[研究进展](research-progress-r28-r51.md)及[机器可读检查点](../datasets/problem16-v1/matrix-checkpoint.json)。下列文档分别保留其阶段结论，不代表后续完整矩阵通过。
+
+2026-10-16 远端同步的构建、首次门禁与修复后复查记录见 [R52 整合证据](../report/data/r52/README.md)。本次仅验证整合，未新增性能结论。
+
+| 阶段 | 内容 | 文档 |
+| --- | --- | --- |
+| R28–R29 | 分类语料、探针、逐case账本与全量计划 | [数据程序](r28-corpus-program.md) |
+| R30–R35 | C99、ARM模拟、格式、分箱与结构后端 | [C99部署](r30-portable-runtime.md)、[格式](r32-format-contract.md)、[分箱](r33-monotone-bins.md)、[严格结果](r34-candidate-results.md)、[结构运行时](r35-structured-runtime.md) |
+| R37–R42 | 报告恢复、后端配对性能、规则冻结与训练比较 | [持久化](r37-report-recovery.md)、[性能](r39-structured-performance.md)、[矩阵与规则](r41-matrix-resume.md)、[类别对照](r42-training-comparison.md) |
+| R43–R45 | ROM部署、新策略适用区域及图像边界 | [ROM](r43-rom-export.md)、[新策略](r44-new-policy-regions.md)、[实际图像](r45-representative-images.md) |
+| R47–R51 | 混合容量、调度归并与CG恢复 | [混合容量](r47-mixed-capacity.md)、[调度](r50-case-shards-and-canonical-import.md)、[求解与精度边界](r51-bounded-cg-recovery.md) |
 
 ## 冻结报告与早期研究
 

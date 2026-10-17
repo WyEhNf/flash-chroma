@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "讨论后的本地压力数据口径；不是官方阈值或全面扫描批准",
+  "metric": {
+    "name": "rgb_l2_code_value",
+    "legacy_alias": "Delta-E",
+    "formula": "sqrt(dR*dR+dG*dG+dB*dB)",
+    "space": "原始 RGB8 码值；不做线性化、白点适配或 Lab 转换",
+    "unit": "RGB 码值",
+    "cie_lab_or_ciede2000": false,
+    "future_lab_policy": "另列指标名、RGB 色域、传递函数、参考白点、转换公式和版本；不沿用历史 RGB 阈值"
+  },
+  "runtime_correctness": {
+    "input": "同一份已序列化且量化的四张合法稀疏模型",
+    "reference": "独立逐像素整数 Q16 oracle；读取保存的 idx/frac，不从 float32 grid 重算",
+    "backends": "C++ 标量、AVX2、C99、结构化后端，以及实际启用的其他后端",
+    "acceptance": {"mismatched_bytes": 0},
+    "non_available_backend": "单列未测试；显式启用却执行失败不得记作通过",
+    "structured_route": "跨通道输入不得凭家族标签走可分离路径；允许经字节证明后选择优化或通用路径"
+  },
+  "fit_accuracy": {
+    "reference": "四张完整 RGB8 LUT 逐级查表，每级输出已量化，禁止替换成最后才舍入的浮点复合",
+    "status": "本轮只冻结数据与小型回放；方法矩阵和全色域精度尚未执行",
+    "threshold": null,
+    "universal_small_error_requirement": false,
+    "scopes": ["逐图", "全色域256^3"],
+    "required_metrics": ["pixel_count", "mean", "rms", "p99", "max", "fraction_at_or_above_threshold", "worst_rgb", "top_k"],
+    "rms": "sqrt(mean(dR*dR+dG*dG+dB*dB))",
+    "p99": "对逐像素距离使用线性分位数，rank=0.99*(N-1)，不先对平方距离插值再开方",
+    "threshold_policy": "未指定阈值时超限比例为 null；指定时固定场景、口径和严格 <，超限计 distance >= threshold",
+    "aggregate_policy": "保存每图原始未舍入统计；如汇总，分别命名像素加权均值、图均值和最坏图，不互相替代",
+    "top_k_policy": "未来新增扫描按平方误差降序、输入RGB字典序升序破并列；历史 top-k 不重写也不宣称相同破并列顺序"
+  },
+  "error_classification": {
+    "input_contract_failure": "损坏、格式或语义不合法的文件；不计入拟合误差通过率",
+    "fit_failure": "求解不收敛、无法产生合法模型或导出失败；保留失败，不作为已完成模型的运行时错误",
+    "configuration_failure": "后端缺失、模型插值语义不匹配或调用阶段数错误；单列诊断",
+    "runtime_mismatch": "同一合法模型与整数 oracle 字节不同，归为 correctness 回归",
+    "approximation_error": "运行时与 oracle 一致，但相对完整 LUT 误差大；先记录近似误差，不据此断言整个模型类别不可表达",
+    "representation_limit_claim": "只有额外的容量/逼近证明才声称模型表达能力不足；单一方法失败也可能是采样、优化或预算问题"
+  },
+  "stability": {
+    "input_perturbation": "固定颜色及每轴±1码值邻域，保存精确参考与稀疏输出各自的三维变化向量及其差的范数；边界裁剪后去重",
+    "reference_discontinuity": "参考本身的裁剪/阶梯跳变单列，不把稀疏输出变化全算作拟合不稳定",
+    "model_node_perturbation": "复制冻结模型后对预声明节点/通道±1 LSB并裁剪，绑定新哈希；这是固定模型敏感性，不是重拟合试验",
+    "source_entry_or_refit_perturbation": "另建源表或重拟合模型，保存新哈希、seed、网格、方法、求解预算；仅使用实际含随机性的 seed，不把固定方法的重复调用伪称 seed 稳定性",
+    "layout_metamorphism": "同一像素多重集的逐颜色输出必须一致，逆置换后字节一致；误差的多重集与分布相同，浮点求和末位差异不直接认作 correctness bug"
+  },
+  "splits": {
+    "development_seed": 2026101601,
+    "reserved_validation_seed": 2026101691,
+    "reserved_policy": "预声明独立参数；本轮只构造源字节哈希，不拟合、选择或读取其质量结果。定义公开，不宣称盲测或独立统计分布。",
+    "natural_photos": "独立引用现有100张照片，不替换历史图集，本轮不用于调参；不宣称此前从未参与研究",
+    "legacy_matrix": "不修改 corpus-v1、7917项分母、旧失败、逐case冠军或既有留出规则"
+  },
+  "counterexample_storage": {
+    "required": ["生成器与参数", "源字节SHA-256", "四级顺序", "模型及其SHA-256", "热点及±1邻域", "精确参考和整数oracle输出", "误差摘要", "发现范围与版本"],
+    "policy": "同时保存配方和小型可回放文件；大完整LUT按显式case导出，不把只保存参数称为已校验源字节",
+    "minimality": "冻结候选后单因素缩减并保留见证；未做缩减证明时标注候选，不声称全局最小"
+  },
+  "execution": {
+    "ordinary_ci": "小型确定性算术和回放回归；不得自动构造完整LUT或运行方法/尺寸矩阵",
+    "full_cube": "显式任务，后续批准后再执行",
+    "competition_images": "1024x768 RGB8",
+    "short_unaligned_and_vector_tail": "独立内核用例，不并入比赛图像清单",
+    "performance_scan": false
+  }
+}

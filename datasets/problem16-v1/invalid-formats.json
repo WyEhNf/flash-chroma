@@ -1,0 +1,389 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "id": "bad-magic",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\bad-magic.slut",
+      "sha256": "597322abad3b2d9a2e871a8e28fe7fbaa6ca3df728561d52f6a7578e948343d3",
+      "bytes": 18799,
+      "tags": [
+        "header"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "bad-version",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\bad-version.slut",
+      "sha256": "bf953e8ee869950fc1329ebee9197a6a6081bc7dece6cd5e8f121692e185903c",
+      "bytes": 18799,
+      "tags": [
+        "header",
+        "version"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "nonzero-reserved",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\nonzero-reserved.slut",
+      "sha256": "bfd4b564809ec371715d4d29a17ca1898e82300a414689ca82270b600f668314",
+      "bytes": 18799,
+      "tags": [
+        "header",
+        "reserved"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "big-endian-size",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\big-endian-size.slut",
+      "sha256": "6f516f1f4d998af601cc3c33b5714da48ad50aa104897a240a4f1cb2bfbff872",
+      "bytes": 18799,
+      "tags": [
+        "endianness",
+        "overflow_guard"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "zero-grid-size",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\zero-grid-size.slut",
+      "sha256": "d23a6edaf8fe072019a51efb3a3600bd0e000f21f09caa8bf83ab90c4ff42a08",
+      "bytes": 18799,
+      "tags": [
+        "invalid_grid_size",
+        "allocation_guard"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "huge-grid-size",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\huge-grid-size.slut",
+      "sha256": "4c05bc5ecd63387e331090da1690bb18a65bc88c3d106fb33c7770c159208cff",
+      "bytes": 18799,
+      "tags": [
+        "invalid_grid_size",
+        "allocation_guard"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "idx-out-of-range",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\idx-out-of-range.slut",
+      "sha256": "00e9b997005ed4815a0f7ca84e99898deeb71a6cecedc462c93387772280a044",
+      "bytes": 18799,
+      "tags": [
+        "axis_bounds"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "fraction-out-of-range",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\fraction-out-of-range.slut",
+      "sha256": "f1fae9468d5c03ae5c6d8a990e8d3d6ea277dbc03292948995ba83c0bafc5d72",
+      "bytes": 18799,
+      "tags": [
+        "Q16_bounds"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "nan-grid",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\nan-grid.slut",
+      "sha256": "ba35de7e7f8a6664473e6ea0f51ea72dd74957d07b2c33e6a51f974f0732aa3e",
+      "bytes": 18799,
+      "tags": [
+        "nonfinite_grid",
+        "cross_layer_consistency"
+      ],
+      "target": "Python_sparse_loader",
+      "expected": "reject; native direct-loader behaviour must be measured separately",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "infinite-grid",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\infinite-grid.slut",
+      "sha256": "b8bc2d8257d97f2f6e25c45ee3db4a3210921788dd38ec4f3f6f880120d74fa7",
+      "bytes": 18799,
+      "tags": [
+        "nonfinite_grid",
+        "cross_layer_consistency"
+      ],
+      "target": "Python_sparse_loader",
+      "expected": "reject; native direct-loader behaviour must be measured separately",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "duplicate-grid",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\duplicate-grid.slut",
+      "sha256": "1f658a38452b4b1c2b1fb6f09adec848cf7ad9b332ff311b4f167e3a9f264632",
+      "bytes": 18799,
+      "tags": [
+        "nonincreasing_grid",
+        "cross_layer_consistency"
+      ],
+      "target": "Python_sparse_loader",
+      "expected": "reject; native direct-loader behaviour must be measured separately",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "truncated-header",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\truncated-header.slut",
+      "sha256": "c0ff6d1fab9dce0bf64649672d107e28720835e84ea1541e12fd2ec36549651d",
+      "bytes": 11,
+      "tags": [
+        "truncation"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "truncated-grid",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\truncated-grid.slut",
+      "sha256": "b1b7a23926d6b16005e933508ba43d3e652ecfd3d0bb104c9adb190383695946",
+      "bytes": 40,
+      "tags": [
+        "truncation"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "truncated-nodes",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\truncated-nodes.slut",
+      "sha256": "818a261d35add00af6ff241d1b93f90a9b6d8e62f411e3fcee9d4bbfcfeab4fe",
+      "bytes": 18798,
+      "tags": [
+        "truncation"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "trailing-byte",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\trailing-byte.slut",
+      "sha256": "7cae5f9ab232b365f5fcfb2c54b870946519a86a4ef91e1618502a90de7136fa",
+      "bytes": 18800,
+      "tags": [
+        "trailing_data"
+      ],
+      "target": "sparse_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "competition-m16",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\competition-m16.slut",
+      "sha256": "2b65623771cad72f595915bc0a72e74ecf5cc282593662f408b480c2b9e4d1f7",
+      "bytes": 16336,
+      "tags": [
+        "competition_m_bound"
+      ],
+      "target": "competition_loader",
+      "expected": "reject in competition mode; generic loader permits",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "competition-m34",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\competition-m34.slut",
+      "sha256": "702faae0e1a1c305b88e29152650a96ead6f02ddf48f8a7fdd296ab550f908b3",
+      "bytes": 122176,
+      "tags": [
+        "competition_m_bound"
+      ],
+      "target": "competition_loader",
+      "expected": "reject in competition mode; generic loader permits",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "rgba",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\rgba.png",
+      "sha256": "4bd7227ae468226eebda7f0ab55e6fe61fcf57ba0c57e5f8e434b7f98bcec728",
+      "bytes": 3129,
+      "tags": [
+        "image_contract",
+        "RGBA"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "greyscale",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\greyscale.png",
+      "sha256": "04a1509794970cded6d2b5b700da44e4927bec0558d709b4ae3fc89f7ff79738",
+      "bytes": 843,
+      "tags": [
+        "image_contract",
+        "L"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "palette",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\palette.png",
+      "sha256": "7e7c8a15eaaf64f0ccb6139155acca04e1b03aa71c76dc76ed4cedf4f56bbb85",
+      "bytes": 190,
+      "tags": [
+        "image_contract",
+        "P"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "policy-sensitive: indexed PNG may decode to RGB8; compare container and decoded-channel policies",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "wrong-width",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\wrong-width.png",
+      "sha256": "6c5dbf0eddeb2e38259a67a48593ec764f2bc112eb1963b6accddeae88377d18",
+      "bytes": 2365,
+      "tags": [
+        "image_contract",
+        "RGB"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "wrong-height",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\wrong-height.png",
+      "sha256": "e21d5b4a94b52ebda051086cf7b93bdaec0fd1282331f70f215275416f4622e5",
+      "bytes": 2364,
+      "tags": [
+        "image_contract",
+        "RGB"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "rgb16",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\rgb16.png",
+      "sha256": "1570ee5bd515f3345245b5eb15a7b31291665e8dc877d641de893b4fca5d513e",
+      "bytes": 8643,
+      "tags": [
+        "image_contract",
+        "source_bit_depth",
+        "Pillow_implicit_downcast"
+      ],
+      "target": "native_competition_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "truncated",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\truncated.png",
+      "sha256": "6d446ccfd7c86b6ca58a9764e005b82f4dd0b69b40d4a43a99c41497a434d9f2",
+      "bytes": 41,
+      "tags": [
+        "truncated_image"
+      ],
+      "target": "native_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "empty-image",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\empty-image.png",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "tags": [
+        "empty_input"
+      ],
+      "target": "native_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "zero-0x768",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\zero-0x768.png",
+      "sha256": "322489b8ea8d92e953cace5656ad95d866608d7fcf8e66c2729f520643a9556e",
+      "bytes": 65,
+      "tags": [
+        "zero_dimension"
+      ],
+      "target": "native_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "zero-1024x0",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\zero-1024x0.png",
+      "sha256": "b38b38ad23abf7ad11b3a782aec10f7969b72a21b4e71d91ebfbd8d4e8f85458",
+      "bytes": 65,
+      "tags": [
+        "zero_dimension"
+      ],
+      "target": "native_image_decoder",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "empty",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\empty.lut256",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "tags": [
+        "full_LUT_size",
+        "truncation_or_trailing"
+      ],
+      "target": "full_LUT_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "short-by-one",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\short-by-one.lut256",
+      "sha256": "2ff22d5624e721f8b417a9687f4b1f72f0107e6869f997167a280132793b458f",
+      "bytes": 50331647,
+      "tags": [
+        "full_LUT_size",
+        "truncation_or_trailing"
+      ],
+      "target": "full_LUT_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    },
+    {
+      "id": "long-by-one",
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\data\\corpus-v1\\invalid\\long-by-one.lut256",
+      "sha256": "d8c1b56d3cec024206b03e8794b1e9b8c07bd99051aa0f3882c722cc0380ba64",
+      "bytes": 50331649,
+      "tags": [
+        "full_LUT_size",
+        "truncation_or_trailing"
+      ],
+      "target": "full_LUT_loader",
+      "expected": "reject",
+      "execution_status": "not_executed"
+    }
+  ],
+  "count": 30,
+  "status": "fixtures_constructed_not_executed",
+  "source_sha256": "29e4fd7b0100db216dd4b708868b095c21961e3abce072175691aa581b0d733f",
+  "valid_control_sha256": "366a1d55919657e545126fb870d1fcd2b8ae39be8bee3a64ec43301ce6851fbd",
+  "excluded_from_accuracy_and_champion_counts": true,
+  "official": false
+}

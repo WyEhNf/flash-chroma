@@ -1,0 +1,83 @@
+{
+  "status": "data_and_small_replay_verified",
+  "captured_utc": "2026-10-16T01:11:38.637977+00:00",
+  "base_commit": "b89b88fce1e16563b83ce72df9d8461725d5553c",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12",
+    "numpy": "2.4.6"
+  },
+  "generator_sha256": "d2ee9bfe3e59583c442d0034e7b833a87578857baf2a6155cf6f1842a3584448",
+  "dataset_manifest_sha256": "7dacc26f7250a1196a737976606cfb0647bc7e7c124f26c3eda9698ee4b4414e",
+  "case_counts": {
+    "development": 21,
+    "reserved_validation": 5
+  },
+  "unique_full_source_hashes": 35,
+  "source_hash_construction": "35个算子各流式生成完整256^3 RGB8字节并哈希；未运行任何拟合或精度扫描",
+  "data_audit": {
+    "pass": true,
+    "stress_images": 14,
+    "layout_multiset_groups": 4,
+    "natural_photo_hashes": 100,
+    "frozen_replays": 2
+  },
+  "python_gate": {
+    "command": "python scripts/check_correctness.py --build-dir build-r52-sync --only python",
+    "passed": 25,
+    "failed": 0,
+    "seconds": 32.7
+  },
+  "runtime_replay": {
+    "models_per_case": 4,
+    "cases": 2,
+    "colours_per_case": 43,
+    "kernels": [
+      "tetra_scalar",
+      "tetra_avx2",
+      "tetra_avx2_madd",
+      "tetra_avx2_scalar_gather",
+      "tetra_avx2_exact_float",
+      "tetra_c99",
+      "tetra_structured_avx2"
+    ],
+    "native_apply_calls": 14,
+    "mismatched_bytes": 0,
+    "executable_sha256": "6762f9cd298d4b92e0c546e0a70143434921e074ee5cc7f2680e9888698b8395",
+    "scope": "固定颜色，包含短输入与向量尾部；不是完整色域证明"
+  },
+  "competition_images": {
+    "pass": true,
+    "count": 2,
+    "size": [
+      1024,
+      768
+    ],
+    "container": "P6 PPM",
+    "kernel": "tetra_c99",
+    "mismatched_bytes": 0,
+    "evidence": "../../report/data/hack-v1/competition-ppm-check.json"
+  },
+  "export": {
+    "case": "interior-peak-w1",
+    "full_sources": 4,
+    "bytes": 201326592,
+    "hashes_verified": true,
+    "full_reference_colours": 43
+  },
+  "hotspot_tool": {
+    "source_scope": "fixed_replay_colours_only",
+    "images": 3,
+    "unique_neighbourhood_colours": 45,
+    "source_report_preserved": true
+  },
+  "legacy_numerical_sources_and_dataset_changed": false,
+  "not_executed": [
+    "全色域拟合误差和新方法矩阵",
+    "预留验收源的拟合及精度评价",
+    "节点/源条目扰动及重拟合敏感性矩阵",
+    "性能扫描",
+    "本轮Linux/Pixi、Docker或CUDA验证"
+  ],
+  "scope_note": "只完成数据完善及有限回放；不声称官方达标、全域最小反例或任意LUT的小误差保证"
+}

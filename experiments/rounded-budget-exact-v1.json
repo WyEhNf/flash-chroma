@@ -1,0 +1,21 @@
+{
+  "schema": 4,
+  "purpose": "比较真实舍入单改SSE/Q24均值统计和全部预算排序的联合辅助方案",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/quantile-tail-v3",
+  "cases": ["lomo-purple2", "velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {"method":"rounded","rounds":2,"primary_limit":8,"helper_limit":16,"max_array_bytes":2684354560},
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24},
+  "memory_array_budget_bytes": 2684354560,
+  "reference": "原始混合初态及101组阈值/预算不变，重放v3累计24/44步骤并核对模型/完整流SHA",
+  "comparison": "与rounded-budget-control-v1.json同初态、案例和全部搜索上限；新统计为单修改精确整数变化，整对仅在支撑不相交时可相加。重叠和均值直方图相等豁免仍真实验收",
+  "evaluation": "每例仅对最终变化检查点做一次完整256³/100图/整数oracle/标量AVX2，不变复用v3；原失败保留",
+  "limits": "同时改变单改代价准确性和全部预算排序，不归因于单一组件；float64仅排序；不排除重叠候选，无新网格/权重/全局轮次/硬件性能扫描，默认/冠军不改，无官方Threshold"
+}

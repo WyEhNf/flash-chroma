@@ -1,0 +1,22 @@
+{
+  "schema": 6,
+  "purpose": "冻结上一阶段Velvia模型四指标参照，区分误差转移与可接受的真实改善：只加保护的对照臂",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/velvia-three-node-v1",
+  "cases": ["velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {"method":"rounded","rounds":2,"primary_limit":8,"helper_limit":16,"max_array_bytes":2684354560,"block_order":3,"first_helpers":4,"second_helpers":4},
+  "stability": {"tail_ranking":false},
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24},
+  "memory_array_budget_bytes": 2684354560,
+  "reference": "先完整重放47步并绑定PR23终态SHA，再冻结101照片组及完整域的mean/RMS/p99两端点/max参照；历史目标及原混合预算保留",
+  "search": "原候选预算固定；辅助排序使用更严格SSE/mean参照，不使用新增尾部计数排序；所有候选真实块重放",
+  "evaluation": "只对变化终态一次完整256³/100图/整数oracle/标量AVX2；不变终态复用同字节旧证据；标准库独立复核最终完整直方图及参照绑定",
+  "limits": "参照一次冻结不逐步重置；mean用Q24上界<=参照下界或直方图完全相同，p99两端点均非增是充分而非必要条件，可能保守拒绝；20审计不反馈但已知历史数据，不宣称盲验；无官方Threshold、不提升默认、不扫描性能或参数"
+}

@@ -9,6 +9,20 @@ from lutlab import io, interp, source_lut
 from lutlab import study_kernels as kernels
 
 
+def test_real_study_identity_binds_environment(monkeypatch):
+    from types import SimpleNamespace
+    from lutlab import compatibility, study_provenance
+    import numba
+    numba.set_num_threads(1)
+    args = SimpleNamespace(sizes=[17, 33], screen_pixels=4096, threads=1, reps=3, extended=True)
+    monkeypatch.setattr(study_provenance, "environment_fingerprint", lambda: {"cpu_name": "cpu-a"})
+    first = compatibility.environment(args)
+    monkeypatch.setattr(study_provenance, "environment_fingerprint", lambda: {"cpu_name": "cpu-b"})
+    second = compatibility.environment(args)
+    assert first["identity_sha256"] != second["identity_sha256"]
+    assert "numpy_build" in first["identity"]["environment"]
+
+
 @pytest.mark.parametrize("kind", [0, 1, 2, 3, 4])
 def test_constant_and_boundaries(kind):
     points = np.array([[0, 0, 0], [255, 255, 255], [255, 0, 255], [70, 83, 122]], np.uint8)

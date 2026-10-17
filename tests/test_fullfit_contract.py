@@ -9,7 +9,8 @@ import scipy.sparse as sp
 from lutlab import fit, fullfit, io
 
 
-def test_full_domain_integer_system_matches_coo_and_is_thread_invariant():
+@pytest.mark.parametrize("fractional", [False, True])
+def test_full_domain_integer_system_matches_coo_and_is_thread_invariant(fractional):
     try:
         library_path = fullfit.resolve_library()
     except FileNotFoundError:
@@ -23,7 +24,9 @@ def test_full_domain_integer_system_matches_coo_and_is_thread_invariant():
         table[r, ..., 1] = (r ^ (g * 3) ^ (b * 7)) % 256
         table[r, ..., 2] = (13 * r + g * g + 23 * b) % 256
     t = np.linspace(0, 1, 17)
-    grid = np.stack([np.round(255 * t ** p) for p in (1.15, .85, 1.05)])
+    grid = np.stack([255 * t ** p for p in (1.15, .85, 1.05)])
+    if not fractional:
+        grid = np.round(grid)
     H1, b1, one = fullfit.normal_equations(table, grid, threads=1)
     H4, b4, four = fullfit.normal_equations(table, grid, threads=4)
     assert one["sample_count"] == 256 ** 3 and one["actual_threads"] == 1
@@ -31,7 +34,8 @@ def test_full_domain_integer_system_matches_coo_and_is_thread_invariant():
     assert one["integer_system_sha256"] == four["integer_system_sha256"]
     assert np.array_equal(H1.indptr, H4.indptr) and np.array_equal(H1.indices, H4.indices)
     assert np.array_equal(H1.data, H4.data) and np.array_equal(b1, b4)
-    assert np.all(H1.diagonal() >= 1 / 64) and not (H1 - H1.T).nnz
+    assert np.all(H1.diagonal() >= one["data_hessian_eigenvalue_lower_bound"]) and not (H1 - H1.T).nnz
+    assert one["support_certificate"]["integer_grid"] == (not fractional)
 
     # Independent legacy COO assembly covers every colour, all six tetrahedron
     # orders, ties and both endpoints. No stencil index or native grouping is

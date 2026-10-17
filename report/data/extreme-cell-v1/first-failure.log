@@ -1,0 +1,16 @@
+固定单元[31, 31, 4]，648色；开始一次连续minimax及一次整数最小修改
+全部8个单元节点的完整支撑5800色；建立一次101组局部频数
+Traceback (most recent call last):
+  File "F:\Hackathon\projects\16-lut-color\scripts\run_extreme_cell.py", line 193, in <module>
+    if __name__ == "__main__":main()
+                              ^^^^^^
+  File "F:\Hackathon\projects\16-lut-color\scripts\run_extreme_cell.py", line 162, in main
+    assessment = assess(old,new,weights,photos,domain,guard)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Hackathon\projects\16-lut-color\scripts\run_extreme_cell.py", line 53, in assess
+    groups.append({"group":g,"histogram":bins,"loss":cost,"metrics":ea.hist_metrics(hist)})
+                                                                    ^^^^^^^^^^^^^^^^^^^^^
+  File "F:\Hackathon\projects\16-lut-color\python\lutlab\error_analysis.py", line 91, in hist_metrics
+    return {"n": n, "mean": float(hist @ ROOT_DISTANCE / n),
+                                  ~~~~~^~~~~~~~~~~~~~~
+ValueError: matmul: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (n?,k),(k,m?)->(n?,m?) (size 195076 is different from 2917)

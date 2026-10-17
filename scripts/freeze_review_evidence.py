@@ -42,7 +42,11 @@ def main():
     with zipfile.ZipFile(snapshot, "w", zipfile.ZIP_DEFLATED) as archive:
         for name in sorted(set(sources)):
             path = ROOT / name
-            if not name or name.startswith("report/data/") or not path.is_file():
+            # The canonical ledger has a single live writer and is derived data,
+            # not source. Its index and file inventory cannot be snapshotted
+            # consistently by an unrelated source archiver during a matrix run.
+            if (not name or name.startswith(("report/data/", "datasets/problem16-v1/casebook/", "assets/photos/"))
+                    or not path.is_file()):
                 continue
             payload = path.read_bytes()
             source_records[name] = record(payload)
@@ -50,14 +54,14 @@ def main():
     manifest = {"git_base": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "source_files": source_records, "snapshot": record(snapshot.read_bytes()),
         "result_sha256": record(args.result.read_bytes())["sha256"],
-        "scope": "current non-ignored source excluding report/data; no commit or push is performed"}
+        "scope": "current non-ignored source excluding report/data, versioned photo payloads and the mutable canonical casebook; completed study observations are archived separately; no commit or push is performed"}
     (artifacts / "source-manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     output.mkdir(parents=True, exist_ok=True)
     target = output / args.archive_name
     entries = {}
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(artifacts.rglob("*")):
-            if path.is_file() and (path.suffix.lower() in (".json", ".csv", ".log", ".txt", ".slut", ".py") or path == snapshot):
+            if path.is_file() and (path.suffix.lower() in (".json", ".csv", ".log", ".txt", ".slut", ".py", ".c", ".h") or path == snapshot):
                 name = path.relative_to(ROOT).as_posix()
                 payload = path.read_bytes()
                 entries[name] = record(payload)
@@ -67,6 +71,7 @@ def main():
             if record(archive.read(name)) != expected:
                 raise RuntimeError(f"archive readback failed: {name}")
     index = {"archive": target.name, **record(target.read_bytes()), "files": entries, "verified": True,
+        "source_snapshot_contains_versioned_photos": False,
         "excludes": "full LUTs, original images and native binaries; hashes are preserved in the study records"}
     (output / "evidence-index.json").write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({"archive": str(target), "files": len(entries), "bytes": index["bytes"], "verified": True}))

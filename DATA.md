@@ -1,6 +1,10 @@
 # 测试数据集与四级色彩空间仿真设计 (`DATA.md`)
 
+当前数据总入口为[合并数据集 v1](datasets/problem16-unified-v1/README.md)：274 个命名空间 LUT case、273 条不同源链、455 份不同图片 RGB 内容。原分类语料、历史控制、两批压力输入和自然照片通过统一索引与分队列清单关联，旧划分与测量资格保留。使用 `python -m lutlab dataset inspect` 读取和核对；大表与原合成图的显式恢复方式见该说明。下文保留原批次的设计背景。
+
 需要先查看或运行普通摄影样本时，可使用已纳入版本库的[100张日常照片](assets/photos/README.md)：5张Kodak、14张DPED手机照片及81张DIV2K自然照片，涵盖人物、风景、街景、建筑、餐饮/商品和花草动物。统一提供1024×768 RGB8 PNG，附逐图来源、使用范围、SHA-256及可显式传入的[图片列表](assets/photos/eval.txt)。这是独立的实用照片清单，不改变下述标准评测数据集。
+
+针对 hack image/LUT Discussion，另增[可复现压力子集 v1](datasets/problem16-hack-v1/README.md)：网格边界阶梯、1/2/4 码值内部窄峰、同像素多重集的布局对照及小型整数回放。它把运行时正确性与拟合误差分开，历史 Delta-E 明确定义为欧氏 RGB 码值距离；没有新增官方阈值，也未启动全面扫描。
 
 由于正式比赛测试集与 `Threshold` 将在赛中统一公布，为了在赛前获得**高度接近真实手机 ISP / 车载流媒体色彩管线**且同时涵盖**数学病态边界**的严格基准，我们在 [luts.py](python/lutlab/luts.py) 与 [data.py](python/lutlab/data.py) 中构建了完整的评测数据集生成器（`pixi run gen-data`）。
 

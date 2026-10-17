@@ -206,6 +206,16 @@ def cube(models: Iterable[str | Path], output: str | Path, *, backend: str = "cp
     return _run(backend, executable, arguments, _models(models, backend, competition))
 
 
+def plan(models: Iterable[str | Path], *, backend: str = "cpu", executable: str | Path | None = None,
+         kernel: str = "tetra_c99", threads: int = 0, competition: bool = True,
+         device: int = 0, block: int = 256) -> dict:
+    """Inspect actual native complete-node proofs without mapping image pixels."""
+    if backend != "cpu" or kernel not in ("tetra_c99", "tetra_structured_avx2"):
+        raise ValueError("plan requires CPU and an explicit C99/structured kernel")
+    return _run(backend, executable, ["plan", *_options(backend, kernel, threads, competition, device, block)],
+                _models(models, backend, competition))
+
+
 def bench(models: Iterable[str | Path], list_file: str | Path, *, backend: str = "cpu",
           executable: str | Path | None = None, kernel: str = "auto", threads: int = 0,
           reps: int = 5, batch: bool | int = False, competition: bool = False,

@@ -1,0 +1,18 @@
+{
+  "purpose": "从真实反例导出小型节点块，用整数输出区间及逐图必要界联合求解，区分贪心漏解与有限箱不可行",
+  "warm_run": "artifacts/local-compensation-v2",
+  "evidence_run": "artifacts/automatic-compensation-v1",
+  "diagnosis": "report/data/automatic-compensation-v1/conflict-diagnosis.json",
+  "case": "velvia-vivid",
+  "model_sha256": "4fe0dfd4b512e0a17996c5786339a84a452d62c8e05c07bc1256bd685c743cac",
+  "joint_interval": true,
+  "anchor": [251,251,42],
+  "channel": 2,
+  "max_delta": 4,
+  "max_nodes": 4,
+  "max_assignments": 10000,
+  "threads": 4,
+  "guard": "原历史/固定起点101组及完整域mean/RMS/p99端点/max/CVaR全部保持，历史缺口不升，目标floor(旧max)-1",
+  "evaluation": "只用前阶段主改、最少失败三节点及其残余前5颜色的正权重节点导出变量；复用同模型/同环境完整支撑频数。逐节点整数箱一次完整分支定界，安全界剪枝，精确叶子走全部原保护；最小L1通过解仅最终一个256³/100图/oracle/标量AVX2终验",
+  "limits": "固定反例导出的最多4节点B通道±4联合整数箱，最多10000赋值；不是外层网格/方法/参数或性能扫描。箱内可行性及最小L1须完整覆盖证书，不证明箱外/网格外最优。无官方Threshold，历史审计已见，不升级默认/冠军或改硬件后端"
+}

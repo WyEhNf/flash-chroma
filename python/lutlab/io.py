@@ -182,7 +182,13 @@ def inspect_submission_contract(paths: list[Path], *, semantics: str = "independ
         try:
             import json
             manifest = json.loads((paths[0].parent / "manifest.json").read_text(encoding="utf-8"))
-            entry = cache.inspect_entry(paths[0].parent, manifest["identity"])
+            if manifest.get("kind") == "independent_stage_bundle_v1":
+                from . import stage_bundle
+                entry = stage_bundle.inspect_bundle(paths[0].parent)
+                if entry is None:
+                    violations.append("independent stage bundle provenance validation failed")
+            else:
+                entry = cache.inspect_entry(paths[0].parent, manifest["identity"])
             if entry is not None and entry.paths == paths:
                 recorded = manifest["identity"]["parameters"]["semantics"]
                 evidence = "verified_model_manifest"

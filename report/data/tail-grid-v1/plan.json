@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "purpose": "固定m33与完整域有界拟合，区分网格位置、切线SSE与最小最大目标造成的真实LUT尾部误差",
+  "parent": "report/data/chain-error-v1",
+  "cases": ["lomo-purple2", "velvia-vivid"],
+  "m": 33,
+  "threads": 4,
+  "profiles": ["rounded_control", "line_sse", "line_minimax"],
+  "curves": {"anchors": 9, "hot_lines": 32, "hotspots": 128},
+  "spacing": {"min_step": 1, "max_step": 16},
+  "fitter": "fit_full_box_tetra；相同完整256^3测度、真实box约束、Q16矩与整数SSE选择",
+  "control": "旧浮点网格先rint成整数，再用相同完整域拟合；不能把它写成旧网格或把历史到对照的差异全部归因于网格",
+  "selection": "本轮为预先固定的三方案因果比较，全部模型在完整验收前冻结；不按新结果调参、不替换默认",
+  "evaluation": "每例三个新模型各一次完整256^3、全部100张历史照片、独立整数oracle与标量/AVX2；旧基线复用同字节来源证据",
+  "correctness": "DP独立全路径枚举/Q16弦/255边界三个集中合同；每个真实新网格额外核对原生H/b的四个局部支撑行，覆盖最窄区间",
+  "diagnosis": "保留旧三点表示下界，并对新idx/frac重新计算；旧热点与新最坏色的±1切片保存参考、节点前输出与舍入输出；另报完整边界误差",
+  "limits": "两例为单级拟合诊断，不是比赛四级成绩；切线代理全局最优不等于3D拟合全局最优；100图均为历史观察数据；无官方Threshold，不做性能扫描"
+}

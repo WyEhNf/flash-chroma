@@ -3,30 +3,28 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 import sys
-import tempfile
-
-
-def _write_report(path, value):
-    if path is None:
-        return
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
-                                     prefix=path.name + ".", suffix=".tmp", delete=False) as stream:
-        temporary = Path(stream.name)
-        json.dump(value, stream, indent=2, ensure_ascii=False, allow_nan=False)
-        stream.write("\n")
-    try:
-        os.replace(temporary, path)
-    finally:
-        temporary.unlink(missing_ok=True)
+from .reportio import write_report as _write_report
 
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "dataset":
+        from . import dataset
+        return dataset.main(argv[1:])
+    if argv and argv[0] == "hackextend":
+        from . import hackextend
+        return hackextend.main(argv[1:])
+    if argv and argv[0] == "hackset":
+        from . import hackset
+        return hackset.main(argv[1:])
+    if argv and argv[0] == "corpus":
+        from . import corpus
+        return corpus.main(argv[1:])
+    if argv and argv[0] == "casebook":
+        from . import casebook
+        return casebook.main(argv[1:])
     if argv and argv[0] in ("fit", "evaluate", "bench", "gen-data"):
         from . import cli
         return cli.main(argv) or 0
@@ -53,9 +51,14 @@ def main(argv=None):
                             ("select", "select qualified sparse models"),
                             ("check", "build and check a scenario workflow"),
                             ("compare", "run balanced paired CPU/CUDA/OCIO comparison"),
-                            ("accept", "verify source binding and problem-16 numerical requirements")):
+                            ("accept", "verify source binding and problem-16 numerical requirements"),
+                            ("corpus", "construct and inspect labelled versioned test data"),
+                            ("casebook", "maintain evidence-bound per-case champions"),
+                            ("hackset", "构造及核对独立压力输入与最小反例候选"),
+                            ("hackextend", "追加三维与串联压力配方"),
+                            ("dataset", "读取、重建和核对合并后的版本化数据集")):
         commands.add_parser(name, help=help_text)
-    for name in ("info", "apply", "cube", "verify", "bench-models", "validate"):
+    for name in ("info", "plan", "apply", "cube", "verify", "bench-models", "validate"):
         command = commands.add_parser(name)
         command.add_argument("--backend", choices=["cpu", "cuda"], default="cpu")
         command.add_argument("--executable", type=Path)
@@ -64,7 +67,7 @@ def main(argv=None):
         if name == "info":
             continue
         command.add_argument("--models", nargs=4, type=Path, required=True)
-        command.add_argument("--kernel", default="auto")
+        command.add_argument("--kernel", default="tetra_c99" if name == "plan" else "auto")
         command.add_argument("--threads", type=int, default=0)
         command.add_argument("--block", type=int, default=256)
         command.add_argument("--competition", action=argparse.BooleanOptionalAction, default=True)
@@ -94,6 +97,8 @@ def main(argv=None):
                       device=args.device, block=args.block)
         if args.command == "apply":
             result = runtime.apply(args.models, args.input, args.output, **common)
+        elif args.command == "plan":
+            result = runtime.plan(args.models, **common)
         elif args.command == "cube":
             result = runtime.cube(args.models, args.output, **common)
         elif args.command == "verify":

@@ -1,0 +1,19 @@
+{
+  "schema": 5,
+  "purpose": "复现PR22 Velvia原128对辅助，只补充分步拒绝回执；模型/缺口/试探数量/统计SHA必须相同",
+  "parent": "report/data/fractional-fit-v1",
+  "warm_start": "artifacts/quantile-tail-v3",
+  "replay_reference": "artifacts/rounded-budget-exact-v1/results.json",
+  "cases": ["velvia-vivid"],
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "steps": 32,
+  "focus_count": 64,
+  "trial_limit": 128,
+  "pair_nodes": 16,
+  "compensation": {"method":"rounded","rounds":2,"primary_limit":8,"helper_limit":16,"max_array_bytes":2684354560},
+  "full_domain_guard": {"mean_numerator":1005,"mean_denominator":1000,"precision_bits":24},
+  "memory_array_budget_bytes": 2684354560,
+  "limits": "诊断复现而非新增搜索；无新模型则复用旧完整终验，不将零接受视为无解；无预算放宽/性能/硬件扫描"
+}

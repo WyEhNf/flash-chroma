@@ -6,6 +6,7 @@
 //   jshc bench  -l list.txt [-k K] [-t N] [-r reps] [--batch] [-w out_dir] a.slut [...]
 //   jshc verify -l list.txt [-k K] [-t N] [--batch] [-o concatenated_rgb.raw] a.slut [...]
 //   jshc info
+//   jshc plan -k tetra_c99|tetra_structured_avx2 a.slut b.slut c.slut d.slut
 // bench prints one JSON object with per-phase timings (ms).
 #include <algorithm>
 #include <chrono>
@@ -20,6 +21,7 @@
 #include <vector>
 
 #include "jshc/lut.hpp"
+#include "jshc/image_contract.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -51,7 +53,8 @@ static Image load_image(const std::string& path) {
   int ch = 0;
   uint8_t* d = stbi_load(path.c_str(), &im.w, &im.h, &ch, 3);
   if (!d) throw std::runtime_error("cannot decode " + path);
-  im.source_rgb8 = ch == 3 && !stbi_is_16_bit(path.c_str());
+  im.source_rgb8 = ch == 3 && !stbi_is_16_bit(path.c_str()) &&
+                  jshc::detail::png_source_rgb8_or_other_container(path);
   im.rgb.assign(d, d + size_t(im.w) * im.h * 3);
   stbi_image_free(d);
   return im;
@@ -92,7 +95,7 @@ struct Args {
 };
 
 static Args parse(int argc, char** argv) {
-  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|verify|fit-r14|info} ...");
+  if (argc < 2) throw std::runtime_error("usage: jshc {apply|ref|cube|bench|verify|fit-r14|info|plan} ...");
   Args a;
   a.cmd = argv[1];
   for (int i = 2; i < argc; ++i) {
@@ -256,7 +259,7 @@ int main(int argc, char** argv) try {
                 avx2_available() ? "true" : "false", max_threads(),
                 std::thread::hardware_concurrency(), kernel_name(resolve_kernel(parse_kernel("auto"))));
     bool first = true;
-    for (const auto name : {"tetra_scalar", "tetra_avx2", "tetra_avx2_madd", "tetra_avx2_scalar_gather", "tetra_avx2_exact_float", "tetra_cpp_simd", "tetra_zig_simd4",
+    for (const auto name : {"tetra_scalar", "tetra_avx2", "tetra_avx2_madd", "tetra_avx2_scalar_gather", "tetra_avx2_exact_float", "tetra_c99", "tetra_structured_avx2", "tetra_cpp_simd", "tetra_zig_simd4",
                             "tetra_zig_simd8", "tetra_zig_simd", "tetra_zig_simd16", "tetra_rust_simd", "tri_float"}) {
       if (kernel_available(parse_kernel(name))) {
         std::printf("%s\"%s\"", first ? "" : ", ", name);
@@ -299,6 +302,28 @@ int main(int argc, char** argv) try {
   }
   Kernel k = resolve_kernel(parse_kernel(a.kernel));
 
+  if (a.cmd == "plan") {
+    if (k != Kernel::TetraC99 && k != Kernel::TetraStructuredAvx2)
+      throw std::runtime_error("plan requires -k tetra_c99 or -k tetra_structured_avx2");
+    auto models = load_sparse(a.luts, a.competition);
+    const auto plan = inspect_structured_chain(ptrs(models));
+    size_t runtime_bytes = 0, payload = 0;
+    for (const auto& model : models) {
+      if (k == Kernel::TetraStructuredAvx2) (void)model.packed_tables();
+      runtime_bytes += model.runtime_bytes(); payload += model.nodes.size();
+    }
+    std::printf("{\"cmd\":\"plan\",\"kernel\":\"%s\",\"proof_scope\":\"complete stored nodes and complete prefix-output superset\","
+                "\"four_independent_stages\":true,\"serialized_copy_bytes\":%zu,\"prepared_workspace_bytes\":%zu,"
+                "\"model_runtime_bytes\":%zu,\"model_node_payload_bytes\":%zu,\"stages\":[",
+                kernel_name(k), plan.serialized_copy_bytes, plan.prepared_workspace_bytes, runtime_bytes, payload);
+    const char* names[] = {"tetra", "curve", "vertex", "constant"};
+    for (size_t s = 0; s < 4; ++s)
+      std::printf("%s{\"stage\":%zu,\"path\":\"%s\",\"model_flags\":%u,\"effective_one_hot\":%s}",
+                  s ? "," : "", s + 1, names[plan.path[s]], plan.model_flags[s], plan.effective_one_hot[s] ? "true" : "false");
+    std::printf("]}\n");
+    return 0;
+  }
+
   if (a.cmd == "apply") {
     auto L = load_sparse(a.luts, a.competition);
     Image im = load_image(a.in);
@@ -333,6 +358,7 @@ int main(int argc, char** argv) try {
     const bool written = std::fwrite(buf.data(), 1, buf.size(), f) == buf.size();
     const int closed = std::fclose(f);
     if (!written || closed != 0) throw std::runtime_error("incomplete cube output: " + a.out);
+    std::printf("{\"kernel\":\"%s\",\"pixels\":%zu,\"stages\":%zu}\n", kernel_name(k), n, L.size());
     return 0;
   }
   if (a.cmd == "bench" || a.cmd == "verify") {

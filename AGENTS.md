@@ -194,6 +194,13 @@ This policy does not supersede platform security requirements or higher-priority
 >
 > When there is nothing useful to do, stop.
 
+## 本项目 Git 提交与同步约定
+
+以下补充由项目用户在本次同步任务中明确要求加入：
+
+- Git 提交信息的标题和正文必须使用简体中文；代码标识符、命令和必要技术名词可保留英文。
+- 推送前先获取目标远端的最新内容，在保留本地成果的前提下完成整合，再提交并推送；不得未经授权改写共享历史。
+
 ## 本项目阶段说明与 PR 交付规范
 
 以下规范由项目用户明确要求加入，适用于每一个阶段的工作：

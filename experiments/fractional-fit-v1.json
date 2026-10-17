@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "purpose": "尾部约束修复前先排除网格取整的表示混杂：保持PR13原权威idx/frac，比较完整域及等质量拟合",
+  "parent": "report/data/full-photo-v1",
+  "grid_parent": "report/data/tail-grid-v1",
+  "cases": ["lomo-purple2", "velvia-vivid"],
+  "m": 33,
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "profiles": ["fractional_full", "fractional_mixed"],
+  "mass": "均匀完整256^3与60张训练图各1/2，沿用PR18，不扫描比例、不加隐藏先验",
+  "support": "每节点最近RGB8见证必须互异；方阵Q16设计对称部分的精确整数Gershgorin余量为正才接受；给出完整H的严格正定下界，失败不当作秩亏结论",
+  "tests": "3个见证合同、现有完整COO/1及4线程合同扩至整数/小数两种网格、既有等质量合同3项；实现冻结后一次集中验证",
+  "selection": "历史、PR18整数纯/混合、两个新原轴表纯/混合组成固定五选一，沿用完整域四项和20图选择门禁；先冻结选择，再对两个新模型完整100图",
+  "evaluation": "两个案例四个新模型各完整256^3、NumPy独立整数oracle与标量/AVX2、100张完整照片；旧三配置明确复用，所有原轴表字节必须与历史一致",
+  "limits": "本阶段针对表示混杂，逐图max/p99约束修复仍需后续推进；两个单级不算比赛四级成绩；无官方Threshold，不替换默认/冠军，不做硬件/性能扫描；全部历史照片不称盲测"
+}

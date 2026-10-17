@@ -1,0 +1,55 @@
+{
+  "status": "integration_verified_with_targeted_recheck",
+  "utc": "2026-10-16T00:47:37.833100+00:00",
+  "remote": "https://github.com/WyEhNf/flash-chroma.git",
+  "remote_main": "85f4a871c37d35303fd390a7a1cd6e67deed93cc",
+  "local_checkpoint": "f72be5cb4d06d636138b7c092aeb72ba11ba3835",
+  "branch": "codex/zig-default-pixi",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12",
+    "gcc": "15.2.0",
+    "cmake": "cmake version 4.2.0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "build": {
+    "directory": "build-r52-sync",
+    "type": "Release",
+    "generator": "MinGW Makefiles",
+    "full_fit": true,
+    "portable_c": true,
+    "avx2": true,
+    "openmp": true,
+    "optional_cpp_simd_zig_rust": false
+  },
+  "initial_gate": {
+    "command": "python scripts/check_correctness.py --build-dir build-r52-sync",
+    "ctest_passed": 1,
+    "ctest_failed": 0,
+    "pytest_passed": 21,
+    "pytest_failed": 1,
+    "exit_code": 1,
+    "cause": "旧单级一致性用例枚举到要求四级链的 C99 后端，实际传入一张 LUT。"
+  },
+  "repair": {
+    "file": "tests/test_lutlab.py",
+    "description": "单级用例保留适用后端；另用 17、18、25、33 节点的四级链验证全部已编译整数后端。未改数值实现。"
+  },
+  "targeted_recheck": {
+    "command": "python -m pytest -q -ra tests/test_lutlab.py::test_python_cpp_bit_exact",
+    "passed": 1,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "source_preservation": {
+    "files": 22,
+    "mismatches": 0
+  },
+  "limitations": [
+    "本次为 Windows/MinGW 本地整合检查，未运行 Linux/Pixi、Docker、CUDA 或可选 Zig/Rust/C++ SIMD 门禁。",
+    "修复后仅重跑失败用例；其余 21 项及 C++ 全色域结果沿用首次检查，不声称整套门禁在同一次运行中全绿。",
+    "未执行性能重测，未重新完成 7917 项研究矩阵，未执行留出评价。",
+    "远端新增 100 张自然照片未自动替换历史图集。"
+  ]
+}

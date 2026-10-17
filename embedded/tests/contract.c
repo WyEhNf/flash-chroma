@@ -1,5 +1,11 @@
 /* 宿主与 FreeRTOS 共用的确定性契约测试；不需要堆、文件或外部数据。 */
 #include "jshc_embedded.h"
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+#include "jshc_portable.h"
+static jshc_p_model portable_models[4];
+static jshc_p_chain portable_chains[2];
+static uint8_t portable_rgb[2][3 * 257 + 2];
+#endif
 
 #define MAX_MODEL (16 + 12 * 33 + 3840 + 33 * 33 * 33 * 3)
 #define CHECK(x) do { if (!(x)) return __LINE__; } while (0)
@@ -104,17 +110,78 @@ int jshc_embedded_contract(void (*checkpoint)(void))
         CHECK(jshc_embedded_init(&luts[s], models[s] + 1, bytes[s]) == JSHC_EMBEDDED_OK);
         chain[s] = &luts[s];
     }
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+    {
+        const jshc_p_model *views[4];
+        for (s = 0; s < 4; ++s) {
+            CHECK(jshc_p_model_prepare(&portable_models[s], models[s] + 1, bytes[s]) == JSHC_P_OK);
+            views[s] = &portable_models[s];
+        }
+        CHECK(jshc_p_chain_prepare(&portable_chains[0], views, 0) == JSHC_P_OK);
+        CHECK(jshc_p_chain_prepare(&portable_chains[1], views, JSHC_P_FORCE_GENERIC) == JSHC_P_OK);
+    }
+#endif
     for (len = 0; len <= 257; ++len) {
         for (i = 0; i < sizeof(rgb); ++i) {
             seed = seed * 1664525u + 1013904223u;
             expected[i] = rgb[i] = (uint8_t)(seed >> 24);
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+            portable_rgb[0][i] = portable_rgb[1][i] = rgb[i];
+#endif
         }
         for (i = 0; i < len; ++i)
             for (s = 0; s < 4; ++s) oracle(chain[s], expected + 1 + i * 3);
         CHECK(jshc_embedded_apply(chain, 4, rgb + 1, len) == JSHC_EMBEDDED_OK);
         for (i = 0; i < sizeof(rgb); ++i) CHECK(rgb[i] == expected[i]);
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+        for (s = 0; s < 2; ++s) {
+            CHECK(jshc_p_apply_rgb8(&portable_chains[s],
+                portable_rgb[s] + 1, sizeof(rgb) - 2, len * 3,
+                portable_rgb[s] + 1, sizeof(rgb) - 2, len * 3, len, 1) == JSHC_P_OK);
+            for (i = 0; i < sizeof(rgb); ++i) CHECK(portable_rgb[s][i] == expected[i]);
+        }
+#endif
         if (checkpoint && len % 32 == 0) checkpoint();
     }
+#ifdef JSHC_EMBEDDED_PORTABLE_PARITY
+    /* 随机夹具通常只走通用路径；另用曲线和常量夹具确实触发结构捷径。 */
+    {
+        const jshc_p_model *views[4];
+        size_t pattern, mode, c;
+        for (pattern = 0; pattern < 2; ++pattern) {
+            for (s = 0; s < 4; ++s) {
+                const size_t m = sizes[s];
+                uint8_t *nodes = models[s] + 1 + 16 + 12 * m + 3840;
+                for (i = 0; i < m * m * m; ++i) {
+                    const size_t coordinate[3] = {i / (m * m), (i / m) % m, i % m};
+                    for (c = 0; c < 3; ++c)
+                        nodes[i * 3 + c] = pattern ? (uint8_t)(17 + s * 31 + c)
+                            : (uint8_t)((coordinate[c] * (37 + 2 * s) + s * 13 + c * 5) % 256);
+                }
+                CHECK(jshc_p_model_prepare(&portable_models[s], models[s] + 1, bytes[s]) == JSHC_P_OK);
+                views[s] = &portable_models[s];
+            }
+            CHECK(jshc_p_chain_prepare(&portable_chains[0], views, 0) == JSHC_P_OK);
+            CHECK(jshc_p_chain_prepare(&portable_chains[1], views, JSHC_P_FORCE_GENERIC) == JSHC_P_OK);
+            CHECK(portable_chains[0].path[0] == (pattern ? JSHC_P_CONSTANT : JSHC_P_CURVE));
+            for (i = 0; i < sizeof(rgb); ++i) {
+                seed = seed * 1664525u + 1013904223u;
+                expected[i] = rgb[i] = portable_rgb[0][i] = portable_rgb[1][i] = (uint8_t)(seed >> 24);
+            }
+            for (i = 0; i < 257; ++i)
+                for (s = 0; s < 4; ++s) oracle(chain[s], expected + 1 + i * 3);
+            CHECK(jshc_embedded_apply(chain, 4, rgb + 1, 257) == JSHC_EMBEDDED_OK);
+            for (i = 0; i < sizeof(rgb); ++i) CHECK(rgb[i] == expected[i]);
+            for (mode = 0; mode < 2; ++mode) {
+                CHECK(jshc_p_apply_rgb8(&portable_chains[mode],
+                    portable_rgb[mode] + 1, sizeof(rgb) - 2, 257 * 3,
+                    portable_rgb[mode] + 1, sizeof(rgb) - 2, 257 * 3, 257, 1) == JSHC_P_OK);
+                for (i = 0; i < sizeof(rgb); ++i) CHECK(portable_rgb[mode][i] == expected[i]);
+            }
+            if (checkpoint) checkpoint();
+        }
+    }
+#endif
     /* 覆盖 Q16 端点、半值、六种轴次序、恒 255 及极端节点。 */
     {
         const uint32_t fractions[7] = {0, 1, 32767, 32768, 32769, 65535, 65536};

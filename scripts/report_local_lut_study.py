@@ -12,6 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
 from lutlab.compatibility import summarize
+from lutlab.study_reporting import select_baseline
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--input", type=Path, required=True)
@@ -42,7 +43,7 @@ for report in reports:
     valid = [r for r in report["full"] if r["status"] == "ok"]
     if valid:
         best = min(valid, key=lambda v: v["quality"]["mean"])
-        baseline = next((v for v in valid if v["profile"] == "sample_tetra"), None)
+        baseline = select_baseline(valid, 33)
         best_rows.append({"lut": report["lut"]["path"], "source": report["lut"]["source_id"],
             "profile": best["profile"], "m": best["m"], **best["quality"],
             "median_ms_per_image": best["median_ms_per_image"],
@@ -72,7 +73,7 @@ lines = ["# 本地LUT与图片适配度研究", "", "所有结果留在本地，
     "- 筛选分三个进程并行，screen_probe_ms会受到资源竞争，只作流程诊断；正式全图测速在筛选全部完成后串行运行，不据筛选耗时宣布算法性能排名。",
     "- fit_s含实际求解，网格和相同节点模型在同一LUT内复用，不是每配置独立冷启动总耗时。宿主RSS是整个进程采样峰值，不是模型独占内存。",
     "- 单级结果不是赛题四级成绩。四级链另见chains.csv；每级整数舍入，链为明确列出的数值压力组合，不宣称未知源色彩空间匹配。",
-    "- 本机未完成CMake/C++原有完整门禁：CMake未找到，CodeBlocks g++出现DLL启动错误。13项新测试检查源格式、Q16一致性、棱柱独立公式、分位数及四级融合；不替代原有C++/CUDA跨后端验收。",
+    "- 本研究入口不自动执行原生门禁；源码格式、Q16与统计测试不替代C++/CUDA验收。实际执行环境、后端与阶段门禁须另附记录，不继承历史机器的缺失工具结论。",
     "- 参考表按源网格三线性解释并clip/round为256³ RGB8；3DL使用OCIO式位深推断与近恒等shaper政策。外部素材原本稀疏，参考插值结构可能偏向三线性候选。",
     "- 官方Threshold和聚合口径未知；文件中的ge_1/ge_2/ge_3/ge_5仅作阈值扫描，不宣布官方通过。",
     "- Windows文件占用导致两次检查点写入中断，保留失败日志后用有限IO重试恢复；重试只改变写入行为，不改变拟合/插值/误差定义。首轮测试的临时目录权限问题也已改用工作区临时目录解决。", "",

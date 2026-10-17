@@ -46,7 +46,8 @@ jobs:
         run: |
           cmake -S embedded -B build-embedded-qemu -G Ninja \
             -DCMAKE_TOOLCHAIN_FILE=cmake/${{ matrix.target }}.cmake \
-            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON
+            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_FREERTOS=ON \
+            -DJSHC_EMBEDDED_PORTABLE_PARITY=ON
           cmake --build build-embedded-qemu --parallel 2
           ${{ matrix.prefix }}-size build-embedded-qemu/freertos/jshc_rtos.elf
           ${{ matrix.prefix }}-nm -u build-embedded-qemu/freertos/jshc_rtos.elf
@@ -72,7 +73,8 @@ jobs:
         run: |
           cmake -S embedded -B build-embedded-linux -G Ninja \
             -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-linux.cmake \
-            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_LINUX_QEMU=ON
+            -DCMAKE_BUILD_TYPE=MinSizeRel -DJSHC_EMBEDDED_LINUX_QEMU=ON \
+            -DJSHC_EMBEDDED_PORTABLE_PARITY=ON
           cmake --build build-embedded-linux --parallel 2
           aarch64-linux-gnu-size build-embedded-linux/linux/jshc_linux_init
       - name: 启动 AArch64 Linux 并验证 PID 1 中的 LUT 契约

@@ -1,0 +1,57 @@
+{
+  "purpose": "固定热点主改与邻近辅助的重叠联合补偿，检验照片预算及完整尾部",
+  "parent": "artifacts/cvar-commit-v1",
+  "case": "velvia-vivid",
+  "model_sha256": "f577f0749f7aae56275774d0bdbaad9305d99652ca08ba21cc928c8ff84962c4",
+  "anchor": [
+    251,
+    251,
+    42
+  ],
+  "region": "原热点单元648色；完整支撑包含其8节点及相邻辅助节点，只有两冻结节点可变",
+  "candidates": [
+    "空修改",
+    "固定主改B减2",
+    "辅助B加1及其联合块",
+    "辅助B加2及其联合块"
+  ],
+  "rgb_max": 53,
+  "max_delta": 4,
+  "max_cell_colours": 4096,
+  "max_support_colours": 131072,
+  "threads": 4,
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "guard": "全部原历史/固定起点101组和完整域mean/RMS/p99端点/max/CVaR保持；只允许通过保护且降低全域max的联合块选中",
+  "evaluation": "主改与PR28模型SHA及全部频数/拒绝逐项一致；6反事实一次完整局部支撑，真实重放重叠舍入。只对一个选中联合模型一次256³/100图/独立oracle/标量AVX2；不变则复用",
+  "limits": "只比较一个已冻结主改、一个历史有依据的邻近辅助及两个幅度，不扩展全局/参数/性能扫描。单改输出与SSE预算不可相加；历史审计已观察，官方Threshold未知。不升级默认/冠军，不放宽保护",
+  "local_compensation": {
+    "reference": "artifacts/extreme-cell-v2",
+    "primary": {
+      "node": 35909,
+      "before": [
+        255,
+        255,
+        115
+      ],
+      "after": [
+        255,
+        255,
+        113
+      ]
+    },
+    "helper": {
+      "node": 35910,
+      "before": [
+        255,
+        255,
+        107
+      ],
+      "channel": 2,
+      "deltas": [
+        1,
+        2
+      ]
+    }
+  }
+}

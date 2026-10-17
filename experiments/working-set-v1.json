@@ -1,0 +1,28 @@
+{
+  "purpose": "在同中心/半径/质量目标下比较原工作集与尾部反馈替换一个不活跃坐标，检查变量选择是否解除精度限制",
+  "warm_run": "artifacts/joint-minimax-v1",
+  "evidence_run": "artifacts/automatic-compensation-v1",
+  "diagnosis": "report/data/automatic-compensation-v1/conflict-diagnosis.json",
+  "case": "velvia-vivid",
+  "model_sha256": "9f65bf5fdda5d100178dae4d26729b99a00af82b6cf23b015afd8a8eb2e0028a",
+  "joint_minimax": true,
+  "working_set": true,
+  "anchor": [251,251,42],
+  "channel": 2,
+  "max_delta": 4,
+  "max_nodes": 4,
+  "max_assignments": 10000,
+  "max_fresh_nodes": 8,
+  "proposal_deltas": [-2,-1,1,2],
+  "threads": 4,
+  "source_probes": [[251,251,42],[255,255,42],[255,255,49]],
+  "objective": ["max_squared","historical_loss","full_sse","l1"],
+  "parent_evidence_sha256": {
+    "joint-search.json": "c02d19ab76ccadfcddf3c42a45de6e8534fcc282d39e7d51b67a67d4ab6834f4",
+    "verification.json": "8004df6c229891723d02d19c02a39e3497254eac1e986dbaceba67b78f299212",
+    "source-audit.json": "4f6b330942583ccd6ba07dbcdb5a0b8b5d3759d06ccc7c28a8c87dc98b606758"
+  },
+  "guard": "两个箱共用同一个PR32起点、原历史/固定101组及完整域mean/RMS/p99端点/max/CVaR和缺口不升，不放宽任何保护",
+  "evaluation": "父四节点箱作对照；保留父实际变化三节点，从完整支撑内且不在原四节点的新节点做至多32个B探针，按历史缺口/保护失败数/max平方/SSE/节点/幅度排序选一个替换坐标。仅两个有限箱各一次完整质量求解，选全局两箱最优再一次256³/100图/oracle/标量AVX2；不变则复用",
+  "limits": "一次同中心受控比较，不枚举所有工作集，不根据审计图调参，不追加替换或扫描。源审计同源/同区域/同代码回执复用不重新解码TIFF；官方Threshold未知，历史审计已见，不升级默认/冠军或改硬件后端"
+}
