@@ -158,7 +158,8 @@ def process(previous,plan,out,cache,executable,archive,inverse,inventory):
             "violating_groups":np.flatnonzero(np.any(photos.costs > 0,axis=1)).tolist()})
     print(f"[{cid}] 初始整数缺口{photos.loss}；开始固定预算单/双节点修复",flush=True)
     search = qr.repair(model,bank,domain,photos,steps=plan["steps"],focus_count=plan["focus_count"],
-        trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted,compensation=plan.get("compensation"))
+        trial_limit=plan["trial_limit"],pair_nodes=plan["pair_nodes"],on_accept=accepted,compensation=plan.get("compensation"),
+        global_search=plan.get("global_search"))
     new_accepted = len(search["accepted"])
     search["accepted"] = replayed+[{**r,"step":r["step"]+len(replayed)} for r in search["accepted"]]
     search.update(replayed_steps=len(replayed),new_accepted_steps=new_accepted)
@@ -220,6 +221,7 @@ def main():
         ROOT / "python/lutlab/full_domain_guard.py",ROOT / "python/lutlab/tail_repair.py",ROOT / "python/lutlab/error_analysis.py",
         ROOT / "scripts/run_chain_error_study.py",ROOT / "scripts/run_joint_box_study.py",ROOT / "scripts/run_tail_repair.py"]
     if plan.get("compensation"):extra.append(ROOT / "python/lutlab/quantile_compensation.py")
+    if plan.get("global_search"):extra.append(ROOT / "python/lutlab/quantile_global.py")
     metadata["identity"].update(plan_sha256=digest(args.plan),executable_sha256=digest(args.executable),
         stage_source_sha256={str(p.relative_to(ROOT)):digest(p) for p in extra},
         parent_files={n:digest(parent / n) for n in ("results.json","environment.json","photo-partition.json","models-and-selection.zip","archive-index.json")})
