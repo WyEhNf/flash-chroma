@@ -110,6 +110,27 @@ class JointMove:
             raise ValueError("联合试探必须包含两个不同节点")
 
 
+@dataclass(frozen=True)
+class TripleMove:
+    moves: tuple
+
+    def __post_init__(self):
+        if len(self.moves) != 3 or len({(m.stage,m.node) for m in self.moves}) != 3:
+            raise ValueError("三节点试探必须包含三个不同节点")
+
+
+def components(move):
+    return move.moves if isinstance(move,(JointMove,TripleMove)) else (move,)
+
+
+def combine(moves):
+    moves = tuple(moves)
+    if len(moves) == 1:return moves[0]
+    if len(moves) == 2:return JointMove(moves)
+    if len(moves) == 3:return TripleMove(moves)
+    raise ValueError("离线节点块只支持一至三个不同节点")
+
+
 class DomainGuard:
     """全颜色前缀、立方体倒排和误差直方图；保护参考在所有步之间固定。"""
     def __init__(self, models, points, truth, *, numerator=1005, denominator=1000, max_cache_bytes=1536 << 20):
@@ -155,7 +176,7 @@ class DomainGuard:
     def trial(self, models, move):
         if signature(models) != self.model_signature:
             raise ValueError("全域前缀与当前模型不同，拒绝使用陈旧倒排")
-        moves = move.moves if isinstance(move,JointMove) else (move,)
+        moves = components(move)
         rows = np.unique(np.concatenate([self.affected(models,m) for m in moves]))
         nodes = [models[m.stage].nodes.reshape(-1,3)[m.node] for m in moves]
         old = [node.copy() for node in nodes]
@@ -187,8 +208,8 @@ class DomainGuard:
         self._pending = None
         trial = self.trial(models,move)
         proof = certify(self.reference,summary(trial["hist"]),self.numerator,self.denominator)
-        if isinstance(move,JointMove):
-            proof["moves"] = [{"stage":m.stage+1,"node":m.node,"value":list(m.value)} for m in move.moves]
+        if len(components(move)) > 1:
+            proof["moves"] = [{"stage":m.stage+1,"node":m.node,"value":list(m.value)} for m in components(move)]
         else:
             proof.update(stage=move.stage+1,node=move.node,value=list(move.value))
         proof.update(affected_colours=len(trial["rows"]), changed_final_colours=int(np.count_nonzero(np.any(
