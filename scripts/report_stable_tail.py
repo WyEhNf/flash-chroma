@@ -2,6 +2,8 @@
 import argparse
 from collections import Counter
 import hashlib
+import itertools
+import math
 from pathlib import Path
 import shutil
 import zipfile
@@ -11,27 +13,69 @@ from report_tail_grid_study import digest,write_csv,write_json,compare
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def batch_audit(global_info,m):
+    batch = global_info["batch_search"]
+    singles = [t for t in global_info["trials"] if len(t["moves"]) == 1 and t["accepted"]]
+    expected = [{"node":t["moves"][0]["node"],"value":t["moves"][0]["value"],"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"]} for t in singles]
+    if expected != batch["feasible_singles"] or len(expected) > batch["feasible_limit"]:raise ValueError("批次可行单改清单与真实回执不同")
+    before = global_info["anchor_loss"]
+    if any(t["before_loss"] != before for t in global_info["trials"]+batch["trials"]+batch["confirmation"]):
+        raise ValueError("批次试探没有保持同一冻结状态")
+    def key(moves):return tuple(sorted((part["node"],tuple(part["value"])) for part in moves))
+    offers = [(t["loss"],1,key(t["moves"])) for t in singles]
+    blocks,overlap = [],0
+    for size in range(2,batch["max_order"]+1):
+        for subset in itertools.combinations(singles,size):
+            moves = tuple(sorted(part for t in subset for part in key(t["moves"])))
+            coords = [(node//(m*m),(node//m)%m,node%m) for node,value in moves]
+            if not all(any(abs(x-y) > 1 for x,y in zip(a,b)) for a,b in itertools.combinations(coords,2)):
+                overlap += 1
+                continue
+            blocks.append((sum(t["loss"]-before for t in subset),size,moves))
+    blocks.sort()
+    if len(blocks) != batch["generated_blocks"] or overlap != batch["overlapping_blocks_skipped"] or len(blocks) != len(batch["trials"]):
+        raise ValueError("批次组合遗漏、重复或不相交过滤不同")
+    for expected,t in zip(blocks,batch["trials"]):
+        if (t["sum_single_loss_delta"],len(t["moves"]),key(t["moves"])) != expected or t["lower_bound_delta"] is not None:
+            raise ValueError("批次排序或下界标签不同")
+        if t["accepted"]:offers.append((t["loss"],len(t["moves"]),key(t["moves"])))
+    if offers:
+        chosen = min(offers)
+        if len(batch["confirmation"]) != 1:raise ValueError("批次未重新确认")
+        t = batch["confirmation"][0]
+        if not t["accepted"] or (t["loss"],len(t["moves"]),key(t["moves"])) != chosen:raise ValueError("批次没有选择真实损失最优可行项")
+        if (batch["selected_loss"],batch["selected_node_count"],batch["selected_nodes"]) != (chosen[0],chosen[1],[node for node,value in chosen[2]]):
+            raise ValueError("批次提交摘要不同")
+    elif batch["confirmation"] or batch["selected_node_count"]:raise ValueError("空批次却有选择")
+    return {**{k:v for k,v in batch.items() if k not in ("trials","confirmation")},
+        "observed_block_decisions":dict(Counter(t["decision"] for t in batch["trials"])),"selection_audited":True}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--guard",type=Path,required=True)
     parser.add_argument("--aware",type=Path,required=True)
     parser.add_argument("--warm",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
-    parser.add_argument("--study",choices=("stable","primary"),default="stable")
+    parser.add_argument("--study",choices=("stable","primary","batch"),default="stable")
     parser.add_argument("--diagnosis",type=Path)
+    parser.add_argument("--tail-risk",type=Path)
     args = parser.parse_args()
     if args.output.exists():raise ValueError("不覆盖旧归档")
-    if args.study == "primary" and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
-    names = ("guard","aware") if args.study == "stable" else ("tail","constraints")
+    if args.study in ("primary","batch") and args.diagnosis is None:raise ValueError("主提案归档必须给出冻结独立归因目录")
+    if args.study == "batch" and args.tail_risk is None:raise ValueError("批次归档必须给出最坏1%独立复算")
+    names = {"stable":("guard","aware"),"primary":("tail","constraints"),"batch":("first","joint")}[args.study]
     sources = dict(zip(names,(args.guard,args.aware)))
-    plans = {arm:ROOT / (f"experiments/stable-tail-{arm}-v1.json" if args.study == "stable" else f"experiments/primary-budget-{arm}-v1.json") for arm in sources}
+    prefix = {"stable":"stable-tail","primary":"primary-budget","batch":"primary-batch"}[args.study]
+    plans = {arm:ROOT / f"experiments/{prefix}-{arm}-v1.json" for arm in sources}
     checked = {arm:check_epoch(path,plans[arm]) for arm,path in sources.items()}
     if checked[names[0]][0]["identity"]["environment"] != checked[names[1]][0]["identity"]["environment"]:raise ValueError("两臂环境不同")
     a,b = [load(plans[arm]) for arm in sources]
     for field in ("parent","warm_start","cases","threads","pixels_per_image","pixel_seed","steps","focus_count","trial_limit","pair_nodes","compensation","full_domain_guard","memory_array_budget_bytes"):
         if a[field] != b[field]:raise ValueError("目标排序之外的实验配置不同")
-    if args.study == "primary":
-        if a["stability"] != b["stability"] or {k:v for k,v in a["global_search"].items() if k != "ordering"} != {k:v for k,v in b["global_search"].items() if k != "ordering"}:
+    if args.study in ("primary","batch"):
+        varying = "ordering" if args.study == "primary" else "batch"
+        if a["stability"] != b["stability"] or {k:v for k,v in a["global_search"].items() if k != varying} != {k:v for k,v in b["global_search"].items() if k != varying}:
             raise ValueError("主提案排序之外的保护或全局配置不同")
         first = [checked[arm][1]["cases"][0]["selection"]["search"]["global_rounds"][0] for arm in names]
         for key in ("anchor_loss","negative_score_proposals","model_signature","score_sha256","statistics_sha256","hist_changes_sha256","raw_top_proposals"):
@@ -42,6 +86,16 @@ def main():
     out = args.output
     out.mkdir(parents=True)
     diagnostic = None
+    risk = None
+    if args.tail_risk is not None:
+        risk = load(args.tail_risk)
+        if risk["external_dependencies_loaded"]:raise ValueError("最坏1%复算不应载入外部数值依赖")
+        for name,h in risk["inputs_sha256"].items():
+            if digest(Path(name)) != h:raise ValueError("最坏1%复算输入变化")
+        for name,h in risk["sources_sha256"].items():
+            if digest(ROOT / "scripts" / name) != h:raise ValueError("最坏1%复算源码变化")
+        shutil.copyfile(args.tail_risk,out / "tail-risk.json")
+        shutil.copyfile(args.tail_risk.with_suffix(".log"),out / "tail-risk.log")
     if args.study == "stable":
         counterexamples = ROOT / "artifacts/stable-tail-counterexamples-v1.json"
         diagnostic = load(counterexamples)
@@ -63,9 +117,12 @@ def main():
             if path.is_file():shutil.copyfile(path,destination / path.name)
         shutil.copyfile(args.diagnosis.with_suffix(".log"),out / "diagnosis.log")
     for name in ("photo-inventory.json","photo-partition.json"):shutil.copyfile(args.guard / name,out / name)
-    contract_log = "stable-tail-contracts-v1.log" if args.study == "stable" else "primary-budget-contracts-v1.log"
+    contract_log = {"stable":"stable-tail-contracts-v1.log","primary":"primary-budget-contracts-v1.log","batch":"primary-batch-contracts-v1.log"}[args.study]
     shutil.copyfile(ROOT / "artifacts" / contract_log,out / "contract-tests.log")
     summary,photo_rows,regressions,diagnosis,provenance,parity = [],[],[],[],[],[]
+    split_rows = []
+    splits = {"training":[r["id"] for r in partition["training"]["images"]],
+        "selection":[r["id"] for r in partition["guard"]["images"]],"audit":partition["audit_ids"]}
     primary_rows = []
     for arm,(run,result,expected) in checked.items():
         source = sources[arm]
@@ -102,10 +159,16 @@ def main():
             globals_summary = []
             for round_index,global_info in enumerate(search["global_rounds"]):
                 entries = global_info["trials"]
-                globals_summary.append({**{k:v for k,v in global_info.items() if k != "trials"},
-                    "trial_count":len(entries),"observed_decisions":dict(Counter(t["decision"] for t in entries))})
-                for rank,t in enumerate(entries):
-                    primary_rows.append({"arm":arm,"round":round_index,"trial":rank+1,"node_count":len(t["moves"]),
+                item = {**{k:v for k,v in global_info.items() if k not in ("trials","batch_search")},
+                    "trial_count":len(entries),"observed_decisions":dict(Counter(t["decision"] for t in entries))}
+                extra = []
+                if "batch_search" in global_info:
+                    from lutlab import io
+                    item["batch_search"] = batch_audit(global_info,io.load_sparse(source / cid / "warm-replayed.slut").m)
+                    extra = [("batch",t) for t in global_info["batch_search"]["trials"]]+[("confirmation",t) for t in global_info["batch_search"]["confirmation"]]
+                globals_summary.append(item)
+                for rank,(family,t) in enumerate([("primary",t) for t in entries]+extra):
+                    primary_rows.append({"arm":arm,"round":round_index,"trial":rank+1,"family":family,"node_count":len(t["moves"]),
                         "nodes":" ".join(str(m["node"]) for m in t["moves"]),"loss":t["loss"],"lower_bound_delta":t["lower_bound_delta"],
                         "decision":t["decision"],"stability_rms_failed_count":sum(k.startswith("stability.") and k.endswith(".rms") for k in t["photo_failed"]),
                         "stability_mean_failed_count":sum(k.startswith("stability.") and k.endswith(".mean_bound") for k in t["photo_failed"]),
@@ -132,6 +195,13 @@ def main():
                     **{f"cube_{k}":value["cube"][k] for k in ("mean","rms","p99","max","cvar_1pct","fraction_ge_1","fraction_ge_2","fraction_ge_3","fraction_ge_5")},
                     **{f"photos_{k}":value["photos"][k] for k in ("mean","rms","worst_image_p99","max")}})
                 photo_rows.extend({"profile":name,"reused_metrics":reused,**r} for r in value["photos"]["per_image"])
+                for split,ids in splits.items():
+                    images = [r for r in value["photos"]["per_image"] if r["image"] in ids]
+                    if len(images) != len(ids):raise ValueError("逐图分组数据缺失")
+                    split_rows.append({"profile":name,"split":split,"n_images":len(images),"reused_metrics":reused,
+                        "mean":math.fsum(r["mean"] for r in images)/len(images),
+                        "rms":math.sqrt(math.fsum(r["rms"]**2 for r in images)/len(images)),
+                        "worst_image_p99":max(r["p99"] for r in images),"max":max(r["max"] for r in images)})
                 regressions.append({"profile":name,"vs_warm":compare(old["final"]["photos"],value["photos"]),
                     "vs_historical":compare(case["historical"]["photos"],value["photos"])})
             parity.extend({"arm":arm,"reused":case["final"]["reused"],**p} for p in case["final"]["native"])
@@ -157,17 +227,19 @@ def main():
         for name in ("verify_stability.py","verify_quantile_constraints.py","verify_full_domain_guard.py"):z.write(ROOT / "scripts" / name,name)
     if diagnostic is not None:
         with zipfile.ZipFile(out / "diagnostic-sources.zip","w",zipfile.ZIP_DEFLATED) as z:
-            for name in diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"]:z.write(ROOT / "scripts" / name,name)
+            diagnostic_sources = {**diagnostic["source_sha256" if args.study == "stable" else "sources_sha256"],**(risk["sources_sha256"] if risk else {})}
+            for name in diagnostic_sources:z.write(ROOT / "scripts" / name,name)
     if primary_rows:write_csv(out / "primary-trials.csv",primary_rows)
     write_csv(out / "case-summary.csv",summary)
     write_csv(out / "photos-per-image.csv",photo_rows)
+    write_csv(out / "photo-splits.csv",split_rows)
     write_json(out / "photo-regressions.json",regressions)
     write_json(out / "native-parity.json",parity)
     write_json(out / "constraint-diagnosis.json",diagnosis)
     write_json(out / "source-provenance.json",provenance)
     write_json(out / "archive-summary.json",{"profiles":len(summary),"photo_rows":len(photo_rows),"native_receipts":len(parity),
         "bytes":sum(p.stat().st_size for p in out.rglob("*") if p.is_file()),"archiver_sha256":digest(Path(__file__)),
-        "scope":"仅Velvia固定两臂研究，新增尾部统计成本单列，复用数据显式标记；无默认升级、官方评分或性能声明"})
+        "scope":"仅Velvia固定两臂研究，额外统计及试探成本单列，复用数据显式标记；无默认升级、官方评分或性能声明"})
     print("两臂误差与候选拒绝证据归档完成")
 
 

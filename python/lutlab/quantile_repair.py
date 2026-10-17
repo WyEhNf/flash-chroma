@@ -46,6 +46,11 @@ def ranked_proposals(model,banks,points,priority,truth):
 def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,pair_nodes=16,on_accept=None,compensation=None,global_search=None,pair_prefix_expected=None):
     """有限、确定性搜索；每次严格降低整数缺口，保持整个阶段固定的均值/RMS预算。"""
     models = [model]
+    batch_config = global_search.get("batch") if global_search else None
+    if batch_config is not None:
+        from . import primary_batch
+        primary_batch.validate(batch_config)
+        if global_search.get("method") != "primary_budget":raise ValueError("主改批次需要预算感知全局方法")
     for other in banks:
         if other.m != model.m or not all(np.array_equal(a,b) for a,b in zip(other.tables(),model.tables())):
             raise ValueError("节点候选库必须使用完全相同的权威轴表")
@@ -54,6 +59,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
     log,rejections,compensation_log,global_log = [],{},[],[]
     totals = {"single_trials":0,"pair_trials":0,"generated_single_proposals":0,"compensated_pair_trials":0,
         "global_single_trials":0,"global_pair_trials":0,"three_node_trials":0,"proper_subset_trials":0}
+    if batch_config is not None:totals.update(global_batch_trials=0,global_batch_confirmations=0)
 
     def consider(move,trace=None,lower_bound=None):
         full_trial = domain.trial(models,move)
@@ -103,6 +109,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
         totals["generated_single_proposals"] += len(ranked)
         accepted = None
         accepted_compensation = None
+        accepted_batch = None
         accepted_source = "hotspot"
         primary_cache = {}
         for _,move in ranked[:trial_limit]:
@@ -139,13 +146,24 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             else:raise ValueError("未知全局主提案方法")
             ranked_scope = "global"
             info.update(accepted=False,trials=[])
-            for score,move in ranked[:trial_limit]:
-                totals["global_single_trials"] += 1
-                result = consider(move,info["trials"],score)
-                if result is not None:
-                    accepted = (move,*result)
-                    accepted_source = "global_single"
-                    break
+            if batch_config is not None:
+                def batch_evaluate(move,trace,lower_bound,kind):
+                    field = {"single":"global_single_trials","block":"global_batch_trials","confirmation":"global_batch_confirmations"}[kind]
+                    totals[field] += 1
+                    return consider(move,trace,lower_bound)
+                accepted,details = primary_batch.select(model,ranked[:trial_limit],batch_evaluate,info["trials"],before_loss=photos.loss,**batch_config)
+                info["batch_search"] = details
+                if accepted is not None:
+                    accepted_source = "global_batch" if details["selected_node_count"] > 1 else "global_batch_single"
+                    accepted_batch = {k:v for k,v in details.items() if k not in ("trials","confirmation","feasible_singles")}
+            else:
+                for score,move in ranked[:trial_limit]:
+                    totals["global_single_trials"] += 1
+                    result = consider(move,info["trials"],score)
+                    if result is not None:
+                        accepted = (move,*result)
+                        accepted_source = "global_single"
+                        break
             if accepted is None and pair_nodes > 1:
                 diverse,seen = [],set()
                 for score,move in ranked:
@@ -262,6 +280,7 @@ def repair(model,banks,domain,photos,*,steps=64,focus_count=64,trial_limit=128,p
             record["stability"] = photos.stability.certificate(photos,domain.hist,proof["candidate"])
             if not record["stability"]["accepted"]:raise AssertionError("接受后固定参考稳定性证书失败")
         if accepted_compensation is not None:record["compensation"] = accepted_compensation
+        if accepted_batch is not None:record["primary_batch"] = accepted_batch
         log.append(record)
         print(f"接受第{step+1}步：{len(moves)}节点，整数尾部缺口 {before} → {photos.loss}",flush=True)
         if on_accept is not None:on_accept(record,model)
