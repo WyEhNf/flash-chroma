@@ -33,7 +33,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input",type=Path,required=True)
     parser.add_argument("--first-failure",type=Path)
-    parser.add_argument("--study",choices=("extreme","compensation","automatic","joint","minimax","working"),default="extreme")
+    parser.add_argument("--study",choices=("extreme","compensation","automatic","joint","minimax","working","screened"),default="extreme")
     parser.add_argument("--prior-run",type=Path)
     parser.add_argument("--additional-contract-log",type=Path)
     parser.add_argument("--output",type=Path,required=True)
@@ -105,14 +105,15 @@ def main():
     elif args.study == "automatic":logs += [(ROOT / "artifacts/automatic-compensation-contracts-v1.log","contracts.log"),(ROOT / "artifacts/automatic-compensation-verify-v1.log","verification.log")]
     elif args.study == "joint":logs += [(ROOT / "artifacts/joint-interval-contracts-v1.log","contracts.log"),(ROOT / "artifacts/joint-interval-verify-v1.log","verification.log")]
     elif args.study == "minimax":logs += [(ROOT / "artifacts/joint-minimax-contracts-v1.log","contracts.log"),(ROOT / "artifacts/joint-minimax-verify-v1.log","verification.log")]
-    else:logs += [(ROOT / "artifacts/working-set-contracts-v1.log","contracts.log"),(ROOT / "artifacts/working-set-verify-v1.log","verification.log")]
+    elif args.study == "working":logs += [(ROOT / "artifacts/working-set-contracts-v1.log","contracts.log"),(ROOT / "artifacts/working-set-verify-v1.log","verification.log")]
+    else:logs += [(ROOT / "artifacts/feasible-working-set-contracts-v1.log","contracts.log"),(ROOT / "artifacts/feasible-working-set-verify-v1.log","verification.log")]
     for path,target in logs:
         shutil.copyfile(path,out / target)
     with zipfile.ZipFile(out / "contracts-and-report-sources.zip","x",zipfile.ZIP_DEFLATED) as z:
         for commit,label in ((("bc5568b","initial"),("a86dba0","fix")) if args.study == "extreme" else ()):
             data = subprocess.run(["git","show",commit+":tests/test_local_minimax.py"],cwd=ROOT,check=True,capture_output=True).stdout
             z.writestr(label+"/test_local_minimax.py",data)
-        for name in (("tests/test_working_set.py","tests/test_joint_minimax.py","tests/test_joint_interval.py","scripts/report_extreme_cell.py") if args.study == "working" else
+        for name in (("tests/test_working_set.py","tests/test_joint_minimax.py","tests/test_joint_interval.py","scripts/report_extreme_cell.py") if args.study in ("working","screened") else
                 ("tests/test_joint_minimax.py","tests/test_joint_interval.py","tests/test_hald_reference_audit.py","scripts/report_extreme_cell.py") if args.study == "minimax" else
                 ("tests/test_joint_interval.py","tests/test_automatic_compensation.py","scripts/report_extreme_cell.py") if args.study == "joint" else
                 ("tests/test_automatic_compensation.py","tests/test_local_minimax.py","tests/test_histogram_delta.py","scripts/report_extreme_cell.py") if args.study == "automatic" else
@@ -171,23 +172,28 @@ def main():
         if args.study == "joint":write(out / "proper-subset-witnesses.json",{"new_model_evaluations":0,"proper_subsets":subset_witnesses,
             "scope":"只把所选块的真子集映射至已独立核对的覆盖证书；不重新映射模型或拟合，不证明所有其他同节点数方案不可行"})
         else:shutil.copyfile(args.input / "source-audit.json",out / "source-audit.json")
-    if args.study == "working":
+    if args.study in ("working","screened"):
         w = verification["working_set"]
         if (not w["verified"] or verification["working_set_verifier_sha256"] != digest((ROOT / "scripts/verify_working_set.py").read_bytes()) or
                 w["helper_verifier_sha256"] != digest((ROOT / "scripts/verify_joint_interval.py").read_bytes())):raise ValueError("双箱复核没有绑定当前独立源")
-        for name in ("working-set.json","control-search.json","replacement-search.json","joint-search.json","source-audit.json"):
+        for name in ("working-set.json","joint-search.json","source-audit.json")+tuple(label+"-search.json" for label in w["checks"]):
             shutil.copyfile(args.input / name,out / name)
         rows = []
-        for label in ("control","replacement"):
+        for label in w["checks"]:
             tree = load(args.input / (label+"-search.json"))
             value = tree["incumbent"]["objective"]
             rows.append({"box":label,"nodes":" ".join(map(str,tree["nodes"])),"assignments":tree["assignments"],"terminals":len(tree["terminals"]),
-                "max":math.sqrt(value[0]),"primary_loss":value[1],"full_sse":value[2],"l1":value[3],"winner":label == w["comparison"]["winner"]})
+                "max":math.sqrt(value[0]),"primary_loss":value[1],"full_sse":value[2],"l1":value[3],"winner":label == w["comparison"]["winner"],
+                "reused":args.study == "screened" and label == "control"})
         with (out / "controlled-comparison.csv").open("w",encoding="utf-8",newline="") as f:
             writer = csv.DictWriter(f,list(rows[0]),lineterminator="\n");writer.writeheader();writer.writerows(rows)
-        diagnosis = runpy.run_path(str(ROOT / "scripts/diagnose_working_set.py"))["diagnose"](args.input)
-        write(out / "compensation-structure.json",diagnosis)
-    if args.study in ("compensation","automatic","joint","minimax","working"):
+        if args.study == "working":
+            diagnosis = runpy.run_path(str(ROOT / "scripts/diagnose_working_set.py"))["diagnose"](args.input)
+            write(out / "compensation-structure.json",diagnosis)
+        else:
+            if not w["screening"]["verified"]:raise ValueError("筛查没有独立复核")
+            write(out / "screening-summary.json",w["screening"])
+    if args.study in ("compensation","automatic","joint","minimax","working","screened"):
         if not verification.get("selection_checked") or verification["interactions_checked"] != len(result["interactions"]):raise ValueError("补偿阶段未独立复核选择与交互")
         if args.study == "compensation":shutil.copyfile(args.input / "interactions.json",out / "interactions.json")
         write(out / "signed-mean-rechecks.json",[{"candidate":r["name"],**p} for r in result["records"] for p in r.get("signed_mean_rechecks",[])])
