@@ -1,0 +1,289 @@
+{
+  "identity": {
+    "plan": {
+      "schema": 1,
+      "status": "冻结实验设计；实际执行状态以独立输出目录记录为准",
+      "purpose": "从PR16已完整验收的Cinema四级链继续优化，仅精化第四级；采用真实到达频数与真实RGB8目标，检验同一候选能否同时改善mean与p99",
+      "case": "cinema-chain2",
+      "m": 33,
+      "optimized_stage": 4,
+      "frozen_stages": [
+        1,
+        2,
+        3
+      ],
+      "baseline_models": [
+        {
+          "path": "artifacts/full-domain-joint-v2/repaired-stage1.slut",
+          "sha256": "cef37f82a0335af370028083bd6254a53b72ca48cea7923bcf78e9ebc61fe57a"
+        },
+        {
+          "path": "artifacts/full-domain-joint-v2/repaired-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "artifacts/full-domain-joint-v2/repaired-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "artifacts/full-domain-joint-v2/repaired-stage4.slut",
+          "sha256": "d46a7a9256dae5f874138f57b7f5160e39def395ab56a2d4b0d1911d91b9e6c2"
+        }
+      ],
+      "tables": [
+        {
+          "stage": 1,
+          "path": "artifacts/chain-error-cache/source-307edcd6b7b55fff03392f5e/table.lut256",
+          "sha256": "37b1fa642957a648294301c281d6e261391857e93bd163fe2fd592df7f673944",
+          "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1910s.cube",
+          "source_sha256": "2ae2f4c62d028e41cf132f0d87f9098240fb8232195e602ed316c94cc0d38538"
+        },
+        {
+          "stage": 2,
+          "path": "artifacts/chain-error-cache/source-7b6980ce01910cd2b18ed3b9/table.lut256",
+          "sha256": "ccd454354df9a9e7da30e1022da31e66d65d2051b775a15995b76de09523aae8",
+          "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1920s.cube",
+          "source_sha256": "8f4f6ece25f0979b952c77e0d62a0e695310201a882fa8d7002471af0ff430f4"
+        },
+        {
+          "stage": 3,
+          "path": "artifacts/chain-error-cache/source-864defbd3b3e0712936e347c/table.lut256",
+          "sha256": "733f2578420247456b7b5bd07aa570c8d1b6a50173b1494a27c7dbaa5c330cfd",
+          "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1930s.cube",
+          "source_sha256": "a82f33eaeb5e834c15d845e3ce2cda26d9f2aadb179af3dd25b79cceec838bf9"
+        },
+        {
+          "stage": 4,
+          "path": "artifacts/chain-error-cache/source-d69ca4fa6f34c990a0bc752d/table.lut256",
+          "sha256": "5ffcbb5032b6c8a10aaad2c6649fa1ad85fd7e920121d8b0460ec6f181cb7b00",
+          "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1940s.cube",
+          "source_sha256": "d568987e472432d63afba500d4daa26022c86d1db1739056c19431e5175baee7"
+        }
+      ],
+      "baseline_evidence": {
+        "results": {
+          "path": "artifacts/full-domain-joint-v2/results.json",
+          "sha256": "4900141e5096c7f3f78ea88b0bfd63dd10ba235db79e1090957cfce9a44e3c14"
+        },
+        "run": {
+          "path": "artifacts/full-domain-joint-v2/run.json",
+          "sha256": "dce670974b1489d8e46303fdb3269cfc98ee14030614ffcfe133dbe088322bd6"
+        },
+        "selection": {
+          "path": "artifacts/full-domain-joint-v2/selection.json",
+          "sha256": "d66aa396cf16bdaeec22f1fa602659f94d76d988e6c779a403b4e85547305cde"
+        },
+        "cube": {
+          "path": "artifacts/full-domain-joint-v2/repaired.rgb",
+          "sha256": "2ad77e6a7ff6b4d761f0ced744bb236e4dc99c9313ca0c994fa243b7c31ea8e4"
+        },
+        "run_identity": "b63282a2da42ca8cc17d56640caf06782c25af00ba92efc6c663f84c49acf691",
+        "reference_cube_sha256": "493c9084a90186a15ec42cd4553e02ee6b915f9ee4511d77cb2b40adcb82f0a9",
+        "binding": "results.run_identity等于run.identity_sha256并复算规范身份；selection.model_sha256按阶段顺序绑定四模型；results.final包含完整cube、100图及三原生回执，原生完整流必须同SHA且零差异"
+      },
+      "baseline_metrics": {
+        "cube": {
+          "mean": 1.2773607105890834,
+          "rms": 1.6732741766835426,
+          "p99": 4.69041575982343,
+          "max": 8.774964387392123,
+          "cvar_1pct": 5.341760826647475
+        },
+        "photos": {
+          "mean": 1.0336680770889557,
+          "rms": 1.523476908377844,
+          "worst_image_p99": 5.385164807134504,
+          "max": 8.774964387392123,
+          "mean_image_cvar_1pct": 5.24392495601521
+        }
+      },
+      "photo_manifest": {
+        "path": "assets/photos/manifest.json",
+        "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+      },
+      "partition": {
+        "path": "artifacts/full-photo-v1/photo-partition.json",
+        "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"
+      },
+      "training": {
+        "cube_count": 16777216,
+        "photo_count": 60,
+        "photo_pixels": 47185920,
+        "prefix": "严格执行冻结的前三张稀疏模型，每级Q16后立即半向上舍入成RGB8；原始cube及训练照片均通过同一基线前缀，不改前三模型",
+        "mass": {
+          "own_uniform": 0.1,
+          "cube_arrival": 0.45,
+          "photo_arrival": 0.45
+        },
+        "mass_formula": "w(z)=0.10/16777216+0.45*n_cube_prefix(z)/16777216+0.45*n_photo_prefix(z)/47185920",
+        "target": "T4(z)：第四张原始完整LUT在本级输入z处的RGB8标签；不使用最终复合或残差标签",
+        "representation": "本级RGB域逐色唯一行、R高位/G中位/B低位；照片及cube到达频数按重复次数计数，归约用uint64，质量用float64；两份频数分别守恒且保存SHA",
+        "identity": "逐图核验文件SHA与RGB8/1024x768契约，保存训练60图清单、实际前缀模型SHA、频数SHA、合并质量及标签身份；20选择/20审计频数不进入训练"
+      },
+      "proposal": "rounded_grid",
+      "sweeps": 4,
+      "candidate_sweeps": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "tail_at": 6,
+      "tail_weight": 0.02,
+      "maximum_squared": 195075,
+      "algorithm": "沿用真实Q16/RGB8距离的8色、逐通道整数节点±1精化；rho(d)=d+0.02*max(d-6,0)^2；float64质量归约，固定第四级权威idx/frac与网格，仅改变RGB8节点；不把整链max平方77套成本级硬上限",
+      "candidates": "仅将每个预定扫检查点替换第四级，前三模型逐字节不变；最多四个真实整链候选，不增加其他级替换或组合扫描；提早停止需记录原因，不补造未执行检查点，重复模型可按SHA去重",
+      "selection": {
+        "cube_count": 262144,
+        "cube_seed": 2026101802,
+        "cube_scheme": "每个4x4x4原始输入块一个固定分层颜色，沿用现有stratified_points",
+        "photo_count": 20,
+        "pixels_per_image": 4096,
+        "pixel_seed": 2026101701,
+        "reference": "同SHA的PR16完整四级基线，在同一固定选择样本上真实逐级执行；不是本级误差",
+        "gate": "cube与照片合并样本mean各至少降低3%，各自RMS/p99/max均不退化；最差单图p99不退化，cube或照片合并p99至少一项严格下降。全部候选生成后一次选型，不读取终验指标回头重选",
+        "rank": "依次比较两种mean最大相对比值、两种p99最大相对比值、两种mean比值和、扫序号；仅一个合格赢家进入终验",
+        "on_failure": "保存负结果，保留原四级基线，不追加候选，不执行重复完整终验"
+      },
+      "acceptance": {
+        "reference": "PR16同SHA四级模型的现存完整证据；本级目标下降不代替整链结论",
+        "mean_reduction_ratio": 0.97,
+        "p99_reduction_ratio": 0.97,
+        "gate": "同一候选的完整原始256^3 mean和100图mean均至少降低3%；全域RMS/p99/max/CVaR1%及百图RMS/最差逐图p99/max/平均逐图CVaR1%均不高于基线；全域p99或最差逐图p99至少一项降低3%",
+        "final_once": "选择冻结后，仅赢家一次完整256^3、100张完整照片及独立整数oracle/标量/AVX2/C99；四级完整输出逐字节一致，核模型/源/图片/参考流与程序SHA；未通过真实终验不得称成功",
+        "report": "保存每张图全部指标及改善/持平/退化数、60/20/20分组、完整域统计及原始回执；聚合门禁不等于逐图支配。任何最终失败如实保留，不放宽门槛或重选",
+        "metrics": "RGB欧氏码值距离sqrt(dR^2+dG^2+dB^2)，非Lab/CIEDE2000；照片p99为最差单图p99，CVaR分别列全域及逐图均值，不混成同一统计"
+      },
+      "environment": {
+        "operating_system": "Windows 11 10.0.26200 x64",
+        "cpu": "AMD Ryzen 9 8945HX，16核32线程",
+        "python": "artifacts/error-study-py312/Scripts/python.exe，Python3.12.14",
+        "numpy": "1.26.4",
+        "scipy": "1.15.2",
+        "numba": "0.60.0",
+        "llvmlite": "0.43.0",
+        "pillow": "10.4.0",
+        "threads": 4,
+        "blas_threads": 1,
+        "omp_threads": 1,
+        "executable": "build-engineering-alignment/jshc.exe",
+        "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+        "native": "沿用GCC15.2 Release，标量/AVX2/C99终验各单线程；执行前采集实际环境及Numba线程层，不把预计环境冒充实测",
+        "performance": "不做性能比较；离线缓存与峰值另列，不当作运行时内存"
+      },
+      "limits": "本级均匀RGB与原始均匀RGB通过前缀后的到达分布不同，故单列0.10与0.45两项；前三模型固定，因此所有本轮候选共享同一实际到达分布。PR13/14历史归因仅支持末级优先，不是本链当前新归因或可加贡献证明。保留四张独立源LUT、每级RGB8、SLUTv1及权威轴表，不做复合/残差标签。全部原始颜色参与训练，颜色选择不是未见颜色盲验；100张照片历史已观察，当前20审计仅不反馈。官方数据/Threshold仍未知，不宣布官方通过，不替换默认/冠军、不创建PR、不扫描参数。",
+      "deliverables": "阶段执行后补充源码/命令/运行身份、两份到达频数、质量与候选模型SHA、全部选择结果；只有合格候选才追加完整终验数据。本计划与阶段说明目前不包含新精度结果。"
+    },
+    "source_sha256": {
+      "python/lutlab/__init__.py": "dbd2daa19105ed5638dcafdfa9ccd6cf0e04dc46eadc8a6fbca724b2c49dab07",
+      "python/lutlab/__main__.py": "4d478f6faff4d90aa283c2a6e672dada443373281f24bd8603da4232c7d3ccee",
+      "python/lutlab/automatic_compensation.py": "156a2e75c77d29c00e6bad52c8a63ac7fe625f6a0a170d8086a2146e4748f3e0",
+      "python/lutlab/axis_grid.py": "3cbc090714f8f4c7320f9e76986c18044ca8d2fffcebf4bc5f26b649065802be",
+      "python/lutlab/axisbins.py": "477c1584c362b9b42db87decdc0d5d2c81448b7be916fd2de1fbf15a277e297a",
+      "python/lutlab/box.py": "5d4ed9ef907483eb72f6a42a93dd5bb98c6d0583eb85897d0e382b9391472a78",
+      "python/lutlab/cache.py": "300653ef6436424b2fefb41d5ac8c84833d7ecf269b7b46799425c49f12a159c",
+      "python/lutlab/cascade.py": "b4aeacd9f97171cecb0282ed4db658eb18028808839bd9a8528d2b096cfdf78c",
+      "python/lutlab/casebook.py": "c9f5b53be226e86e2ed311f324b406b7a1857782018ae4930170c75bf4f237b3",
+      "python/lutlab/cli.py": "6fb2136cadeb8fc540d107274e94a8b36d62b9e3bb4be5c6f6c44375b7fd1f2a",
+      "python/lutlab/compatibility.py": "4be9f6259a64e01cd62668f5f55b50126eb265be232d99798a2a6f55bef918fe",
+      "python/lutlab/corpus.py": "8f9093405d287a27ce3661f111b1e475cb386c3a16a33f08a13da5a339e8c2de",
+      "python/lutlab/curve.py": "6d8344aa6e191c5c0c08284e23dea9c3c97b39b7b1f657bb76810802ef05bb02",
+      "python/lutlab/curve_search.py": "4cb5025056d5af12eca7702588265e72addc256ba7f1f0a11188631999c25a2b",
+      "python/lutlab/cvar_guard.py": "a6de5cf4c7ecf8d5c9e599a82ab289d970036e066c23c5141ba0d7d0e94395d9",
+      "python/lutlab/data.py": "63e1f8ec604949844488b29fc6eb615075f9425ffb55a10e2d524bad59a75471",
+      "python/lutlab/dataset.py": "25197aa6434365dc9f53fb413bf75747822358b64c19ded401dc373fa4126df1",
+      "python/lutlab/entry.py": "9a280d12622d0785cff136804895a474ab4bbcc4fb9de5d8e3fa3d38fc407ab6",
+      "python/lutlab/error_analysis.py": "2f33f18f6affd56a3f7158db15e6076ee6de912f289d28d0c51789624a7a20f3",
+      "python/lutlab/error_certificate.py": "7d6a37c7447af3a69c1f77f6cdd4942775ff457e371587be4a587124e3dab98b",
+      "python/lutlab/execution_proof.py": "bbb978298d4a087d676d81c4b6f97ae04483f405994879e5b597c14328f546e4",
+      "python/lutlab/fit.py": "f4ae4404a0a75d8313daf766542c9825a0ae496ffe3e20a9251039bbc58c7238",
+      "python/lutlab/full_domain_guard.py": "628732a6f29fe7081e802db0879249c75db7339db3e6232744c78d23b3b328b5",
+      "python/lutlab/full_photo_fit.py": "97b3422d15958390d39770cd567652411bc824f1662774a8964ea13c22cdcde0",
+      "python/lutlab/fullfit.py": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+      "python/lutlab/hackextend.py": "7523152943cf502c41298b1fa5c0d07934b605a5acd41e796940da30758b88b4",
+      "python/lutlab/hackset.py": "c516ca18816fe67bd6c7f7c0d54ae59f525e58980b5e7bd687897efa5ce73fbf",
+      "python/lutlab/histogram_delta.py": "53bbafe14ad81a9d10f693f4c266ccd096db1f956b34e5af585c93c6b48da14a",
+      "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+      "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+      "python/lutlab/joint_fit.py": "3ec347172f2142f06bb85f5cf2c749d5ba69a8c72e2b8e7d1ddace571e3ee495",
+      "python/lutlab/joint_grid.py": "ceb01dad620ed06a10c7f13e1b9d8f8efef5eb617ea54ac0b8934155b69b92c4",
+      "python/lutlab/joint_interval.py": "17f8e2c2be86560399caa7fa22f27492ca7b7481945b77011663f28c3078b7eb",
+      "python/lutlab/joint_minimax.py": "1dc1d66d2064265b903d8e31c75a2611ee5844d605f8e2919b0fba0cffb5f671",
+      "python/lutlab/joint_tail_repair.py": "a7079d71c9efa3ea64af503311d8a04123bf38063f8d236d37d8f3321412bc7e",
+      "python/lutlab/local_compensation.py": "736d383d0e4577e211823c5ca2be215f0ee251aaf56f36a21c09dcf55e309ed9",
+      "python/lutlab/local_minimax.py": "ce3051a5a338e76cee645770abc2b2bfa658cb8576362d658b945bce0462574d",
+      "python/lutlab/luts.py": "7fe77315e5a8e6a8e2b19daa9f514ae0006b04a875374c0235b5465905c703db",
+      "python/lutlab/metrics.py": "b5f9ae5535a34ce1b6c254d44247cb6f0e61e0811fd170849f2150024ada79d9",
+      "python/lutlab/paired_baselines.py": "84d207e1abb3b0eb5952ba8397be884fe696f0a739e2ca69cbe2f27bf176e814",
+      "python/lutlab/perf.py": "9cfe8821a30bf25dd38676b348ddd4f3a8002e346839bac071191fa53b2e7849",
+      "python/lutlab/performance.py": "b35ba00325e2ba1501827d30331e62d9301aa17da4c70d4b48d875a81001fd4f",
+      "python/lutlab/portable_export.py": "af5a1de5190073136ceaf8c084d54b16fb910984777b18d2c3734847e812df76",
+      "python/lutlab/primary_batch.py": "3ff2acd4e551d0e094616b8dc3c35d4e72e59c38aaf5248e2ed001c1ca412fa7",
+      "python/lutlab/primary_budget.py": "5585d5712ae92ccf26841cf5b33cf217e23c2afaa03e6be37d49596cd750ac54",
+      "python/lutlab/qualification.py": "183f9f0033091d13a81be4b4a6138d93d1e600c4a487e5c165cfb841069586b7",
+      "python/lutlab/quantile_compensation.py": "420d96526e130414e40d78eb2792f5ae505c35aa722ac88fd1bc52e0825f5179",
+      "python/lutlab/quantile_constraints.py": "b8f50aaadd25dce2366335de09d1f4e535544c17def73a2beeb6d6ed1668c06e",
+      "python/lutlab/quantile_global.py": "5175c3f605c6f25992cacf023d9889679f718b10613f254870246fa7b2e4c169",
+      "python/lutlab/quantile_repair.py": "55f9c9e2effa0e0699822f7e4528cab3f59784eee28fa55608e5c10a07c11c67",
+      "python/lutlab/reportio.py": "c1fd63dd42a7bc8587cc9d4d88c13e5488773d3867648e6f0a1a7759b4b8b56d",
+      "python/lutlab/robust_fit.py": "b2f47e3a079dd47789b780be584fc42f84a223ba454d43175af4f568e6a23e11",
+      "python/lutlab/robust_solver.py": "a0a4f634d8706dd96e05531e20f86c01e1f183a150df68e040058d73a0a7161e",
+      "python/lutlab/rounded_blocks.py": "a32123acda8baab65beaba12edd1daec6f8f54c8d07f41a6496f4d0a8541b7d4",
+      "python/lutlab/rounded_budget.py": "18d2af5082180df26253467a94822f0955400e56a38a0950eb586c173888cc6e",
+      "python/lutlab/rounded_grid.py": "49d4555f2d5529ec1afeecfd05fb11c2c3f3ca450a3855f0eb644f7af3afc898",
+      "python/lutlab/routes.py": "38b188ad953bccdd8c21440d189a988ff0d3bcec1fc4baf42f4c213acabe8ca7",
+      "python/lutlab/runlog.py": "533c5c96c16fb3fede0146039b3239f80154033f66ba97843149474c64254b1a",
+      "python/lutlab/runtime.py": "f2b5f7452fe5dd4fc5cc4a0d04d42cf97cffcda0656170d7985544ae229a874f",
+      "python/lutlab/selection.py": "d766a11bd103366e68f2037fc84cfdfef23f4a1b84bd1d1c6e41fdee5f90a802",
+      "python/lutlab/source_lut.py": "e84f2b416b071e6e0bed2624cb04cb21c31d36d117fd8b82f09300c0fb7932fd",
+      "python/lutlab/stability.py": "57593a8a2f001a82dda7aa74ce74daa932e0908bf3647ea8af7b3f097ef5bd01",
+      "python/lutlab/stage_bundle.py": "2e286d635d1ab4f2e8e5342b733d7bc3f1893407ed507b7b156d6d26da2a9dfd",
+      "python/lutlab/step.py": "f3c292aabe0125a86e69c447822e1eed34d0d465be12bfed184e538dfd5c456e",
+      "python/lutlab/study_chains.py": "3a036b124a5cd3a2d529b8568d0e42137239a55b6880e2ab42d712e27c11218b",
+      "python/lutlab/study_kernels.py": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+      "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+      "python/lutlab/study_reporting.py": "298d574f7baf82550673f0bcc73e4b6d438aa3c85f8ab4a66fd6306eadeb5667",
+      "python/lutlab/support_certificate.py": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+      "python/lutlab/tail_repair.py": "7d0d74ef662b4c61a9bfdb9dbb3bdd6f82bc211085a97903bc5eeb240d072bbd",
+      "python/lutlab/timingbook.py": "823a8f4ae474f92c0134a59a045481489708f01ce3f0366a15ae4fc1975928b2",
+      "python/lutlab/validation.py": "c363e4f0a55726b8f1f6147ab16e98fa31200cd602a0579a19ba9c8171f64cba",
+      "python/lutlab/workflow.py": "e8451fdb58a0c54e179e039dfbaf73837bd867877ebe79a9fbf8194b4e2403ff",
+      "python/lutlab/working_set.py": "4847e648db57660e1bba503d1e374b329d7a2889a1737ca15206318b0db0b17b",
+      "scripts/run_cinema_rounded.py": "1cc33e30ff9c7d7043eebc08660f524216ca0e0bfc4e1305bd0332025f3ffc2f",
+      "scripts/run_chain_error_study.py": "8c8844bfbf107376e77a6d5d0c33f8d979986a7e7c18a28473356b034faf7c2b",
+      "scripts/run_joint_box_study.py": "e4e967c4013ff225688c9a120173557ee5a4b5821e4f194a58d1c2193c19ad61",
+      "scripts/verify_cinema_arrivals.py": "b8ad08c1c34255c1fc9ce2b6f58bf5ddc5427463791e6a26fd57d1c340613c0e",
+      "experiments/cinema-rounded-v1.json": "00130492a8e29e937940982d7d4247b0db8758c6031c461c7848cadebebf5e65"
+    },
+    "environment": {
+      "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+      "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+      "logical_cpu_count": 32,
+      "packages": {
+        "numpy": "1.26.4",
+        "scipy": "1.15.2",
+        "numba": "0.60.0",
+        "llvmlite": "0.43.0",
+        "Pillow": "10.4.0",
+        "tifffile": "2023.4.12",
+        "psutil": "5.9.0"
+      },
+      "thread_environment": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMBA_NUM_THREADS": null,
+        "NUMBA_THREADING_LAYER": null,
+        "NUMBA_CPU_NAME": null,
+        "NUMBA_CPU_FEATURES": null
+      }
+    },
+    "numba_threads": 4,
+    "scope": "离线精度提议；不比较运行时性能，不升级默认，不创建PR"
+  },
+  "identity_sha256": "0661b262cf78f81fa2b1b375a01b41efbb5071e1990b6c4eaf2ee70a369143d5"
+}

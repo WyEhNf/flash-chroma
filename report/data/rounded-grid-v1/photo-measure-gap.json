@@ -1,0 +1,53 @@
+{
+  "purpose": "对同模型同60训练图核对冻结训练抽样与已有完整图结果，诊断训练测度偏差，非新模型终验",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "model_sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+  "sample_pixels_sha256": "b5c15d44d8d2950ec0c1c3209f94404043a37cb0127ab5c1bbf733e3e097c4af",
+  "full_evidence_sha256": "defc436b56f6f681ea9020c60f177a10e00fe36c352b53a4454c2f2695dffc94",
+  "sample": {
+    "n": 245760,
+    "mean": 0.8717125247943713,
+    "rms": 1.2093975423179029,
+    "p99": 3.3166247903554,
+    "max": 18.027756377319946,
+    "cvar_1pct": 4.707814234752512,
+    "fraction_ge_1": 0.63980712890625,
+    "fraction_ge_2": 0.0806396484375,
+    "fraction_ge_3": 0.02291259765625,
+    "fraction_ge_5": 0.0031656901041666667
+  },
+  "full": {
+    "mean": 0.9002745571332534,
+    "rms": 1.234637191546965,
+    "max": 38.05259518088089,
+    "worst_image_p99": 6.082762530298219
+  },
+  "mean_underestimate": 0.028562032338882104,
+  "relative_underestimate": 0.031725913070155265
+}

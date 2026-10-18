@@ -52,6 +52,10 @@
 
 ## 冻结报告与早期研究
 
+- [2026-10-18 联合网格与节点](stages/2026-10-18-joint-grid.md)：Velvia完整域及百图改善，未泛化成功的对照保留。
+- [2026-10-18 真实RGB8与完整照片测度](stages/2026-10-18-rounded-grid.md)：采样偏差、整数目标及max退化反例。
+- [2026-10-18 Cinema四级链优化](stages/2026-10-18-cinema-rounded.md)：完整域mean降低14.09%、p99降低7.07%，百图mean降低12.89%，完整三后端一致；另列前缀不可逆混叠归因。仅本地研究，暂不创建PR。
+
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。
 - [原始数据与哈希索引](../report/data/DATA_INDEX.md)。

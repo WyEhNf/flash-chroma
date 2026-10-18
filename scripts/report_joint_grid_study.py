@@ -36,8 +36,10 @@ def main():
             selected = read(folder / 'selection.json')
             if selected['run_identity'] != run['identity_sha256']:
                 raise ValueError('选择与运行身份不同')
-            for name in ('run.json', 'selection.json', 'samples.json', 'historical-full-results.json',
-                         'fixed_grid-optimizer.json', 'joint_grid-optimizer.json', 'measured-source.zip', 'full-results.json'):
+            names = ['run.json', 'selection.json', 'samples.json', 'historical-full-results.json',
+                     'measured-source.zip', 'full-results.json']
+            names += sorted(p.name for p in folder.glob('*-optimizer.json'))
+            for name in names:
                 path = folder / name
                 if path.is_file():
                     member = folder.name + '/' + name
@@ -47,6 +49,21 @@ def main():
             models.write(baseline, folder.name + '/baseline.slut')
             files['models/' + folder.name + '/baseline.slut'] = sha(baseline)
             plan = run['identity']['plan']
+            for name, candidate in selected['candidates'].items():
+                path = folder / name / 'model.slut'
+                if sha(path) != candidate['model_sha256']:
+                    raise ValueError('冻结候选字节不同于选型身份')
+                member = folder.name + '/candidates/' + name + '.slut'
+                models.write(path,member)
+                files['models/' + member] = sha(path)
+            if 'initial_model' in plan:
+                for key, member in (('initial_model','initial.slut'),('initial_grid','initial-grid.npy')):
+                    path = ROOT / plan[key]
+                    if sha(path) != plan[key+'_sha256']:
+                        raise ValueError('优化起点身份不同')
+                    member = folder.name + '/' + member
+                    models.write(path,member)
+                    files['models/' + member] = sha(path)
             grid = ROOT / plan['offline_grid']
             if sha(grid) != plan['offline_grid_sha256']:
                 raise ValueError('原离线小数网格身份不同')

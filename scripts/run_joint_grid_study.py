@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
-from lutlab import error_analysis as ea, fit, interp, io, joint_grid as jg, study_provenance
+from PIL import Image
+from lutlab import error_analysis as ea, fit, interp, io, joint_grid as jg, rounded_grid as rg, study_provenance
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -65,6 +66,17 @@ def historical_evidence(plan):
     return final
 
 
+def proposal_start(plan, incumbent):
+    """优化起点与验收参考分开，不能给旧节点直接套新轴或偷换弱基线。"""
+    if 'initial_model' not in plan:
+        return incumbent
+    model = io.load_sparse(check_file(plan['initial_model'],plan['initial_model_sha256']),competition=True)
+    model.grid = np.load(check_file(plan['initial_grid'],plan['initial_grid_sha256']))
+    if model.m != incumbent.m or not all(np.array_equal(a,b) for a,b in zip(io.axis_tables(model.grid),model.tables())):
+        raise ValueError('优化起点的离线轴表或容量不同')
+    return model
+
+
 def boundary_points():
     values = np.arange(0, 256, 2, dtype=np.uint8)
     a, b = np.meshgrid(values, values, indexing='ij')
@@ -96,6 +108,41 @@ def hotspots(plan, table):
     return colours(ids)
 
 
+def photo_histogram(rows):
+    """完整训练照片频数，重复像素按次数累积，保留原RGB8契约及文件SHA。"""
+    frequency = np.zeros(256**3, np.uint32)
+    records = []
+    total = 0
+    for row in rows:
+        path = ROOT / row['evaluation']['path']
+        if digest(path) != row['evaluation']['sha256']:
+            raise ValueError('完整训练照片与清单SHA不同')
+        with Image.open(path) as image:
+            if image.mode != 'RGB' or image.size != (1024,768):
+                raise ValueError('完整训练照片不符合RGB8尺寸')
+            rgb = np.asarray(image).reshape(-1,3).astype(np.uint32)
+        keys = (rgb[:,0]<<16) | (rgb[:,1]<<8) | rgb[:,2]
+        frequency += np.bincount(keys.astype(np.int64), minlength=256**3).astype(np.uint32)
+        total += len(rgb)
+        records.append({'id':row['id'],'file_sha256':row['evaluation']['sha256'],'pixels':len(rgb)})
+    if total != len(rows)*1024*768 or int(frequency.sum(dtype=np.uint64)) != total:
+        raise AssertionError('完整训练频数不守恒')
+    return frequency, {'images':records,'total_pixels':total,
+        'frequency_sha256':hashlib.sha256(frequency.astype('<u4',copy=False).tobytes()).hexdigest()}
+
+
+def merge_frequency_mass(frequency, boundary_keys, hotspot_keys, allocation):
+    """把重复观测合并为颜色质量，保持各测度的原均值及总质量。"""
+    total = int(frequency.sum(dtype=np.uint64))
+    if not total or not len(boundary_keys) or not len(hotspot_keys):
+        raise ValueError('合并质量要求非空照片、边界和热点')
+    mass = np.full(len(frequency),allocation['cube']/len(frequency))
+    mass += frequency.astype(np.float64)*(allocation['photos']/total)
+    np.add.at(mass,boundary_keys,allocation['boundary']/len(boundary_keys))
+    np.add.at(mass,hotspot_keys,allocation['hotspots']/len(hotspot_keys))
+    return mass
+
+
 def sample_data(plan, table):
     manifest = json.loads((ROOT / 'assets/photos/manifest.json').read_text(encoding='utf-8'))
     rows = {r['id']: r for r in manifest['images']}
@@ -114,6 +161,17 @@ def sample_data(plan, table):
     target = ea.source_apply(table, points)
     mass = np.concatenate([np.full(len(p), plan['mass'][key] / len(p)) for key, p in train.items()])
     metadata = {key: {'n': len(p), 'sha256': hashlib.sha256(p.tobytes()).hexdigest()} for key, p in train.items()}
+    if plan.get('photo_training') == 'full':
+        if plan.get('cube_training') != 'full':
+            raise ValueError('完整照片质量合并要求完整颜色域')
+        frequency, info = photo_histogram([rows[r['id']] for r in partition['training']['images']])
+        def keys(rgb):
+            return rgb.astype(np.int64) @ np.array([65536,256,1],np.int64)
+        mass = merge_frequency_mass(frequency,keys(train['boundary']),keys(train['hotspots']),plan['mass'])
+        points = cube.copy()
+        target = table.reshape(-1,3).copy()
+        metadata['photos'] = {'n':info['total_pixels'],'representation':'完整照片颜色频数','details':info}
+        metadata['merged_rows'] = len(points)
     return points, target, mass, guard, {'partition': partition, 'training': metadata,
         'selection': {k: {'n': len(v), 'sha256': hashlib.sha256(v.tobytes()).hexdigest()} for k, v in guard.items()}}
 
@@ -158,7 +216,9 @@ def source_identity(plan_path):
              ROOT / 'python/lutlab/io.py', ROOT / 'python/lutlab/error_analysis.py',
              ROOT / 'python/lutlab/study_kernels.py', ROOT / 'python/lutlab/fit.py',
              ROOT / 'scripts/run_chain_error_study.py', ROOT / 'scripts/run_joint_box_study.py',
-             ROOT / 'scripts/verify_joint_grid.py', ROOT / 'python/lutlab/study_provenance.py', plan_path]
+             ROOT / 'scripts/verify_joint_grid.py', ROOT / 'scripts/verify_rounded_grid.py',
+             ROOT / 'scripts/verify_photo_mass.py', ROOT / 'python/lutlab/rounded_grid.py',
+             ROOT / 'python/lutlab/study_provenance.py', plan_path]
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -191,14 +251,23 @@ def run_fit(args, plan):
     io.save_sparse(args.output / 'baseline.slut', model)
     if digest(args.output / 'baseline.slut') != plan['baseline_sha256']:
         raise AssertionError('恢复离线网格后基线序列化字节改变')
+    initial = proposal_start(plan,model)
+    io.save_sparse(args.output / 'initial.slut',initial)
     candidates = {}
     for profile in plan['profiles']:
-        print(f'[{profile}] 开始冻结预算的连续提议，训练颜色{len(points)}', flush=True)
-        checkpoints, report = jg.propose(model, points, targets, mass, move_grid=profile == 'joint_grid',
-            iterations=plan['iterations'], checkpoint_every=plan['checkpoint_every'],
-            spacing_factor=plan['spacing_factor'], minimum_step=plan['minimum_step'],
-            epsilon=plan['epsilon'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'], parts=plan['threads'],
-            progress=lambda r: print(f"[{profile}] iteration={r['iteration']} loss={r['continuous_objective']:.6f} time={r['seconds']:.1f}s", flush=True))
+        kind = '整数提议' if plan.get('proposal') == 'rounded' else '连续提议'
+        print(f'[{profile}] 开始冻结预算的{kind}，训练颜色{len(points)}', flush=True)
+        if plan.get('proposal') == 'rounded':
+            checkpoints, report = rg.propose(initial, points, targets, mass, sweeps=plan['sweeps'],
+                tail_at=plan['tail_at'], tail_weight=plan['tail_weight'], parts=plan['threads'],
+                maximum_squared=int(round(old_full['cube']['max']**2)),
+                progress=lambda r: print(f"[{profile}] sweep={r['sweep']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+        else:
+            checkpoints, report = jg.propose(initial, points, targets, mass, move_grid=profile == 'joint_grid',
+                iterations=plan['iterations'], checkpoint_every=plan['checkpoint_every'],
+                spacing_factor=plan['spacing_factor'], minimum_step=plan['minimum_step'],
+                epsilon=plan['epsilon'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'], parts=plan['threads'],
+                progress=lambda r: print(f"[{profile}] iteration={r['iteration']} loss={r['continuous_objective']:.6f} time={r['seconds']:.1f}s", flush=True))
         write_json(args.output / (profile + '-optimizer.json'), report)
         for iteration, candidate in checkpoints:
             name = profile + f'_iter{iteration:03d}'
@@ -206,7 +275,7 @@ def run_fit(args, plan):
             path.parent.mkdir()
             io.save_sparse(path, candidate)
             candidates[name] = {'profile': profile, 'iteration': iteration, 'model_sha256': digest(path)}
-    print('两个拟合方案已冻结，集中执行一次固定选择样本比较', flush=True)
+    print('全部提议已冻结，集中执行一次固定选择样本比较', flush=True)
     old = evaluate_samples(model, table, guard, plan['pixels_per_image'])
     for name, item in candidates.items():
         candidate = io.load_sparse(args.output / name / 'model.slut', competition=True)
