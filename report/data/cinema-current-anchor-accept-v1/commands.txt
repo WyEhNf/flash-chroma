@@ -1,0 +1,10 @@
+$env:PYTHONUTF8='1'
+$env:NUMBA_NUM_THREADS='4'
+$env:OPENBLAS_NUM_THREADS='1'
+$env:MKL_NUM_THREADS='1'
+$env:OMP_NUM_THREADS='1'
+$env:OMP_DYNAMIC='FALSE'
+& artifacts/error-study-py312/Scripts/python.exe scripts/accept_cinema_channel.py --plan experiments/cinema-current-anchor-accept-v1.json --output artifacts/cinema-current-anchor-accept-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/audit_cinema_acceptance.py --plan experiments/cinema-current-anchor-accept-v1.json --acceptance artifacts/cinema-current-anchor-accept-v1 --output artifacts/cinema-current-anchor-evidence-audit-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/bench_cinema_channel.py --plan experiments/cinema-current-anchor-runtime-v1.json --output artifacts/cinema-current-anchor-runtime-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/archive_cinema_current_anchor.py --output report/data/cinema-current-anchor-accept-v1
