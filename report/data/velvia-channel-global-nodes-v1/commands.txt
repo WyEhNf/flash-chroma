@@ -1,0 +1,6 @@
+# PowerShell；目的：集中梯度/整数cap合同，随后单次固定预算真实提议及一次原样本选择；非性能测试
+$env:PYTHONIOENCODING='utf-8'; $env:PYTHONUTF8='1'; $env:PYTHONDONTWRITEBYTECODE='1'
+$env:OMP_NUM_THREADS='1'; $env:OPENBLAS_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'; $env:NUMBA_NUM_THREADS='4'
+& artifacts/error-study-py312/Scripts/python.exe scripts/verify_channel_global_nodes.py --output artifacts/channel-global-nodes-contract-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/run_channel_global_nodes.py --output artifacts/velvia-channel-global-nodes-v1
+# 两个输出目录必须不存在；不覆盖旧结果，不重复真实拟合。

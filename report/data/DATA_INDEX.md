@@ -59,3 +59,5 @@
 `channel-frequency-transfer-v1`记录两图固定频数与118个中间反例，指出0843由重复灰色主导。`velvia-channel-nodes-v1`和`velvia-channel-blocks-v1`分别保存分通道坐标固定后的单点/2³块一次提议，均未达到额外双mean0.5%门槛，未做完整精度/native/性能验收。
 
 `channel-continuous-floor-v1`保存三路权威几何的完整整数矩、连续解和精确盒下界；独立标准库审计通过。当前节点与clip连续可行点有16.76%未舍入均匀MSE空间，不等于真实RGB8/照片mean或p99收益。
+
+`velvia-channel-global-nodes-v1`保存一次160步全局连续节点及三轮cap撤销；连续代理改善未转为真实RGB8收益，完整记录失败、离线内存和未执行范围。

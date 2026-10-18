@@ -1,0 +1,128 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "固定已验3e5全部几何，一次全局连续盒节点优化后half-up及最多8轮硬cap只撤销；唯一最终候选旧样本一次选型",
+    "inputs": {
+      "baseline": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "baseline_stream": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "frozen_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz",
+        "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"
+      },
+      "caps": {
+        "path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy",
+        "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"
+      },
+      "prior_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/samples.json",
+        "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"
+      },
+      "initial": {
+        "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+        "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+      },
+      "prior_run": {
+        "path": "artifacts/velvia-channel-coordinates-v1/run.json",
+        "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"
+      },
+      "prior_selection": {
+        "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+        "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+      }
+    },
+    "contract": "artifacts/channel-global-nodes-contract-v1/results.json",
+    "threads": 4,
+    "mass": {
+      "cube": 0.48,
+      "photos": 0.48,
+      "boundary": 0.02,
+      "hotspots": 0.02
+    },
+    "tail_at": 6.0,
+    "tail_weight": 0.02,
+    "incremental_mean_reduction": 0.005,
+    "order": "全RGB8节点分量联合L-BFGS-B一次，固定所有grid/shared idx/channel_frac；只有最后一个连续终点half-up到RGB8。随后最多8轮逐色cap只撤销，不能重拟合或加移动。",
+    "training": "直接复用完整canonical RGB8原表labels、原mass。连续loss=sqrt(sum(e^2)+.05^2)+.02*max(distance-6,0)^2，无deadzone/ridge/额外照片/权重扫描，目标和梯度均乘1e6。最终实际RGB8 rho=sqrt(d2)+.02*max(sqrt(d2)-6,0)^2必须严格低于3e5。",
+    "validation": "拟合前集中m17/m33不同通道几何的全局18坐标有限差分和独立浮点目标、half-up uint64前向、cap正权重撤销/零质量色/0与255节点/零权重/fresh合同；最终取原冻结cube选择前1024色作一次独立uint64对照，不新增样本。",
+    "selection": "只最终一个候选，原cube262144/guard20*4096/hot8192一次选型；原2dd双mean至少降3%、mean/RMS/p99/max非增、至少一种p99严格改善、worst_image_p99/hotspot.max非增。同时相对3e5两mean均至少再降0.5%，mean/RMS/p99/max、worst_image_p99/hotspot.max均非增。记录CVaR，不冒称完整百图门禁。",
+    "failure_action": "只有一个最终量化并撤销后的候选；proposal失败或原固定样本双mean增量0.5%/原2dd门槛任一失败即停止。不追加拟合/参数/veto轮数、不full/native/百图/性能；入围仅告知根代理另立终验。",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；无原生/性能",
+    "limits": "扩展NPZ实验表示、既有3e5同格式/坐标与节点数，不伪装SLUT v1/官方支持。不改任何旧模块、报告/native/默认，不commit/PR/push。guard20及audit20历史已见，不称盲测。连续目标是平滑代理、半向上RGB8和veto可能失去收益；不称全局整数最优或原生/完整精度已验。",
+    "solver": {
+      "maxiter": 160,
+      "maxfun": 500,
+      "maxcor": 10,
+      "ftol": 1e-12,
+      "gtol": 0.001,
+      "scale": 1000000.0
+    },
+    "veto_rounds": 8,
+    "veto": "caps仍max(49,旧2dd误差平方)。每轮按当前实际RGB8前向找全部违规色，三输出各自几何全部正权重且确实不同于3e5的节点分量恢复为3e5原值，记录reset与变化数，单调只撤销不新增。最多8轮恢复后fresh检查，仍违规则proposal失败，不放宽上限或重新拟合。",
+    "memory": "三输出各自N*4 int32 I/W，共1610612736字节离线暂存，另有质量/标签/输出/梯度/L-BFGS工作区，不冒充运行时额外内存或同速度。"
+  },
+  "plan_sha256": "762f0455c393f61f0536ca3ef879a886c0134a23201ea81eebb03e7c02379db8",
+  "source_sha256": {
+    "scripts/run_channel_global_nodes.py": "892a6b640e338b4719de37d66602281f70e6454575000a651419faa82c81d230",
+    "experiments/velvia-channel-global-nodes-v1.json": "762f0455c393f61f0536ca3ef879a886c0134a23201ea81eebb03e7c02379db8",
+    "scripts/verify_channel_global_nodes.py": "ca42ccd45479d216d814cc9ddacf7cb6069459e7bdd0fdd76bdffbecb69f8487",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/run_channel_coordinates.py": "484018d334bbf1ed74fcd18c37119ca87944e67ebf0767f6ab7f219d0463904e",
+    "python/lutlab/channel_global_nodes.py": "157912276ee73e76785290cf9a170f5fac4e5ababc146785ef62a13bae421638",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "contract_sha256": "91037d12acde0ecc064b045452119f5d7f509c733fc811aab38469fcdd1b8370",
+  "input_sha256": {
+    "baseline": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "baseline_stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "frozen_samples": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b",
+    "caps": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a",
+    "prior_samples": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c",
+    "initial": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "prior_run": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff",
+    "prior_selection": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+  },
+  "scope": "单次全局连续盒节点终点量化及最多8轮只撤销cap恢复；原样本一次门禁，无完整流/百图/native/性能",
+  "identity_sha256": "f571756bbb132f9082052dde5d7b2d169c90c6aa24463c4c45f61c907fcecfb6"
+}
