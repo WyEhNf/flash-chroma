@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "purpose": "唯一冻结分通道坐标候选的一次完整精度验收，含完整RGB域独立uint64 oracle、逐色cap和100照片；不拟合或做原生/性能",
+  "inputs": {
+    "candidate": {"path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz", "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"},
+    "fit_run": {"path": "artifacts/velvia-channel-coordinates-v1/run.json", "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"},
+    "fit_selection": {"path": "artifacts/velvia-channel-coordinates-v1/selection.json", "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"},
+    "initial": {"path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut", "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"},
+    "baseline": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut", "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"},
+    "baseline_stream": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb", "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"},
+    "baseline_results": {"path": "artifacts/joint-grid-budget-v2/full-results.json", "sha256": "b789d335f264c71c5b9b9fcfba6eb36470a8a7b5398a84997ef4526c9ea9d5c9"},
+    "baseline_run": {"path": "artifacts/joint-grid-budget-v2/run.json", "sha256": "ee0f32ad7eda2b6ab5ebbc19ff5dfe56d028bcd3c198fb820127036828e71fdc"},
+    "table": {"path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256", "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"},
+    "caps": {"path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy", "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"},
+    "manifest": {"path": "assets/photos/manifest.json", "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"},
+    "partition": {"path": "artifacts/full-photo-v1/photo-partition.json", "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"}
+  },
+  "threads": 4,
+  "cube_block": 65536,
+  "top_count": 128,
+  "cube": "一次canonical256^3研究前向逐块与独立比较器/uint64 oracle字节核对，输出cube.rgb；完整平方距离hist、稳定按误差降序/RGB升序top128及每个原色的旧cap检查。复用旧2dd完整流/结果，不重跑基线",
+  "photos": "原100张1024x768 RGB8各一次，核输入文件SHA，逐图mean/RMS/p99/max/CVaR/输出SHA；报告60training/20guard/20audit及原2dd逐图好平差。历史均已见，不称盲测。完整色域oracle已覆盖这些颜色，不另重跑百图oracle",
+  "acceptance": "沿用完整聚合门槛：cube mean/RMS/p99/max/CVaR不劣；100图mean/RMS/worst_image_p99/max/平均逐图CVaR不劣；cube和100图mean均至少降3%；cube p99或照片worst_image_p99至少降3%；完整oracle差0且逐色cap违规0。逐图退化完整披露，不称逐图全不退化",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60/Pillow10.4，Numba4/BLAS1；仅Python研究核与独立整数oracle/精度，无C++/性能",
+  "limits": "同一个冻结NPZ，无新拟合/调参/选型。新表示不属SLUT v1或官方认可，增加frac与权重计算；本验收不涵盖C++/SIMD/性能/比赛官方Threshold/四级泛化/SOTA。保留原selection源码和报告，不改已有模块/根driver，不commit/PR/push。"
+}

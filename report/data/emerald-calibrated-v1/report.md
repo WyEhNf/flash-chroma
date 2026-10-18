@@ -27,7 +27,7 @@ PR #41除Filmic外还指出Emerald Malaise的误差与支撑问题。此前本�
 
 环境：Windows11 26200 x64/Ryzen9 8945HX/32GB，Python3.12.14、NumPy1.26.4、SciPy1.15.2、Numba0.60.0/llvmlite0.43.0，Numba4、BLAS/MKL/OMP1。原生沿用GCC15.2 Release `-O3 -DNDEBUG`，AVX2/OpenMP/C99编入，二进制SHA为`ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a`；单级cube各后端1线程，照片AVX2请求4。同期允许另一项精度研究，不作受控性能结论。标准库审计使用CPython3.13.12，无数值后端。
 
-复现入口为`scripts/run_emerald_calibrated.py`、独立聚合为`scripts/audit_emerald_calibrated.py`，冻结计划为`experiments/emerald-calibrated-v1.json`。旧完整参考、源cube、基线与前阶段run/results均按SHA绑定；11项接口集中合同复用同SHA回执，没有重复单元测试。精简模型、逐图/指标CSV、来源及原生回执见[归档](../../report/data/emerald-calibrated-v1/report.md)。大RGB输出及reference留原artifacts，归档保留哈希。
+复现入口为`scripts/run_emerald_calibrated.py`、独立聚合为`scripts/audit_emerald_calibrated.py`，冻结计划为`experiments/emerald-calibrated-v1.json`。旧完整参考、源cube、基线与前阶段run/results均按SHA绑定；11项接口集中合同复用同SHA回执，没有重复单元测试。精简模型、逐图/指标CSV、来源及原生回执见[归档](report.md)。大RGB输出及reference留原artifacts，归档保留哈希。
 
 ```powershell
 $env:PYTHONUTF8='1'

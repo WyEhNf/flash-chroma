@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "purpose": "一个明确扩展表示：同33^3 RGB8节点/shared idx，每输出通道独立Q16 frac；固定节点以9块一次单调DP研究表达能力，不属SLUT v1",
+  "inputs": {
+    "initial": {"path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut", "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"},
+    "baseline": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut", "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"},
+    "baseline_stream": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb", "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"},
+    "table": {"path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256", "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"},
+    "frozen_samples": {"path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz", "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"},
+    "caps": {"path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy", "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"},
+    "prior_run": {"path": "artifacts/velvia-alternating-integer-v1/run.json", "sha256": "a4b38e1533ed6fc49702362c2c9b42ec5dc69bda3987c62fc84a91d8e42310c9"},
+    "prior_selection": {"path": "artifacts/velvia-alternating-integer-v1/selection.json", "sha256": "809a965c0dbd835e07c0fdfb2496fa65fe19b5b6d0d7d1832c90b03b29d58773"},
+    "prior_samples": {"path": "artifacts/velvia-alternating-integer-v1/samples.json", "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"},
+    "prior_optimizer": {"path": "artifacts/velvia-alternating-integer-v1/alternating_integer-optimizer.json", "sha256": "2987bea90bd6daa58649181c86cec33fca9349c95eb1f84ba5b3cb4210fe8313"}
+  },
+  "contract": "artifacts/channel-coordinates-contract-v1/results.json",
+  "contract_policy": "拟合前要求本阶段集中合成合同pass、9种channel/axis完整65537状态/整数cap、m17/m33前向/复制等价通过且全部实际数值源码SHA相同；run另冻结合同报告SHA",
+  "threads": 4,
+  "mass": {"cube": 0.48, "photos": 0.48, "boundary": 0.02, "hotspots": 0.02},
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "order": "(output_channel=R,G,B)各依次(axis=R,G,B)，共9块各一次；只有最终一个候选，不追加轮数或调整次序",
+  "bounds": "shared idx、nodes、grid与原端点冻结；每个通道/轴的frac均在0..65536，以同idx段DP保证q=idx*ONE+frac真实非降；无静态中点或总偏移约束",
+  "training": "直接复用冻结N=256^3 points/原表labels/mass和caps，不解码照片；other_squared来自当前另外两个输出缓存。rho=sqrt(d2)+.02*max(sqrt(d2)-6,0)^2，caps=max(49,d_2dd^2)逐色固定",
+  "selection": "仅最终一候选在原cube262144/guard20*4096/hotspot8192上一次比较。相对原2dd：cube/photos的mean/RMS/p99/max均不增、两个mean至少降3%、至少一组p99严格降、照片worst_image_p99及hotspot.max不增，完整训练逐色cap零违规；沿用原选择门禁，记录CVaR但不冒称已通过完整百图CVaR门禁",
+  "failure_action": "未入围即停止，无full/百图/native；入围仅报告根代理，等待其另行原生落地/终验，不自行启动",
+  "representation": "只保存实验NPZ nodes/shared_idx/channel_frac[3,3,256]/grid和来源。坐标payload为9216字节，比共享frac多6144字节；三个输出可能有不同四面体，不能声称同计算/内存/速度、SLUT v1或官方已支持",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；集中合同后一个真实固定9块拟合；训练缓存不是保存的新全域输出或最终精度验收",
+  "limits": "只一个固定m33新表示，不新增节点或改本级原表语义。20选择/20审计历史已见，不称盲测。不C++、SLUT伪装、全域流/100图/性能，不改已有模块/核心/根driver、默认，不commit/PR/push，不宣称官方或SOTA。"
+}
