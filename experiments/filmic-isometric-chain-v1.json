@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "purpose": "Filmic06加三个非中性等距控制，严格保留首级误差到四级终端，验证统一入口及四模型原生输出；与自然Filmic链的误差掩盖对照分开",
+  "sources": [
+    {
+      "stage": 1,
+      "path": "assets/LUT/sources/blender-filmic/Filmic sRGB 06 High Contrast.3dl",
+      "sha256": "0846de8be0c34616b5d3375940ad9e6ab526cce760b5b1d3c5f1f3e97d2e2c4f",
+      "format": "3dl",
+      "grid_size": 17
+    },
+    {
+      "stage": 2,
+      "generator": "cycle_gbr",
+      "sha256": "abe7cce0a85a0d73dac433dc3031568bcc217c60b9f07585e1ad5eedbe9237e8",
+      "domain": "全部256^3 RGB8",
+      "semantics": "颜色通道置换或反相，RGB距离等距且整数精确"
+    },
+    {
+      "stage": 3,
+      "generator": "invert_rgb",
+      "sha256": "4ab8eed4247e35a693bea64a396413aa25679389c24d1e753b09845e8fcb157f",
+      "domain": "全部256^3 RGB8",
+      "semantics": "颜色通道置换或反相，RGB距离等距且整数精确"
+    },
+    {
+      "stage": 4,
+      "generator": "swap_rg",
+      "sha256": "8d0c1a237f45f23ec4dec8f7f224408fa9f9409605a60c886fb4dab897482a29",
+      "domain": "全部256^3 RGB8",
+      "semantics": "颜色通道置换或反相，RGB距离等距且整数精确"
+    }
+  ],
+  "source_contract": "首级仍为PR41同源Filmic06 3DL原解释；后三张完整合法RGB8表由固定公式生成，是不吞掉首级误差的因果控制，不冒充自然ISP滤镜家族",
+  "chains": [
+    {
+      "name": "baseline17",
+      "m": 17,
+      "method": "ls_tetra_supported"
+    },
+    {
+      "name": "baseline33",
+      "m": 33,
+      "method": "ls_tetra_supported"
+    },
+    {
+      "name": "calibrated17",
+      "m": 17,
+      "method": "ls_tetra_calibrated"
+    }
+  ],
+  "fit_contract": "四张独立完整原LUT，seq+dp，m相同；每级模型仅拟合自己的原表，没有复合或残差标签；所有基线和候选一次生成后冻结",
+  "calibration": "固定初始DP的RGB8节点/idx/grid/端点，只改frac≤4096，解析精确标签区间和真实单调；不可行明确回退原DP，非可分离明确回退原通用supported，不以方法名当实际分派",
+  "full_trigger": "先用各级已完整验证的源曲线及节点曲线解析四级逐级RGB8输出；calibrated17须各级精确且三条链参考非恒定、相对baseline17链mean有严格改善，才集中完整验收；失败停止，不换来源或追加容量",
+  "acceptance": "三个冻结版本各一次完整256^3、100张1024×768 RGB8照片、独立整数oracle、标量/AVX2/C99；新17链mean/RMS/p99/max必须全0，后端逐字节一致。保留基线33容量/质量对照及全部逐图结果，不把不同链和Cinema计成同一改善率",
+  "photos": {
+    "path": "assets/photos/manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+    "count": 100,
+    "scope": "历史已见；不用于拟合或选型"
+  },
+  "executable": {
+    "path": "build-engineering-alignment/jshc.exe",
+    "sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a"
+  },
+  "environment": "Windows11 26200 x64，Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/SciPy1.15.2/Numba0.60.0；Numba4、OMP/BLAS/MKL1，原生GCC15.2 Release各1线程；无本阶段性能计时",
+  "limits": "一条四张不同独立LUT的受控链，首级真实Filmic06，后三段为循环通道置换、反相、交换通道，均保持RGB距离。用以证明首级误差不能被后缀掩盖及新方法接入四模型运行时；不是自然四级普遍精度或SOTA。RGB欧氏码值距离非CIEDE2000、官方Threshold未知；默认不改、不加入68源扫描、不PR不推送。原Filmic04/05/06/07链已因基线解析零误差而停止，不能把本轮成功倒填前一计划。",
+  "basis": {
+    "run": "artifacts/filmic-chain-calibrated-v1/preparation.json",
+    "sha256": "3d8be2cc6c385c8f961dfe208c62d7fb6688bba16855e246ef8f511976f6f176",
+    "finding": "真实同家族后缀会吞掉局部误差；因此独立阶段设计等距控制，不选择来源搜索通过"
+  }
+}

@@ -33,25 +33,56 @@ def version(folder):
         'cube_sha256': full['cube']['prediction_sha256'], 'source_plan': run['identity']['plan']}
 
 
+def chain_versions(folder):
+    run, prepared, full = (read(folder/name) for name in ('run.json','preparation.json','full-results.json'))
+    if (run['identity_sha256'] != study_provenance.identity_digest(run['identity'])
+            or prepared['run_identity'] != run['identity_sha256'] or full['run_identity'] != run['identity_sha256']
+            or not full['acceptance']['accepted'] or digest(folder/'preparation.json') != full['preparation_sha256']):
+        raise ValueError('四级来源与完整验收身份不同')
+    versions = []
+    for name in ('baseline17','baseline33','calibrated17'):
+        row, proof = prepared['variants'][name], full['variants'][name]
+        paths = [Path(p) for p in row['model_paths']]
+        if (len(paths) != 4 or [digest(p) for p in paths] != row['model_sha256']
+                or {r['kernel'] for r in proof['native']} != {'tetra_scalar','tetra_avx2','tetra_c99'}
+                or any(r['byte_mismatches'] or r['sha256'] != proof['cube']['prediction_sha256']
+                       or r['executable_sha256'] != run['identity']['plan']['executable']['sha256']
+                       or r['pixels'] != 256**3 or r['stages'] != 4
+                       or list(r['models_sha256'].values()) != row['model_sha256'] for r in proof['native'])):
+            raise ValueError('四模型缺少同SHA完整逐字节证据')
+        versions.append({'name':name,'paths':paths,'sha256':row['model_sha256'],
+            'm':row['config']['m'], 'run_identity':run['identity_sha256'],
+            'cube_sha256':proof['cube']['prediction_sha256'], 'full_results_sha256':digest(folder/'full-results.json')})
+    return versions, run['identity']['plan']['executable']['sha256']
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--versions', type=Path, nargs=2, required=True)
+    scope = parser.add_mutually_exclusive_group(required=True)
+    scope.add_argument('--versions', type=Path, nargs=2)
+    scope.add_argument('--chain-run', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--executable', type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖已有性能阶段')
-    measured = [version(p.resolve()) for p in args.versions]
-    first_plan = measured[0]['source_plan']
-    original = {'name': 'PR16', 'paths': [ROOT/r['path'] for r in first_plan['baseline_models']],
-        'sha256': [r['sha256'] for r in first_plan['baseline_models']],
-        'cube_sha256': first_plan['baseline_evidence']['cube']['sha256'],
-        'source_full_results_sha256': first_plan['baseline_evidence']['results']['sha256']}
-    versions = [original, *measured]
+    if args.chain_run:
+        versions, expected_executable = chain_versions(args.chain_run.resolve())
+    else:
+        measured = [version(p.resolve()) for p in args.versions]
+        first_plan = measured[0]['source_plan']
+        original = {'name': 'PR16', 'paths': [ROOT/r['path'] for r in first_plan['baseline_models']],
+            'sha256': [r['sha256'] for r in first_plan['baseline_models']],
+            'cube_sha256': first_plan['baseline_evidence']['cube']['sha256'],
+            'source_full_results_sha256': first_plan['baseline_evidence']['results']['sha256']}
+        versions = [original, *measured]
+        expected_executable = first_plan['environment']['executable_sha256']
     for item in versions:
-        if [digest(p) for p in item['paths']] != item['sha256'] or any(io.load_sparse(p, competition=True).m != 33 for p in item['paths']):
-            raise ValueError('性能比较需要同字节四级m33模型')
-    expected_executable = first_plan['environment']['executable_sha256']
+        sizes = [io.load_sparse(p, competition=True).m for p in item['paths']]
+        if ([digest(p) for p in item['paths']] != item['sha256'] or len(sizes) != 4
+                or len(set(sizes)) != 1 or sizes[0] != item.get('m',33)):
+            raise ValueError('性能比较需要同字节四级模型和冻结统一尺寸')
+        item['m'] = sizes[0]
     if digest(args.executable) != expected_executable:
         raise ValueError('性能程序与完整正确性程序不同')
     manifest = read(ROOT/'assets/photos/manifest.json')
@@ -66,7 +97,7 @@ def main():
     image_list.write_text('\n'.join(p.resolve().as_posix() for p in images)+'\n', encoding='utf-8')
     git_head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     capabilities = runtime.capabilities(executable=args.executable)
-    identity = {'kind': 'paired_precision_runtime', 'git_head': git_head,
+    identity = {'kind': 'paired_calibrated_chain_runtime' if args.chain_run else 'paired_precision_runtime', 'git_head': git_head,
         'environment': study_provenance.environment_fingerprint(), 'capabilities': capabilities,
         'executable_sha256': expected_executable, 'manifest_sha256': digest(ROOT/'assets/photos/manifest.json'),
         'source_sha256': {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in (
@@ -85,7 +116,9 @@ def main():
                 result = runtime.bench(item['paths'], image_list, executable=args.executable,
                     kernel='tetra_avx2', threads=threads, reps=5, competition=True)
                 if (result['kernel'] != 'tetra_avx2' or result['images'] != 100 or result['stages'] != 4
-                        or result['m'] != 33 or result['requested_threads'] != threads or result['batch_mode']
+                        or result['m'] != item['m'] or result['requested_threads'] != threads or result['batch_mode']
+                        or result['executable_sha256'] != expected_executable
+                        or list(result['models_sha256'].values()) != item['sha256']
                         or len(result['set_ms_reps']) != 5 or len(result['apply_ms_reps']) != 5):
                     raise ValueError('实际性能内核或计时范围不符')
                 entry = {'version': item['name'], 'cycle': cycle, 'threads': threads, 'result': result}

@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import error_analysis as ea, fit, interp, io, joint_grid as jg, rounded_grid as rg, study_provenance
+from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, paired_grid, rounded_grid as rg, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -219,7 +219,33 @@ def source_identity(plan_path):
              ROOT / 'scripts/verify_joint_grid.py', ROOT / 'scripts/verify_rounded_grid.py',
              ROOT / 'scripts/verify_photo_mass.py', ROOT / 'python/lutlab/rounded_grid.py',
              ROOT / 'python/lutlab/study_provenance.py', plan_path]
+    if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'exact_axis':
+        files += [ROOT / 'python/lutlab/exact_axis.py', ROOT / 'python/lutlab/axis_calibration.py',
+                  ROOT / 'python/lutlab/chain_envelope.py', ROOT / 'python/lutlab/suffix_objective.py',
+                  ROOT / 'scripts/verify_exact_axis.py']
+    if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'guarded_pair':
+        files += [ROOT / 'python/lutlab/paired_grid.py', ROOT / 'python/lutlab/chain_envelope.py',
+                  ROOT / 'scripts/verify_paired_grid.py']
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
+
+
+def colour_caps(plan, targets, output):
+    """逐原色约束以同一旧完整流为锚，优化阶段不重新放宽上限。"""
+    if targets.shape != (256**3, 3):
+        raise ValueError('逐色包络要求canonical完整域标签')
+    stream = np.memmap(check_file(plan['baseline_cube'], plan['baseline_cube_sha256']),
+                       np.uint8, 'r', shape=(256**3, 3))
+    caps = np.empty(len(targets), np.int32)
+    for start in range(0, len(targets), 1 << 18):
+        stop = min(start+(1 << 18), len(targets))
+        error = stream[start:stop].astype(np.int32)-targets[start:stop].astype(np.int32)
+        caps[start:stop] = np.maximum(plan['chain_envelope']['floor_squared'],
+            np.sum(error*error, axis=1, dtype=np.int32))
+    path = output/'envelope-caps.npy'
+    np.save(path, caps)
+    return caps, {'caps_file_sha256': digest(path),
+                  'floor_squared': plan['chain_envelope']['floor_squared'],
+                  'scope': '全部原色的本级原表误差；全程固定旧模型锚点'}
 
 
 def run_fit(args, plan):
@@ -255,9 +281,60 @@ def run_fit(args, plan):
     io.save_sparse(args.output / 'initial.slut',initial)
     candidates = {}
     for profile in plan['profiles']:
-        kind = '整数提议' if plan.get('proposal') == 'rounded' else '连续提议'
+        kind = ('硬包络单节点及成对提议' if plan.get('proposal') == 'guarded_pair' else
+                '精确坐标事件提议' if plan.get('proposal') == 'exact_axis' else
+                ('整数提议' if plan.get('proposal') == 'rounded' else '连续提议'))
         print(f'[{profile}] 开始冻结预算的{kind}，训练颜色{len(points)}', flush=True)
-        if plan.get('proposal') == 'rounded':
+        if plan.get('proposal') == 'guarded_pair':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                    or 'initial_model' in plan or len(plan['profiles']) != 1
+                    or plan['warmup_sweeps'] != 4 or plan['paired_sweeps'] != 1
+                    or plan['chain_envelope']['floor_squared'] != 49):
+                raise ValueError('本轮配对研究只接受固定4+1预算、原基线及完整原色/照片质量')
+            check_file(plan['contract']['path'], plan['contract']['sha256'])
+            caps, cap_info = colour_caps(plan, targets, args.output)
+            envelope = chain_envelope.ChainEnvelope(np.arange(len(points), dtype=np.int32), targets, caps,
+                expected_arrivals=points, metadata=cap_info)
+            warm, warm_report = rg.propose(initial, points, targets, mass,
+                sweeps=plan['warmup_sweeps'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
+                parts=plan['threads'], envelope=envelope,
+                progress=lambda r: print(f"[{profile}] warmup={r['sweep']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+            warm_iteration, warm_model = warm[-1]
+            paired, pair_report = paired_grid.propose(warm_model, points, targets, mass,
+                caps=caps, sweeps=plan['paired_sweeps'], parts=plan['threads'],
+                tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
+                progress=lambda r: print(f"[{profile}] pair offset={r['offset']} colour={r['colour']} channel={r['channel']} pairs={r['selected_pairs']} delta={r['predicted_objective_change']:.8f}", flush=True))
+            checkpoints = [(warm_iteration, warm_model), (warm_iteration+1, paired[-1][1])]
+            report = {'warmup': warm_report, 'paired': pair_report, 'chain_envelope': cap_info,
+                      'candidate_stages': {str(warm_iteration): 'warmup_final', str(warm_iteration+1): 'paired_final'},
+                      'scope': '固定两候选一次选型；全部标签来自本级原表，无后缀或复合标签；坐标不变'}
+        elif plan.get('proposal') == 'exact_axis':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                    or 'initial_model' in plan or len(plan['profiles']) != 1):
+                raise ValueError('精确坐标研究要求单一起点、全域和完整照片及固定目标')
+            old_stream = np.memmap(check_file(plan['baseline_cube'], plan['baseline_cube_sha256']),
+                                   np.uint8, 'r', shape=(256**3, 3))
+            caps = np.empty(len(points), np.int32)
+            for start in range(0, len(points), 1 << 18):
+                stop = min(start+(1 << 18), len(points))
+                error = old_stream[start:stop].astype(np.int32)-targets[start:stop].astype(np.int32)
+                caps[start:stop] = np.maximum(plan['chain_envelope']['floor_squared'],
+                    np.sum(error*error, axis=1, dtype=np.int32))
+            cap_path = args.output/'envelope-caps.npy'
+            np.save(cap_path, caps)
+            # 单级没有后缀，显式恒等查表只适配共享离线搜索器；目标整体乘2不改变最小值。
+            extra = suffix_objective.SuffixObjective(points, targets, 1.)
+            envelope = chain_envelope.ChainEnvelope(np.arange(len(points), dtype=np.int32), targets, caps,
+                expected_arrivals=points, suffix=points,
+                metadata={'scope': '单级原色逐色包络，恒等后缀只是离线适配，不伪造四级比赛链',
+                          'caps_file_sha256': digest(cap_path), 'floor_squared': plan['chain_envelope']['floor_squared']})
+            checkpoints, report = exact_axis.propose(initial, points, targets, mass, anchor=initial,
+                envelope=envelope, extra_objective=extra, sweeps=plan['sweeps'],
+                maximum_shift=plan['axis_calibration']['maximum_shift'], parts=plan['threads'],
+                progress=lambda r: print(f"[{profile}] sweep={r['sweep']} axis={r['axis']} loss={r['weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+        elif plan.get('proposal') == 'rounded':
             checkpoints, report = rg.propose(initial, points, targets, mass, sweeps=plan['sweeps'],
                 tail_at=plan['tail_at'], tail_weight=plan['tail_weight'], parts=plan['threads'],
                 maximum_squared=int(round(old_full['cube']['max']**2)),
@@ -320,6 +397,19 @@ def run_accept(args, plan):
         models[name] = io.load_sparse(path, competition=True)
         print(f'[{name}] 完整256³和独立整数oracle/原生验收', flush=True)
         cube = cube_evaluate([table], ea.Operator([models[name]]), folder / 'cube.rgb', 128)
+        if plan.get('proposal') in ('exact_axis', 'guarded_pair'):
+            optimizer = json.loads((args.output/(result['candidates'][name]['profile']+'-optimizer.json')).read_text(encoding='utf-8'))
+            cap_path = check_file(args.output/'envelope-caps.npy', optimizer['chain_envelope']['caps_file_sha256'])
+            caps = np.load(cap_path, mmap_mode='r')
+            stream = np.memmap(folder/'cube.rgb', np.uint8, 'r', shape=(256**3, 3))
+            violations = 0
+            for start in range(0, len(stream), 1 << 18):
+                stop = min(start+(1 << 18), len(stream))
+                error = stream[start:stop].astype(np.int32)-table.reshape(-1, 3)[start:stop].astype(np.int32)
+                violations += int(np.count_nonzero(np.sum(error*error, axis=1, dtype=np.int32) > caps[start:stop]))
+            if violations:
+                raise AssertionError('完整候选违反冻结逐色尾部包络')
+            cube['envelope'] = {'rows': len(stream), 'violations': violations, 'caps_file_sha256': digest(cap_path)}
         native = native_verify([models[name]], folder, cube['prediction_sha256'], args.executable)
         metrics[name] = {'cube': cube, 'native': native, 'model_sha256': digest(path)}
         print(f'[{name}] mean={cube["mean"]:.6f} p99={cube["p99"]:.6f} max={cube["max"]:.6f}', flush=True)

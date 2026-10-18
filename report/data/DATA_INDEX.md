@@ -1,5 +1,9 @@
 # 报告数据索引
 
+2026-10-19本地精度研究新增：[Filmic静态解析校准](filmic-calibration-v1/report.md)、[直接单调m17](filmic-direct-monotone-v1/report.md)。同SHA恢复PR41来源与两尺寸基线，m33及后续独立m17候选完整256³/百图误差归零，保留逐图与实际单级后端证据；这是严格可分离单LUT特例，不代表通用三维或四级比赛链。另有[Cinema节点续优化](cinema-calibrated-nodes-v1/report.md)、[Cinema精确事件搜索](cinema-exact-axis-v1/report.md)、[Velvia事件搜索](velvia-exact-axis-v1/report.md)三个未入围对照，未执行新增完整验收或速度测试。历史PDF范围不变，不宣称官方成绩或SOTA。
+
+[通用精确单调API](separable-calibration-api-v1/README.md)集中11项合同通过并接入显式CLI方法，默认策略不变。[同家族四级先导](filmic-chain-calibrated-v1/report.md)发现旧链已精确、停止新增完整验收；另立[等距四级控制链](filmic-isometric-chain-v1/report.md)，在四张不同原表及逐级RGB8下，新17³完整256³/100图误差归零，标量/AVX2/C99一致。[独立性能](filmic-isometric-runtime-v1/report.md)保留18次交错同机调用，文件容量相对33³减少83.22%，同容量单线程略慢，不能称所有配置加速。[Velvia有界插值归因](velvia-interpolation-diagnosis-v1/report.md)显示单换算子或采样节点不能同时改善一般mean/p99，旧极端节点偏差远超纯量化；未产生新模型。
+
 [R51](r51/README.md)记录有界CG续算：四个已成功配置保持16张旧模型字节，一个原失败m33模型恢复并通过CPU/CUDA/C99三条完整色域一致性检查。其RGB误差仍高，不替换质量冠军。五配置追加方法边界标签，比较账本保留原38条有效观测及1条失败，原矩阵分母不变。
 
 [R50](r50/README.md)保存分片执行的一次集中验收、旧写入器受控退出检查点，以及45条R45/R47资格记录正式导入的凭据。2条新完整色域流精确复现原模型/输出/指标/23组探针，52条旧记录未重跑。新控制器最多4个普通子进程续跑；原7917项分母和数值版本不变，留出评估尚未执行。
@@ -38,3 +42,4 @@
 
 原始图像和完整 LUT 约 1.8 GiB，保留在被 Git 忽略的 `data/`；本归档只保存清单和实验记录。
 `run_records_exact.tar.gz` 包含运行目录中的 JSON、stdout、测试日志和代码差异；路径及字节不变。
+本地补充：`paired-grid-contract-v1`保存成对节点的纯合成实现合同；`velvia-guarded-pair-v1`保存实际Velvia固定4+1拟合与未入围选择证据。二者不能替代完整精度验收，后者没有新增百图或原生性能结果。

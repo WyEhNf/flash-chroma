@@ -25,7 +25,7 @@ from pathlib import Path
 from . import io
 
 SCHEMA_VERSION = 1
-SOURCE_FILES = ("axisbins.py", "box.py", "cache.py", "cli.py", "cascade.py", "curve.py", "fit.py", "fullfit.py", "interp.py", "io.py", "step.py")
+SOURCE_FILES = ("axisbins.py", "box.py", "cache.py", "cli.py", "cascade.py", "curve.py", "fit.py", "fullfit.py", "interp.py", "io.py", "step.py", "separable_calibration.py")
 
 
 def file_sha256(path: str | Path) -> str:
@@ -49,9 +49,9 @@ def source_fingerprint() -> dict:
 
 def fitting_defaults() -> dict:
     """Record callable defaults as well as the source hashes of internal constants."""
-    from . import axisbins, box, cascade, curve, fit, fullfit, step
+    from . import axisbins, box, cascade, curve, fit, fullfit, separable_calibration, step
     defaults = {}
-    for module in (fit, cascade, curve, fullfit, box, step, axisbins):
+    for module in (fit, cascade, curve, fullfit, box, step, axisbins, separable_calibration):
         for name, value in sorted(vars(module).items()):
             # lru_cache wraps sampling/grid helpers in a callable object. Its
             # underlying defaults still govern the actual fit and must be bound.
@@ -84,6 +84,18 @@ def algorithm_settings(parameters: dict) -> dict:
         return inspect.signature(function).parameters[name].default
 
     settings = {}
+    if parameters.get('method') == 'ls_tetra_calibrated':
+        settings = algorithm_settings({**parameters, 'method': 'ls_tetra_supported'})
+        settings['calibrated_model'] = {
+            'precedence': ['完整验证源与节点的逐通道单轴结构', '解析精确舍入区间及全轴单调可行性',
+                           '不可行时原结构整数DP回退', '非可分离时原通用补支撑回退'],
+            'maximum_fraction_shift': 4096, 'relative_to': '初始结构DP模型的权威frac表',
+            'constraints': '固定RGB8节点/idx/grid与端点，frac在0..65536，idx*65536+frac逐轴非降',
+            'selection': '精确标签区间的前缀最大下界与后缀最小上界；离原单调坐标最近的可行clamp',
+            'targets': '本级独立完整原LUT；不使用照片、后级或残差标签',
+            'runtime': '现有SLUTv1整数Q16四面体；单调坐标函数族扩大，原默认方法不变',
+        }
+        return settings
     from .axisbins import PROFILES as BIN_PROFILES
     if parameters.get("method") in BIN_PROFILES:
         lookahead,reachable=BIN_PROFILES[parameters["method"]]

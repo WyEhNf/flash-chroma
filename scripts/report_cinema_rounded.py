@@ -48,7 +48,7 @@ def main():
                 writer.writeheader()
                 writer.writerows(values)
         stage = run['identity']['plan']['optimized_stage']
-        coordinate = run['identity']['plan'].get('proposal') == 'axis_calibration'
+        coordinate = run['identity']['plan'].get('proposal') in ('axis_calibration', 'exact_axis')
         interpolation = ('单调校准Q16坐标表，插值函数族已扩大' if coordinate else '原权威Q16轴表')
         changes = result['per_image_changes']['all']
         body = ['# Cinema四级链：实际到达频数与整链尾部保护', '',

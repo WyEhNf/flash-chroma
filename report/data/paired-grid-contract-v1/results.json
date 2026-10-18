@@ -1,0 +1,126 @@
+{
+  "status": "通过",
+  "contracts": [
+    "单端均恶化而联合改善",
+    "单端cap均禁止但组合允许",
+    "随机真实Q16配对收益与逐点违规总数",
+    "零质量硬约束/边界与parts归约",
+    "同色多块批量的独立整数oracle",
+    "两tiling全单元支撑互斥和权威坐标保持"
+  ],
+  "purpose": "纯合成集中实现合同；非真实LUT拟合、全域精度或性能测试",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "source_sha256": {
+    "scripts/verify_paired_grid.py": "57245ccb50aa7b0eed1f19ccf840f58422b1aa0369ee486c67ccdaea500b7587",
+    "python/lutlab/paired_grid.py": "4e8067b60c1d3facd811e3df8ac7f8611d71b5acfa10c1bb6e932e129b8e2d9c",
+    "python/lutlab/rounded_grid.py": "3e5a4031ae120dbc0fe5195749007e3ae61a817428b4c5c053e0a7689e660ee7",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "counterexample": {
+    "single_changes": [
+      {
+        "loss_change": 0.3,
+        "cap_violations": 1
+      },
+      {
+        "loss_change": 0.3,
+        "cap_violations": 1
+      }
+    ],
+    "joint_change": -0.2,
+    "overlap_count_correction": -2,
+    "joint_cap_violations": 0,
+    "initial_loss": 0.2,
+    "final_loss": 0.0,
+    "selected_pairs": 1,
+    "objective_delta_error": 0.0,
+    "authority_preserved": true
+  },
+  "layout_checks": [
+    {
+      "m": 17,
+      "offset": 0,
+      "valid_edges": 10712,
+      "tetrahedra_checked": 24576
+    },
+    {
+      "m": 17,
+      "offset": 1,
+      "valid_edges": 10712,
+      "tetrahedra_checked": 24576
+    },
+    {
+      "m": 33,
+      "offset": 0,
+      "valid_edges": 81712,
+      "tetrahedra_checked": 196608
+    },
+    {
+      "m": 33,
+      "offset": 1,
+      "valid_edges": 81712,
+      "tetrahedra_checked": 196608
+    }
+  ],
+  "random": {
+    "seed": 2026101911,
+    "pixels": 519,
+    "paired_changes": 125,
+    "maximum_gain_error": 8.311407118100078e-14,
+    "parts_1_vs_4_maximum_error": 3.469446951953614e-18,
+    "global_boundary_rejections": 21,
+    "noncanonical_q16_coordinate": true,
+    "zero_mass_rows": 31,
+    "batches": [
+      {
+        "offset": 0,
+        "colour": 0,
+        "pairs": 44,
+        "rows_with_multiple_moving_vertices": 21,
+        "objective_change_error": 4.679590048795035e-14,
+        "integer_output_mismatches": 0,
+        "accumulator_mismatches": 0,
+        "squared_mismatches": 0
+      },
+      {
+        "offset": 1,
+        "colour": 0,
+        "pairs": 44,
+        "rows_with_multiple_moving_vertices": 20,
+        "objective_change_error": 2.1593837828959295e-14,
+        "integer_output_mismatches": 0,
+        "accumulator_mismatches": 0,
+        "squared_mismatches": 0
+      }
+    ]
+  }
+}

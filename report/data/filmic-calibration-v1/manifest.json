@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "stage": "filmic-calibration-v1",
+  "source_directory": "artifacts/filmic-calibration-v1",
+  "files": {
+    "evidence.zip": {
+      "bytes": 91144,
+      "sha256": "a0f7b966ed2dbb55927d25077b5a80800c3b92f31e6bb8905d9f2c72be78c27f"
+    },
+    "m17-baseline.slut": {
+      "bytes": 18799,
+      "sha256": "8ebe30d069d6a4e30a0413ba66f4c8ed8bd1c8c8cde1b630f150ed82d52cb750"
+    },
+    "m17-calibrated.slut": {
+      "bytes": 18799,
+      "sha256": "c48ab143ffb79d8059b92e5fce38d65d3d5785c252788780d9e5c547b435a442"
+    },
+    "m33-baseline.slut": {
+      "bytes": 112063,
+      "sha256": "225d8f66a2ecf196f464a9208507b2e5716c3cc4693488aab60bd177e13d0986"
+    },
+    "m33-calibrated.slut": {
+      "bytes": 112063,
+      "sha256": "49231a3755bc2897f0d32f9ccb7578e11479d2e22cd0516a520915818f7cced0"
+    },
+    "measured-source.zip": {
+      "bytes": 53610,
+      "sha256": "96881aa06f491c22264c28521e1dc2635eace8ca3993e2896d2cf2fc60fcefbd"
+    },
+    "plan.json": {
+      "bytes": 3632,
+      "sha256": "27c41fdf37ba09fdb230083487024f387fcef41aad5eccc9650f95e15f7ec4e2"
+    },
+    "README.md": {
+      "bytes": 994,
+      "sha256": "f05db4f807c0748924478e8ac9391e0caab68f5ad1d9e12f57d46993a90a18ca"
+    },
+    "report.md": {
+      "bytes": 7427,
+      "sha256": "2ef4d2d016e2bcef32842e1b9bae188a74519a580f0d2a511a32a221a6219e41"
+    },
+    "source-curves.npy": {
+      "bytes": 896,
+      "sha256": "a3f6a5220933b1231272f0971f19419f731e20fe69a315f1b2c50526e94c9340"
+    }
+  },
+  "evidence_members": {
+    "run.json": "b555c2f2e9402c9d754d775ceb5ec1afcd395c3c392795b97172a969810a9436",
+    "preparation.json": "5a28c475b28d5476b96da14668120a66ddb513785efe6c278042e3fa7d4d1e9a",
+    "full-results.json": "6981e8c42ababb4ceb1b7d6a24fdc5d9563f7a31f32f5e4f643fbc04482504d9",
+    "summary.json": "8a9a294a574a88b2b96c6e13f45db8c950286b46a544fee26a7fb691cda35e61",
+    "field-audit.json": "0b187b9bbac8fb91c353d9b057b0ecea00c87ea36079da61fc191a0f4b020d21",
+    "per-image.csv": "111f35905c37034515f8088889d009d2980b7d54544bd3bad3e22e2bbc0412a0",
+    "m17/analysis.json": "11ab0d5bbc5aab7ae5d703d2dd62f47f2c7de18c351d47b02ce749f82125d16b",
+    "m17/rebuild.json": "a4539bfa72d16e3f60806bfe4d7209f551e246171ac36221b88fe2548858d4ef",
+    "m33/analysis.json": "bd688bea2691cc9e154bbd84b454a7a0e920845fa342bca8ba58e01e7afac31a",
+    "m33/rebuild.json": "d7f835aaca135763948767c5fded4f80506fc09cebe5bf55ddc7bf2ab2c68041"
+  },
+  "excluded_large_files": "完整reference.npy、cube/native RGB流及native百图流留在本地artifacts；其SHA与生成命令在证据中",
+  "validation": {
+    "purpose": "归档数据完整性，逐个比对ZIP成员及复制模型SHA；非再次拟合或精度测试",
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Windows-11-10.0.26200-SP0"
+    },
+    "mismatches": 0
+  },
+  "scope": "只精简归档，不改变冻结模型、计划、历史结果或默认，不提交/推送/PR"
+}

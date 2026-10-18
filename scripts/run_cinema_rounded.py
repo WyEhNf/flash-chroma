@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import axis_calibration, chain_envelope, error_analysis as ea, fit, interp, io, rounded_grid, study_provenance, suffix_objective
+from lutlab import axis_calibration, chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, rounded_grid, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -268,6 +268,8 @@ def source_identity(plan_path):
         files.append(ROOT / 'scripts/verify_suffix_objective.py')
     if read(plan_path).get('proposal') == 'axis_calibration':
         files.append(ROOT / 'scripts/verify_axis_calibration.py')
+    if read(plan_path).get('proposal') == 'exact_axis':
+        files.append(ROOT / 'scripts/verify_exact_axis.py')
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -324,6 +326,20 @@ def fit_run(args, plan):
             maximum_shift=plan['axis_calibration']['maximum_shift'], checkpoints=plan['candidate_sweeps'],
             parts=plan['environment']['threads'],
             progress=lambda r: print(f"level={r['round']} step={r['step']} loss={r['weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+    elif plan.get('proposal') == 'exact_axis':
+        anchor = io.load_sparse(checked(plan['coordinate_anchor']), competition=True)
+        parent = read(checked(plan['baseline_evidence']['run']))['identity']['plan']
+        if (stage != 0 or parent.get('proposal') != 'axis_calibration'
+                or plan['coordinate_anchor']['sha256'] != parent['initial_model']['sha256']
+                or plan['axis_calibration']['maximum_shift'] != parent['axis_calibration']['maximum_shift']
+                or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                or not np.array_equal(anchor.nodes, initial.nodes)):
+            raise ValueError('精确坐标搜索必须沿用已验收父阶段的相同节点、原始坐标锚点和范围')
+        print('到达频数已冻结；固定首级节点，精确枚举原区间内舍入事件', flush=True)
+        checkpoints, report = exact_axis.propose(initial, points, targets, mass, envelope=envelope,
+            extra_objective=extra, anchor=anchor, sweeps=plan['sweeps'],
+            maximum_shift=plan['axis_calibration']['maximum_shift'], parts=plan['environment']['threads'],
+            progress=lambda r: print(f"sweep={r['sweep']} axis={r['axis']} loss={r['weighted_objective']:.6f} changed={r['changed_coordinates']} events={r['events']} time={r['seconds']:.1f}s", flush=True))
     else:
         print(f'到达频数已冻结；仅拟合第{stage+1}级原表标签，固定4扫', flush=True)
         checkpoints, report = rounded_grid.propose(initial, points, targets, mass,
@@ -336,7 +352,7 @@ def fit_run(args, plan):
     for sweep, candidate in checkpoints:
         if sweep not in plan['candidate_sweeps']:
             continue
-        if plan.get('proposal') == 'axis_calibration':
+        if plan.get('proposal') in ('axis_calibration', 'exact_axis'):
             if (not np.array_equal(candidate.tables()[0], initial.tables()[0])
                     or not np.array_equal(candidate.nodes, initial.nodes) or not np.array_equal(candidate.grid, initial.grid)):
                 raise AssertionError('坐标校准只能改变本级frac')

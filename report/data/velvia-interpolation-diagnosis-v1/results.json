@@ -1,0 +1,6594 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "固定模型、固定探针，区分插值算子、节点取值/量化与粗网格表达误差；不是matched最优拟合比较",
+    "model": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+      "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+    },
+    "grid": {
+      "path": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+      "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"
+    },
+    "table": {
+      "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+      "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+    },
+    "source": {
+      "path": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+      "sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea"
+    },
+    "stream": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+      "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+    },
+    "partition": "artifacts/full-photo-v1/photo-partition.json",
+    "frequency_metadata": "artifacts/cinema-prefix-stage1-v1/training.json",
+    "frequency": {
+      "path": "artifacts/cinema-prefix-stage1-v1/photo-arrival-frequency.npy",
+      "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+    },
+    "frequency_array_sha256": "20af718acb2868e9d2c1453aea7193bbbaac4c6cf91d8eff79c8185430dac300",
+    "probe_rows_each": 16384,
+    "uniform_seed": 2026101909,
+    "photo_seed": 2026101910,
+    "worst_rows": 16,
+    "worst_order": "旧已验全域流误差平方降序，再按B最快RGB整数键升序；只读取既有流与参考",
+    "scope": "只映射两组固定16384探针和旧流top16；顶点诊断读取33³小数坐标的原表三线性值；不新增来源、不拟合、不做性能比较或完整验收"
+  },
+  "source_sha256": {
+    "scripts/explain_velvia_interpolation.py": "f365b615e6e1af67458c0ec13dd34242694e8d1294e75ad9ff892aa7d3b62cb9",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "input_sha256": {
+    "model": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "grid": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "source": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+    "stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "frequency": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+  },
+  "frequency_metadata_sha256": "0fc03ba9ac8331269eeb6e50fe70e2c77dd87fd987ca26267f3c0b46593f8561",
+  "partition_sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50",
+  "node_sampling": {
+    "method": "完整RGB8原表在当前小数网格顶点的浮点三线性读取",
+    "vertices": 35937,
+    "fractional_coordinate_count": 101277,
+    "source_float_nodes_sha256": "ff518d3c71469ed07430fd73406f6e2e4c857af9d18140169ed8d0d03f53cf15",
+    "maximum_single_channel_quantization_error": 0.4999961853027344,
+    "fitted_vs_sampled_node_distance": {
+      "n": 35937,
+      "mean": 1.0259915750606852,
+      "rms": 1.7754257841910452,
+      "p99": 6.076272470159527,
+      "max": 45.93147728973885,
+      "fraction_gt_6": 0.010323621893869827
+    }
+  },
+  "interpretation": "现节点专为四面体拟合；换三线性不是各方法matched最优。浮点节点只是不可部署控制；原拟合节点换成采样浮点节点同时改变拟合/采样策略，不可将差值全称节点量化。source_float与source_rounded对照才单独观察采样节点量化。无新模型、全域映射或性能比较。",
+  "results": {
+    "uniform_probe": {
+      "rows": 16384,
+      "points_sha256": "917bfc66ee0c3a7d5718f396918bfbceb7ada90ec1afb08ee971c37809200fcb",
+      "baseline_stream_mismatches": 0,
+      "integer_oracle_mismatches": 0,
+      "fixed_tail_rows": 166,
+      "variants": {
+        "fitted_rgb8_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 0.9422828218616554,
+            "rms": 1.6833172989386909,
+            "p99": 6.4031242374328485,
+            "max": 30.066592756745816,
+            "fraction_gt_6": 0.01214599609375
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 0.978957870660534,
+            "rms": 1.6325738212427157,
+            "p99": 6.505020169544818,
+            "max": 30.518468560862058,
+            "fraction_gt_6": 0.01226806640625
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 10.081180310582603,
+            "rms": 10.863335040068087,
+            "p99": 28.402402191886488,
+            "max": 30.066592756745816,
+            "fraction_gt_6": 1.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 0,
+            "equal": 16384,
+            "worse": 0
+          }
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.1323515301804612,
+            "rms": 1.9247469649037636,
+            "p99": 8.0,
+            "max": 30.066592756745816,
+            "fraction_gt_6": 0.018310546875
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.1602338772346876,
+            "rms": 1.8765376053220906,
+            "p99": 7.7079546371787515,
+            "max": 30.02732772337528,
+            "fraction_gt_6": 0.0185546875
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 9.620608129266385,
+            "rms": 10.466239471495902,
+            "p99": 23.790655564080996,
+            "max": 30.066592756745816,
+            "fraction_gt_6": 0.8795180722891566
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2310,
+            "equal": 9827,
+            "worse": 4247
+          }
+        },
+        "source_float_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.0289703161269546,
+            "rms": 1.8251511602638562,
+            "p99": 7.0,
+            "max": 38.05259518088089,
+            "fraction_gt_6": 0.014404296875
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.0671211771986395,
+            "rms": 1.784036061713998,
+            "p99": 6.960034591675142,
+            "max": 38.426099251767255,
+            "fraction_gt_6": 0.014404296875
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 9.118525881408749,
+            "rms": 10.55850025859939,
+            "p99": 29.41357296928791,
+            "max": 38.05259518088089,
+            "fraction_gt_6": 0.7771084337349398
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 3803,
+            "equal": 7528,
+            "worse": 5053
+          }
+        },
+        "source_float_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.2990120868908313,
+            "rms": 2.1369722484452156,
+            "p99": 8.06225774829855,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.022216796875
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.3216233845537824,
+            "rms": 2.097895665011045,
+            "p99": 8.270440185369315,
+            "max": 39.1828288538413,
+            "fraction_gt_6": 0.0220947265625
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 9.041885856604594,
+            "rms": 10.321926597040825,
+            "p99": 24.1245003929994,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.7831325301204819
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 3223,
+            "equal": 6297,
+            "worse": 6864
+          }
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.0951139115720911,
+            "rms": 1.8571743805274452,
+            "p99": 7.0710678118654755,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.014404296875
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.1128859176910972,
+            "rms": 1.8089183432250244,
+            "p99": 7.033128858593124,
+            "max": 38.71451495225838,
+            "fraction_gt_6": 0.0147705078125
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 9.114749653138087,
+            "rms": 10.592677625468852,
+            "p99": 29.41357296928791,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.7710843373493976
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 3276,
+            "equal": 7518,
+            "worse": 5590
+          }
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.3458500140134564,
+            "rms": 2.1547067620603855,
+            "p99": 8.06225774829855,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.02239990234375
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.3560686557421742,
+            "rms": 2.1149565240901906,
+            "p99": 8.29419767978501,
+            "max": 39.355482521252874,
+            "fraction_gt_6": 0.0223388671875
+          },
+          "fixed_baseline_tail": {
+            "n": 166,
+            "mean": 9.009935673515987,
+            "rms": 10.30089480263437,
+            "p99": 24.1245003929994,
+            "max": 39.05124837953327,
+            "fraction_gt_6": 0.7831325301204819
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2927,
+            "equal": 6206,
+            "worse": 7251
+          }
+        }
+      },
+      "seed": 2026101909
+    },
+    "training_photo_probe": {
+      "rows": 16384,
+      "points_sha256": "43b66d39b8a4c79dd6a2bc124de9cde4f00f9c037177b61fba55f2e078d55ad0",
+      "baseline_stream_mismatches": 0,
+      "integer_oracle_mismatches": 0,
+      "fixed_tail_rows": 196,
+      "variants": {
+        "fitted_rgb8_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 0.8927973468110049,
+            "rms": 1.2143852129009558,
+            "p99": 3.3166247903554,
+            "max": 12.649110640673518,
+            "fraction_gt_6": 0.00079345703125
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 0.9073298176693669,
+            "rms": 1.126616463815577,
+            "p99": 3.358663030536475,
+            "max": 12.211773311523789,
+            "fraction_gt_6": 0.0008544921875
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.387133009848806,
+            "rms": 4.573660169594892,
+            "p99": 10.002493781056046,
+            "max": 12.649110640673518,
+            "fraction_gt_6": 0.0663265306122449
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 0,
+            "equal": 16384,
+            "worse": 0
+          }
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.280314035509302,
+            "rms": 1.6665913882739074,
+            "p99": 4.58257569495584,
+            "max": 12.041594578792296,
+            "fraction_gt_6": 0.00335693359375
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.2713701821868746,
+            "rms": 1.5971994089187889,
+            "p99": 4.486639975615128,
+            "max": 12.243121801541365,
+            "fraction_gt_6": 0.0032958984375
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.037566371203718,
+            "rms": 4.520926399556188,
+            "p99": 11.035234995535989,
+            "max": 12.041594578792296,
+            "fraction_gt_6": 0.15816326530612246
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2426,
+            "equal": 7136,
+            "worse": 6822
+          }
+        },
+        "source_float_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.1401244594616642,
+            "rms": 1.4843133210869766,
+            "p99": 4.123105625617661,
+            "max": 12.041594578792296,
+            "fraction_gt_6": 0.001708984375
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.1389658379542513,
+            "rms": 1.4116257043481986,
+            "p99": 4.170260583917334,
+            "max": 12.453464924031906,
+            "fraction_gt_6": 0.00146484375
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.131326856343609,
+            "rms": 4.499433070863892,
+            "p99": 10.050000000000011,
+            "max": 11.0,
+            "fraction_gt_6": 0.09183673469387756
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 3251,
+            "equal": 6106,
+            "worse": 7027
+          }
+        },
+        "source_float_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.5628484913664888,
+            "rms": 1.9692924599888026,
+            "p99": 5.385164807134504,
+            "max": 13.038404810405298,
+            "fraction_gt_6": 0.00640869140625
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.5433728759485108,
+            "rms": 1.910164210327868,
+            "p99": 5.314638161453797,
+            "max": 12.764278679887665,
+            "fraction_gt_6": 0.00592041015625
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.227473204017,
+            "rms": 4.746104740108633,
+            "p99": 11.095172695267523,
+            "max": 13.0,
+            "fraction_gt_6": 0.15816326530612246
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2426,
+            "equal": 4341,
+            "worse": 9617
+          }
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.2037077277496546,
+            "rms": 1.5227161753856988,
+            "p99": 4.123105625617661,
+            "max": 13.038404810405298,
+            "fraction_gt_6": 0.00177001953125
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.186073970594638,
+            "rms": 1.4482237930829633,
+            "p99": 4.182027699704664,
+            "max": 12.525873194732883,
+            "fraction_gt_6": 0.0013427734375
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.157332327728215,
+            "rms": 4.510758115384841,
+            "p99": 10.097381840064855,
+            "max": 11.0,
+            "fraction_gt_6": 0.10204081632653061
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2881,
+            "equal": 5913,
+            "worse": 7590
+          }
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": {
+            "n": 16384,
+            "mean": 1.6042807540744346,
+            "rms": 1.9928767190138732,
+            "p99": 5.385164807134504,
+            "max": 13.038404810405298,
+            "fraction_gt_6": 0.00543212890625
+          },
+          "continuous": {
+            "n": 16384,
+            "mean": 1.5756747145887582,
+            "rms": 1.9324459860497853,
+            "p99": 5.311444154336908,
+            "max": 12.816124751028013,
+            "fraction_gt_6": 0.00543212890625
+          },
+          "fixed_baseline_tail": {
+            "n": 196,
+            "mean": 4.234596243897095,
+            "rms": 4.743954262091523,
+            "p99": 11.097245265007638,
+            "max": 13.0,
+            "fraction_gt_6": 0.1683673469387755
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 2277,
+            "equal": 4191,
+            "worse": 9916
+          }
+        }
+      },
+      "seed": 2026101910
+    },
+    "old_stream_worst16": {
+      "rows": 16,
+      "points_sha256": "e0b4fee077679dcd2b9d66df7425a85a2ac2473a396007ce858d9ac035f12a7d",
+      "baseline_stream_mismatches": 0,
+      "integer_oracle_mismatches": 0,
+      "fixed_tail_rows": 2,
+      "variants": {
+        "fitted_rgb8_tetra": {
+          "rgb8": {
+            "n": 16,
+            "mean": 39.661343742397925,
+            "rms": 39.667366940597404,
+            "p99": 41.012193308819754,
+            "max": 41.012193308819754,
+            "fraction_gt_6": 1.0
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 39.66256659766588,
+            "rms": 39.67067221854266,
+            "p99": 41.32930045419082,
+            "max": 41.4224179127827,
+            "fraction_gt_6": 1.0
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 41.012193308819754,
+            "rms": 41.012193308819754,
+            "p99": 41.012193308819754,
+            "max": 41.012193308819754,
+            "fraction_gt_6": 1.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 0,
+            "equal": 16,
+            "worse": 0
+          }
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": {
+            "n": 16,
+            "mean": 34.26982724113269,
+            "rms": 34.44560929929967,
+            "p99": 39.01281840626232,
+            "max": 39.01281840626232,
+            "fraction_gt_6": 1.0
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 34.11691890207871,
+            "rms": 34.30115880201607,
+            "p99": 39.302376554319295,
+            "max": 39.33774407850712,
+            "fraction_gt_6": 1.0
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 32.0,
+            "rms": 32.01562118716424,
+            "p99": 32.98,
+            "max": 33.0,
+            "fraction_gt_6": 1.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 12,
+            "equal": 4,
+            "worse": 0
+          }
+        },
+        "source_float_tetra": {
+          "rgb8": {
+            "n": 16,
+            "mean": 4.770975774128418,
+            "rms": 5.0,
+            "p99": 6.922822019630387,
+            "max": 7.0710678118654755,
+            "fraction_gt_6": 0.1875
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 4.8109109423457905,
+            "rms": 5.0199085179331195,
+            "p99": 6.793540144251254,
+            "max": 6.845762375604388,
+            "fraction_gt_6": 0.25
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 3.5,
+            "rms": 3.5355339059327378,
+            "p99": 3.99,
+            "max": 4.0,
+            "fraction_gt_6": 0.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 16,
+            "equal": 0,
+            "worse": 0
+          }
+        },
+        "source_float_tri": {
+          "rgb8": {
+            "n": 16,
+            "mean": 3.6465769228017564,
+            "rms": 3.816084380618437,
+            "p99": 5.0841665865538666,
+            "max": 5.0990195135927845,
+            "fraction_gt_6": 0.0
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 3.649039192257945,
+            "rms": 3.8197798570378967,
+            "p99": 5.420383458848623,
+            "max": 5.448457881431324,
+            "fraction_gt_6": 0.0
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 2.5,
+            "rms": 2.5495097567963922,
+            "p99": 2.99,
+            "max": 3.0,
+            "fraction_gt_6": 0.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 16,
+            "equal": 0,
+            "worse": 0
+          }
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": {
+            "n": 16,
+            "mean": 4.632817797165159,
+            "rms": 4.8218253804964775,
+            "p99": 6.082762530298219,
+            "max": 6.082762530298219,
+            "fraction_gt_6": 0.3125
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 4.689549147318388,
+            "rms": 4.8605598890696635,
+            "p99": 6.515863668643886,
+            "max": 6.569233636118366,
+            "fraction_gt_6": 0.1875
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 3.5,
+            "rms": 3.5355339059327378,
+            "p99": 3.99,
+            "max": 4.0,
+            "fraction_gt_6": 0.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 16,
+            "equal": 0,
+            "worse": 0
+          }
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": {
+            "n": 16,
+            "mean": 3.5378365533970486,
+            "rms": 3.69120576505835,
+            "p99": 5.0,
+            "max": 5.0,
+            "fraction_gt_6": 0.0
+          },
+          "continuous": {
+            "n": 16,
+            "mean": 3.533622826576383,
+            "rms": 3.6795071655584755,
+            "p99": 5.175633475564383,
+            "max": 5.202882265489348,
+            "fraction_gt_6": 0.0
+          },
+          "fixed_baseline_tail": {
+            "n": 2,
+            "mean": 2.5,
+            "rms": 2.5495097567963922,
+            "p99": 2.99,
+            "max": 3.0,
+            "fraction_gt_6": 0.0
+          },
+          "change_counts_vs_fitted_tetra": {
+            "better": 16,
+            "equal": 0,
+            "worse": 0
+          }
+        }
+      }
+    }
+  },
+  "worst_traces": [
+    {
+      "rank": 1,
+      "rgb_key": 15727729,
+      "rgb": [
+        239,
+        252,
+        113
+      ],
+      "target": [
+        247,
+        255,
+        79
+      ],
+      "old_error_squared": 1682,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        64812
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.9889452786869576
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            38
+          ],
+          "continuous": [
+            245.7757568359375,
+            255.0,
+            38.21673583984375
+          ],
+          "rgb8_distance": 41.012193308819754
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            46
+          ],
+          "continuous": [
+            246.6323760311002,
+            255.0,
+            46.11649797455311
+          ],
+          "rgb8_distance": 33.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            246.6147787179798,
+            255.0,
+            75.5551606491851
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            247.0421663294712,
+            255.0,
+            76.34779629828506
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            75.63232421875
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            247.0807511518592,
+            255.0,
+            76.38485622709823
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "rgb_key": 15727730,
+      "rgb": [
+        239,
+        252,
+        114
+      ],
+      "target": [
+        247,
+        255,
+        80
+      ],
+      "old_error_squared": 1682,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        14
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        6823
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.10410724146801201
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            39
+          ],
+          "continuous": [
+            245.78680419921875,
+            255.0,
+            38.59535217285156
+          ],
+          "rgb8_distance": 41.012193308819754
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            49
+          ],
+          "continuous": [
+            246.6274929425034,
+            255.0,
+            48.648491070934824
+          ],
+          "rgb8_distance": 31.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            246.61057763174176,
+            255.0,
+            76.17573996224867
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            78
+          ],
+          "continuous": [
+            247.00465973657242,
+            255.0,
+            77.60597253162886
+          ],
+          "rgb8_distance": 2.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            76
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            76.1923828125
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            78
+          ],
+          "continuous": [
+            247.05124341348323,
+            255.0,
+            77.66477184659595
+          ],
+          "rgb8_distance": 2.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            244.86414615752005,
+            255.0,
+            73.58902740478516
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            74
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            46
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            249.1400659076171,
+            255.0,
+            136.30569458007812
+          ],
+          "source_rounded_rgb8": [
+            249,
+            255,
+            136
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            155
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            252.88286625174806,
+            255.0,
+            95.66464267997071
+          ],
+          "source_rounded_rgb8": [
+            253,
+            255,
+            96
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            88
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            149.44798406714108
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            149
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            150
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "rgb_key": 15727725,
+      "rgb": [
+        239,
+        252,
+        109
+      ],
+      "target": [
+        248,
+        255,
+        75
+      ],
+      "old_error_squared": 1609,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        34400
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.5249054285850842
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            245,
+            255,
+            35
+          ],
+          "continuous": [
+            245.31170654296875,
+            255.0,
+            35.43243408203125
+          ],
+          "rgb8_distance": 40.11234224026316
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            42
+          ],
+          "continuous": [
+            246.3043459284636,
+            255.0,
+            42.30346295486015
+          ],
+          "rgb8_distance": 33.06055050963308
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            69
+          ],
+          "continuous": [
+            246.7912475503981,
+            255.0,
+            69.34929395259284
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            71
+          ],
+          "continuous": [
+            247.23467030571783,
+            255.0,
+            71.0553720611565
+          ],
+          "rgb8_distance": 4.123105625617661
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            70
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            69.59967041015625
+          ],
+          "rgb8_distance": 5.0990195135927845
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            71
+          ],
+          "continuous": [
+            247.14851199123586,
+            255.0,
+            71.23694551090375
+          ],
+          "rgb8_distance": 4.123105625617661
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "rgb_key": 15727726,
+      "rgb": [
+        239,
+        252,
+        110
+      ],
+      "target": [
+        247,
+        255,
+        76
+      ],
+      "old_error_squared": 1604,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        42003
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.6409153911105525
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            245,
+            255,
+            36
+          ],
+          "continuous": [
+            245.42771911621094,
+            255.0,
+            36.128509521484375
+          ],
+          "rgb8_distance": 40.049968789001575
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            43
+          ],
+          "continuous": [
+            246.38635345412274,
+            255.0,
+            43.25672170978339
+          ],
+          "rgb8_distance": 33.015148038438355
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            71
+          ],
+          "continuous": [
+            246.74713034229353,
+            255.0,
+            70.9007606267409
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            72
+          ],
+          "continuous": [
+            247.18654431165618,
+            255.0,
+            72.37847812043864
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            71
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            71.10783386230469
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            73
+          ],
+          "continuous": [
+            247.1315717813917,
+            255.0,
+            72.52392318995237
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "rgb_key": 16186201,
+      "rgb": [
+        246,
+        251,
+        89
+      ],
+      "target": [
+        254,
+        255,
+        58
+      ],
+      "old_error_squared": 1604,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        30,
+        10
+      ],
+      "q16_fraction": [
+        59733,
+        61852,
+        63516
+      ],
+      "physical_fraction": [
+        0.9114460802281952,
+        0.9437842861267504,
+        0.9691778384149958
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            252,
+            255,
+            18
+          ],
+          "continuous": [
+            252.2916259765625,
+            255.0,
+            18.464523315429688
+          ],
+          "rgb8_distance": 40.049968789001575
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            252,
+            255,
+            21
+          ],
+          "continuous": [
+            252.4206119786483,
+            255.0,
+            20.808365503977825
+          ],
+          "rgb8_distance": 37.05401462729781
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            254,
+            255,
+            59
+          ],
+          "continuous": [
+            253.57039286680435,
+            255.0,
+            59.11758458852125
+          ],
+          "rgb8_distance": 1.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            254,
+            255,
+            60
+          ],
+          "continuous": [
+            253.62092646436903,
+            254.9487641332671,
+            60.027727756836015
+          ],
+          "rgb8_distance": 2.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            59
+          ],
+          "continuous": [
+            253.2916259765625,
+            255.0,
+            59.42607116699219
+          ],
+          "rgb8_distance": 1.4142135623730951
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            253,
+            255,
+            60
+          ],
+          "continuous": [
+            253.3428618432954,
+            254.9487641332671,
+            60.30734409834298
+          ],
+          "rgb8_distance": 2.23606797749979
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            30,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            244.61563110351562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.03721618652344,
+            255.0,
+            0.8223052484945015
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            1
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            30,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            244.61563110351562,
+            89.23785400390625
+          ],
+          "source_float": [
+            245.65284729003906,
+            255.0,
+            10.189978589395025
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            10
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            8
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.4134063720703,
+            255.0,
+            10.716460734140128
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            11
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            246.16514190426096,
+            255.0,
+            25.280059814453125
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            25
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            1
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            30,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            244.61563110351562,
+            81.5208740234375
+          ],
+          "source_float": [
+            255.0,
+            254.0,
+            56.789216067571374
+          ],
+          "source_rounded_rgb8": [
+            255,
+            254,
+            57
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            60
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            30,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            244.61563110351562,
+            89.23785400390625
+          ],
+          "source_float": [
+            255.0,
+            254.0,
+            66.97072227085161
+          ],
+          "source_rounded_rgb8": [
+            255,
+            254,
+            67
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            72
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            53.59211800619522
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            54
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            13
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            63.6523261157449
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            64
+          ],
+          "fitted_rgb8": [
+            253,
+            255,
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "rgb_key": 15727727,
+      "rgb": [
+        239,
+        252,
+        111
+      ],
+      "target": [
+        247,
+        255,
+        77
+      ],
+      "old_error_squared": 1601,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        49606
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.7569253536360209
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            37
+          ],
+          "continuous": [
+            245.54373168945312,
+            255.0,
+            36.8245849609375
+          ],
+          "rgb8_distance": 40.01249804748511
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            44
+          ],
+          "continuous": [
+            246.4683609797819,
+            255.0,
+            44.20998046470663
+          ],
+          "rgb8_distance": 33.015148038438355
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            72
+          ],
+          "continuous": [
+            246.70301313418895,
+            255.0,
+            72.45222730088898
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            74
+          ],
+          "continuous": [
+            247.1384183175945,
+            255.0,
+            73.70158417972078
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            73
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            72.61599731445312
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            74
+          ],
+          "continuous": [
+            247.11463157154753,
+            255.0,
+            73.81090086900099
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "rgb_key": 15727728,
+      "rgb": [
+        239,
+        252,
+        112
+      ],
+      "target": [
+        247,
+        255,
+        78
+      ],
+      "old_error_squared": 1601,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        57209
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.8729353161614892
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            38
+          ],
+          "continuous": [
+            245.6597442626953,
+            255.0,
+            37.520660400390625
+          ],
+          "rgb8_distance": 40.01249804748511
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            45
+          ],
+          "continuous": [
+            246.55036850544104,
+            255.0,
+            45.16323921962987
+          ],
+          "rgb8_distance": 33.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            74
+          ],
+          "continuous": [
+            246.65889592608437,
+            255.0,
+            74.00369397503704
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            75
+          ],
+          "continuous": [
+            247.09029232353285,
+            255.0,
+            75.02469023900292
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            74
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            74.12416076660156
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            75
+          ],
+          "continuous": [
+            247.09769136170337,
+            255.0,
+            75.09787854804961
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "rgb_key": 15727731,
+      "rgb": [
+        239,
+        252,
+        115
+      ],
+      "target": [
+        247,
+        255,
+        81
+      ],
+      "old_error_squared": 1601,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        14
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        14364
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.21917988616699896
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            41
+          ],
+          "continuous": [
+            245.78680419921875,
+            255.0,
+            40.50103759765625
+          ],
+          "rgb8_distance": 40.01249804748511
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            51
+          ],
+          "continuous": [
+            246.61346500047466,
+            255.0,
+            51.34660460265059
+          ],
+          "rgb8_distance": 30.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            77
+          ],
+          "continuous": [
+            246.5901084266969,
+            255.0,
+            77.14795504394847
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            79
+          ],
+          "continuous": [
+            246.96827132494872,
+            255.0,
+            78.85729743085335
+          ],
+          "rgb8_distance": 2.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            77
+          ],
+          "continuous": [
+            246.5673828125,
+            255.0,
+            77.156982421875
+          ],
+          "rgb8_distance": 4.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            79
+          ],
+          "continuous": [
+            247.02041340352935,
+            255.0,
+            78.94392619867858
+          ],
+          "rgb8_distance": 2.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            244.86414615752005,
+            255.0,
+            73.58902740478516
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            74
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            46
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            249.1400659076171,
+            255.0,
+            136.30569458007812
+          ],
+          "source_rounded_rgb8": [
+            249,
+            255,
+            136
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            155
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            252.88286625174806,
+            255.0,
+            95.66464267997071
+          ],
+          "source_rounded_rgb8": [
+            253,
+            255,
+            96
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            88
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            149.44798406714108
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            149
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            150
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "rgb_key": 15727723,
+      "rgb": [
+        239,
+        252,
+        107
+      ],
+      "target": [
+        248,
+        255,
+        73
+      ],
+      "old_error_squared": 1530,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        19195
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.2928855035341475
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            245,
+            255,
+            34
+          ],
+          "continuous": [
+            245.07969665527344,
+            255.0,
+            34.040374755859375
+          ],
+          "rgb8_distance": 39.11521443121589
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            40
+          ],
+          "continuous": [
+            246.14034166335148,
+            255.0,
+            40.39707082430539
+          ],
+          "rgb8_distance": 33.06055050963308
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            66
+          ],
+          "continuous": [
+            246.87947616400197,
+            255.0,
+            66.24656466409866
+          ],
+          "rgb8_distance": 7.0710678118654755
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            68
+          ],
+          "continuous": [
+            247.33091596397213,
+            255.0,
+            68.40933396680103
+          ],
+          "rgb8_distance": 5.0990195135927845
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            67
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            66.58354187011719
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            69
+          ],
+          "continuous": [
+            247.18239018282873,
+            255.0,
+            68.66315942515678
+          ],
+          "rgb8_distance": 4.123105625617661
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "rgb_key": 15727724,
+      "rgb": [
+        239,
+        252,
+        108
+      ],
+      "target": [
+        248,
+        255,
+        74
+      ],
+      "old_error_squared": 1530,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        13
+      ],
+      "q16_fraction": [
+        9640,
+        11220,
+        26797
+      ],
+      "physical_fraction": [
+        0.14709890900851066,
+        0.1712067177580494,
+        0.40889546605961585
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            245,
+            255,
+            35
+          ],
+          "continuous": [
+            245.19569396972656,
+            255.0,
+            34.736358642578125
+          ],
+          "rgb8_distance": 39.11521443121589
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            41
+          ],
+          "continuous": [
+            246.22233840280444,
+            255.0,
+            41.35020419993691
+          ],
+          "rgb8_distance": 33.06055050963308
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            68
+          ],
+          "continuous": [
+            246.8353647585027,
+            255.0,
+            67.79782727844477
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_float_tri": {
+          "rgb8": [
+            247,
+            255,
+            70
+          ],
+          "continuous": [
+            247.28279629977948,
+            255.0,
+            69.7322660018744
+          ],
+          "rgb8_distance": 4.123105625617661
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            68
+          ],
+          "continuous": [
+            246.59149169921875,
+            255.0,
+            68.09150695800781
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            247,
+            255,
+            70
+          ],
+          "continuous": [
+            247.16545220108003,
+            255.0,
+            69.94996783185513
+          ],
+          "rgb8_distance": 4.123105625617661
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            245.4134063720703,
+            255.0,
+            48.546593690156556
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            49
+          ],
+          "fitted_rgb8": [
+            243,
+            255,
+            10
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            13
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            250.65284729003906,
+            255.0,
+            122.73957824707031
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            123
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            125
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            104.475341796875
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            76.17022788105533
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            76
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            75
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            13
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            104.475341796875
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            140.7118234075606
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            141
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            140
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 11,
+      "rgb_key": 15662194,
+      "rgb": [
+        238,
+        252,
+        114
+      ],
+      "target": [
+        246,
+        255,
+        78
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        14
+      ],
+      "q16_fraction": [
+        2484,
+        11220,
+        6823
+      ],
+      "physical_fraction": [
+        0.03790645597712717,
+        0.1712067177580494,
+        0.10410724146801201
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            245,
+            255,
+            39
+          ],
+          "continuous": [
+            245.35003662109375,
+            255.0,
+            38.668487548828125
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            42
+          ],
+          "continuous": [
+            245.5666622267285,
+            255.0,
+            42.40562044414571
+          ],
+          "rgb8_distance": 36.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            246,
+            255,
+            75
+          ],
+          "continuous": [
+            245.99276172581511,
+            255.0,
+            74.54871292004808
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            246,
+            255,
+            75
+          ],
+          "continuous": [
+            246.11064913667664,
+            255.0,
+            75.13715337921354
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            246,
+            255,
+            75
+          ],
+          "continuous": [
+            245.9793243408203,
+            255.0,
+            74.55796813964844
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            246,
+            255,
+            75
+          ],
+          "continuous": [
+            246.15076809547725,
+            255.0,
+            75.18490550410178
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            244.86414615752005,
+            255.0,
+            73.58902740478516
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            74
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            46
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            249.1400659076171,
+            255.0,
+            136.30569458007812
+          ],
+          "source_rounded_rgb8": [
+            249,
+            255,
+            136
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            155
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            252.88286625174806,
+            255.0,
+            95.66464267997071
+          ],
+          "source_rounded_rgb8": [
+            253,
+            255,
+            96
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            88
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            149.44798406714108
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            149
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            150
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 12,
+      "rgb_key": 15793267,
+      "rgb": [
+        240,
+        252,
+        115
+      ],
+      "target": [
+        248,
+        255,
+        84
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        14
+      ],
+      "q16_fraction": [
+        16796,
+        11220,
+        14364
+      ],
+      "physical_fraction": [
+        0.25629136203989417,
+        0.1712067177580494,
+        0.21917988616699896
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            45
+          ],
+          "continuous": [
+            246.77117919921875,
+            255.0,
+            45.0301513671875
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            248,
+            255,
+            57
+          ],
+          "continuous": [
+            247.66388244310042,
+            255.0,
+            57.26382865828646
+          ],
+          "rgb8_distance": 27.0
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            247,
+            255,
+            79
+          ],
+          "continuous": [
+            247.444480346151,
+            255.0,
+            79.41196176211415
+          ],
+          "rgb8_distance": 5.0990195135927845
+        },
+        "source_float_tri": {
+          "rgb8": [
+            248,
+            255,
+            81
+          ],
+          "continuous": [
+            247.85473131665213,
+            255.0,
+            81.29717417200597
+          ],
+          "rgb8_distance": 3.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            247,
+            255,
+            79
+          ],
+          "continuous": [
+            247.4298095703125,
+            255.0,
+            79.41644287109375
+          ],
+          "rgb8_distance": 5.0990195135927845
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            248,
+            255,
+            81
+          ],
+          "continuous": [
+            247.91262650746148,
+            255.0,
+            81.39221069949804
+          ],
+          "rgb8_distance": 3.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            245.0331268310547,
+            255.0,
+            61.919856870081276
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            62
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            16
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            244.86414615752005,
+            255.0,
+            73.58902740478516
+          ],
+          "source_rounded_rgb8": [
+            245,
+            255,
+            74
+          ],
+          "fitted_rgb8": [
+            244,
+            255,
+            46
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            14
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            249.65284729003906,
+            255.0,
+            127.2973170268815
+          ],
+          "source_rounded_rgb8": [
+            250,
+            255,
+            127
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            141
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            15
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            249.1400659076171,
+            255.0,
+            136.30569458007812
+          ],
+          "source_rounded_rgb8": [
+            249,
+            255,
+            136
+          ],
+          "fitted_rgb8": [
+            251,
+            255,
+            155
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            113.09529113769531
+          ],
+          "source_float": [
+            253.88286625174806,
+            255.0,
+            85.8521728515625
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            86
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            87
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            121.78545379638672
+          ],
+          "source_float": [
+            252.88286625174806,
+            255.0,
+            95.66464267997071
+          ],
+          "source_rounded_rgb8": [
+            253,
+            255,
+            96
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            88
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            14
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            113.09529113769531
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            144.90628051757812
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            145
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            147
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            15
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            121.78545379638672
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            149.44798406714108
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            149
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            150
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 13,
+      "rgb_key": 16186454,
+      "rgb": [
+        246,
+        252,
+        86
+      ],
+      "target": [
+        254,
+        255,
+        74
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        10
+      ],
+      "q16_fraction": [
+        59733,
+        11220,
+        38039
+      ],
+      "physical_fraction": [
+        0.9114460802281952,
+        0.1712067177580494,
+        0.5804247241665678
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            35
+          ],
+          "continuous": [
+            252.96505737304688,
+            255.0,
+            35.429107666015625
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            253,
+            255,
+            35
+          ],
+          "continuous": [
+            253.02677854083777,
+            255.0,
+            35.38113982621702
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            254,
+            255,
+            68
+          ],
+          "continuous": [
+            253.72773034462915,
+            255.0,
+            67.50809280006632
+          ],
+          "rgb8_distance": 6.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            254,
+            255,
+            69
+          ],
+          "continuous": [
+            253.7762015411402,
+            255.0,
+            68.55614038245446
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            68
+          ],
+          "continuous": [
+            253.46282958984375,
+            255.0,
+            67.80982971191406
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            254,
+            255,
+            69
+          ],
+          "continuous": [
+            253.5234676860273,
+            255.0,
+            68.81898650626314
+          ],
+          "rgb8_distance": 5.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.4134063720703,
+            255.0,
+            10.716460734140128
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            11
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            246.16514190426096,
+            255.0,
+            25.280059814453125
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            25
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            1
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            108.48651740886271
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            108
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            111
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            112.65284729003906
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            113
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            117
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            53.59211800619522
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            54
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            13
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            63.6523261157449
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            64
+          ],
+          "fitted_rgb8": [
+            253,
+            255,
+            20
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            130.23341268114746
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            130
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            131
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            133.0038864510134
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            133
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            134
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 14,
+      "rgb_key": 16186455,
+      "rgb": [
+        246,
+        252,
+        87
+      ],
+      "target": [
+        254,
+        255,
+        75
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        10
+      ],
+      "q16_fraction": [
+        59733,
+        11220,
+        46531
+      ],
+      "physical_fraction": [
+        0.9114460802281952,
+        0.1712067177580494,
+        0.7100090955827105
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            36
+          ],
+          "continuous": [
+            252.83547973632812,
+            255.0,
+            36.336151123046875
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            253,
+            255,
+            36
+          ],
+          "continuous": [
+            252.92889440740976,
+            255.0,
+            36.148283588615826
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            254,
+            255,
+            69
+          ],
+          "continuous": [
+            253.72773034462915,
+            255.0,
+            68.81167079180058
+          ],
+          "rgb8_distance": 6.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            254,
+            255,
+            70
+          ],
+          "continuous": [
+            253.77384070899126,
+            255.0,
+            69.7435679660243
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            69
+          ],
+          "continuous": [
+            253.46282958984375,
+            255.0,
+            69.10560607910156
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            254,
+            255,
+            70
+          ],
+          "continuous": [
+            253.5234676860273,
+            255.0,
+            70.00143980153948
+          ],
+          "rgb8_distance": 5.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.4134063720703,
+            255.0,
+            10.716460734140128
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            11
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            246.16514190426096,
+            255.0,
+            25.280059814453125
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            25
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            1
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            108.48651740886271
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            108
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            111
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            112.65284729003906
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            113
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            117
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            53.59211800619522
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            54
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            13
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            63.6523261157449
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            64
+          ],
+          "fitted_rgb8": [
+            253,
+            255,
+            20
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            130.23341268114746
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            130
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            131
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            133.0038864510134
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            133
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            134
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 15,
+      "rgb_key": 16186456,
+      "rgb": [
+        246,
+        252,
+        88
+      ],
+      "target": [
+        254,
+        255,
+        76
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        10
+      ],
+      "q16_fraction": [
+        59733,
+        11220,
+        55024
+      ],
+      "physical_fraction": [
+        0.9114460802281952,
+        0.1712067177580494,
+        0.8395934669988532
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            37
+          ],
+          "continuous": [
+            252.7058868408203,
+            255.0,
+            37.24330139160156
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            253,
+            255,
+            37
+          ],
+          "continuous": [
+            252.83099874735285,
+            255.0,
+            36.915517688245245
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            254,
+            255,
+            70
+          ],
+          "continuous": [
+            253.72773034462915,
+            255.0,
+            70.1154022901283
+          ],
+          "rgb8_distance": 6.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            254,
+            255,
+            71
+          ],
+          "continuous": [
+            253.7714795988357,
+            255.0,
+            70.93113537856064
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            70
+          ],
+          "continuous": [
+            253.46282958984375,
+            255.0,
+            70.40153503417969
+          ],
+          "rgb8_distance": 6.082762530298219
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            254,
+            255,
+            71
+          ],
+          "continuous": [
+            253.5234676860273,
+            255.0,
+            71.18403234002062
+          ],
+          "rgb8_distance": 5.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.4134063720703,
+            255.0,
+            10.716460734140128
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            11
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            246.16514190426096,
+            255.0,
+            25.280059814453125
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            25
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            1
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            108.48651740886271
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            108
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            111
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            112.65284729003906
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            113
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            117
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            53.59211800619522
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            54
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            13
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            63.6523261157449
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            64
+          ],
+          "fitted_rgb8": [
+            253,
+            255,
+            20
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            130.23341268114746
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            130
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            131
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            133.0038864510134
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            133
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            134
+          ]
+        }
+      ]
+    },
+    {
+      "rank": 16,
+      "rgb_key": 16186457,
+      "rgb": [
+        246,
+        252,
+        89
+      ],
+      "target": [
+        254,
+        255,
+        77
+      ],
+      "old_error_squared": 1522,
+      "training_pixel_frequency": 0,
+      "cell": [
+        30,
+        31,
+        10
+      ],
+      "q16_fraction": [
+        59733,
+        11220,
+        63516
+      ],
+      "physical_fraction": [
+        0.9114460802281952,
+        0.1712067177580494,
+        0.9691778384149958
+      ],
+      "outputs": {
+        "fitted_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            38
+          ],
+          "continuous": [
+            252.634033203125,
+            255.0,
+            37.80400085449219
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "fitted_rgb8_tri": {
+          "rgb8": [
+            253,
+            255,
+            38
+          ],
+          "continuous": [
+            252.7331146139249,
+            255.0,
+            37.68266145064405
+          ],
+          "rgb8_distance": 39.01281840626232
+        },
+        "source_float_tetra": {
+          "rgb8": [
+            254,
+            255,
+            72
+          ],
+          "continuous": [
+            253.71339952673176,
+            255.0,
+            71.67893401786105
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_float_tri": {
+          "rgb8": [
+            254,
+            255,
+            72
+          ],
+          "continuous": [
+            253.76911876668674,
+            255.0,
+            72.11856296213048
+          ],
+          "rgb8_distance": 5.0
+        },
+        "source_rounded_rgb8_tetra": {
+          "rgb8": [
+            253,
+            255,
+            72
+          ],
+          "continuous": [
+            253.46282958984375,
+            255.0,
+            71.92820739746094
+          ],
+          "rgb8_distance": 5.0990195135927845
+        },
+        "source_rounded_rgb8_tri": {
+          "rgb8": [
+            254,
+            255,
+            72
+          ],
+          "continuous": [
+            253.5234676860273,
+            255.0,
+            72.36648563529695
+          ],
+          "rgb8_distance": 5.0
+        }
+      },
+      "eight_corners": [
+        {
+          "bits": [
+            0,
+            0,
+            0
+          ],
+          "node_index": [
+            30,
+            31,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            246.4134063720703,
+            255.0,
+            10.716460734140128
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            11
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            0
+          ]
+        },
+        {
+          "bits": [
+            0,
+            0,
+            1
+          ],
+          "node_index": [
+            30,
+            31,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            246.16514190426096,
+            255.0,
+            25.280059814453125
+          ],
+          "source_rounded_rgb8": [
+            246,
+            255,
+            25
+          ],
+          "fitted_rgb8": [
+            245,
+            255,
+            1
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            0
+          ],
+          "node_index": [
+            30,
+            32,
+            10
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            108.48651740886271
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            108
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            111
+          ]
+        },
+        {
+          "bits": [
+            0,
+            1,
+            1
+          ],
+          "node_index": [
+            30,
+            32,
+            11
+          ],
+          "coordinate": [
+            237.65284729003906,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            251.0,
+            255.0,
+            112.65284729003906
+          ],
+          "source_rounded_rgb8": [
+            251,
+            255,
+            113
+          ],
+          "fitted_rgb8": [
+            252,
+            255,
+            117
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            0
+          ],
+          "node_index": [
+            31,
+            31,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            81.5208740234375
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            53.59211800619522
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            54
+          ],
+          "fitted_rgb8": [
+            254,
+            255,
+            13
+          ]
+        },
+        {
+          "bits": [
+            1,
+            0,
+            1
+          ],
+          "node_index": [
+            31,
+            31,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            251.38027954101562,
+            89.23785400390625
+          ],
+          "source_float": [
+            254.30840266915038,
+            255.0,
+            63.6523261157449
+          ],
+          "source_rounded_rgb8": [
+            254,
+            255,
+            64
+          ],
+          "fitted_rgb8": [
+            253,
+            255,
+            20
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            0
+          ],
+          "node_index": [
+            31,
+            32,
+            10
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            81.5208740234375
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            130.23341268114746
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            130
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            131
+          ]
+        },
+        {
+          "bits": [
+            1,
+            1,
+            1
+          ],
+          "node_index": [
+            31,
+            32,
+            11
+          ],
+          "coordinate": [
+            246.8109893798828,
+            255.0,
+            89.23785400390625
+          ],
+          "source_float": [
+            255.0,
+            255.0,
+            133.0038864510134
+          ],
+          "source_rounded_rgb8": [
+            255,
+            255,
+            133
+          ],
+          "fitted_rgb8": [
+            255,
+            255,
+            134
+          ]
+        }
+      ]
+    }
+  ],
+  "fixed_probes_sha256": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182"
+}

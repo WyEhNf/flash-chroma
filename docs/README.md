@@ -59,6 +59,17 @@
 - [2026-10-19 单调坐标校准](stages/2026-10-19-axis-calibration.md)：四级链累计完整域mean/p99降低20.42%/12.10%、百图mean降低17.72%，模型字节数保持，插值函数族扩大。
 - [2026-10-19 同机速度与内存](stages/2026-10-19-precision-performance.md)：三版模型18次原生交错比较，显式AVX2、1/4线程、完整百图原始计时；无额外模型内存成本，不作微小差异显著加速声明。
 - [2026-10-19 Lomo整数对照](stages/2026-10-19-lomo-rounded.md)：均值改善却尾部退化，未入围，未执行新增完整终验。
+- [2026-10-19 校准坐标后的节点](stages/2026-10-19-calibrated-nodes.md)：归因后固定四扫，样本收益不足，不做完整验收。
+- [2026-10-19 精确舍入事件搜索](stages/2026-10-19-exact-axis.md)：同坐标边界内约75万项合同通过，完整训练目标小幅下降，选择样本mean/p99未入围，停止同范围搜索。
+- [2026-10-19 Velvia坐标对照](stages/2026-10-19-velvia-exact-axis.md)：加入逐原色尾部保护，照片样本mean仅降约0.3%，不入围、不完整终验。
+- [2026-10-19 Filmic解析校准](stages/2026-10-19-filmic-calibration.md)：同SHA重建PR41，33³完整域与百图误差归零，17³照片mean降低90.68%，限定严格可分离特例。
+- [2026-10-19 Filmic直接单调约束](stages/2026-10-19-filmic-direct-monotone.md)：另立阶段排除保守静态边界，17³也完整验零，仍固定节点/idx/网格与总偏移。
+- [2026-10-19 精确单调API](stages/2026-10-19-separable-calibration-api.md)：11项集中合同，覆盖通道置换/共享输入轴、精确可行与明确回退。
+- [2026-10-19 同家族四级先导](stages/2026-10-19-filmic-chain-calibrated.md)：原链已被后缀消去局部误差，停止完整验收，不记作新收益。
+- [2026-10-19 等距四级控制链](stages/2026-10-19-filmic-isometric-chain.md)：统一CLI/不可变缓存，四张不同原表与逐级RGB8，17³完整域/百图误差归零，标量/AVX2/C99一致。
+- [2026-10-19 解析17³性能](stages/2026-10-19-calibrated-performance.md)：18次交错原生比较，4线程2.55ms/图，容量相对33³减少83.22%；同容量单线程略慢，不称所有配置加速。
+- [2026-10-19 Velvia插值归因](stages/2026-10-19-velvia-interpolation.md)：同节点换三线性及源浮点顶点对照，区分最坏色节点偏移与一般p99残差。
+- [2026-10-19 Velvia成对节点](stages/2026-10-19-velvia-guarded-pair.md)：固定逐色上限的4+1调整，原色样本mean/p99下降但照片mean未达3%，不完整终验。
 
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。

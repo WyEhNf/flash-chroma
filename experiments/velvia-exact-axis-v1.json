@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "purpose": "把已集中验证的精确舍入事件搜索应用到非可分离Velvia，固定2dd节点与idx，只增加有界单调frac自由度；逐原色包络避免此前照片max回归",
+  "baseline": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+  "baseline_sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+  "baseline_cube": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+  "baseline_cube_sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+  "baseline_results": "artifacts/joint-grid-budget-v2/full-results.json",
+  "baseline_run": "artifacts/joint-grid-budget-v2/run.json",
+  "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+  "offline_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "offline_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+  "table": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+  "table_sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+  "source": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+  "source_sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+  "partition": "artifacts/full-photo-v1/photo-partition.json",
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "cube_training_seed": 2026101801,
+  "cube_selection_seed": 2026101802,
+  "hotspot_count": 8192,
+  "mass": {
+    "cube": 0.48,
+    "photos": 0.48,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "profiles": [
+    "exact_axis"
+  ],
+  "threads": 4,
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "selection": "全部预定检查点拟合完成后一次选择；完整域分层选择颜色及20图选择像素，mean/RMS/p99均不高于基线、两种mean至少降低3%、至少一种p99严格下降、已知热点及选择颜色max不高于基线。合格者按两种mean最大比值、两种p99最大比值、mean比值和、名称选型。每个对照最多一个冻结候选进入终验。",
+  "acceptance": "冻结候选各一次完整256^3、100图和独立整数oracle/标量/AVX2；完整域mean/RMS/p99/max/CVaR、百图mean/RMS/最差逐图p99/max/平均逐图CVaR均不高于同SHA基线，两种mean均至少降低3%、至少一种p99降低3%才记为本阶段合格改善；逐图退化完整披露，不把聚合门禁写成逐图非退化，也不因此宣告整个精度目标完成",
+  "limits": "单级非可分离Velvia的有限坐标函数族研究；固定2dd节点/idx/网格和m33，校准frac会扩大原几何插值函数族，虽然字节数相同。两扫每扫一候选，不扫描权重/源/网格，全部颜色域参与训练，60图完整频数参与训练，20选择/20审计均历史已见，不称盲测。单级恒等后缀缓存只是共享搜索器适配，目标整体乘2不改变极小值；不伪造四级赛题输入。原两mean各3%及一项p99额外3%完整门槛保持，失败不全验。官方数据/Threshold未知，不宣称SOTA/官方通过、不替换默认、不PR不推送。",
+  "baseline_candidate": "joint_grid_iter1600",
+  "cube_training": "full",
+  "hotspot_source_cube": "artifacts/joint-minimax-v1/joint_0002/cube.rgb",
+  "hotspot_source_cube_sha256": "7d07c9a27bb0a9dad4620fcd3d36bb8d5db505de2b1e1d433b69ef6423fae62f",
+  "proposal": "exact_axis",
+  "sweeps": 2,
+  "photo_training": "full",
+  "axis_calibration": {
+    "maximum_shift": 4096,
+    "anchor": "当前2dd基线几何轴表",
+    "bounds": "同一静态相邻中点与±4096总偏移，端点固定；不重置范围"
+  },
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "d_new(x)^2<=max(49,d_2dd(x)^2)",
+    "scope": "全部256^3原色各自约束，保护旧>7误差不增；原样本max回归不再仅用全域统一max约束"
+  },
+  "algorithm": "四面体最多三段整数仿射累加器的全部RGB8舍入事件精确搜索；同轴切片互斥，跨轴串行，每轴后独立全域重算目标和cap；原rho距离及tail6/.02不变",
+  "reason": "Cinema同范围精确搜索确认平台；Velvia仍有非可分离尖锐结构，既有节点优化降低mean/p99却因单图max回归未过门禁。用新坐标自由度并加逐色包络，独立检验是否能同时改善均值和尾部。",
+  "contract": {
+    "path": "artifacts/exact-axis-contract-v1.json",
+    "sha256": "b736293d173c0c8b0ad7dfa0a945eb53a449ca02079ea0fdb7a8deea88055e23",
+    "scope": "随机三维整数节点、正负斜率、跨四面体排序、全部合法Q16选择；当前仅给report追加包络元数据，未改数值内核"
+  }
+}
