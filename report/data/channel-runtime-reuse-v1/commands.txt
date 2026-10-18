@@ -1,0 +1,12 @@
+$env:PYTHONUTF8='1'
+$env:OPENBLAS_NUM_THREADS='1'
+$env:MKL_NUM_THREADS='1'
+$env:OMP_NUM_THREADS='1'
+$env:NUMBA_NUM_THREADS='4'
+$env:OMP_DYNAMIC='FALSE'
+& artifacts/error-study-py312/Scripts/python.exe scripts/profile_channel_geometry.py --plan experiments/channel-geometry-reuse-v1.json --output artifacts/channel-geometry-reuse-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/build_channel_reuse.py --output artifacts/channel-native-runtime-reuse-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/verify_channel_reuse.py --library artifacts/channel-native-runtime-reuse-v1/jshc_channel_reuse.dll --output artifacts/channel-native-contract-reuse-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/accept_channel_native.py --plan experiments/channel-native-accept-reuse-v1.json --output artifacts/channel-native-accept-reuse-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/bench_channel_native.py --plan experiments/channel-native-benchmark-reuse-v1.json --output artifacts/channel-native-benchmark-reuse-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/archive_channel_reuse.py --output report/data/channel-runtime-reuse-v1

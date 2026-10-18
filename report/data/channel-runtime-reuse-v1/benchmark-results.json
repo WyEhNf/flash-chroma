@@ -1,0 +1,173 @@
+{
+  "pass": true,
+  "summary": [
+    {
+      "variant": "original",
+      "requested_threads": 1,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 9.19904,
+      "process_medians_apply_ms_per_image": [
+        9.10508,
+        9.31511,
+        9.19904
+      ],
+      "process_median_range_ms_per_image": [
+        9.10508,
+        9.31511
+      ],
+      "median_copy_apply_ms_per_image": 9.43003,
+      "model_accounting_bytes": 396996,
+      "serialized_input_bytes": 168460
+    },
+    {
+      "variant": "baseline",
+      "requested_threads": 1,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 13.57368,
+      "process_medians_apply_ms_per_image": [
+        13.57368,
+        13.6463,
+        13.299389999999999
+      ],
+      "process_median_range_ms_per_image": [
+        13.299389999999999,
+        13.6463
+      ],
+      "median_copy_apply_ms_per_image": 13.6796,
+      "model_accounting_bytes": 406212,
+      "serialized_input_bytes": 177676
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 14.03888,
+      "process_medians_apply_ms_per_image": [
+        14.328890000000001,
+        13.963989999999999,
+        14.03888
+      ],
+      "process_median_range_ms_per_image": [
+        13.963989999999999,
+        14.328890000000001
+      ],
+      "median_copy_apply_ms_per_image": 14.1616,
+      "model_accounting_bytes": 406212,
+      "serialized_input_bytes": 177676
+    },
+    {
+      "variant": "original",
+      "requested_threads": 4,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 3.40437,
+      "process_medians_apply_ms_per_image": [
+        3.43487,
+        3.40437,
+        3.29476
+      ],
+      "process_median_range_ms_per_image": [
+        3.29476,
+        3.43487
+      ],
+      "median_copy_apply_ms_per_image": 3.53371,
+      "model_accounting_bytes": 396996,
+      "serialized_input_bytes": 168460
+    },
+    {
+      "variant": "baseline",
+      "requested_threads": 4,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 4.89261,
+      "process_medians_apply_ms_per_image": [
+        4.89261,
+        5.014570000000001,
+        4.74874
+      ],
+      "process_median_range_ms_per_image": [
+        4.74874,
+        5.014570000000001
+      ],
+      "median_copy_apply_ms_per_image": 5.083830000000001,
+      "model_accounting_bytes": 406212,
+      "serialized_input_bytes": 177676
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 5.10745,
+      "process_medians_apply_ms_per_image": [
+        5.10745,
+        5.32873,
+        5.07255
+      ],
+      "process_median_range_ms_per_image": [
+        5.07255,
+        5.32873
+      ],
+      "median_copy_apply_ms_per_image": 5.22124,
+      "model_accounting_bytes": 406212,
+      "serialized_input_bytes": 177676
+    }
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "numerator": "candidate",
+      "denominator": "baseline",
+      "process_ratios": [
+        1.0556378226096388,
+        1.0232803030858182,
+        1.0556033021063373
+      ],
+      "median_ratio": 1.0556033021063373
+    },
+    {
+      "requested_threads": 1,
+      "numerator": "candidate",
+      "denominator": "original",
+      "process_ratios": [
+        1.57372477781634,
+        1.49906871738498,
+        1.526124465161582
+      ],
+      "median_ratio": 1.526124465161582
+    },
+    {
+      "requested_threads": 4,
+      "numerator": "candidate",
+      "denominator": "baseline",
+      "process_ratios": [
+        1.0439111231019844,
+        1.0626494395332002,
+        1.068188614242936
+      ],
+      "median_ratio": 1.0626494395332002
+    },
+    {
+      "requested_threads": 4,
+      "numerator": "candidate",
+      "denominator": "original",
+      "process_ratios": [
+        1.4869412816205563,
+        1.5652617077462205,
+        1.5395810316988188
+      ],
+      "median_ratio": 1.5395810316988188
+    }
+  ],
+  "worker_sha256": [
+    "07d5213c63569ec71137e2fb65d91e4931428f83753fe4381b6cc96c135cd1b7",
+    "7f022776df0a589cfe794091d6e8d3dda949e0be7218ce4fd188002e38ac26f6",
+    "fda8f1b31edad9c9f1274d853cfaba212d66ffc5b7c4d47cec37430e4406f59a"
+  ],
+  "scope": "一次冻结实验；节点/idx/三输出frac完全相同，正确性已单级及等距四级完整256³、100图与独立u64流逐字节相同。库以不同basename及SHA加载，revision均为2，不能据revision当相同二进制。三个进程串行、三配置轮换、各1/4线程5次完整100图；无拟合并发，未锁频/绑核/控制温度，不作统计显著/官方成绩。相对同机packed v3判断一次复用改动；原2dd反映剩余精度成本。四级等距控制非自然ISP；不改默认，不PR/push。",
+  "sample_unit": "一次100图完整组，ms/图为摊销值而非单图延迟",
+  "clock_temperature_affinity_controlled": false
+}

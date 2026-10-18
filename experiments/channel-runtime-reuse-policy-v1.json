@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "purpose": "一次同包内点地址复用AVX2候选，精度/模型不变，减少新几何的读取成本",
+  "environment": "Windows11 26200 x64；Ryzen9 8945HX 16c32t/32GB；GCC15.2 -O3 -DNDEBUG；单独AVX2 TU；OpenMP；Python3.12.14/NumPy1.26.4/Pillow10.4，BLAS/MKL=1，原生请求1/4线程",
+  "change": "共享坐标原分支保留；独立坐标每8像素全包首/末轴地址一致时复用两内点packedRGB读取，各输出保持自己的Q16权重；其他包回退三次独立内点读取。不增加LUT/sidecar/节点或修改拟合。",
+  "contract": "集中m17/18/25/33混合四级、独立u64/标量/AVX2/未对齐/尾部/0与65536/方向相等和不同的包；通过后只做一次固定已验收3e5模型单级及等距四级完整256³和100图字节核对。",
+  "performance": {
+    "dataset": "冻结100张1024x768 RGB8，四级Velvia+cycleGBR/invertRGB/swapRG，235929600输入字节",
+    "repeats": 5,
+    "process_orders": [["original", "baseline", "candidate"], ["baseline", "candidate", "original"], ["candidate", "original", "baseline"]],
+    "thread_orders": [[1,4], [4,1], [1,4]],
+    "baseline": "已验收packed v3/同一3e5模型与9216B侧表",
+    "candidate": "唯一的地址复用DLL/完全相同3e5模型与侧表",
+    "original": "同机packed v3/原2dd普通模型，披露精度换来的剩余成本",
+    "gate": "1/4线程各自进程配对apply比中位数<=0.97，所有进程比<=1.02，copy+apply进程中位数的中位数不回退。任一失败不再试分支变体、门槛、调批量或调线程。",
+    "timing": "串行进程；完整图组预加载、预热与SHA在计时外；apply和copy+apply分列；无拟合/其他数值任务并发。未绑核、锁频或控制温度，不声称统计显著/官方成绩。"
+  },
+  "limits": "地址一致率只提示机会；原型仍非公共SLUTv1/GUI/C99。正确性失败则修正实现并重跑受影响合同；性能失败止步、保留证据，不升级默认。未批准PR或推送。"
+}
