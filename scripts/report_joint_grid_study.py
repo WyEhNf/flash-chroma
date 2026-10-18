@@ -28,7 +28,7 @@ def main():
     if args.output.exists():
         raise ValueError('归档不覆盖已有目录')
     args.output.mkdir(parents=True)
-    full_rows, photo_rows, files = [], [], {}
+    full_rows, photo_rows, files, scopes = [], [], {}, []
     with zipfile.ZipFile(args.output / 'evidence.zip', 'w', zipfile.ZIP_DEFLATED) as evidence, \
             zipfile.ZipFile(args.output / 'models.zip', 'w', zipfile.ZIP_DEFLATED) as models:
         for folder in args.runs:
@@ -49,6 +49,7 @@ def main():
             models.write(baseline, folder.name + '/baseline.slut')
             files['models/' + folder.name + '/baseline.slut'] = sha(baseline)
             plan = run['identity']['plan']
+            scopes.append(plan['limits'])
             for name, candidate in selected['candidates'].items():
                 path = folder / name / 'model.slut'
                 if sha(path) != candidate['model_sha256']:
@@ -103,16 +104,19 @@ def main():
                     files['models/' + member] = sha(path)
     for name, rows in (('metrics.csv', full_rows), ('photos.csv', photo_rows)):
         with (args.output / name).open('w', encoding='utf-8', newline='') as stream:
-            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            fields = list(rows[0]) if rows else (['run', 'name', 'scope', 'mean', 'rms', 'p99', 'max', 'cvar_1pct']
+                if name == 'metrics.csv' else ['run', 'name', 'image', 'mean', 'rms', 'p99', 'max', 'cvar_1pct'])
+            writer = csv.DictWriter(stream, fieldnames=fields)
             writer.writeheader(); writer.writerows(rows)
-    summary = ['# 联合网格与节点：已完成验收结果', '',
+    summary = ['# 网格与整数节点：冻结选择和完整验收记录', '',
         '距离为RGB8欧氏距离。照片p99栏是100图最差逐图p99；CVaR栏是平均逐图CVaR。均不代表官方Threshold或CIEDE2000。', '',
         '|批次/模型|范围|mean|RMS|p99|最大误差|CVaR1%|', '|---|---|---:|---:|---:|---:|---:|']
     for row in full_rows:
         summary.append(f"|{row['run']}/{row['name']}|{row['scope']}|{row['mean']:.6f}|{row['rms']:.6f}|{row['p99']:.6f}|{row['max']:.6f}|{row['cvar_1pct']:.6f}|")
-    summary += ['', '逐图明细见photos.csv，不能将聚合门禁通过理解为每张照片均改善。models.zip保存已全验模型及对应基线；evidence.zip保存选型、环境、源码快照和完整指标。', '',
-        '全部历史照片已见。只完成一个单级Velvia案例，不代表四级比赛、68LUT整体或新的运行时性能成绩；没有升级默认模型或创建PR。', '',
+    summary += ['', '逐图明细见photos.csv，不能将聚合门禁通过理解为每张照片均改善。models.zip保存全部冻结候选及对应基线；evidence.zip保存选型、环境、源码快照和实际存在的完整指标。', '',
+        '本归档完整指标行数为' + str(len(full_rows)) + '；若为0，表示未执行本轮完整终验，不将CSV空表头当作完整结果。全部历史照片已见，不代表四级比赛、68LUT整体或新的运行时性能成绩；没有升级默认模型或创建PR。', '',
         '复现依赖冻结计划指定的历史缓存/原参考表。原始TIFF和照片来源已在仓库，完整颜色流可由对应序列化模型和现有cube入口重新生成；本归档不包含50MB颜色流及全部训练数组。']
+    summary += ['', *dict.fromkeys(scopes)]
     (args.output / 'report.md').write_text('\n'.join(summary) + '\n', encoding='utf-8')
     for name in ('evidence.zip', 'models.zip', 'metrics.csv', 'photos.csv', 'report.md'):
         files[name] = sha(args.output / name)

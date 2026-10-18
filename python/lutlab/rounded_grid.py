@@ -85,7 +85,7 @@ def prepare(model, points, targets):
 
 
 def propose(model, points, targets, mass, *, sweeps=4, tail_at=6., tail_weight=.02,
-            maximum_squared=3*255**2, parts=4, progress=None, envelope=None):
+            maximum_squared=3*255**2, parts=4, progress=None, envelope=None, extra_objective=None):
     """复用8色坐标下降，采用真实舍入目标；固定有限扫数后统一选型。"""
     io.validate_sparse(model, competition=True)
     if (np.asarray(points).dtype != np.uint8 or points.ndim != 2 or points.shape[1] != 3
@@ -99,11 +99,15 @@ def propose(model, points, targets, mass, *, sweeps=4, tail_at=6., tail_weight=.
     indices, weights, acc, squared, colours = prepare(model, points, targets)
     if envelope is not None:
         envelope.validate(points, acc)
+    if extra_objective is not None:
+        extra_objective.validate(targets)
     nodes = model.nodes.reshape(-1, 3).copy()
     root = np.sqrt(np.arange(3*255**2+1, dtype=np.float64))
     rho = root + tail_weight * np.maximum(root - tail_at, 0.)**2
     mass = np.ascontiguousarray(mass, dtype=np.float64)
     loss = float(mass @ rho[squared])
+    if extra_objective is not None:
+        loss += extra_objective.loss(acc, mass, rho)
     if int(squared.max()) > maximum_squared:
         raise ValueError('起点已经违反冻结完整域max上限')
     report = {'before_weighted_objective': loss, 'maximum_squared': maximum_squared, 'sweeps': [],
@@ -111,6 +115,8 @@ def propose(model, points, targets, mass, *, sweeps=4, tail_at=6., tail_weight=.
         'objective': '真实Q16半向上RGB8距离+固定阈值以上二次惩罚；float64质量归约，不称无理数严格证书'}
     if envelope is not None:
         report['chain_envelope'] = envelope.metadata
+    if extra_objective is not None:
+        report['suffix_objective'] = extra_objective.metadata
     checkpoints = []
     stop = 'sweep_limit'
     for sweep in range(1, sweeps + 1):
@@ -122,6 +128,8 @@ def propose(model, points, targets, mass, *, sweeps=4, tail_at=6., tail_weight=.
                     colours, colour, channel, rho, maximum_squared, parts)
                 if envelope is not None:
                     forbidden += envelope.forbidden(indices, weights, acc, colours, colour, channel, parts)
+                if extra_objective is not None:
+                    gain += extra_objective.gains(indices, weights, acc, mass, colours, colour, channel, rho, parts)
                 gain[forbidden > 0] = np.inf
                 gain[0, nodes[:, channel] == 255] = np.inf
                 gain[1, nodes[:, channel] == 0] = np.inf
@@ -132,6 +140,8 @@ def propose(model, points, targets, mass, *, sweeps=4, tail_at=6., tail_weight=.
                 _apply(indices, weights, acc, squared, targets, colours, colour, channel, move)
                 nodes[:, channel] = (nodes[:, channel].astype(np.int32) + move).astype(np.uint8)
         after = float(mass @ rho[squared])
+        if extra_objective is not None:
+            after += extra_objective.loss(acc, mass, rho)
         if envelope is not None:
             envelope.validate(points, acc)
         accepted = after < loss - 1e-11 and int(squared.max()) <= maximum_squared

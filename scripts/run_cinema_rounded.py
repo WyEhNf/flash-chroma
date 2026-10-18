@@ -1,4 +1,4 @@
-"""冻结前三模型，按完整到达频数精化Cinema第四级；一次选型后才终验。"""
+"""冻结其余模型，按完整到达频数精化Cinema一级；一次选型后才终验。"""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import chain_envelope, error_analysis as ea, fit, interp, io, rounded_grid, study_provenance
+from lutlab import chain_envelope, error_analysis as ea, fit, interp, io, rounded_grid, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -32,6 +32,9 @@ def checked(spec):
 
 
 def load_inputs(plan):
+    for name in ('selection_basis', 'weight_basis'):
+        if name in plan:
+            checked(plan[name])
     models = [io.load_sparse(checked(s), competition=True) for s in plan['baseline_models']]
     tables = []
     for spec in plan['tables']:
@@ -39,11 +42,25 @@ def load_inputs(plan):
         tables.append(io.load_full(checked(spec), mmap=True))
     evidence = plan['baseline_evidence']
     result, run, selection = (read(checked(evidence[k])) for k in ('results', 'run', 'selection'))
-    final = result['final']
+    if evidence.get('layout') == 'cinema-rounded':
+        final = {k: result[k] for k in ('cube', 'photos')}
+        final['native_parity'] = result['native']
+        previous_plan = run['identity']['plan']
+        historical_hashes = [s['sha256'] for s in previous_plan['baseline_models']]
+        chosen = selection['winner']
+        if not chosen or selection['candidates'][chosen]['failures'] or not result['acceptance']['accepted']:
+            raise ValueError('新历史基线没有通过冻结选择与完整门禁')
+        historical_hashes[previous_plan['optimized_stage']-1] = selection['candidates'][chosen]['model_sha256']
+        if (historical_hashes != result['model_sha256'] or selection['run_identity'] != result['run_identity']):
+            raise ValueError('新历史四模型与选择记录不同')
+    else:
+        final = result['final']
+        historical_hashes = selection['model_sha256']
     hashes = [s['sha256'] for s in plan['baseline_models']]
     if (len(models) != 4 or any(m.m != plan['m'] for m in models)
-            or plan['optimized_stage'] != 4 or plan['frozen_stages'] != [1, 2, 3]
-            or selection['model_sha256'] != hashes
+            or plan['optimized_stage'] not in (1, 2, 3, 4)
+            or plan['frozen_stages'] != [i for i in range(1, 5) if i != plan['optimized_stage']]
+            or historical_hashes != hashes
             or result['run_identity'] != evidence['run_identity']
             or result['run_identity'] != run['identity_sha256']
             or run['identity_sha256'] != study_provenance.identity_digest(run['identity'])
@@ -54,7 +71,8 @@ def load_inputs(plan):
     checked(evidence['cube'])
     parity = final['native_parity']
     if ({r['kernel'] for r in parity} != {'tetra_scalar', 'tetra_avx2', 'tetra_c99'}
-            or any(r['byte_mismatches'] or r['sha256'] != evidence['cube']['sha256'] for r in parity)):
+            or any(r['byte_mismatches'] or r['sha256'] != evidence['cube']['sha256']
+                   or r['executable_sha256'] != plan['environment']['executable_sha256'] for r in parity)):
         raise ValueError('历史完整三后端回执不同')
     checked(plan['photo_manifest'])
     checked(plan['partition'])
@@ -85,7 +103,7 @@ def arrival_mass(cube_frequency, photo_frequency, allocation):
     return mass
 
 
-def build_envelope(arrivals, points, tables, plan, folder):
+def build_envelope(arrivals, points, models, tables, plan, folder):
     """参考整链仅用于硬上限，不进入本级目标或节点拟合标签。"""
     config = plan['chain_envelope']
     floor = config['floor_squared']
@@ -99,22 +117,40 @@ def build_envelope(arrivals, points, tables, plan, folder):
     sha_array = lambda a: hashlib.sha256(a.tobytes()).hexdigest()
     if sha_array(targets) != plan['baseline_evidence']['reference_cube_sha256']:
         raise ValueError('硬约束原始整链参考流不同')
+    suffix_models = models[plan['optimized_stage']:]
+    suffix = None
+    if suffix_models:
+        # 仅缓存固定稀疏后缀逐级RGB8结果；不拿原始完整后缀代替运行时。
+        suffix = np.empty_like(points)
+        operator = ea.Operator(suffix_models)
+        for start in range(0, len(points), 1 << 18):
+            suffix[start:start+(1 << 18)] = operator(points[start:start+(1 << 18)])
+        sample = np.random.default_rng(2026101904).choice(len(points), 4096, replace=False)
+        oracle = points[sample].copy()
+        for model in suffix_models:
+            oracle = interp.apply_tetra_q16(model, oracle)
+        np.testing.assert_array_equal(suffix[sample], oracle)
+        np.save(folder / 'envelope-suffix.npy', suffix)
     np.save(folder / 'envelope-arrivals.npy', arrivals)
     np.save(folder / 'envelope-reference.npy', targets)
     np.save(folder / 'envelope-caps.npy', caps)
     metadata = {'rows': len(points), 'floor_squared': floor, 'formula': 'd_new(x)^2<=max(floor_squared,d_baseline(x)^2)',
-        'labels_unchanged': '拟合标签仍为独立第四原表T4(z)，整链参考仅约束禁止位',
+        'labels_unchanged': f"拟合标签仍为独立第{plan['optimized_stage']}原表，整链参考仅约束禁止位",
         'baseline_cube_sha256': plan['baseline_evidence']['cube']['sha256'],
-        'reference_sha256': sha_array(targets), 'arrivals_sha256': sha_array(arrivals), 'caps_sha256': sha_array(caps)}
+        'reference_sha256': sha_array(targets), 'arrivals_sha256': sha_array(arrivals), 'caps_sha256': sha_array(caps),
+        'suffix_model_sha256': [s['sha256'] for s in plan['baseline_models'][plan['optimized_stage']:]],
+        'suffix_cache_sha256': sha_array(suffix) if suffix is not None else None,
+        'suffix_oracle_scope': '固定4096全域颜色逐级整数合同；完整整链仍另验' if suffix is not None else '空后缀'}
     write_json(folder / 'envelope.json', metadata)
     return chain_envelope.ChainEnvelope(rgb_keys(arrivals), targets, caps,
-        expected_arrivals=arrivals, metadata=metadata)
+        expected_arrivals=arrivals, metadata=metadata, suffix=suffix)
 
 
 def build_training(models, tables, plan, folder):
     """只用固定稀疏前三段到达分布；本级标签始终来自第四张原表。"""
-    prefix = ea.Operator(models[:3])
-    table = tables[3]
+    stage = plan['optimized_stage']-1
+    prefix = ea.Operator(models[:stage])
+    table = tables[stage]
     points = colours(np.arange(256**3, dtype=np.int64))
     frequency = np.zeros(256**3, np.uint32)
     arrivals = np.empty_like(points) if 'chain_envelope' in plan else None
@@ -151,18 +187,20 @@ def build_training(models, tables, plan, folder):
     targets = table.reshape(-1, 3).copy()
     np.save(folder / 'training-mass.npy', mass)
     sha_array = lambda a: hashlib.sha256(a.tobytes()).hexdigest()
-    metadata = {'prefix_model_sha256': [r['sha256'] for r in plan['baseline_models'][:3]],
-        'training_images': records, 'rows': len(points), 'label': '第四原表T4(z)，没有复合或残差标签',
+    metadata = {'prefix_model_sha256': [r['sha256'] for r in plan['baseline_models'][:stage]],
+        'training_images': records, 'rows': len(points), 'label': f'独立第{stage+1}原表，没有复合或残差标签',
         'points_sha256': sha_array(points), 'targets_sha256': sha_array(targets),
         'cube_arrival': {'total': int(frequency.sum(dtype=np.uint64)), 'array_sha256': sha_array(frequency),
                          'file_sha256': digest(folder / 'cube-arrival-frequency.npy')},
         'photo_arrival': {'total': int(photo.sum(dtype=np.uint64)), 'array_sha256': sha_array(photo),
                           'file_sha256': digest(folder / 'photo-arrival-frequency.npy')},
         'mass_sha256': sha_array(mass), 'mass_sum': float(mass.sum()), 'allocation': plan['training']['mass']}
-    envelope = build_envelope(arrivals, points, tables, plan, folder) if arrivals is not None else None
+    envelope = build_envelope(arrivals, points, models, tables, plan, folder) if arrivals is not None else None
     names = ['cube-arrival-frequency.npy', 'photo-arrival-frequency.npy', 'training-mass.npy']
     if envelope is not None:
         names += ['envelope.json', 'envelope-arrivals.npy', 'envelope-reference.npy', 'envelope-caps.npy']
+        if envelope.suffix.size:
+            names += ['envelope-suffix.npy']
         metadata['envelope'] = envelope.metadata
     metadata['artifact_sha256'] = {name: digest(folder / name) for name in names}
     return points, targets, mass, metadata, envelope
@@ -226,6 +264,8 @@ def source_identity(plan_path):
     files += [Path(__file__), ROOT / 'scripts/run_chain_error_study.py',
               ROOT / 'scripts/run_joint_box_study.py', ROOT / 'scripts/verify_cinema_arrivals.py',
               ROOT / 'scripts/verify_chain_envelope.py', plan_path]
+    if 'suffix_objective' in read(plan_path):
+        files.append(ROOT / 'scripts/verify_suffix_objective.py')
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -252,21 +292,29 @@ def fit_run(args, plan):
             raise ValueError('基线序列化字节改变')
     points, targets, mass, training, envelope = build_training(models, tables, plan, args.output)
     write_json(args.output / 'training.json', training)
-    print('到达频数已冻结；仅拟合第四级原表标签，固定4扫', flush=True)
-    checkpoints, report = rounded_grid.propose(models[3], points, targets, mass,
+    extra = None
+    if 'suffix_objective' in plan:
+        if envelope is None or not envelope.suffix.size:
+            raise ValueError('后缀度量要求已冻结非空稀疏后缀缓存')
+        extra = suffix_objective.SuffixObjective(envelope.suffix, targets, plan['suffix_objective']['weight'])
+        write_json(args.output / 'suffix-objective.json', extra.metadata)
+    stage = plan['optimized_stage']-1
+    print(f'到达频数已冻结；仅拟合第{stage+1}级原表标签，固定4扫', flush=True)
+    checkpoints, report = rounded_grid.propose(models[stage], points, targets, mass,
         sweeps=plan['sweeps'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
         maximum_squared=plan['maximum_squared'], parts=plan['environment']['threads'],
         envelope=envelope,
+        extra_objective=extra,
         progress=lambda r: print(f"sweep={r['sweep']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
     write_json(args.output / 'optimizer.json', report)
     candidates = {}
     for sweep, candidate in checkpoints:
         if sweep not in plan['candidate_sweeps']:
             continue
-        if not all(np.array_equal(a, b) for a, b in zip(candidate.tables(), models[3].tables())):
-            raise AssertionError('第四级权威表改变')
-        name = f'stage4_sweep{sweep:03d}'
-        path = args.output / name / 'stage4.slut'
+        if not all(np.array_equal(a, b) for a, b in zip(candidate.tables(), models[stage].tables())):
+            raise AssertionError('本级权威表改变')
+        name = f'stage{stage+1}_sweep{sweep:03d}'
+        path = args.output / name / f'stage{stage+1}.slut'
         path.parent.mkdir()
         io.save_sparse(path, candidate)
         candidates[name] = {'sweep': sweep, 'model_sha256': digest(path)}
@@ -276,8 +324,10 @@ def fit_run(args, plan):
     print('全部候选已冻结；一次比较真实四级链选择样本', flush=True)
     old_samples = evaluate_samples(models, tables, guard, plan['selection']['pixels_per_image'])
     for name, item in candidates.items():
-        candidate = io.load_sparse(args.output / name / 'stage4.slut', competition=True)
-        item['samples'] = evaluate_samples(models[:3] + [candidate], tables, guard, plan['selection']['pixels_per_image'])
+        candidate = io.load_sparse(args.output / name / f'stage{stage+1}.slut', competition=True)
+        chain = models.copy()
+        chain[stage] = candidate
+        item['samples'] = evaluate_samples(chain, tables, guard, plan['selection']['pixels_per_image'])
         item['failures'] = failures(item['samples'], old_samples)
         print(name, json.dumps({g: {k: item['samples'][g][k] for k in ('mean', 'rms', 'p99', 'max')}
             for g in ('cube', 'photos')}), '不满足项', item['failures'], flush=True)
@@ -286,6 +336,7 @@ def fit_run(args, plan):
     write_json(args.output / 'selection.json', {'run_identity': run['identity_sha256'],
         'baseline_samples': old_samples, 'candidates': candidates, 'winner': winner,
         'training_sha256': digest(args.output / 'training.json'), 'full_evaluation_performed': False,
+        'suffix_objective_sha256': digest(args.output / 'suffix-objective.json') if extra is not None else None,
         'historical_results_sha256': digest(args.output / 'historical-full-results.json'),
         'seconds': time.perf_counter()-started, 'numba_threading_layer': numba.threading_layer()})
     print('选择已冻结：' + str(winner), flush=True)
@@ -305,6 +356,8 @@ def accept_run(args, plan):
     training = read(args.output / 'training.json')
     for name, sha in training['artifact_sha256'].items():
         checked({'path': str(args.output / name), 'sha256': sha})
+    if 'suffix_objective' in plan:
+        checked({'path': str(args.output / 'suffix-objective.json'), 'sha256': result['suffix_objective_sha256']})
     if (digest(args.output / 'historical-full-results.json') != result['historical_results_sha256']
             or read(args.output / 'historical-full-results.json') != old):
         raise ValueError('历史完整基线不同')
@@ -313,8 +366,9 @@ def accept_run(args, plan):
     if not name or result['candidates'][name]['failures']:
         raise ValueError('没有合格候选，不执行完整终验')
     folder = args.output / name
-    spec = {'path': str(folder / 'stage4.slut'), 'sha256': result['candidates'][name]['model_sha256']}
-    models = models[:3] + [io.load_sparse(checked(spec), competition=True)]
+    stage = plan['optimized_stage']-1
+    spec = {'path': str(folder / f'stage{stage+1}.slut'), 'sha256': result['candidates'][name]['model_sha256']}
+    models[stage] = io.load_sparse(checked(spec), competition=True)
     print('完整四级256³、独立整数oracle及标量/AVX2/C99验收', flush=True)
     cube = cube_evaluate(tables, ea.Operator(models), folder / 'cube.rgb', 128)
     if cube['reference_sha256'] != plan['baseline_evidence']['reference_cube_sha256']:
