@@ -48,9 +48,11 @@ def main():
                 writer.writeheader()
                 writer.writerows(values)
         stage = run['identity']['plan']['optimized_stage']
+        coordinate = run['identity']['plan'].get('proposal') == 'axis_calibration'
+        interpolation = ('单调校准Q16坐标表，插值函数族已扩大' if coordinate else '原权威Q16轴表')
         changes = result['per_image_changes']['all']
         body = ['# Cinema四级链：实际到达频数与整链尾部保护', '',
-            f'同一冻结候选完成256³和100张完整1024×768 RGB8照片验收。仅第{stage}级模型更新，其余模型逐字节不变；每模型112063字节，仍为m33和原Q16轴表。基线由run计划绑定，可能已含前一阶段改善，不能一律称PR16。', '',
+            f'同一冻结候选完成256³和100张完整1024×768 RGB8照片验收。仅第{stage}级模型更新，其余模型逐字节不变；每模型112063字节，m33，采用{interpolation}。基线由run计划绑定，可能已含前一阶段改善，不能一律称PR16。', '',
             '|版本|范围|mean|RMS|p99|最大误差|CVaR1%|', '|---|---|---:|---:|---:|---:|---:|']
         for row in rows:
             body.append('|{version}|{scope}|{mean:.6f}|{rms:.6f}|{p99:.6f}|{max:.6f}|{cvar_1pct:.6f}|'.format(**row))

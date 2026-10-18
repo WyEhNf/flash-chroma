@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import chain_envelope, error_analysis as ea, fit, interp, io, rounded_grid, study_provenance, suffix_objective
+from lutlab import axis_calibration, chain_envelope, error_analysis as ea, fit, interp, io, rounded_grid, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -266,6 +266,8 @@ def source_identity(plan_path):
               ROOT / 'scripts/verify_chain_envelope.py', plan_path]
     if 'suffix_objective' in read(plan_path):
         files.append(ROOT / 'scripts/verify_suffix_objective.py')
+    if read(plan_path).get('proposal') == 'axis_calibration':
+        files.append(ROOT / 'scripts/verify_axis_calibration.py')
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -299,19 +301,46 @@ def fit_run(args, plan):
         extra = suffix_objective.SuffixObjective(envelope.suffix, targets, plan['suffix_objective']['weight'])
         write_json(args.output / 'suffix-objective.json', extra.metadata)
     stage = plan['optimized_stage']-1
-    print(f'到达频数已冻结；仅拟合第{stage+1}级原表标签，固定4扫', flush=True)
-    checkpoints, report = rounded_grid.propose(models[stage], points, targets, mass,
-        sweeps=plan['sweeps'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
-        maximum_squared=plan['maximum_squared'], parts=plan['environment']['threads'],
-        envelope=envelope,
-        extra_objective=extra,
-        progress=lambda r: print(f"sweep={r['sweep']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+    initial = models[stage]
+    if plan.get('proposal') == 'axis_calibration':
+        initial = io.load_sparse(checked(plan['initial_model']), competition=True)
+        previous = read(checked(plan['initial_evidence']['selection']))
+        previous_run = read(checked(plan['initial_evidence']['run']))
+        previous_plan = previous_run['identity']['plan']
+        if (previous['run_identity'] != previous_run['identity_sha256']
+                or previous_run['identity_sha256'] != study_provenance.identity_digest(previous_run['identity'])
+                or previous['candidates'][plan['initial_evidence']['candidate']]['model_sha256'] != plan['initial_model']['sha256']
+                or stage != 0 or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                or initial.m != models[stage].m or not np.array_equal(initial.grid, models[stage].grid)
+                or previous_plan['optimized_stage'] != 1
+                or [s['sha256'] for s in previous_plan['tables']] != [s['sha256'] for s in plan['tables']]
+                or [s['sha256'] for s in previous_plan['baseline_models']] != [s['sha256'] for s in plan['baseline_models']]
+                or not all(np.array_equal(a, b) for a, b in zip(initial.tables(), models[stage].tables()))):
+            raise ValueError('坐标校准起点或约束身份不同；起点不是验收基线')
+        io.save_sparse(args.output / 'initial.slut', initial)
+        print('到达频数已冻结；固定首级节点，执行预声明单调坐标校准尺度', flush=True)
+        checkpoints, report = axis_calibration.propose(initial, points, targets, mass,
+            envelope=envelope, extra_objective=extra, steps=plan['axis_calibration']['steps'],
+            maximum_shift=plan['axis_calibration']['maximum_shift'], checkpoints=plan['candidate_sweeps'],
+            parts=plan['environment']['threads'],
+            progress=lambda r: print(f"level={r['round']} step={r['step']} loss={r['weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
+    else:
+        print(f'到达频数已冻结；仅拟合第{stage+1}级原表标签，固定4扫', flush=True)
+        checkpoints, report = rounded_grid.propose(initial, points, targets, mass,
+            sweeps=plan['sweeps'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
+            maximum_squared=plan['maximum_squared'], parts=plan['environment']['threads'],
+            envelope=envelope, extra_objective=extra,
+            progress=lambda r: print(f"sweep={r['sweep']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} time={r['seconds']:.1f}s", flush=True))
     write_json(args.output / 'optimizer.json', report)
     candidates = {}
     for sweep, candidate in checkpoints:
         if sweep not in plan['candidate_sweeps']:
             continue
-        if not all(np.array_equal(a, b) for a, b in zip(candidate.tables(), models[stage].tables())):
+        if plan.get('proposal') == 'axis_calibration':
+            if (not np.array_equal(candidate.tables()[0], initial.tables()[0])
+                    or not np.array_equal(candidate.nodes, initial.nodes) or not np.array_equal(candidate.grid, initial.grid)):
+                raise AssertionError('坐标校准只能改变本级frac')
+        elif not all(np.array_equal(a, b) for a, b in zip(candidate.tables(), models[stage].tables())):
             raise AssertionError('本级权威表改变')
         name = f'stage{stage+1}_sweep{sweep:03d}'
         path = args.output / name / f'stage{stage+1}.slut'
@@ -323,6 +352,10 @@ def fit_run(args, plan):
     write_json(args.output / 'selection-inputs.json', metadata)
     print('全部候选已冻结；一次比较真实四级链选择样本', flush=True)
     old_samples = evaluate_samples(models, tables, guard, plan['selection']['pixels_per_image'])
+    initial_samples = None
+    if plan.get('proposal') == 'axis_calibration':
+        control = models.copy(); control[stage] = initial
+        initial_samples = evaluate_samples(control, tables, guard, plan['selection']['pixels_per_image'])
     for name, item in candidates.items():
         candidate = io.load_sparse(args.output / name / f'stage{stage+1}.slut', competition=True)
         chain = models.copy()
@@ -335,6 +368,7 @@ def fit_run(args, plan):
     winner = min(eligible, key=lambda n: rank(candidates[n]['samples'], old_samples, n)) if eligible else None
     write_json(args.output / 'selection.json', {'run_identity': run['identity_sha256'],
         'baseline_samples': old_samples, 'candidates': candidates, 'winner': winner,
+        'proposal_start_samples': initial_samples,
         'training_sha256': digest(args.output / 'training.json'), 'full_evaluation_performed': False,
         'suffix_objective_sha256': digest(args.output / 'suffix-objective.json') if extra is not None else None,
         'historical_results_sha256': digest(args.output / 'historical-full-results.json'),
