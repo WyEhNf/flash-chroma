@@ -70,6 +70,9 @@
 - [2026-10-19 解析17³性能](stages/2026-10-19-calibrated-performance.md)：18次交错原生比较，4线程2.55ms/图，容量相对33³减少83.22%；同容量单线程略慢，不称所有配置加速。
 - [2026-10-19 Velvia插值归因](stages/2026-10-19-velvia-interpolation.md)：同节点换三线性及源浮点顶点对照，区分最坏色节点偏移与一般p99残差。
 - [2026-10-19 Velvia成对节点](stages/2026-10-19-velvia-guarded-pair.md)：固定逐色上限的4+1调整，原色样本mean/p99下降但照片mean未达3%，不完整终验。
+- [2026-10-19 Velvia残差分布](stages/2026-10-19-velvia-error-mass.md)：照片mean主要由广泛小误差承载，局部G上沿的条件改善上界不足3%。
+- [2026-10-19 舍入区间目标](stages/2026-10-19-velvia-rounding-interval.md)：一次集中梯度合同与固定连续提议；部分尾部改善但真实硬cap违规，拒绝采用。
+- [2026-10-19 照片优先测度](stages/2026-10-19-velvia-photo-priority.md)：同预算单一权重对照，选择集未优于均衡质量，不扫描权重。
 
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。

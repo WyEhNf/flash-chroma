@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "purpose": "检验量化感知的区间目标能否减少整数中心回归对已正确输出的牵动；固定Velvia m33权威设计，显式RGB8量化和原基线硬cap后选型",
+  "baseline": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+  "baseline_sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+  "baseline_cube": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+  "baseline_cube_sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+  "baseline_results": "artifacts/joint-grid-budget-v2/full-results.json",
+  "baseline_run": "artifacts/joint-grid-budget-v2/run.json",
+  "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+  "offline_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "offline_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+  "table": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+  "table_sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+  "source": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+  "source_sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+  "partition": "artifacts/full-photo-v1/photo-partition.json",
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "cube_training_seed": 2026101801,
+  "cube_selection_seed": 2026101802,
+  "hotspot_count": 8192,
+  "mass": {
+    "cube": 0.48,
+    "photos": 0.48,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "profiles": [
+    "rounding_interval"
+  ],
+  "threads": 4,
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "selection": "全部预定检查点拟合完成后一次选择；完整域分层选择颜色及20图选择像素，mean/RMS/p99均不高于基线、两种mean至少降低3%、至少一种p99严格下降、已知热点及选择颜色max不高于基线。合格者按两种mean最大比值、两种p99最大比值、mean比值和、名称选型。每个对照最多一个冻结候选进入终验。",
+  "acceptance": "冻结候选各一次完整256^3、100图和独立整数oracle/标量/AVX2；完整域mean/RMS/p99/max/CVaR、百图mean/RMS/最差逐图p99/max/平均逐图CVaR均不高于同SHA基线，两种mean均至少降低3%、至少一种p99降低3%才记为本阶段合格改善；逐图退化完整披露，不把聚合门禁写成逐图非退化，也不因此宣告整个精度目标完成",
+  "limits": "单级非可分离Velvia研究；相同m33/grid/idx/frac/RGB8节点和同一原2dd验收基线，暖启动采用上一阶段未入围模型不偷换验收基线。全部原色及60图完整频数训练，已见20选择/20审计不称盲测。连续损失非实际mean、软cap非硬可行证明；最终候选逐色整数cap不合格直接拒绝，原双mean3%和p99门槛不变。仅两个最终候选，共用一池至多一位完整终验；不PR不推送不改默认、不作官方/SOTA或速度结论。",
+  "baseline_candidate": "joint_grid_iter1600",
+  "cube_training": "full",
+  "hotspot_source_cube": "artifacts/joint-minimax-v1/joint_0002/cube.rgb",
+  "hotspot_source_cube_sha256": "7d07c9a27bb0a9dad4620fcd3d36bb8d5db505de2b1e1d433b69ef6423fae62f",
+  "proposal": "rounding_interval",
+  "photo_training": "full",
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "d_new(x)^2<=max(49,d_2dd(x)^2)",
+    "scope": "全部256^3原色各自约束，保护旧>7误差不增；原样本max回归不再仅用全域统一max约束"
+  },
+  "algorithm": "固定Q16线性设计；RGB标签±.49内主损失为0，区间外smooth L2加原tail6/.02以及cap保守连续半径软罚4；L-BFGS-B240次上限、节点相对起点±4；只取最终连续增量的.5和1两种混合再RGB8量化；每个候选全训练域整数cap零违规才可入围",
+  "reason": "单节点4扫和成对1扫都在真实Q16/节点RGB8条件下改善，但照片mean未达3%；可分离反例说明回归整数中心与满足舍入区间不同。本阶段检验非可分离固定设计上的区间目标，失败也保留，不追加预算。",
+  "contract": {
+    "path": "artifacts/rounding-interval-contract-v1/results.json",
+    "sha256": "10058d5e1793e7bbbacba7d84d705dcde6ef0a030194d9677144a0310b5e5773",
+    "scope": "一次521行合成固定设计，独立向量目标及12个数值方向梯度；不证明真实拟合收益"
+  },
+  "predeclared_candidates": [
+    "final_delta_half",
+    "final_delta_full"
+  ],
+  "iterations": 240,
+  "initial_model": "artifacts/velvia-guarded-pair-v1/guarded_pair_iter005/model.slut",
+  "initial_model_sha256": "ad473f307410f4b0acb24d43a587ad41c0438656a876c08a43d53e874edfac50",
+  "initial_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "initial_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"
+}

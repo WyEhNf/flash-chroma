@@ -43,3 +43,5 @@
 原始图像和完整 LUT 约 1.8 GiB，保留在被 Git 忽略的 `data/`；本归档只保存清单和实验记录。
 `run_records_exact.tar.gz` 包含运行目录中的 JSON、stdout、测试日志和代码差异；路径及字节不变。
 本地补充：`paired-grid-contract-v1`保存成对节点的纯合成实现合同；`velvia-guarded-pair-v1`保存实际Velvia固定4+1拟合与未入围选择证据。二者不能替代完整精度验收，后者没有新增百图或原生性能结果。
+
+本地后续：`velvia-error-mass-v1`为旧字节的完整质量归因；`rounding-interval-contract-v1`为合成目标/梯度合同；`velvia-rounding-interval-v1`和`velvia-photo-priority-v1`为两个分别冻结的真实拟合负结果，均未入围，无新增完整终验。

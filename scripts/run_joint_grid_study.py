@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, paired_grid, rounded_grid as rg, study_provenance, suffix_objective
+from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, paired_grid, rounded_grid as rg, rounding_interval, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -226,6 +226,8 @@ def source_identity(plan_path):
     if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'guarded_pair':
         files += [ROOT / 'python/lutlab/paired_grid.py', ROOT / 'python/lutlab/chain_envelope.py',
                   ROOT / 'scripts/verify_paired_grid.py']
+    if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'rounding_interval':
+        files += [ROOT / 'python/lutlab/rounding_interval.py', ROOT / 'scripts/verify_rounding_interval.py']
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -281,11 +283,25 @@ def run_fit(args, plan):
     io.save_sparse(args.output / 'initial.slut',initial)
     candidates = {}
     for profile in plan['profiles']:
-        kind = ('硬包络单节点及成对提议' if plan.get('proposal') == 'guarded_pair' else
+        kind = ('舍入区间连续提议' if plan.get('proposal') == 'rounding_interval' else
+                '硬包络单节点及成对提议' if plan.get('proposal') == 'guarded_pair' else
                 '精确坐标事件提议' if plan.get('proposal') == 'exact_axis' else
                 ('整数提议' if plan.get('proposal') == 'rounded' else '连续提议'))
         print(f'[{profile}] 开始冻结预算的{kind}，训练颜色{len(points)}', flush=True)
-        if plan.get('proposal') == 'guarded_pair':
+        if plan.get('proposal') == 'rounding_interval':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['iterations'] != 240 or plan['threads'] != 4 or len(plan['profiles']) != 1
+                    or plan['chain_envelope']['floor_squared'] != 49):
+                raise ValueError('本舍入区间研究要求固定预算、完整测度及旧锚定cap')
+            contract = json.loads(check_file(plan['contract']['path'], plan['contract']['sha256']).read_text(encoding='utf-8'))
+            if not contract['pass'] or any(digest(ROOT/name) != sha for name, sha in contract['source_sha256'].items()):
+                raise ValueError('区间目标集中合同不同于当前数值源码')
+            caps, cap_info = colour_caps(plan, targets, args.output)
+            checkpoints, report = rounding_interval.propose(initial, points, targets, mass, caps=caps,
+                iterations=plan['iterations'], parts=plan['threads'],
+                progress=lambda r: print(f"[{profile}] iteration={r['iteration']} evaluations={r['evaluations']} time={r['seconds']:.1f}s", flush=True))
+            report['chain_envelope'] = cap_info
+        elif plan.get('proposal') == 'guarded_pair':
             if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
                     or plan['tail_at'] != 6 or plan['tail_weight'] != .02
                     or 'initial_model' in plan or len(plan['profiles']) != 1
@@ -352,12 +368,16 @@ def run_fit(args, plan):
             path.parent.mkdir()
             io.save_sparse(path, candidate)
             candidates[name] = {'profile': profile, 'iteration': iteration, 'model_sha256': digest(path)}
+            if plan.get('proposal') == 'rounding_interval':
+                violations = report['candidates'][str(iteration)]['cap_violations']
+                candidates[name]['proposal_failures'] = ['training_colour_caps'] if violations else []
+                candidates[name]['training_cap_violations'] = violations
     print('全部提议已冻结，集中执行一次固定选择样本比较', flush=True)
     old = evaluate_samples(model, table, guard, plan['pixels_per_image'])
     for name, item in candidates.items():
         candidate = io.load_sparse(args.output / name / 'model.slut', competition=True)
         item['samples'] = evaluate_samples(candidate, table, guard, plan['pixels_per_image'])
-        item['failures'] = selection_failures(item['samples'], old)
+        item['failures'] = selection_failures(item['samples'], old) + item.get('proposal_failures', [])
         brief = {g: {k: item['samples'][g][k] for k in ('mean', 'rms', 'p99', 'max')} for g in ('cube', 'photos')}
         print(name, json.dumps(brief), '不满足项', item['failures'], flush=True)
     selection = {}
@@ -397,7 +417,7 @@ def run_accept(args, plan):
         models[name] = io.load_sparse(path, competition=True)
         print(f'[{name}] 完整256³和独立整数oracle/原生验收', flush=True)
         cube = cube_evaluate([table], ea.Operator([models[name]]), folder / 'cube.rgb', 128)
-        if plan.get('proposal') in ('exact_axis', 'guarded_pair'):
+        if plan.get('proposal') in ('exact_axis', 'guarded_pair', 'rounding_interval'):
             optimizer = json.loads((args.output/(result['candidates'][name]['profile']+'-optimizer.json')).read_text(encoding='utf-8'))
             cap_path = check_file(args.output/'envelope-caps.npy', optimizer['chain_envelope']['caps_file_sha256'])
             caps = np.load(cap_path, mmap_mode='r')
