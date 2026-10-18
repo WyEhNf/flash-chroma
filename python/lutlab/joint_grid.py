@@ -152,8 +152,11 @@ def propose(model, points, targets, mass, *, move_grid, iterations=400, checkpoi
         raise ValueError("本实验固定端点0/255")
     initial_nodes = model.nodes.reshape(-1, 3).astype(np.float64)
     # 按原设计的节点质量预条件，只影响优化坐标，不改变目标或加入先验。
-    ids, w = interp.tetra_weights(points, *model.tables(), model.m)
-    diagonal = np.bincount(ids.ravel(), weights=(mass[:, None] * w * w).ravel(), minlength=model.m**3)
+    diagonal = np.zeros(model.m**3, np.float64)
+    for start in range(0, len(points), 1 << 18):
+        ids, w = interp.tetra_weights(points[start:start+(1 << 18)], *model.tables(), model.m)
+        diagonal += np.bincount(ids.ravel(), weights=(mass[start:start+(1 << 18), None] * w * w).ravel(),
+                                minlength=model.m**3)
     node_scale = np.repeat(np.clip(1. / np.sqrt(np.maximum(diagonal, 1e-8)), 10., 1000.), 3)
     gap = np.diff(initial_grid, axis=1)
     if np.any(gap <= minimum_step):

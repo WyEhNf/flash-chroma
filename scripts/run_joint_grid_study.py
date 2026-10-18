@@ -39,16 +39,30 @@ def historical_evidence(plan):
     result = json.loads((ROOT / plan['baseline_results']).read_text(encoding='utf-8'))
     run = json.loads((ROOT / plan['baseline_run']).read_text(encoding='utf-8'))
     if (result['run_identity'] != run['identity_sha256']
-            or run['identity_sha256'] != study_provenance.identity_digest(run['identity'])
-            or result['final']['cube']['prediction_sha256'] != plan['baseline_cube_sha256']
-            or result['final']['cube']['reference_sha256'] != plan['table_sha256']
-            or result['selection']['selected'] != 'joint_0002'
-            or len(result['final']['photos']['per_image']) != 100):
+            or run['identity_sha256'] != study_provenance.identity_digest(run['identity'])):
+        raise ValueError('历史运行身份不一致')
+    if 'baseline_case' in plan:
+        matching = [r for r in result['cases'] if r['case']['id'] == plan['baseline_case']]
+        if len(matching) != 1 or matching[0]['sources'][0]['table_sha256'] != plan['table_sha256']:
+            raise ValueError('历史案例或本级参考表身份不同')
+        case = matching[0]
+        final = case['final']
+        record = {'model_sha256': case['selection']['model_sha256']}
+    elif 'baseline_candidate' in plan:
+        record = result['candidates'][plan['baseline_candidate']]
+        final = {'cube': record['cube'], 'photos': record['photos'], 'native': record['native']}
+    else:
+        if result['selection']['selected'] != 'joint_0002':
+            raise ValueError('历史选择与冻结基线不同')
+        record = next(r for r in result['records'] if r['name'] == 'joint_0002')
+        final = result['final']
+    if (final['cube']['prediction_sha256'] != plan['baseline_cube_sha256']
+            or final['cube']['reference_sha256'] != plan['table_sha256']
+            or len(final['photos']['per_image']) != 100):
         raise ValueError('历史完整验收身份不一致')
-    record = next(r for r in result['records'] if r['name'] == 'joint_0002')
     if record['model_sha256'] != plan['baseline_sha256']:
         raise ValueError('历史完整指标未绑定当前模型SHA')
-    return result['final']
+    return final
 
 
 def boundary_points():
@@ -66,7 +80,8 @@ def boundary_points():
 
 def hotspots(plan, table):
     """复用已验收完整流发现训练热点，不重新执行基线全域映射。"""
-    path = check_file(plan['baseline_cube'], plan['baseline_cube_sha256'])
+    path = check_file(plan.get('hotspot_source_cube', plan['baseline_cube']),
+                      plan.get('hotspot_source_cube_sha256', plan['baseline_cube_sha256']))
     stream = np.memmap(path, np.uint8, mode='r', shape=(256**3, 3))
     truth = table.reshape(-1, 3)
     ids, squared = np.empty(0, np.int64), np.empty(0, np.int32)
@@ -89,7 +104,9 @@ def sample_data(plan, table):
     selection, select_info = photo_samples([rows[r['id']] for r in partition['guard']['images']], plan)
     if train_info != partition['training'] or select_info != partition['guard']:
         raise ValueError('照片抽样身份与既有60/20分组不同')
-    train = {'cube': fit.stratified_points(plan['cube_training_seed']), 'photos': training,
+    cube = (colours(np.arange(256**3, dtype=np.int64)) if plan.get('cube_training') == 'full'
+            else fit.stratified_points(plan['cube_training_seed']))
+    train = {'cube': cube, 'photos': training,
              'boundary': boundary_points(), 'hotspots': hotspots(plan, table)}
     guard = {'cube': fit.stratified_points(plan['cube_selection_seed']), 'photos': selection,
              'hotspots': train['hotspots']}
