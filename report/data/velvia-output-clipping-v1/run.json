@@ -1,0 +1,107 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "仅用原2dd已保存输出，判断误差是否集中于参考输出裁剪端点/邻饱和码；区分饱和通道自身与其它通道残差，不拟合或重映射",
+    "inputs": {
+      "model": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "stream": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "frequency": {
+        "path": "artifacts/cinema-prefix-stage1-v1/photo-arrival-frequency.npy",
+        "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+      },
+      "frequency_metadata": {
+        "path": "artifacts/cinema-prefix-stage1-v1/training.json",
+        "sha256": "0fc03ba9ac8331269eeb6e50fe70e2c77dd87fd987ca26267f3c0b46593f8561"
+      },
+      "partition": {
+        "path": "artifacts/full-photo-v1/photo-partition.json",
+        "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"
+      },
+      "historical_results": {
+        "path": "artifacts/joint-grid-budget-v2/full-results.json",
+        "sha256": "b789d335f264c71c5b9b9fcfba6eb36470a8a7b5398a84997ef4526c9ea9d5c9"
+      },
+      "historical_run": {
+        "path": "artifacts/joint-grid-budget-v2/run.json",
+        "sha256": "ee0f32ad7eda2b6ab5ebbc19ff5dfe56d028bcd3c198fb820127036828e71fdc"
+      }
+    },
+    "frequency_array_sha256": "20af718acb2868e9d2c1453aea7193bbbaac4c6cf91d8eff79c8185430dac300",
+    "groups": [
+      {
+        "id": "clipped",
+        "rule": "参考RGB至少一通道为0或255"
+      },
+      {
+        "id": "near_saturation",
+        "rule": "不属于clipped，且参考RGB至少一通道为1..4或251..254"
+      },
+      {
+        "id": "interior",
+        "rule": "参考RGB三个通道均为5..250"
+      }
+    ],
+    "measures": "完整256^3均匀颜色计数；原60训练图全部47185920像素频数。后者是频数加权，不称60张独立新图验收，不解码图片",
+    "metrics": "逐组数量/总体质量、RGB欧氏mean/RMS、距离误差和及其总体占比、mean贡献，严格距离>3和>7的数量/误差和贡献；同时给error_share/mass衡量相对集中，不将组内均值当总体贡献",
+    "channel_residuals": "每个参考通道c为0/255分别统计数量、同通道signed/absolute/RMSE、其它两通道向量mean/RMS及SSE份额；另分严格总RGB距离>3和>7。不同通道条件会重叠，不把这些表相加当互斥分组",
+    "arithmetic": "完整误差平方hist及频数计数用int64，频数在乘平方残差前升int64；最大总SSE<47185920*3*255^2<2^63；欧氏距离和为float64。只读一次分块聚合旧字节，无模型前向",
+    "interpretation": "只描述端点/近饱和与当前误差的关联。若照片误差无明显集中则不据此追加clip-aware候选；即使集中也不能从相关性证明裁剪是原因或承诺非线性插值有效。interior是输出值分组，不等于检测到内部陡变",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4，BLAS1；只读文件/统计，无Numba或native像素后端、无新测试/性能比较",
+    "limits": "只限同SHA Velvia原2dd输出与原60训练图频数；没有候选模型、重新映射、源扩展、参数扫描、新图解码、导数/陡变因果诊断、100图、性能或官方/SOTA结论。不改核心/根driver，不提交推送PR。"
+  },
+  "plan_sha256": "11d43a2c0d1388c3eb5d9ea900a46b07e81a89e0499e1e7abfdfae4c3c3120b0",
+  "source_sha256": {
+    "scripts/explain_velvia_output_clipping.py": "21e0d18197fa31b6a737e869c8a3638ec1a6fb870bc97272217767121be60f45",
+    "experiments/velvia-output-clipping-v1.json": "11d43a2c0d1388c3eb5d9ea900a46b07e81a89e0499e1e7abfdfae4c3c3120b0",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "input_sha256": {
+    "model": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "frequency": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "frequency_metadata": "0fc03ba9ac8331269eeb6e50fe70e2c77dd87fd987ca26267f3c0b46593f8561",
+    "partition": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50",
+    "historical_results": "b789d335f264c71c5b9b9fcfba6eb36470a8a7b5398a84997ef4526c9ea9d5c9",
+    "historical_run": "ee0f32ad7eda2b6ab5ebbc19ff5dfe56d028bcd3c198fb820127036828e71fdc"
+  },
+  "scope": "读取已有字节/频数的一次分块统计；不加载模型前向/图片解码或native",
+  "identity_sha256": "0bf02f7a34db5fadd3ced561d5a9ad2a71da5a6203b25b53f66b9ec3803e0e7d"
+}

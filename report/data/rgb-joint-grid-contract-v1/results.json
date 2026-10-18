@@ -1,0 +1,273 @@
+{
+  "pass": true,
+  "purpose": "联合RGB数值与硬cap正确性，有限合成合同；不是精度或性能验收",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "source_sha256": {
+    "scripts/verify_rgb_joint_grid.py": "a17cb8e59f7d0594c448d537eace558d68be5b1fe4d2507a3b92329d2d9faf55",
+    "scripts/verify_paired_grid.py": "57245ccb50aa7b0eed1f19ccf840f58422b1aa0369ee486c67ccdaea500b7587",
+    "python/lutlab/rgb_joint_grid.py": "56af33f64b28c80e7b7be287ca0be90195aefedfce0594844a791fceb411a3dd",
+    "python/lutlab/rounded_grid.py": "3e5a4031ae120dbc0fe5195749007e3ae61a817428b4c5c053e0a7689e660ee7",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3"
+  },
+  "counterexample": {
+    "single_changes": [
+      0.2644805981566211,
+      0.26448059815662117,
+      0.3660254037844386,
+      0.3660254037844386,
+      0.1464466094067262,
+      0.1464466094067262
+    ],
+    "joint_change": -0.08907279243665267,
+    "before": 1.2071067811865475,
+    "after": 1.118033988749895,
+    "selected_joint_nodes": 1
+  },
+  "random": {
+    "valid_directions_checked": 587,
+    "invalid_rgb8_checked": 37,
+    "maximum_gain_error": 1.297243562570216e-13,
+    "full_sweep": {
+      "before_weighted_objective": 588.3009711141834,
+      "training_rows": 513,
+      "groups": [
+        {
+          "colour": 0,
+          "changed_nodes": 111,
+          "joint_channel_moves": 104,
+          "predicted_objective_change": -1.1795493527601506
+        },
+        {
+          "colour": 1,
+          "changed_nodes": 102,
+          "joint_channel_moves": 88,
+          "predicted_objective_change": -0.9119273544642617
+        },
+        {
+          "colour": 2,
+          "changed_nodes": 94,
+          "joint_channel_moves": 83,
+          "predicted_objective_change": -1.059498019983995
+        },
+        {
+          "colour": 3,
+          "changed_nodes": 72,
+          "joint_channel_moves": 59,
+          "predicted_objective_change": -0.6096563253812665
+        },
+        {
+          "colour": 4,
+          "changed_nodes": 69,
+          "joint_channel_moves": 62,
+          "predicted_objective_change": -0.7812143438794027
+        },
+        {
+          "colour": 5,
+          "changed_nodes": 53,
+          "joint_channel_moves": 40,
+          "predicted_objective_change": -0.5266656564867209
+        },
+        {
+          "colour": 6,
+          "changed_nodes": 54,
+          "joint_channel_moves": 42,
+          "predicted_objective_change": -0.5843758201936672
+        },
+        {
+          "colour": 7,
+          "changed_nodes": 46,
+          "joint_channel_moves": 35,
+          "predicted_objective_change": -0.3018090406853915
+        }
+      ],
+      "directions": [
+        [
+          -1,
+          -1,
+          -1
+        ],
+        [
+          -1,
+          -1,
+          0
+        ],
+        [
+          -1,
+          -1,
+          1
+        ],
+        [
+          -1,
+          0,
+          -1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          1
+        ],
+        [
+          -1,
+          1,
+          -1
+        ],
+        [
+          -1,
+          1,
+          0
+        ],
+        [
+          -1,
+          1,
+          1
+        ],
+        [
+          0,
+          -1,
+          -1
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          -1,
+          -1
+        ],
+        [
+          1,
+          -1,
+          0
+        ],
+        [
+          1,
+          -1,
+          1
+        ],
+        [
+          1,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          -1
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "parts": 4,
+      "requested_sweeps": 1,
+      "cap_sha256": "8d12eeddca95a1ee65628c991dafebac62d9a51d757db8abd0806992d14c620c",
+      "design_cache_bytes": 16416,
+      "partial_buffers_bytes": 8175232,
+      "objective": "本级原表RGB8欧氏距离+固定tail惩罚；浮点质量归约不是无理数严格证书",
+      "after_weighted_objective": 582.3462752003485,
+      "accepted_sweeps": 1,
+      "changed_nodes": 601,
+      "joint_channel_moves": 513,
+      "objective_delta_error": 8.348877145181177e-14,
+      "cap_violations": 0,
+      "cache_recompute_mismatches": 0,
+      "seconds": 0.024303600017447025,
+      "scope": "仅一个节点内三通道[-1,1]^3邻域，8色一次；不覆盖多节点联合，不称全局最优"
+    },
+    "oracle_byte_mismatches": 0
+  },
+  "geometry": [
+    {
+      "m": 17,
+      "tetrahedra": 24576,
+      "same_colour_overlap": 0
+    },
+    {
+      "m": 33,
+      "tetrahedra": 196608,
+      "same_colour_overlap": 0
+    }
+  ]
+}

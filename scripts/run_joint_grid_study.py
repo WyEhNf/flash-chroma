@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, monotone_axis, paired_grid, rounded_grid as rg, rounding_interval, study_provenance, suffix_objective
+from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, monotone_axis, paired_grid, rgb_joint_grid, rounded_grid as rg, rounding_interval, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -72,7 +72,21 @@ def proposal_start(plan, incumbent):
         return incumbent
     model = io.load_sparse(check_file(plan['initial_model'],plan['initial_model_sha256']),competition=True)
     model.grid = np.load(check_file(plan['initial_grid'],plan['initial_grid_sha256']))
-    if model.m != incumbent.m or not all(np.array_equal(a,b) for a,b in zip(io.axis_tables(model.grid),model.tables())):
+    if plan.get('proposal') == 'rgb_joint':
+        # 交替阶段的权威坐标不再由几何grid重生；必须绑定原运行与最终候选。
+        evidence = plan['initial_evidence']
+        run = json.loads(check_file(**evidence['run']).read_text(encoding='utf-8'))
+        selection = json.loads(check_file(**evidence['selection']).read_text(encoding='utf-8'))
+        if (run['identity_sha256'] != study_provenance.identity_digest(run['identity'])
+                or selection['run_identity'] != run['identity_sha256']
+                or selection['candidates'][evidence['candidate']]['model_sha256'] != plan['initial_model_sha256']
+                or run['identity']['plan']['baseline_sha256'] != plan['baseline_sha256']):
+            raise ValueError('RGB联合起点缺少同锚点交替阶段证据')
+        idx, frac = model.tables()
+        q = idx.astype(np.int64)*io.ONE+frac.astype(np.int64)
+        if model.m != incumbent.m or np.any(np.diff(q, axis=1) < 0) or np.any(q[:,0] != 0) or np.any(q[:,-1] != (model.m-1)*io.ONE):
+            raise ValueError('联合RGB起点容量、单调性或端点不符')
+    elif model.m != incumbent.m or not all(np.array_equal(a,b) for a,b in zip(io.axis_tables(model.grid),model.tables())):
         raise ValueError('优化起点的离线轴表或容量不同')
     return model
 
@@ -228,6 +242,9 @@ def source_identity(plan_path):
                   ROOT / 'scripts/verify_paired_grid.py']
     if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'rounding_interval':
         files += [ROOT / 'python/lutlab/rounding_interval.py', ROOT / 'scripts/verify_rounding_interval.py']
+    if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'rgb_joint':
+        files += [ROOT / 'python/lutlab/rgb_joint_grid.py', ROOT / 'scripts/verify_rgb_joint_grid.py',
+                  ROOT / 'scripts/verify_paired_grid.py']
     if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') in ('monotone_dp', 'alternating_integer'):
         files += [ROOT / 'python/lutlab/monotone_axis.py', ROOT / 'python/lutlab/exact_axis.py',
                   ROOT / 'python/lutlab/axis_calibration.py', ROOT / 'scripts/verify_monotone_axis.py',
@@ -290,14 +307,29 @@ def run_fit(args, plan):
     io.save_sparse(args.output / 'initial.slut',initial)
     candidates = {}
     for profile in plan['profiles']:
-        kind = ('整数节点与单调坐标交替提议' if plan.get('proposal') == 'alternating_integer' else
+        kind = ('节点RGB三通道联合提议' if plan.get('proposal') == 'rgb_joint' else
+                '整数节点与单调坐标交替提议' if plan.get('proposal') == 'alternating_integer' else
                 '完整单元单调DP提议' if plan.get('proposal') == 'monotone_dp' else
                 '舍入区间连续提议' if plan.get('proposal') == 'rounding_interval' else
                 '硬包络单节点及成对提议' if plan.get('proposal') == 'guarded_pair' else
                 '精确坐标事件提议' if plan.get('proposal') == 'exact_axis' else
                 ('整数提议' if plan.get('proposal') == 'rounded' else '连续提议'))
         print(f'[{profile}] 开始冻结预算的{kind}，训练颜色{len(points)}', flush=True)
-        if plan.get('proposal') == 'alternating_integer':
+        if plan.get('proposal') == 'rgb_joint':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['threads'] != 4 or len(plan['profiles']) != 1 or plan['sweeps'] != 1
+                    or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                    or plan['chain_envelope']['floor_squared'] != 49):
+                raise ValueError('RGB联合阶段固定原目标与cap、26方向单扫')
+            contract = json.loads(check_file(plan['contract']['path'], plan['contract']['sha256']).read_text(encoding='utf-8'))
+            if not contract['pass'] or any(digest(ROOT/name) != sha for name,sha in contract['source_sha256'].items()):
+                raise ValueError('RGB联合集中合同与源码不同')
+            caps, cap_info = colour_caps(plan, targets, args.output)
+            checkpoints, report = rgb_joint_grid.propose(initial, points, targets, mass, caps=caps,
+                sweeps=plan['sweeps'], parts=plan['threads'], tail_at=plan['tail_at'], tail_weight=plan['tail_weight'],
+                progress=lambda r: print(f"[{profile}] colour={r['colour']} nodes={r['changed_nodes']} joint={r['joint_channel_moves']} delta={r['predicted_objective_change']:.8f}",flush=True))
+            report['chain_envelope'] = cap_info
+        elif plan.get('proposal') == 'alternating_integer':
             if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
                     or plan['threads'] != 4 or len(plan['profiles']) != 1 or plan['cycles'] != 3
                     or plan['node_sweeps_per_cycle'] != 2 or plan['paired_sweeps_per_cycle'] != 1
@@ -474,7 +506,7 @@ def run_accept(args, plan):
         models[name] = io.load_sparse(path, competition=True)
         print(f'[{name}] 完整256³和独立整数oracle/原生验收', flush=True)
         cube = cube_evaluate([table], ea.Operator([models[name]]), folder / 'cube.rgb', 128)
-        if plan.get('proposal') in ('exact_axis', 'guarded_pair', 'rounding_interval', 'monotone_dp', 'alternating_integer'):
+        if plan.get('proposal') in ('exact_axis', 'guarded_pair', 'rounding_interval', 'monotone_dp', 'alternating_integer', 'rgb_joint'):
             optimizer = json.loads((args.output/(result['candidates'][name]['profile']+'-optimizer.json')).read_text(encoding='utf-8'))
             cap_path = check_file(args.output/'envelope-caps.npy', optimizer['chain_envelope']['caps_file_sha256'])
             caps = np.load(cap_path, mmap_mode='r')
