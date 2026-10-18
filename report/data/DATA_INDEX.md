@@ -61,3 +61,5 @@
 `channel-continuous-floor-v1`保存三路权威几何的完整整数矩、连续解和精确盒下界；独立标准库审计通过。当前节点与clip连续可行点有16.76%未舍入均匀MSE空间，不等于真实RGB8/照片mean或p99收益。
 
 `velvia-channel-global-nodes-v1`保存一次160步全局连续节点及三轮cap撤销；连续代理改善未转为真实RGB8收益，完整记录失败、离线内存和未执行范围。
+
+`velvia-channel-joint-nodes-v1`保存最后一次8色26方向RGB联合提议及集中独立整数合同；相对3e5选择双mean仅降约0.107%，未入围，节点族收束，未执行新完整精度或性能验收。
