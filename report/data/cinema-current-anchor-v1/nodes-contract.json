@@ -1,0 +1,79 @@
+{
+  "pass": true,
+  "purpose": "集中合同：分通道几何、非线性后缀的26方向联合cost/cap与fresh缓存。",
+  "seed": 2026101929,
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "cases": [
+    {
+      "m": 17,
+      "points": 25,
+      "groups": 8,
+      "all_positive_support_node_26_directions_checked": 1912,
+      "illegal_rgb8_directions_checked": 38,
+      "nonzero_cap_prohibitions": 421,
+      "zero_mass_cap_prohibitions": 170,
+      "maximum_gain_error": 5.684341886080802e-14,
+      "geometry_errors": 0,
+      "cap_count_mismatches": 0,
+      "uint64_output_mismatches": 0,
+      "fresh_cache_mismatches": 0
+    },
+    {
+      "m": 33,
+      "points": 25,
+      "groups": 8,
+      "all_positive_support_node_26_directions_checked": 1938,
+      "illegal_rgb8_directions_checked": 38,
+      "nonzero_cap_prohibitions": 449,
+      "zero_mass_cap_prohibitions": 170,
+      "maximum_gain_error": 3.5790814756353484e-14,
+      "geometry_errors": 0,
+      "cap_count_mismatches": 0,
+      "uint64_output_mismatches": 0,
+      "fresh_cache_mismatches": 0
+    }
+  ],
+  "source_sha256": {
+    "scripts/verify_channel_suffix_joint_nodes.py": "aa83fa906277afc4c908bbc1f2ffc43545ba956f63df798a781123dcaac4041b",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "python/lutlab/channel_suffix_joint_nodes.py": "4162918db57a6a9592dfed3c76cff65c26a6dbf26d757999b245dbc96d36cc47",
+    "python/lutlab/channel_joint_nodes.py": "3fa44f2ab30012c40e27a3933d4471de12773abf762fd4f903185a0824fb074b",
+    "python/lutlab/channel_global_nodes.py": "157912276ee73e76785290cf9a170f5fac4e5ababc146785ef62a13bae421638",
+    "python/lutlab/channel_suffix_coordinates.py": "5c49cd8f086c828666b4814eebf90b2afab6e393b3a9e4f86c6593bd628b49cd",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/axis_calibration.py": "bf4dca0fe09887d599519029d6a97567a21769d769db4c89f5f2aea2b3383efc",
+    "python/lutlab/exact_axis.py": "746bb6a201b889fa62095370b1d0f118cab03320e08a890d8acd9abf3114c2ea",
+    "python/lutlab/monotone_axis.py": "46a6b84b84365a6f5520b3d9faf77a7195e9893e1c8d6993cf132bad504d3c2f",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "scope": "一次合成小合同，独立u64+非线性suffix oracle，不是实际完整四级精度或性能验收"
+}
