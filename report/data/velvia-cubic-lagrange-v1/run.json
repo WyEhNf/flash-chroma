@@ -1,0 +1,82 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "唯一新增Q16四点Lagrange张量基研究：先完整均匀L2矩检查，达到20%改善才评价原探针；不是默认或已落地算子",
+    "inputs": {
+      "model": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "grid": {
+        "path": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+        "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "probes": {
+        "path": "artifacts/velvia-interpolation-diagnosis-v1/fixed-probes.npz",
+        "sha256": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182"
+      }
+    },
+    "matched_reference": {
+      "path": "artifacts/velvia-matched-operators-v1/results.json",
+      "sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8"
+    },
+    "matched_run_identity": "3848f24364106620d571abc3e1886eac7a26c87cad1772d2c1e306cd47cc1d02",
+    "basis": "i=原权威idx，f=原frac；s=clip(i-1,0,m-4)，t=(i-s)+f/65536；四个等距局部索引0/1/2/3的Lagrange多项式，不称真实非均匀物理knots上的三次插值",
+    "weights": "用Python整数有理式求Q16权重；前三个floor(q+0.5)，最后一个65536减前三和；保留负数，端点stencil合法；枚举3*256行核常量守恒及前三误差<=.5、末项<=1.5个Q16单位",
+    "solver": "float64轴基SVD伪逆rcond=1e-14及全表固定顺序张量收缩；完整RGB8 cube均匀未舍入L2，连续节点无RGB盒、无正则、无照片权重或尾罚",
+    "trigger": {
+      "reference": "本次matched四面体连续全域训练MSE正规方程矩值",
+      "required_relative_mse_reduction": 0.2,
+      "rule": "cubic_MSE<=0.8*matched_tetra_MSE才评价原32768+16探针；否则停止，不能调整阈值或重选基"
+    },
+    "integer_truth_if_triggered": "RGB8节点的signed int64 Q48显式64权重acc，half-up后clip；与独立逐轴整数Horner无中间舍入比较。先以255乘三轴最大Q16 L1和乘积及半向上偏置验证小于2^63",
+    "evaluation_if_triggered": "仅原固定uniform16384、训练照片频数16384和旧top16；连续节点未舍入/输出舍入及RGB8节点未舍入/精确整数输出，mean/RMS/p99/max齐列",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4，BLAS1；本基不调用原生拟合或映射内核，不做性能比较",
+    "limits": "单一预声明基、同源同m33同权威idx/frac同均匀L2，所有颜色参与训练。显式新增64顶点插值族，不可把节点套给旧tetra或tri_float；不创建SLUT、不改默认/核心/原生/根驱动，无新full映射、100图、native或性能测试。连续节点不可部署；RGB8节点仅同节点容量，不代表旧格式/后端已支持。MSE矩及残差是浮点诊断，不称含舍入界的严密全局证书；非官方/SOTA结论、不PR不推送。"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "source_sha256": {
+    "scripts/explain_velvia_cubic_lagrange.py": "4ae6bef2d9f61d94e40cf483f642391246d513e7e2a1923491bf9b985720e6d4",
+    "experiments/velvia-cubic-lagrange-v1.json": "0658a1d9896196886c057dad3b1bce8f6dd77f7c02f766fdd5fed65365490cc8",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "input_sha256": {
+    "model": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "grid": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "probes": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182"
+  },
+  "matched_results_sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8",
+  "identity_sha256": "5b60daf8ae084ed7ad6d2037226c2a84bf7d26577d657f0feba5d90e2c3145e3"
+}

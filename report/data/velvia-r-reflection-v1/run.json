@@ -1,0 +1,123 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "唯一R轴反射改变四面体划分，检验同物理网格和完整均匀L2的连续表达能力；不是反射扫描或已部署优化",
+    "inputs": {
+      "model": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "grid": {
+        "path": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+        "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "stream": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "probes": {
+        "path": "artifacts/velvia-interpolation-diagnosis-v1/fixed-probes.npz",
+        "sha256": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182"
+      },
+      "matched_results": {
+        "path": "artifacts/velvia-matched-operators-v1/results.json",
+        "sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8"
+      },
+      "matched_nodes": {
+        "path": "artifacts/velvia-matched-operators-v1/matched-nodes.npz",
+        "sha256": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26"
+      }
+    },
+    "trainer": {
+      "path": "build-fit/libjshc_full_fit.dll",
+      "sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+      "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+      "abi": 1,
+      "threads": 4
+    },
+    "reflection": "只反射R。T'=T[::-1,:,:]；gridR'=255-gridR[::-1]；idxR'(x')=m-2-idxR(255-x')，fracR'(x')=ONE-fracR(255-x')；G/B保持原表。直接使用派生权威表，禁止由浮点grid重生坐标",
+    "assembly": "反射域idx和有效坐标先验证非降，仅在该域调用一次已验证raw C ABI；从原始uint64 Hnum/2^38和bnum/2^22转float64无ridge正规方程；不在降序折回表上组装",
+    "solver": {
+      "method": "每通道一次无ridge Jacobi预条件CG",
+      "initial": "已有matched tetra_float64节点沿R反序，只作暖启动",
+      "rtol": 1e-13,
+      "maximum_iterations": 1000,
+      "required_relative_residual": 1e-12
+    },
+    "gate": {
+      "reference": "matched原标准体对角线同完整RGB8均匀L2的连续未约束节点MSE，不以实际2dd不同目标模型作matched参照",
+      "reference_mse": 1.8526704487157986,
+      "required_relative_reduction": 0.2,
+      "failure_action": "停止，不评价任何探针，不生成SLUT，不换反射轴/阈值/拟合目标"
+    },
+    "triggered_evaluation": "只在门槛达标后评价原16384 uniform+16384训练照片频数+旧top16。折回R轴表按code反序，保留反射域节点；各组报告连续节点未舍入、连续节点clip/half-up输出、clip/half-up RGB8节点的连续/整数输出。独立uint64比较器oracle与NumPyQ16逐字节核对；最多保存一个折回RGB8 SLUT，明确native未验收",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/SciPy1.15.2；原始矩组装requested4线程、BLAS1，actual写回执；无运行时性能或新native验证",
+    "limits": "唯一R轴反射一次匹配连续LS，非G/B或全部对角线扫描。降序权威轴表是明确新增参数化，文件字节数相同不代表原非降模型类或官方认可；节点仍原m33 RGB8容量。连续节点不可部署，RGB8节点仅clip+half-up控制不称整数最优。完整域已用于训练，探针不独立；旧2dd仅不同目标参照。旧严格下界不适用于本设计。不native映射、不新full输出/100图/性能，不改核心/默认/根驱动，不提交推送PR，不宣称SOTA。若库/支撑证书/公式矛盾即停止，不自动换方案。"
+  },
+  "plan_sha256": "e12ddf1a3217d89c219bd8f1ca48db7db39b05dd6384c7baee953ddf94586ce0",
+  "source_sha256": {
+    "scripts/explain_velvia_r_reflection.py": "9babda6b238bff1ce452b9e0a12c69c2ac203451f871fa9a48cd2de03254e266",
+    "experiments/velvia-r-reflection-v1.json": "e12ddf1a3217d89c219bd8f1ca48db7db39b05dd6384c7baee953ddf94586ce0",
+    "scripts/prove_velvia_fixed_tetra_bound.py": "69b115a077df3d9156a4ea74296d47f5c670c372629811b697eb0c11a3afd69f",
+    "python/lutlab/fullfit.py": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/support_certificate.py": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "trainer": {
+    "abi_version": 1,
+    "library_sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+    "native_source_sha256": {
+      "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+      "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f"
+    },
+    "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+    "openmp_compiled": true
+  },
+  "input_sha256": {
+    "model": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "grid": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "probes": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182",
+    "matched_results": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8",
+    "matched_nodes": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26"
+  },
+  "derived_axis_tables_sha256": "64965b0f664baf7cd1cb773fa18ae0a640b8d921f81335382b25318bd651d2e7",
+  "scope": "唯一R反射，先连续全域矩MSE门槛；触发后才固定探针，不运行native像素后端",
+  "identity_sha256": "c78b28d5aeecbeff755f685a2615255805aa68ab153d313601789cfaac41f546"
+}

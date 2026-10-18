@@ -45,3 +45,7 @@
 本地补充：`paired-grid-contract-v1`保存成对节点的纯合成实现合同；`velvia-guarded-pair-v1`保存实际Velvia固定4+1拟合与未入围选择证据。二者不能替代完整精度验收，后者没有新增百图或原生性能结果。
 
 本地后续：`velvia-error-mass-v1`为旧字节的完整质量归因；`rounding-interval-contract-v1`为合成目标/梯度合同；`velvia-rounding-interval-v1`和`velvia-photo-priority-v1`为两个分别冻结的真实拟合负结果，均未入围，无新增完整终验。
+
+本地插值归因：`velvia-matched-operators-v1`分别拟合匹配的四面体/三线性；`velvia-cubic-lagrange-v1`的单一三次基未达到训练矩门槛，未评价探针。`monotone-axis-contract-v1`保存完整单元DP集中合同，`velvia-monotone-dp-v1`保存真实未入围结果。
+
+本地后续归档：`velvia-alternating-integer-v1`保存固定三轮坐标/节点交替与未入围结果；`velvia-fixed-tetra-bound-v1`保存原固定坐标的有理MSE下界证书；`velvia-r-reflection-v1`保存唯一R反射同条件连续拟合的负结果。三者均无新完整输出、百图或运行时性能验收，不能替代已验收冠军。

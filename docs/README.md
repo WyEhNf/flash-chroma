@@ -73,6 +73,12 @@
 - [2026-10-19 Velvia残差分布](stages/2026-10-19-velvia-error-mass.md)：照片mean主要由广泛小误差承载，局部G上沿的条件改善上界不足3%。
 - [2026-10-19 舍入区间目标](stages/2026-10-19-velvia-rounding-interval.md)：一次集中梯度合同与固定连续提议；部分尾部改善但真实硬cap违规，拒绝采用。
 - [2026-10-19 照片优先测度](stages/2026-10-19-velvia-photo-priority.md)：同预算单一权重对照，选择集未优于均衡质量，不扫描权重。
+- [2026-10-19 匹配算子拟合](stages/2026-10-19-velvia-matched-operators.md)：相同完整均匀L2和网格各自拟合，三线性仍未改善一般探针，不以同节点诊断代替公平对照。
+- [2026-10-19 唯一三次基](stages/2026-10-19-velvia-cubic-lagrange.md)：训练矩MSE恶化6.45%，未触发探针或完整测试。
+- [2026-10-19 完整单元单调DP](stages/2026-10-19-velvia-monotone-dp.md)：解除静态坐标边界后照片样本改善约2.46%，未入围。
+- [2026-10-19 整数节点/坐标交替](stages/2026-10-19-velvia-alternating-integer.md)：固定三轮后照片样本mean约降2.67%，原门槛失败且不追加轮数。
+- [2026-10-19 固定坐标表达能力证书](stages/2026-10-19-velvia-fixed-tetra-bound.md)：整数矩与有理运算证明原固定坐标四面体不可能全域RGB8验零；不等于当前模型接近最优，不外推新函数族。
+- [2026-10-19 唯一R反射](stages/2026-10-19-velvia-r-reflection.md)：改变体对角线后同条件连续MSE恶化52.01%，按预定门槛停止，没有生成新模型或追加完整测试。
 
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。

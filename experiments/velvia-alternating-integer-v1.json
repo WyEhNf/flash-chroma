@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "purpose": "直接RGB8目标下交替更新单调坐标与整数节点，检验两组变量互相限制的局部驻点；固定3轮后统一选型",
+  "baseline": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+  "baseline_sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+  "baseline_cube": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+  "baseline_cube_sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+  "baseline_results": "artifacts/joint-grid-budget-v2/full-results.json",
+  "baseline_run": "artifacts/joint-grid-budget-v2/run.json",
+  "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+  "offline_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "offline_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+  "table": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+  "table_sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+  "source": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+  "source_sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+  "partition": "artifacts/full-photo-v1/photo-partition.json",
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "cube_training_seed": 2026101801,
+  "cube_selection_seed": 2026101802,
+  "hotspot_count": 8192,
+  "mass": {
+    "cube": 0.48,
+    "photos": 0.48,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "profiles": [
+    "alternating_integer"
+  ],
+  "threads": 4,
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "selection": "全部预定检查点拟合完成后一次选择；完整域分层选择颜色及20图选择像素，mean/RMS/p99均不高于基线、两种mean至少降低3%、至少一种p99严格下降、已知热点及选择颜色max不高于基线。合格者按两种mean最大比值、两种p99最大比值、mean比值和、名称选型。每个对照最多一个冻结候选进入终验。",
+  "acceptance": "冻结候选各一次完整256^3、100图和独立整数oracle/标量/AVX2；完整域mean/RMS/p99/max/CVaR、百图mean/RMS/最差逐图p99/max/平均逐图CVaR均不高于同SHA基线，两种mean均至少降低3%、至少一种p99降低3%才记为本阶段合格改善；逐图退化完整披露，不把聚合门禁写成逐图非退化，也不因此宣告整个精度目标完成",
+  "limits": "单级Velvia量化目标交替下降研究，原2dd验收与逐色cap锚点固定，ad473仅优化起点，所有累计预算披露。m33/grid/idx/端点固定，节点RGB8且坐标真实非降；整体函数族与旧几何插值不同，但不新增字节或内核步骤。固定3轮各1坐标/2单节点/1配对，无默认改变或权重/源/网格扫描；只三轮最终候选一次选型，至多一winner完整终验。完整域/60图训练、20选择/20审计历史已见；原双mean3%和p99门槛保持，失败不全验不PR不推送、不作官方/SOTA/新速度结论。",
+  "baseline_candidate": "joint_grid_iter1600",
+  "cube_training": "full",
+  "hotspot_source_cube": "artifacts/joint-minimax-v1/joint_0002/cube.rgb",
+  "hotspot_source_cube_sha256": "7d07c9a27bb0a9dad4620fcd3d36bb8d5db505de2b1e1d433b69ef6423fae62f",
+  "proposal": "alternating_integer",
+  "photo_training": "full",
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "d_new(x)^2<=max(49,d_2dd(x)^2)",
+    "scope": "全部256^3原色各自约束，保护旧>7误差不增；原样本max回归不再仅用全域统一max约束"
+  },
+  "algorithm": "同一ad473起点，固定3轮：完整单元单调DP一轮R/G/B，硬cap单节点2扫，硬cap配对1扫；每轮只保存最终模型，三候选同池最多一winner；中间全训练目标用于算法不变量，不逐轮选择样本测试",
+  "reason": "完整单元DP最终相对ad473只需313/1417/988个Q16单位且照片mean仍未达3%，并非单独可用范围不足；坐标/节点各自固定可能互相限制，需要固定交替方案检验，而非再扩大坐标、加权扫描或单一变量无限加扫。",
+  "predeclared_candidates": [
+    "cycle1_final",
+    "cycle2_final",
+    "cycle3_final"
+  ],
+  "initial_model": "artifacts/velvia-guarded-pair-v1/guarded_pair_iter005/model.slut",
+  "initial_model_sha256": "ad473f307410f4b0acb24d43a587ad41c0438656a876c08a43d53e874edfac50",
+  "initial_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "initial_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+  "cycles": 3,
+  "node_sweeps_per_cycle": 2,
+  "paired_sweeps_per_cycle": 1,
+  "contracts": [
+    {
+      "path": "artifacts/monotone-axis-contract-v1/results.json",
+      "sha256": "3e4a4637024812b11303db1f192603b1ede8d1283dc9f5b4a6fa6b35ce29b837"
+    },
+    {
+      "path": "artifacts/paired-grid-contract-v1/results.json",
+      "sha256": "76b9826e60d2a16cc56c9b44b9ca053005e60fd41bcc82b87356e2627e0b69dd"
+    }
+  ]
+}

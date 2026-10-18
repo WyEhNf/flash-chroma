@@ -1,0 +1,75 @@
+{
+  "purpose": "64个独立穷举单调DP、静态边界反例、端点/不可行检查；三轴完整65537事件状态及独立u64 oracle",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "seed": 2026101913,
+  "dp_cases": 64,
+  "full_state_counterexample": [
+    25000,
+    26000
+  ],
+  "events": [
+    {
+      "axis": 0,
+      "integer_states": 65537,
+      "points": 17,
+      "maximum_cost_difference": 1.0658141036401503e-14,
+      "cap_count_mismatches": 0,
+      "events": 428
+    },
+    {
+      "axis": 1,
+      "integer_states": 65537,
+      "points": 17,
+      "maximum_cost_difference": 1.2434497875801753e-14,
+      "cap_count_mismatches": 0,
+      "events": 477
+    },
+    {
+      "axis": 2,
+      "integer_states": 65537,
+      "points": 17,
+      "maximum_cost_difference": 1.9539925233402755e-14,
+      "cap_count_mismatches": 0,
+      "events": 433
+    }
+  ],
+  "source_sha256": {
+    "python/lutlab/monotone_axis.py": "46a6b84b84365a6f5520b3d9faf77a7195e9893e1c8d6993cf132bad504d3c2f",
+    "python/lutlab/exact_axis.py": "746bb6a201b889fa62095370b1d0f118cab03320e08a890d8acd9abf3114c2ea",
+    "python/lutlab/axis_calibration.py": "bf4dca0fe09887d599519029d6a97567a21769d769db4c89f5f2aea2b3383efc",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "scripts/verify_monotone_axis.py": "428d04d1ec5eba00884bb537c6b724f469c565b4310bc63c58634c5a07e7c5d8",
+    "scripts/run_filmic_calibration.py": "576b3938d461499436b21a54cfd932b1a1fd01a4cabc29067fb025e26610838d"
+  },
+  "pass": true,
+  "scope": "合成小输入实现合同，不是新真实LUT精度/百图/性能验证"
+}

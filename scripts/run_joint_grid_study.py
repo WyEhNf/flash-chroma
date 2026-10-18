@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / 'python'))
 import numba
 import numpy as np
 from PIL import Image
-from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, paired_grid, rounded_grid as rg, rounding_interval, study_provenance, suffix_objective
+from lutlab import chain_envelope, error_analysis as ea, exact_axis, fit, interp, io, joint_grid as jg, monotone_axis, paired_grid, rounded_grid as rg, rounding_interval, study_provenance, suffix_objective
 from lutlab.compatibility import write_json
 from run_chain_error_study import colours, cube_evaluate, digest, photos_evaluate
 from run_joint_box_study import native_verify, photo_samples
@@ -228,6 +228,13 @@ def source_identity(plan_path):
                   ROOT / 'scripts/verify_paired_grid.py']
     if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'rounding_interval':
         files += [ROOT / 'python/lutlab/rounding_interval.py', ROOT / 'scripts/verify_rounding_interval.py']
+    if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') in ('monotone_dp', 'alternating_integer'):
+        files += [ROOT / 'python/lutlab/monotone_axis.py', ROOT / 'python/lutlab/exact_axis.py',
+                  ROOT / 'python/lutlab/axis_calibration.py', ROOT / 'scripts/verify_monotone_axis.py',
+                  ROOT / 'scripts/run_filmic_calibration.py']
+        if json.loads(plan_path.read_text(encoding='utf-8')).get('proposal') == 'alternating_integer':
+            files += [ROOT / 'python/lutlab/paired_grid.py', ROOT / 'python/lutlab/chain_envelope.py',
+                      ROOT / 'scripts/verify_paired_grid.py']
     return {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p) for p in files}
 
 
@@ -283,12 +290,62 @@ def run_fit(args, plan):
     io.save_sparse(args.output / 'initial.slut',initial)
     candidates = {}
     for profile in plan['profiles']:
-        kind = ('舍入区间连续提议' if plan.get('proposal') == 'rounding_interval' else
+        kind = ('整数节点与单调坐标交替提议' if plan.get('proposal') == 'alternating_integer' else
+                '完整单元单调DP提议' if plan.get('proposal') == 'monotone_dp' else
+                '舍入区间连续提议' if plan.get('proposal') == 'rounding_interval' else
                 '硬包络单节点及成对提议' if plan.get('proposal') == 'guarded_pair' else
                 '精确坐标事件提议' if plan.get('proposal') == 'exact_axis' else
                 ('整数提议' if plan.get('proposal') == 'rounded' else '连续提议'))
         print(f'[{profile}] 开始冻结预算的{kind}，训练颜色{len(points)}', flush=True)
-        if plan.get('proposal') == 'rounding_interval':
+        if plan.get('proposal') == 'alternating_integer':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['threads'] != 4 or len(plan['profiles']) != 1 or plan['cycles'] != 3
+                    or plan['node_sweeps_per_cycle'] != 2 or plan['paired_sweeps_per_cycle'] != 1
+                    or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                    or plan['chain_envelope']['floor_squared'] != 49):
+                raise ValueError('交替阶段固定3轮，每轮坐标1次/单节点2扫/配对1扫')
+            for spec in plan['contracts']:
+                contract = json.loads(check_file(spec['path'], spec['sha256']).read_text(encoding='utf-8'))
+                if not (contract.get('pass') is True or contract.get('status') == '通过'):
+                    raise ValueError('交替更新需要已通过的集中合同')
+                for name, sha in contract['source_sha256'].items():
+                    if digest(ROOT/name) != sha:
+                        raise ValueError('交替更新的数值模块与集中合同不同')
+            caps, cap_info = colour_caps(plan, targets, args.output)
+            envelope = chain_envelope.ChainEnvelope(np.arange(len(points), dtype=np.int32), targets, caps,
+                expected_arrivals=points, metadata=cap_info)
+            current, checkpoints = initial, []
+            report = {'cycles': [], 'chain_envelope': cap_info,
+                      'scope': '固定3轮直接RGB8目标交替下降，不改权重/标签或cap锚点；跨变量非全局最优'}
+            for cycle in range(1, plan['cycles']+1):
+                axis_models, axis_report = monotone_axis.propose(current, points, targets, mass, caps=caps, parts=plan['threads'])
+                node_models, node_report = rg.propose(axis_models[-1][1], points, targets, mass,
+                    sweeps=plan['node_sweeps_per_cycle'], parts=plan['threads'],
+                    tail_at=plan['tail_at'], tail_weight=plan['tail_weight'], envelope=envelope)
+                pair_models, pair_report = paired_grid.propose(node_models[-1][1], points, targets, mass,
+                    caps=caps, sweeps=plan['paired_sweeps_per_cycle'], parts=plan['threads'],
+                    tail_at=plan['tail_at'], tail_weight=plan['tail_weight'])
+                if (abs(axis_report['after_weighted_objective']-node_report['before_weighted_objective']) > 1e-8
+                        or abs(node_report['after_weighted_objective']-pair_report['before_weighted_objective']) > 1e-8):
+                    raise AssertionError('交替阶段目标或上一步模型不一致')
+                current = pair_models[-1][1]
+                checkpoints.append((cycle, current))
+                report['cycles'].append({'cycle': cycle, 'axis': axis_report, 'nodes': node_report, 'paired': pair_report})
+                print(f"[{profile}] cycle={cycle} before={axis_report['before_weighted_objective']:.6f} after={pair_report['after_weighted_objective']:.6f}", flush=True)
+        elif plan.get('proposal') == 'monotone_dp':
+            if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
+                    or plan['threads'] != 4 or len(plan['profiles']) != 1
+                    or plan['tail_at'] != 6 or plan['tail_weight'] != .02
+                    or plan['chain_envelope']['floor_squared'] != 49):
+                raise ValueError('本轮单调DP要求完整域/照片、4分片、单一候选及原cap')
+            contract = json.loads(check_file(plan['contract']['path'], plan['contract']['sha256']).read_text(encoding='utf-8'))
+            if not contract['pass'] or any(digest(ROOT/name) != sha for name, sha in contract['source_sha256'].items()):
+                raise ValueError('单调DP集中合同不同于当前数值源码')
+            caps, cap_info = colour_caps(plan, targets, args.output)
+            checkpoints, report = monotone_axis.propose(initial, points, targets, mass, caps=caps, parts=plan['threads'],
+                progress=lambda r: print(f"[{profile}] axis={r['axis']} loss={r['after_weighted_objective']:.6f} changed={r['changed_coordinates']} shift={r['maximum_axis_shift']} time={r['seconds']:.1f}s", flush=True))
+            report['chain_envelope'] = cap_info
+        elif plan.get('proposal') == 'rounding_interval':
             if (plan.get('cube_training') != 'full' or plan.get('photo_training') != 'full'
                     or plan['iterations'] != 240 or plan['threads'] != 4 or len(plan['profiles']) != 1
                     or plan['chain_envelope']['floor_squared'] != 49):
@@ -417,7 +474,7 @@ def run_accept(args, plan):
         models[name] = io.load_sparse(path, competition=True)
         print(f'[{name}] 完整256³和独立整数oracle/原生验收', flush=True)
         cube = cube_evaluate([table], ea.Operator([models[name]]), folder / 'cube.rgb', 128)
-        if plan.get('proposal') in ('exact_axis', 'guarded_pair', 'rounding_interval'):
+        if plan.get('proposal') in ('exact_axis', 'guarded_pair', 'rounding_interval', 'monotone_dp', 'alternating_integer'):
             optimizer = json.loads((args.output/(result['candidates'][name]['profile']+'-optimizer.json')).read_text(encoding='utf-8'))
             cap_path = check_file(args.output/'envelope-caps.npy', optimizer['chain_envelope']['caps_file_sha256'])
             caps = np.load(cap_path, mmap_mode='r')
