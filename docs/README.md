@@ -1,5 +1,7 @@
 # 文档索引
 
+[2026-10-19 最新精度与后端结果](stages/2026-10-19-precision-latest.md)汇总当前已验模型、误差来源和速度代价；新研究方案未自动替换公共默认。
+
 当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列阶段文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。
 
 ## 当前接口与规则
@@ -102,3 +104,8 @@
 - [2026-10-19 全局盒节点提议](stages/2026-10-19-channel-global-nodes.md)：连续代理下降，但量化及cap撤销后的真实RGB8目标回退，未入围；未做完整验收。
 
 - [2026-10-19 分通道几何的26方向联合节点](stages/2026-10-19-channel-joint-nodes.md)：用共享cube的奇偶角唯一性合并三路不同权重，真实整数目标提议增量仍不足；节点邻域研究收束。
+
+- [Cinema分输出坐标](stages/2026-10-19-cinema-channel-suffix-coordinates.md)与[后缀联合节点](stages/2026-10-19-cinema-channel-suffix-joint-nodes.md)：分别保留mean门槛不足和max回退的固定负结果。
+- [旧cap单色解释](stages/2026-10-19-cinema-cap-anchor-diagnosis.md)与[当前锚点修正](stages/2026-10-19-cinema-current-anchor.md)：首级1码值传播及全域统一约束，未把guard反例加入训练。
+- [Cinema完整终验与实际四级成本](stages/2026-10-19-cinema-current-anchor-accept.md)：百图mean全部改善，尾部代价与约46%运行成本分列。
+- [节点读取复用负结果](stages/2026-10-19-channel-runtime-reuse.md)与[固定四级专门化](stages/2026-10-19-channel-runtime-specialized.md)：两项不同假设各自冻结、各一次同机比较，不混合计时或隐去失败。

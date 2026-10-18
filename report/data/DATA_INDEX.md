@@ -1,5 +1,9 @@
 # 报告数据索引
 
+最新本地汇总见[当前精度结果](../../docs/stages/2026-10-19-precision-latest.md)。`cinema-current-anchor-accept-v1`保存a399真实四级完整域/百图/独立整数与原生终验、逐图退化、约46%成本背景；`channel-runtime-specialized-v1`保存同a399模型的唯一编译期专门化合同、完整原生等价和受控配对速度收益，两个阶段的速度不跨阶段相乘。
+
+`cinema-channel-suffix-coordinates-v1`、`cinema-channel-suffix-joint-nodes-v1`保留两个未入围候选；`cinema-cap-anchor-diagnosis-v1`保留唯一原色的逐级轨迹；`cinema-current-anchor-v1`保留统一收紧191色及唯一整合拟合/选择。`channel-runtime-reuse-v1`保留节点读取减少却变慢的负结果。新格式未接公共默认/GUI/C99，仍无官方数据或Threshold。
+
 2026-10-19本地精度研究新增：[Filmic静态解析校准](filmic-calibration-v1/report.md)、[直接单调m17](filmic-direct-monotone-v1/report.md)。同SHA恢复PR41来源与两尺寸基线，m33及后续独立m17候选完整256³/百图误差归零，保留逐图与实际单级后端证据；这是严格可分离单LUT特例，不代表通用三维或四级比赛链。另有[Cinema节点续优化](cinema-calibrated-nodes-v1/report.md)、[Cinema精确事件搜索](cinema-exact-axis-v1/report.md)、[Velvia事件搜索](velvia-exact-axis-v1/report.md)三个未入围对照，未执行新增完整验收或速度测试。历史PDF范围不变，不宣称官方成绩或SOTA。
 
 [通用精确单调API](separable-calibration-api-v1/README.md)集中11项合同通过并接入显式CLI方法，默认策略不变。[同家族四级先导](filmic-chain-calibrated-v1/report.md)发现旧链已精确、停止新增完整验收；另立[等距四级控制链](filmic-isometric-chain-v1/report.md)，在四张不同原表及逐级RGB8下，新17³完整256³/100图误差归零，标量/AVX2/C99一致。[独立性能](filmic-isometric-runtime-v1/report.md)保留18次交错同机调用，文件容量相对33³减少83.22%，同容量单线程略慢，不能称所有配置加速。[Velvia有界插值归因](velvia-interpolation-diagnosis-v1/report.md)显示单换算子或采样节点不能同时改善一般mean/p99，旧极端节点偏差远超纯量化；未产生新模型。
