@@ -51,3 +51,5 @@
 本地后续归档：`velvia-alternating-integer-v1`保存固定三轮坐标/节点交替与未入围结果；`velvia-fixed-tetra-bound-v1`保存原固定坐标的有理MSE下界证书；`velvia-r-reflection-v1`保存唯一R反射同条件连续拟合的负结果。三者均无新完整输出、百图或运行时性能验收，不能替代已验收冠军。
 
 本地下一阶段：`velvia-output-clipping-v1`只分析旧完整输出与60图频数的饱和相关性；`rgb-joint-grid-contract-v1`验证26个RGB联合方向；`velvia-rgb-joint-v1`保存单次真实提议及未入围结果。无新增完整精度或性能验收。
+
+`emerald-calibrated-v1`完成另一可分离来源的17³实际模型，候选完整色域/百图误差均为零，5个原生后端与独立整数参考一致。包含三模型300条逐图与独立解析聚合；旧两基线cube指标是曲线卷积，未重映射旧cube。不新增四级或性能计时。

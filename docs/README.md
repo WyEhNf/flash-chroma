@@ -81,6 +81,7 @@
 - [2026-10-19 唯一R反射](stages/2026-10-19-velvia-r-reflection.md)：改变体对角线后同条件连续MSE恶化52.01%，按预定门槛停止，没有生成新模型或追加完整测试。
 - [2026-10-19 输出裁剪归因](stages/2026-10-19-velvia-output-clipping.md)：旧完整字节显示照片73.53%距离误差来自内部输出组，不能把尾部端点关联当作裁剪因果。
 - [2026-10-19 节点RGB联合方向](stages/2026-10-19-velvia-rgb-joint.md)：集中解析和整数合同通过；真实单扫只有很小收益，仍未入围。
+- [2026-10-19 Emerald精确17³](stages/2026-10-19-emerald-calibrated.md)：PR41第二个可分离来源，实际完整域/百图验零，5原生后端一致；相对33³文件减少83.22%，没有新性能计时。
 
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。
