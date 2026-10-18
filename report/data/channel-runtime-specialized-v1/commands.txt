@@ -1,0 +1,10 @@
+以下为已经执行的历史命令，归档时不再次运行：
+artifacts/error-study-py312/Scripts/python.exe scripts/build_channel_specialized.py --plan experiments/channel-runtime-specialized-v1.json --output artifacts/channel-native-specialized-v1
+artifacts/error-study-py312/Scripts/python.exe scripts/verify_channel_specialized.py --plan experiments/channel-runtime-specialized-v1.json --library artifacts/channel-native-specialized-v1/jshc_channel_specialized.dll --output artifacts/channel-native-specialized-contract-v1
+artifacts/error-study-py312/Scripts/python.exe scripts/accept_cinema_specialized_native.py --plan experiments/cinema-specialized-native-v1.json --output artifacts/cinema-specialized-native-v1
+artifacts/error-study-py312/Scripts/python.exe scripts/bench_cinema_specialized.py --plan experiments/cinema-specialized-runtime-v1.json --output artifacts/cinema-specialized-runtime-v1
+
+实际构建参数/环境见build.json和各run/worker；关键环境OMP_NUM_THREADS=1、OMP_DYNAMIC=FALSE、OPENBLAS_NUM_THREADS=1、MKL_NUM_THREADS=1。
+
+本次仅从既有文件复算/归档，没有调用以上测量命令：
+artifacts/error-study-py312/Scripts/python.exe scripts/archive_channel_specialized.py --output report/data/channel-runtime-specialized-v1

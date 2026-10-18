@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "purpose": "唯一固定四级编译期专门化候选：首级分通道、后三共享；消除8像素循环内逐级动态共享分支及stage循环。不是失败同包方向复用的重试。",
+  "status": "结果前冻结；当前仅构建和有限集中正确性合同，完整native及性能由根代理另立执行。",
+  "implementation": {
+    "base": "原封已验packed v3，不读取或复用channel-runtime-reuse源码。",
+    "entry_guard": "stages==4 && !chain[0].shared && chain[1].shared && chain[2].shared && chain[3].shared",
+    "hotpath": "transform<false>(0), transform<true>(1), transform<true>(2), transform<true>(3)",
+    "fallback": "其它级数/布局继续原通用逐级动态派发。",
+    "unchanged": "Q16公式、两端点gather、高低轴和中值、24字节无对齐读写、逐级RGB8、尾部标量、CPUID/OS分发、节点/轴表内存布局和原v3文件不变；Rgb继续经引用。",
+    "forbidden": "不增加强制inline、参数或候选，不扫描反射/同包地址方向，不修改原CMake/核心/标量壳/默认。"
+  },
+  "build_inputs": {
+    "static_core": {
+      "path": "build-channel-research/libjshc_core.a",
+      "sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6"
+    },
+    "v3_library": {
+      "path": "artifacts/channel-native-runtime-v3/jshc_channel_packed.dll",
+      "sha256": "7ceb30d7913a8cf032e1828c25c3fe062082be8e9d531d105282ba8d1794b072"
+    },
+    "v3_build": {
+      "path": "artifacts/channel-native-runtime-v3/build.json",
+      "sha256": "86d9c9003a4a9dbe230ae0b30f1973e395df1109785bdaa2b689c0b57f24bb24"
+    },
+    "inherited_abi_contract": {
+      "path": "artifacts/channel-native-contract-packed-v1/results.json",
+      "sha256": "1d66f309546b2fdb1dd37115a8b80a19705b851b1c33af98b3f903c55d2e88cd"
+    },
+    "candidate_npz": {
+      "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+      "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+    },
+    "candidate_base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "candidate_sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    }
+  },
+  "compiler": {
+    "path": "E:/mingw64/bin/g++.exe",
+    "sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+    "version": "MinGW GCC 15.2.0 x86_64-win32-seh",
+    "flags": "-O3 -DNDEBUG -std=c++17 -fopenmp；仅新AVX2 TU带-mavx2，dispatcher/链接不带-mavx2"
+  },
+  "source_sha256": {
+    "scripts/build_channel_specialized.py": "3ff92cf3d912c842d19be2dab0168f53413e71ef4333510cd38492ff6fbcf2c5",
+    "scripts/verify_channel_specialized.py": "62d70446d9700a33e58687f09d8e4e275758137209d018350bbddb8e3892b05c",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/channel-runtime/channel_avx2.cpp": "efc4b862e9b3b74eea6160e32e940cafbda87f4a1a6c90f348dd012fdd7a6427",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/native_provenance.py": "a0609687d20f57a9e63041fb1ceb8ef784c222caf36a6ae93dd2c2614724b6e5",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582"
+  },
+  "contract": {
+    "purpose": "针对新增编译期四级热路径和原混合共享fallback，以独立uint64每级RGB8 oracle验证整数正确性、尾部/非对齐及端点。",
+    "seed": 2026101931,
+    "mixed_m": [
+      17,
+      18,
+      25,
+      33
+    ],
+    "paths": [
+      "4级unshared/shared/shared/shared",
+      "4级shared/unshared/shared/unshared",
+      "4级equal-sidecar/shared/shared/shared",
+      "3级unshared/shared/shared"
+    ],
+    "lengths": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      15,
+      16,
+      17,
+      4095,
+      4096,
+      4097
+    ],
+    "byte_offsets": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "backends_threads": [
+      [
+        "scalar",
+        1
+      ],
+      [
+        "avx2",
+        1
+      ],
+      [
+        "avx2",
+        4
+      ]
+    ],
+    "oracle": "scripts/verify_channel_coordinates.py.integer_oracle，各级完整同步RGB8输出作为下级输入；不用候选标量作为真值。",
+    "acceptance": "所有字节/哨兵零差；ABI1/revision2/AVX2+OpenMP能力7、实际已载5份DLL SHA全部匹配。ABI异常检查继承未改标量壳的旧合同，不重复benchmark。"
+  },
+  "environment": {
+    "host": "Windows11 26200 x64/Ryzen9 8945HX 16c32t/32GB",
+    "python": "3.12.14/NumPy1.26.4/Numba0.60/Pillow10.4",
+    "threads": "合同显式scalar1/AVX2请求1与4；环境OMP_NUM_THREADS=1、OMP_DYNAMIC=FALSE、BLAS/MKL1。",
+    "scope": "本阶段一次构建、一次有限集中正确性合同，无完整域/100图/性能。"
+  },
+  "future_performance_gates": {
+    "purpose": "仅完整等价通过后，由根代理一次比较同a399模型下已验v3和唯一专门化DLL，不拿af974不同模型冒充后端收益。",
+    "threads": [
+      1,
+      4
+    ],
+    "same_inputs": "同一SHA100图/同一host/同一a399+933a/95cb/932f实际四级/同一请求线程，预加载与模型加载排除，原生apply及copy+apply分列。",
+    "balanced_orders": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "baseline",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "processes": 4,
+    "repeats_per_process_configuration": 5,
+    "metric": "每进程5轮中位数，同进程candidate/v3比；再四进程比值中位数。",
+    "apply_ratio_max_by_thread": 0.97,
+    "apply_ratio_max_in_any_process": 1.02,
+    "copy_apply_median_ratio_max_by_thread": 1.0,
+    "failure_action": "任一失败就保留负结果并停止；不更换方向/强制inline/预算/参数，不自动晋升默认。",
+    "limits": "未锁频/绑核/控温，不给统计显著性保证；100图组摊销不是单图延迟。"
+  },
+  "commands": {
+    "build": "artifacts/error-study-py312/Scripts/python.exe scripts/build_channel_specialized.py --plan experiments/channel-runtime-specialized-v1.json --output artifacts/channel-native-specialized-v1",
+    "contract": "artifacts/error-study-py312/Scripts/python.exe scripts/verify_channel_specialized.py --plan experiments/channel-runtime-specialized-v1.json --library artifacts/channel-native-specialized-v1/jshc_channel_specialized.dll --output artifacts/channel-native-specialized-contract-v1"
+  },
+  "limits": "仅研究后端一次候选；每输出独立Q16不是官方已认可格式，未接公共CLI/GUI/C99；不拟合、不改权重模型、不PR/push/commit。"
+}
