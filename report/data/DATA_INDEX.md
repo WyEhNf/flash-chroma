@@ -55,3 +55,5 @@
 `emerald-calibrated-v1`完成另一可分离来源的17³实际模型，候选完整色域/百图误差均为零，5个原生后端与独立整数参考一致。包含三模型300条逐图与独立解析聚合；旧两基线cube指标是曲线卷积，未重映射旧cube。不新增四级或性能计时。
 
 `velvia-channel-coordinates-v1`保存9块一次新表示与选择；`velvia-channel-coordinates-accept-v1`保存唯一候选完整精度，cube mean/p99约降5.84%/9.65%、100图mean降4.47%，逐图/audit局限完整披露。`channel-native-v1`另存独立C ABI的合同、单级/四级等距控制完整输出回执、实际应用与两阶段串行性能比较；新表示有内存及速度代价，默认不变。
+
+`channel-frequency-transfer-v1`记录两图固定频数与118个中间反例，指出0843由重复灰色主导。`velvia-channel-nodes-v1`和`velvia-channel-blocks-v1`分别保存分通道坐标固定后的单点/2³块一次提议，均未达到额外双mean0.5%门槛，未做完整精度/native/性能验收。

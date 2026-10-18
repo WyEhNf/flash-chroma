@@ -93,3 +93,6 @@
 - [R15 工具链实验](../experiments/r15-zig-default-pixi.md)、[R16 路线探索](../experiments/r16-five-directions.md)。
 
 冻结证据继续保留原有文件与路径，避免破坏报告引用。需要新结论时，应固定新提交、输入清单、模型、构建与机器后重新测量，而不是改写历史记录。
+
+- [2026-10-19 两图频数归因](stages/2026-10-19-channel-frequency-transfer.md)：固定反例显示单图重复颜色可放大小码值退化，未加入训练。
+- [2026-10-19 分通道节点精化](stages/2026-10-19-velvia-channel-nodes.md)、[整块节点平移](stages/2026-10-19-velvia-channel-blocks.md)：两种各一次有限提议增量不足，未追加完整测试。
