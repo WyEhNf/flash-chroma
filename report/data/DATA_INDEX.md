@@ -57,3 +57,5 @@
 `velvia-channel-coordinates-v1`保存9块一次新表示与选择；`velvia-channel-coordinates-accept-v1`保存唯一候选完整精度，cube mean/p99约降5.84%/9.65%、100图mean降4.47%，逐图/audit局限完整披露。`channel-native-v1`另存独立C ABI的合同、单级/四级等距控制完整输出回执、实际应用与两阶段串行性能比较；新表示有内存及速度代价，默认不变。
 
 `channel-frequency-transfer-v1`记录两图固定频数与118个中间反例，指出0843由重复灰色主导。`velvia-channel-nodes-v1`和`velvia-channel-blocks-v1`分别保存分通道坐标固定后的单点/2³块一次提议，均未达到额外双mean0.5%门槛，未做完整精度/native/性能验收。
+
+`channel-continuous-floor-v1`保存三路权威几何的完整整数矩、连续解和精确盒下界；独立标准库审计通过。当前节点与clip连续可行点有16.76%未舍入均匀MSE空间，不等于真实RGB8/照片mean或p99收益。

@@ -1,0 +1,41 @@
+{
+  "pass": true,
+  "purpose": "只用标准库从原始整数矩复核新几何的盒下界，不调用数值库或映射器。",
+  "implementation": "CPython标准库；未导入NumPy/SciPy/项目数值模块",
+  "input_results_sha256": "78fed60464dfd5ddcb0e1f62c046252a8d947e84fe2682ad007e8fafef4cf225",
+  "model_sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+  "script_sha256": "d6494dbf8c638ba5e698cfcb43ec67ef7009088d72732dcc691a3ecfd77c5c2c",
+  "channels": [
+    {
+      "channel": 0,
+      "integer_matrix_values": 395307,
+      "bound_numerator": "64427350158811851181185626509",
+      "bound_denominator": "79228162514264337593543950336"
+    },
+    {
+      "channel": 1,
+      "integer_matrix_values": 395307,
+      "bound_numerator": "7199698631766583076836974851",
+      "bound_denominator": "19807040628566084398385987584"
+    },
+    {
+      "channel": 2,
+      "integer_matrix_values": 395307,
+      "bound_numerator": "26554474558569427570673914331",
+      "bound_denominator": "39614081257132168796771975168"
+    }
+  ],
+  "box_mse_lower_exact": [
+    "146335093803017038629881354575",
+    "79228162514264337593543950336"
+  ],
+  "strict_rgb8_rms_lower_exact": [
+    123,
+    250
+  ],
+  "clipped_continuous_and_current_mse_match": true,
+  "native_assemblies": 0,
+  "solver_calls": 0,
+  "pixel_mapping_calls": 0,
+  "scope": "从保存整数矩独立复核凸性盒下界和RMS推论；依赖同SHA原生完整矩组装的既有来源证据，不新增性能/照片/部署模型结论"
+}

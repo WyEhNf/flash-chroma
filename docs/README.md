@@ -96,3 +96,5 @@
 
 - [2026-10-19 两图频数归因](stages/2026-10-19-channel-frequency-transfer.md)：固定反例显示单图重复颜色可放大小码值退化，未加入训练。
 - [2026-10-19 分通道节点精化](stages/2026-10-19-velvia-channel-nodes.md)、[整块节点平移](stages/2026-10-19-velvia-channel-blocks.md)：两种各一次有限提议增量不足，未追加完整测试。
+
+- [2026-10-19 新几何连续空间](stages/2026-10-19-channel-continuous-floor.md)：三路完整整数矩与独立有理证书，区分连续可行空间和RGB8部署收益。

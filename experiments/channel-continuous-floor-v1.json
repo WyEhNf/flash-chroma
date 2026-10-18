@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "purpose": "固定已验3e5各输出权威几何，三次完整均匀域L2连续节点表达能力与合法盒节点精确有理下界，判断局部整数收益小时是否仍有连续空间",
+  "inputs": {
+    "table": {
+      "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+      "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+    },
+    "matched_results": {
+      "path": "artifacts/velvia-matched-operators-v1/results.json",
+      "sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8"
+    },
+    "model": {
+      "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+      "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+    },
+    "accepted_results": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/results.json",
+      "sha256": "290150d6d393d02fa9c51ffbfa3c75c3cbf5d64a4992abff498079b8c147b121"
+    }
+  },
+  "trainer": {
+    "path": "build-fit/libjshc_full_fit.dll",
+    "sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+    "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+    "abi": 1,
+    "threads": 4
+  },
+  "assemblies": 3,
+  "solver": {
+    "method": "每输出原始H/b一次无ridge Jacobi CG，x0当前RGB8节点；不暖启动正则、不自动更换求解器",
+    "rtol": 1e-13,
+    "maxiter": 1000,
+    "stop": "任何info非0/非有限/相对残差>1e-12即停止，不追加预算"
+  },
+  "shared_reference_mse": 1.8526704487157986,
+  "assembly_contract": "直接C ABI传同一shared_idx和各输出channel_frac[c]，每输出完整组装一次；不从grid重生frac；每次只解该输出rhs与c_raw。完整uint64矩、metadata、SHA保存。",
+  "support": "仅原grid最近RGB8见证一次，Python整数margin；正余量为SPD充分条件，失败不证明秩亏/全局不可行、不搜索替代见证。",
+  "certificate": "无界LS证据点精确float有理half-up到Q20。对每输出以Python整数计算Fnum和gnum，盒一阶凸性下界num=Fnum+2Σgnum*(box_choice*2^20-zint)，box_choice=gnum>=0取0否则255，MSElower=num/2^96。无需SPD；可用成功SPD证书另算无界残差下界作辅助，不拿浮点残差作严格证明。",
+  "diagnostics": "同raw矩计算原RGB8节点未舍入MSE、无界连续近似LS MSE、clip到[0,255]的Q20可行连续点精确MSE上界，不映射像素。前后只比较完整均匀L2连续未舍入目标，不把旧几何证书套新几何。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX、Python3.12.14/NumPy1.26.4/SciPy1.15.2；既有完整矩C ABI请求4线程、BLAS1；实际metadata保存；Python大整数/Fraction证据。不是运行时/性能测试。",
+  "limits": "不部署模型、不RGB8量化部署、不样本/百图/新full输出流、不修改权重/几何/核心/native/default、不PR/push/commit。无界节点可越界且不可部署；盒连续上下界不等于RGB8节点最优、不说明照片mean/p99或真实距离目标收益；RMS下界只针对这一冻结几何、凸四面体、合法[0,255]节点及RGB8 half-up输出，不证明其它几何或格式无解。"
+}
