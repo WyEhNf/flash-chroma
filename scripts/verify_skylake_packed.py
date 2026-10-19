@@ -1,4 +1,4 @@
-"""56位轴表的一次集中整数合同：真实混合几何、17位边界、尾部与非对齐，不测性能。"""
+"""Skylake候选的一次集中整数合同：真实混合几何、Q16边界、尾部与非对齐，不测性能。"""
 from __future__ import annotations
 import argparse
 import itertools
