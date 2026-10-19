@@ -63,8 +63,8 @@ def main():
     compile_commands = read(out/'compile_commands.json')
     for item in compile_commands:
         command = item['command']; name = Path(item['file']).name
-        if '-march=native' in command or '-mavx512' in command:
-            raise ValueError('未授权的本机或AVX512指令集')
+        if any(flag in command for flag in ('-march=', '-mavx512', '-mfma', '-ffast-math', '-Ofast')):
+            raise ValueError('不得通过全局架构/AVX512/FMA/fast-math绕过本阶段显式ISA边界')
         if name != 'lut_simd_avx2.cpp' and name != 'channel_avx2.cpp' and '-mavx2' in command:
             raise ValueError('AVX2泄漏到标量/dispatcher翻译单元')
         if name in ('lut_simd_avx2.cpp', 'channel_avx2.cpp') and '-mtune=skylake' not in command:
