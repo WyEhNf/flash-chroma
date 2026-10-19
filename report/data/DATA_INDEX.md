@@ -1,5 +1,7 @@
 # 报告数据索引
 
+2026-10-20新增[时间优化阶段](../../docs/stages/2026-10-20-skylake-runtime-delivery.md)：[56位轴表](skylake-packed-v1/README.md)、[精确16位乘加](skylake-madd-v1/README.md)、[精确binary32](skylake-float-v1/README.md)均未达本机速度门槛；[有界精确后缀缓存](skylake-suffix-cache-v1/README.md)在同模型、同核集合的Windows/AMD对照中使1/4线程apply耗时下降约52%，增加742544字节准备容量，准备成本另列。缓存另有WSL/Linux完整字节比较，不代表Skylake实测；派生缓存的题目许可与目标服务器验收仍待办。四候选各自保留冻结计划、原始轮次及源码/二进制身份，不更新默认或历史PDF。
+
 最新本地汇总见[当前精度结果](../../docs/stages/2026-10-19-precision-latest.md)。`cinema-current-anchor-accept-v1`保存a399真实四级完整域/百图/独立整数与原生终验、逐图退化、约46%成本背景；`channel-runtime-specialized-v1`保存同a399模型的唯一编译期专门化合同、完整原生等价和受控配对速度收益，两个阶段的速度不跨阶段相乘。
 
 `cinema-channel-suffix-coordinates-v1`、`cinema-channel-suffix-joint-nodes-v1`保留两个未入围候选；`cinema-cap-anchor-diagnosis-v1`保留唯一原色的逐级轨迹；`cinema-current-anchor-v1`保留统一收紧191色及唯一整合拟合/选择。`channel-runtime-reuse-v1`保留节点读取减少却变慢的负结果。新格式未接公共默认/GUI/C99，仍无官方数据或Threshold。

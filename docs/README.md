@@ -109,3 +109,7 @@
 - [旧cap单色解释](stages/2026-10-19-cinema-cap-anchor-diagnosis.md)与[当前锚点修正](stages/2026-10-19-cinema-current-anchor.md)：首级1码值传播及全域统一约束，未把guard反例加入训练。
 - [Cinema完整终验与实际四级成本](stages/2026-10-19-cinema-current-anchor-accept.md)：百图mean全部改善，尾部代价与约46%运行成本分列。
 - [节点读取复用负结果](stages/2026-10-19-channel-runtime-reuse.md)与[固定四级专门化](stages/2026-10-19-channel-runtime-specialized.md)：两项不同假设各自冻结、各一次同机比较，不混合计时或隐去失败。
+
+- [2026-10-20 时间优化阶段交付](stages/2026-10-20-skylake-runtime-delivery.md)：以Skylake为最终目标的本机研究，四候选各自冻结验证；缓存候选本机耗时降约52%，服务器与官方派生缓存许可仍待验收。
+- [轴表打包](stages/2026-10-20-skylake-packed.md)、[精确16位乘加](stages/2026-10-20-skylake-madd.md)、[精确binary32](stages/2026-10-20-skylake-float.md)：保持字节一致但未达本机性能门槛，保留负结果。
+- [有界精确后缀缓存](stages/2026-10-20-skylake-suffix-cache.md)：同模型完整输出一致，Windows/AMD性能、额外容量/准备时间及WSL/Linux可移植性分列。

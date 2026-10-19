@@ -15,12 +15,16 @@ def save(path,value):Path(path).write_text(json.dumps(value,ensure_ascii=False,i
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--prefix',action='append',help='只核对这些名称前缀的档案；不传时保持既有精度交付范围')
+    parser.add_argument('--documents',nargs='+',default=[],help='文档清单；传入时替代默认文档清单')
     args=parser.parse_args();out=args.output.resolve()
     if out.exists():raise ValueError('不覆盖交付检查')
     base=ROOT/'report/data';folders=[];records=[];documents=[]
     for folder in sorted(base.iterdir()):
         if not folder.is_dir() or folder==out:continue
-        if not (folder.name.startswith(('channel-','velvia-channel-','cinema-channel-','cinema-current-anchor-'))
+        if args.prefix:
+            if not folder.name.startswith(tuple(args.prefix)):continue
+        elif not (folder.name.startswith(('channel-','velvia-channel-','cinema-channel-','cinema-current-anchor-'))
                 or folder.name in ('emerald-calibrated-v1','cinema-cap-anchor-diagnosis-v1')):continue
         manifest=folder/'manifest.json'
         if not manifest.exists():continue
@@ -43,7 +47,7 @@ def main():
         if len(blob)!=r['bytes'] or digest(blob)!=r['sha256']:raise ValueError('Git换行/交付字节不同：'+r['path'])
         r['git_blob_sha256']=digest(blob)
     if position!=len(proc.stdout):raise ValueError('Git批回执尾部不完整')
-    documents += [ROOT/'docs/README.md',ROOT/'report/data/DATA_INDEX.md',
+    documents += [ROOT/n for n in args.documents] if args.documents else [ROOT/'docs/README.md',ROOT/'report/data/DATA_INDEX.md',
         *[ROOT/'docs/stages'/n for n in ('2026-10-19-precision-latest.md','2026-10-19-cinema-current-anchor-accept.md',
             '2026-10-19-channel-runtime-specialized.md','2026-10-19-cinema-cap-anchor-diagnosis.md')]]
     links=[]
