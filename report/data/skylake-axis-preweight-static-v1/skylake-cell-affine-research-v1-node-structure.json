@@ -1,0 +1,70 @@
+{
+  "purpose": "对固定首级m³节点检验每个小立方体是否严格仿射，评估无需排序的精确局部路径；不映射LUT像素或计时",
+  "model": {
+    "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+    "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+  },
+  "first_slut": {
+    "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+    "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+  },
+  "m": 33,
+  "node_grid_shape": [
+    33,
+    33,
+    33,
+    3
+  ],
+  "cell_count": 32768,
+  "conditions": "对每输出通道，110=100+010-000，101=100+001-000，011=010+001-000，111=100+010+001-2*000，均为整数精确相等",
+  "histogram": [
+    {
+      "channel_mask": 0,
+      "cells": 19958,
+      "rgb8_inputs": 8530462
+    },
+    {
+      "channel_mask": 1,
+      "cells": 3236,
+      "rgb8_inputs": 1592578
+    },
+    {
+      "channel_mask": 2,
+      "cells": 3180,
+      "rgb8_inputs": 1673799
+    },
+    {
+      "channel_mask": 3,
+      "cells": 773,
+      "rgb8_inputs": 764932
+    },
+    {
+      "channel_mask": 4,
+      "cells": 3128,
+      "rgb8_inputs": 1744376
+    },
+    {
+      "channel_mask": 5,
+      "cells": 701,
+      "rgb8_inputs": 492922
+    },
+    {
+      "channel_mask": 6,
+      "cells": 747,
+      "rgb8_inputs": 577248
+    },
+    {
+      "channel_mask": 7,
+      "cells": 1045,
+      "rgb8_inputs": 1400899
+    }
+  ],
+  "all_three_channels_affine_cells": 1045,
+  "all_three_channels_affine_rgb8_inputs": 1400899,
+  "all_three_channels_affine_uniform_rgb8_fraction": 0.08350008726119995,
+  "source_metadata": "RGB8覆盖按每轴shared_idx计数的外积求得，未枚举颜色输出，也未读取/调参照片",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "scope": "只证明节点几何结构与静态覆盖；任何新内核仍须独立整数及性能验收"
+}

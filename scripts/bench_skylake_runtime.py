@@ -14,6 +14,7 @@ import psutil
 from skylake_support import ROOT, build_libraries, checked, claim, digest, environment, read, save, unchanged
 from suffix_cache_support import cache_info
 from delta16_support import layouts
+from axis_preweight_support import formats as axis_formats
 
 
 def worker(args, policy):
@@ -59,6 +60,9 @@ def worker(args, policy):
             with chain:
                 info = cache_info(chain)
                 coordinate_layouts = layouts(chain)
+                shared_axis_formats = axis_formats(chain)
+                if name == 'candidate' and 'axis_preweight_policy' in plan and shared_axis_formats != plan['axis_preweight_policy']['actual_chain_formats']:
+                    raise ValueError('计时模型未使用冻结的共享轴预计算格式')
                 if name == 'candidate' and 'delta16_policy' in plan and coordinate_layouts != plan['delta16_policy']['actual_chain_layouts']:
                     raise ValueError('计时模型未使用冻结的坐标差布局')
                 if name == 'candidate' and 'cache_policy' in plan and (not info or not info['enabled']):
@@ -77,6 +81,7 @@ def worker(args, policy):
                     'warmup_output_sha256': actual_sha, 'model_accounting_bytes': chain.model_bytes,
                     'prepare_wall_seconds': prepare_seconds, 'suffix_cache_info': info,
                     'coordinate_layouts': coordinate_layouts,
+                    'shared_axis_formats': shared_axis_formats,
                     'prepare_plus_first_100_apply_seconds': prepare_seconds+measured['apply_seconds'][0],
                     'prepare_plus_first_100_copy_apply_seconds': prepare_seconds+measured['copy_apply_seconds'][0],
                     'serialized_input_bytes': sum(p.stat().st_size for p in models)+sum(p.stat().st_size for p in sides if p),
@@ -110,6 +115,7 @@ def main():
         ['scripts/bench_skylake_runtime.py', 'experiments/channel-runtime/channel_native.py',
          'scripts/suffix_cache_support.py',
          'scripts/delta16_support.py',
+         'scripts/axis_preweight_support.py',
          args.policy.resolve().relative_to(ROOT).as_posix()],
         {'purpose': __doc__, 'policy': policy,
          'scope': '一次100图完整组，稳态毫秒每图不含准备/IO/解码；另外列准备墙钟与准备+首轮100图，后者仍已预热'})

@@ -1,0 +1,23 @@
+{
+  "purpose": "共享轴预计算的静态停止决定，不作为真实性能结论",
+  "all_two_path_ratios": [
+    {
+      "gathers": 35,
+      "cycles": 1.1070374675847268,
+      "throughput_bound": 1.0166204986149585
+    },
+    {
+      "gathers": 38,
+      "cycles": 1.0674770528404862,
+      "throughput_bound": 1.0229007633587786
+    }
+  ],
+  "stop": true,
+  "reason": "乘法减少却增加端点恢复成本，总周期与吞吐下界两处均变差，未满足全部路径至少3%潜力",
+  "native_calls": 0,
+  "correctness_calls": 0,
+  "performance_calls": 0,
+  "finite_full_photos_not_executed": true,
+  "helpers_new_diagnostic_branches_executed": false,
+  "scope": "编译和静态检查不能证明实际更慢，也不给候选发放正确性；不进入默认或四方案服务器矩阵"
+}
