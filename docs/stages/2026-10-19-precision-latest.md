@@ -1,6 +1,6 @@
 # 当前精度结果与真正的瓶颈
 
-Agent：Codex；Operator：WyEhNf；状态：本轮改进及验证汇总，仅本地中文提交，未创建PR或推送，默认不变。
+Agent：Codex；Operator：WyEhNf；状态：本轮改进及验证完成，按用户授权通过`codex/joint-grid-precision-20261018`统一提交PR，等待审查，默认不变。交付范围与协作核对见[PR交付说明](2026-10-19-precision-pr-delivery.md)。
 
 这轮把“更接近原滤镜”和“运行更快”分开解决，再用同一模型比较后端。稀疏化的是颜色变换规则，图像仍为RGB8；插值可以生成节点之间的颜色，不限制照片只能使用网格节点上的颜色。
 
@@ -29,4 +29,4 @@ Agent：Codex；Operator：WyEhNf；状态：本轮改进及验证汇总，仅�
 
 主要证据：[Cinema完整结果](2026-10-19-cinema-current-anchor-accept.md)、[后端专门化](2026-10-19-channel-runtime-specialized.md)、[单色误差传播](2026-10-19-cinema-cap-anchor-diagnosis.md)、[Velvia完整精度](2026-10-19-velvia-channel-coordinates-accept.md)、[Emerald17³](2026-10-19-emerald-calibrated.md)。失败路径继续保留，各manifest提供原始轮次、模型、源码、DLL、哈希与未覆盖范围。
 
-本轮关键提交：`d790492`统一收紧约束并整合坐标/节点，`1330961`完成实际四级完整精度及成本，`26e6ac3`完成四级专门化与同模型严格比较；`f59a1d0`保留单色根因，`438b0fb`保留内点地址复用失败。阶段说明与各提交一并保留，遵照当前指令暂不组织PR或推送。
+本轮关键提交：`d790492`统一收紧约束并整合坐标/节点，`1330961`完成实际四级完整精度及成本，`26e6ac3`完成四级专门化与同模型严格比较；`f59a1d0`保留单色根因，`438b0fb`保留内点地址复用失败。阶段说明、原始中文提交及负结果统一纳入本次PR，不改写既有提交，不自动合并或升级默认。
