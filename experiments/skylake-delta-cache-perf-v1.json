@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "purpose": "有界缓存基线与同缓存加无损坐标差的唯一平衡比较；不乘算两次独立收益",
+  "plan": {
+    "path": "experiments/skylake-delta-cache-v1.json",
+    "sha256": "e6096d8d2a3fc48dc5b1a0bb4328019eae67678e26d640c16f06418a04088e52"
+  },
+  "build_path": "artifacts/skylake-delta-cache-build-v1",
+  "build": {
+    "path": "artifacts/skylake-delta-cache-build-v1/build.json",
+    "sha256": "abd87492dc28329d654a5ce1dc0f345ba549263be693be1565661f8b0f7a50c9"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-delta-cache-full-v1/results.json",
+    "sha256": "b63b43f34996243b832e6d60e2198c2b3ec2f70af2cc747d7c6216385a7d4898"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备"
+  ]
+}

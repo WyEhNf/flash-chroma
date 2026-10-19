@@ -79,3 +79,5 @@
 `skylake-clang-static-v1`保留同源GCC/Clang对象级比较，信号不一致而未运行。`skylake-delta16-v2`保存无损坐标差压缩的55+88组合同、完整色域/百图零差、唯一80轮性能及门槛复算，本机1/4线程耗时降约12.0%/8.1%；[阶段说明](../../docs/stages/2026-10-20-skylake-delta16.md)。AMD结果不代表Skylake实测，独立缓存候选收益不相乘。
 
 `skylake-server-entry-v1`保存纯标准库服务器入口、固定输入清单、独立Linux构建及12组完整色域/2112次边界比较/百图SHA回执。实际为同AMD的WSL2，正式性能分支未执行；最终本地传输ZIP约188MB，原始流不提交Git。[复现与限制](../../docs/stages/2026-10-20-skylake-server-entry.md)。
+
+`skylake-delta-cache-v1`直接比较已有缓存与同缓存加无损坐标差，保存55/88/55/77组集中合同、完整域/百图、表槽、唯一80轮与参考对象相等证明；本机1/4线程配对耗时再降约21.1%/22.5%，严重波动完整保留。[阶段说明](../../docs/stages/2026-10-20-skylake-delta-cache.md)不把此结果换算为不同基线总加速或Skylake成绩。
