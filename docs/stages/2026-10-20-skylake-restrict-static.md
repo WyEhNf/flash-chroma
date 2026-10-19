@@ -46,3 +46,5 @@ artifacts/error-study-py312/Scripts/python.exe -X utf8 scripts/inspect_skylake_r
 [完整证据](../../report/data/skylake-restrict-static-v1/README.md)保留这一次构建、两族全部汇编/MCA、停止依据及未执行项目。没有新拟合、误差或性能结果；RGB欧氏距离口径及现有四方案服务器传输包不变。本阶段向现有Draft PR43追加中文提交，不合并。
 
 此前快照、预计算和本轮结果共同说明，减少循环指令还受寄存器压力限制。接下来先核算已验精确后缀缓存的工作集与访问局部性，判断是否值得改存储布局；不重测已失败项，不把新的静态提议算作性能成果。Skylake具体SKU/系统/入口/GDS、正式实测、官方数据/Threshold及派生表许可仍待取得。
+
+后续状态：[R连续缓存阶段](2026-10-20-skylake-r-contiguous.md)完成新的访问剖面、完整正确性与唯一性能比较，中位改善但回退保护失败，未采用；本阶段restrict本身仍未运行。

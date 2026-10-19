@@ -1,0 +1,88 @@
+{
+  "purpose": "一次集中逐阶段验证；任何失败停止，不自动重试",
+  "validation_plan_sha256": "c4c9713f4400ab254e4e93653660e13df91d93b897f9ea621d07b38630856492",
+  "commands": [
+    {
+      "name": "base",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/verify_skylake_packed.py",
+        "--plan",
+        "experiments/skylake-r-contiguous-v1.json",
+        "--build",
+        "artifacts/skylake-r-contiguous-build-v1",
+        "--output",
+        "artifacts/skylake-r-contiguous-contract-v1"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "b7e88f080e2174c4756046f343ffc73f60e5b0d2d957a705873cfb2ee2e1d0c7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "cache",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/verify_skylake_suffix_cache.py",
+        "--plan",
+        "experiments/skylake-r-contiguous-v1.json",
+        "--build",
+        "artifacts/skylake-r-contiguous-build-v1",
+        "--contract",
+        "artifacts/skylake-r-contiguous-contract-v1/results.json",
+        "--output",
+        "artifacts/skylake-r-contiguous-cache-contract-v1"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "dff8134ee3349c0d54310f5523d80e80ae791a659bf986aed76b22cc81f3b983",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "storage",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/verify_skylake_rcontiguous.py",
+        "--plan",
+        "experiments/skylake-r-contiguous-v1.json",
+        "--build",
+        "artifacts/skylake-r-contiguous-build-v1",
+        "--contract",
+        "artifacts/skylake-r-contiguous-contract-v1/results.json",
+        "--cache-contract",
+        "artifacts/skylake-r-contiguous-cache-contract-v1/results.json",
+        "--output",
+        "artifacts/skylake-r-contiguous-layout-contract-v1"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "8992a79ac1e900f8df549f93139711e39c71c08976d97e40332f157af621f4b3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/accept_skylake_runtime.py",
+        "--plan",
+        "experiments/skylake-r-contiguous-v1.json",
+        "--build",
+        "artifacts/skylake-r-contiguous-build-v1",
+        "--contract",
+        "artifacts/skylake-r-contiguous-contract-v1/results.json",
+        "--cache-contract",
+        "artifacts/skylake-r-contiguous-cache-contract-v1/results.json",
+        "--output",
+        "artifacts/skylake-r-contiguous-full-v1"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "f66312479da70d2e65600114c6527ba9c587e192e1b1cac87bf009f22b470203",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "purpose": "只读反汇编入口分派：追踪16个已知shared布尔组合至循环区，禁止以地址顺序猜对应关系。",
+  "initial_static_sha256": "130591db057ee9cce32ad9705748921a43a217a5bfaa5105c06fdc461817835c",
+  "source_sha256": "d3583c1f93d0dd575a1609c3b7a64b398644681c3895c44612272efa6e7c3e48",
+  "static_view_layout_proof_sha256": "bffe93a1fa36a7d779f803162daf4ba6101e52da487592043fa18de60be93cb7",
+  "semantic_loops": {
+    "reference": {
+      "unshared/mixed": 2,
+      "shared/mixed": 1,
+      "unshared/shared": 3,
+      "shared/shared": 0
+    },
+    "candidate": {
+      "unshared/mixed": 2,
+      "shared/mixed": 1,
+      "unshared/shared": 3,
+      "shared/shared": 0
+    }
+  },
+  "initial_comparator_reference_against_itself": {
+    "8": 1.2274437735188588,
+    "18": 1.0138576908456303
+  },
+  "paired_cost_bounds": [
+    {
+      "semantic_case": "shared/mixed",
+      "cpu": "skylake",
+      "reference_loop": "0xc08",
+      "candidate_loop": "0xc38",
+      "ratio": {
+        "Total Cycles": 0.9914238207753566,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "shared/mixed",
+      "cpu": "skylake-avx512",
+      "reference_loop": "0xc08",
+      "candidate_loop": "0xc38",
+      "ratio": {
+        "Total Cycles": 0.9914238207753566,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "shared/shared",
+      "cpu": "skylake",
+      "reference_loop": "0x158",
+      "candidate_loop": "0x180",
+      "ratio": {
+        "Total Cycles": 0.9855268786539284,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "shared/shared",
+      "cpu": "skylake-avx512",
+      "reference_loop": "0x158",
+      "candidate_loop": "0x180",
+      "ratio": {
+        "Total Cycles": 0.9855268786539284,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "unshared/mixed",
+      "cpu": "skylake",
+      "reference_loop": "0x12f0",
+      "candidate_loop": "0x1330",
+      "ratio": {
+        "Total Cycles": 1.009848982271832,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "unshared/mixed",
+      "cpu": "skylake-avx512",
+      "reference_loop": "0x12f0",
+      "candidate_loop": "0x1330",
+      "ratio": {
+        "Total Cycles": 1.009848982271832,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "unshared/shared",
+      "cpu": "skylake",
+      "reference_loop": "0x2190",
+      "candidate_loop": "0x21e0",
+      "ratio": {
+        "Total Cycles": 0.9927057059104234,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "semantic_case": "unshared/shared",
+      "cpu": "skylake-avx512",
+      "reference_loop": "0x2190",
+      "candidate_loop": "0x21e0",
+      "ratio": {
+        "Total Cycles": 0.9927057059104234,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    }
+  ],
+  "paired_cost_gate_pass": true,
+  "correction": "初版max/min把shared/mixed后缀不同路径交叉比较，连参考自比也拒绝；现以16组入口旗标的只读分派证明逐语义配对。候选未改/未重编译，3%参数及未来性能门槛不变，尚无原生调用。",
+  "project_native_calls": 0,
+  "performance_calls": 0
+}

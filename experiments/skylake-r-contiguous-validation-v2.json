@@ -1,0 +1,38 @@
+{
+  "schema": 2,
+  "purpose": "在任何候选加载/数值/性能调用前修正初版静态比较器的跨分派错配，保留原拒绝，逐语义证明配对。",
+  "code_plan": {
+    "path": "experiments/skylake-r-contiguous-v1.json",
+    "sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867"
+  },
+  "build": {
+    "path": "artifacts/skylake-r-contiguous-build-v1/build.json",
+    "sha256": "7769fe621a6ad1685ec92cbaa20bde2012d5a351fe9fa19617d6d779120e7d6f"
+  },
+  "initial_static": {
+    "path": "artifacts/skylake-r-contiguous-static-v1/results.json",
+    "sha256": "130591db057ee9cce32ad9705748921a43a217a5bfaa5105c06fdc461817835c"
+  },
+  "dispatch_proof": {
+    "path": "artifacts/skylake-r-contiguous-static-v1/dispatch-proof.json",
+    "sha256": "b0027e65dc125f4a74c627107e6380daf446ed2c3c1b11e19e7d335d67cec4dc"
+  },
+  "correction": "初版以候选最贵/参考最便宜交叉比较不同后缀分派；参考自身在8-gather族也得1.22744，误拒。保留初版结果及源。只读追踪16组shared旗标确认四种语义各唯一对应循环；两种MCA逐语义配对，仍<=1.03。C++/构建/模型未改、未重编译，没有既有数值或计时结果。",
+  "static_cost_gate": "四种入口分派×两种MCA逐语义循环，gather不增/零调用，周期及吞吐比<=1.03。",
+  "profile_gate": "固定100图所有16种u32自然对齐余数的4096块行数比<=.9；未模拟真实miss或速度。",
+  "finite_contracts": [
+    "基础55+6",
+    "缓存55及所有合法槽整数oracle",
+    "实际存储置换、原快照和失败不写"
+  ],
+  "full_contract": "实际单级/四级两库标量1及AVX2请求4，共8组完整256³；100图AVX2请求4各库一次",
+  "performance_gate_unchanged": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "performance_schedule": "之后唯一80组；4个新进程AB/BA/BA/AB，1/4线程次序平衡，5个100图组；失败保留不重测。",
+  "project_native_calls_before_revision": 0,
+  "performance_calls_before_revision": 0
+}
