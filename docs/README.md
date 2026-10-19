@@ -113,3 +113,4 @@
 - [2026-10-20 时间优化阶段交付](stages/2026-10-20-skylake-runtime-delivery.md)：以Skylake为最终目标的本机研究，四候选各自冻结验证；缓存候选本机耗时降约52%，服务器与官方派生缓存许可仍待验收。
 - [轴表打包](stages/2026-10-20-skylake-packed.md)、[精确16位乘加](stages/2026-10-20-skylake-madd.md)、[精确binary32](stages/2026-10-20-skylake-float.md)：保持字节一致但未达本机性能门槛，保留负结果。
 - [有界精确后缀缓存](stages/2026-10-20-skylake-suffix-cache.md)：同模型完整输出一致，Windows/AMD性能、额外容量/准备时间及WSL/Linux可移植性分列。
+- [批入口描述符快照](stages/2026-10-20-skylake-snapshot.md)：静态指令减少却增加栈访存，MCA信号不一致，停止于静态阶段，没有数值或性能测试。
