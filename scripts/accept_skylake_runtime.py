@@ -6,7 +6,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from skylake_support import ROOT, build_libraries, checked, claim, digest, read, save, unchanged
-from lutlab import channel_coordinates as cc
+from lutlab import channel_coordinates as cc, io
+from suffix_cache_support import cache_info, cache_table, coverage
 from verify_channel_coordinates import integer_oracle
 
 
@@ -15,6 +16,7 @@ def main():
     parser.add_argument('--plan', type=Path, required=True)
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--contract', type=Path, required=True)
+    parser.add_argument('--cache-contract', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     plan, build, libraries, loaded = build_libraries(args.plan, args.build)
@@ -22,6 +24,14 @@ def main():
     if (not contract['pass'] or contract['build_sha256'] != digest(args.build/'build.json')
             or contract['libraries'] != build['libraries']):
         raise ValueError('有限合同未通过或不是相同构建')
+    cache_contract = None
+    if 'cache_policy' in plan:
+        if args.cache_contract is None:
+            raise ValueError('缓存候选需要单独表槽与命中合同')
+        cache_contract = read(args.cache_contract)
+        if (not cache_contract['pass'] or cache_contract['build_sha256'] != digest(args.build/'build.json')
+                or cache_contract['libraries'] != build['libraries']):
+            raise ValueError('缓存合同与构建不同')
     paths = {k: checked(v) for k, v in plan['fixed_inputs'].items()}
     prior = read(paths['prior_full'])
     if not prior['acceptance']['accepted'] or prior['acceptance']['failed'] or not prior['native']['pass']:
@@ -35,11 +45,12 @@ def main():
     expected = np.memmap(paths['cube'], np.uint8, 'r', shape=(256**3, 3))
     out, identity = claim(args.output, args.plan,
         [*plan['source_sha256'], 'scripts/accept_skylake_runtime.py', 'scripts/verify_skylake_packed.py',
-         'scripts/verify_channel_coordinates.py', 'python/lutlab/channel_coordinates.py', 'python/lutlab/io.py'],
+         'scripts/verify_channel_coordinates.py', 'scripts/suffix_cache_support.py',
+         'python/lutlab/channel_coordinates.py', 'python/lutlab/io.py'],
         {'purpose': __doc__, 'build_sha256': digest(args.build/'build.json'),
          'contract_sha256': digest(args.contract), 'loaded_libraries': loaded})
     operators = {}; hashes = {}; photos = []; photos_hash = {name: hashlib.sha256() for name in libraries}
-    memory = {}
+    memory = {}; cache_record = None; first_stream = None
     try:
         for name, lib in libraries.items():
             operators[name] = {
@@ -47,11 +58,36 @@ def main():
                 'chain': lib.chain([paths['base'], *suffix], [paths['sidecar'], None, None, None])}
             memory[name] = {mode: h.model_bytes for mode, h in operators[name].items()}
             hashes[name] = {mode+'_'+kernel: hashlib.sha256() for mode in ('single', 'chain') for kernel in ('scalar', 'avx2')}
+        if cache_contract is not None:
+            handle = operators['candidate']['chain']; info = cache_info(handle)
+            if not info or not info['enabled'] or info['table_capacity_bytes'] > plan['cache_policy']['budget_bytes']:
+                raise AssertionError('实际模型未按冻结容量政策启用缓存')
+            axes = [np.arange(info[a], info[b]+1, dtype=np.int32) for a, b in
+                    [('r_min', 'r_max'), ('dg_min', 'dg_max'), ('db_min', 'db_max')]]
+            r, dg, db = np.meshgrid(*axes, indexing='ij')
+            colours = np.column_stack((r.ravel(), (r+dg).ravel(), (r+db).ravel()))
+            valid = ((colours >= 0) & (colours <= 255)).all(axis=1)
+            truth = colours[valid].astype(np.uint8)
+            for path in suffix:
+                truth = integer_oracle(cc.from_sparse(io.load_sparse(path, competition=True)), truth)
+            packed = truth[:, 0].astype(np.uint32) | (truth[:, 1].astype(np.uint32) << 8) | (truth[:, 2].astype(np.uint32) << 16)
+            table = cache_table(handle, info)
+            np.testing.assert_array_equal(table[valid], packed)
+            if np.any(table[~valid]) or int(valid.sum()) != info['valid_entries']:
+                raise AssertionError('实际模型的缓存非法槽隔离或计数错误')
+            cache_record = {'info': info, 'cache_contract_sha256': digest(args.cache_contract),
+                'legal_slots_independent_u64_checked': int(valid.sum()), 'invalid_slots_zero': int((~valid).sum()),
+                'entry_byte_mismatches': 0, 'cube_coverage': {}, 'photos_coverage': {}}
+            first_stream = np.memmap(out/'first-stage.rgb', np.uint8, 'w+', shape=(256**3, 3))
         single_hash = hashlib.sha256()
         for start in range(0, 256**3, 65536):
             ids = np.arange(start, start+65536, dtype=np.int64)
             rgb = np.column_stack((ids >> 16, (ids >> 8) & 255, ids & 255)).astype(np.uint8)
             single = integer_oracle(model, rgb); single_hash.update(single.tobytes())
+            if first_stream is not None:
+                first_stream[start:start+len(single)] = single
+                for key, value in coverage(single, info).items():
+                    cache_record['cube_coverage'][key] = cache_record['cube_coverage'].get(key, 0)+value
             for name in libraries:
                 for mode, truth in [('single', single), ('chain', expected[start:start+len(rgb)])]:
                     for kernel, threads in [('scalar', 1), ('avx2', 4)]:
@@ -76,6 +112,10 @@ def main():
                 rgb = np.asarray(image).reshape(-1, 3).copy()
             keys = rgb.astype(np.int64) @ np.array([65536, 256, 1], np.int64)
             item = {'image': row['id'], 'outputs': {}, 'byte_mismatches': 0}
+            if first_stream is not None:
+                item['cache_coverage'] = coverage(first_stream[keys], info)
+                for key, value in item['cache_coverage'].items():
+                    cache_record['photos_coverage'][key] = cache_record['photos_coverage'].get(key, 0)+value
             for name in libraries:
                 actual = operators[name]['chain'].apply(rgb.copy(), kernel='avx2', threads=4)
                 np.testing.assert_array_equal(actual, expected[keys])
@@ -91,6 +131,8 @@ def main():
         for group in operators.values():
             for handle in group.values():
                 handle.close()
+        if first_stream is not None:
+            first_stream.flush()
     unchanged(identity)
     result = {'pass': True, 'purpose': __doc__, 'plan_sha256': digest(args.plan),
         'build_sha256': digest(args.build/'build.json'), 'libraries': build['libraries'],
@@ -99,7 +141,7 @@ def main():
         'sidecar': plan['fixed_inputs']['sidecar'], 'suffix_models': plan['suffix_models'],
         'cube': {'pixels': 256**3, 'single_oracle_sha256': single_hash.hexdigest(), 'outputs': values, 'byte_mismatches': 0},
         'photos': {'count': 100, 'output_sha256': photo_values, 'per_image': photos, 'byte_mismatches': 0},
-        'model_accounting_bytes': memory, 'new_fits': 0, 'performance_calls': 0,
+        'model_accounting_bytes': memory, 'suffix_cache': cache_record, 'new_fits': 0, 'performance_calls': 0,
         'scope': '冻结同模型的完整后端等价；精度数据复用相同输出流，不新增精度选型，不代表Skylake服务器运行或性能。'}
     save(out/'results.json', result)
     print('完整等价通过；准备后模型容量：', memory, flush=True)

@@ -7,10 +7,12 @@ from pathlib import Path
 import statistics
 import subprocess
 import sys
+import time
 import numpy as np
 from PIL import Image
 import psutil
 from skylake_support import ROOT, build_libraries, checked, claim, digest, environment, read, save, unchanged
+from suffix_cache_support import cache_info
 
 
 def worker(args, policy):
@@ -23,6 +25,9 @@ def worker(args, policy):
     if sorted(process.cpu_affinity()) != sorted(requested):
         raise ValueError('设置后实际CPU亲和性不符')
     plan, build, libraries, loaded = build_libraries(checked(policy['plan']), Path(policy['build_path']))
+    if checked(policy['build']).resolve() != (Path(policy['build_path'])/'build.json').resolve():
+        raise ValueError('策略中构建身份与目录不一致')
+    checked(policy['topology'])
     full_path = checked(policy['full_acceptance']); full = read(full_path)
     if (not full['pass'] or full['libraries'] != build['libraries']
             or full['build_sha256'] != digest(Path(policy['build_path'])/'build.json')
@@ -48,7 +53,12 @@ def worker(args, policy):
     for threads in thread_order:
         for name in order:
             lib = libraries[name]
-            with lib.chain(models, sides) as chain:
+            started = time.perf_counter(); chain = lib.chain(models, sides)
+            prepare_seconds = time.perf_counter()-started
+            with chain:
+                info = cache_info(chain)
+                if name == 'candidate' and 'cache_policy' in plan and (not info or not info['enabled']):
+                    raise ValueError('实际计时未启用冻结缓存候选')
                 actual = chain.apply(source.copy(), kernel='avx2', threads=threads)
                 actual_sha = hashlib.sha256(actual.tobytes()).hexdigest(); del actual
                 if actual_sha != full['photos']['output_sha256'][name]:
@@ -61,6 +71,9 @@ def worker(args, policy):
                 records.append({'variant': name, 'requested_threads': threads, 'kernel': 'avx2', 'stages': 4,
                     'images': 100, 'library_sha256': lib.sha256, 'library_revision': lib.revision,
                     'warmup_output_sha256': actual_sha, 'model_accounting_bytes': chain.model_bytes,
+                    'prepare_wall_seconds': prepare_seconds, 'suffix_cache_info': info,
+                    'prepare_plus_first_100_apply_seconds': prepare_seconds+measured['apply_seconds'][0],
+                    'prepare_plus_first_100_copy_apply_seconds': prepare_seconds+measured['copy_apply_seconds'][0],
                     'serialized_input_bytes': sum(p.stat().st_size for p in models)+sum(p.stat().st_size for p in sides if p),
                     'start_state': start, 'end_affinity': process.cpu_affinity(), **measured})
     if hashlib.sha256(source.tobytes()).hexdigest() != source_sha:
@@ -90,8 +103,10 @@ def main():
     # 主进程不加载原生库，使计时子进程有独立的动态库和OpenMP生命周期。
     out, identity = claim(args.output, plan_path,
         ['scripts/bench_skylake_runtime.py', 'experiments/channel-runtime/channel_native.py',
+         'scripts/suffix_cache_support.py',
          args.policy.resolve().relative_to(ROOT).as_posix()],
-        {'purpose': __doc__, 'policy': policy, 'scope': '一次100图完整组，毫秒每图为摊销；不含模型准备/IO/解码'})
+        {'purpose': __doc__, 'policy': policy,
+         'scope': '一次100图完整组，稳态毫秒每图不含准备/IO/解码；另外列准备墙钟与准备+首轮100图，后者仍已预热'})
     workers = []
     env = os.environ.copy()
     for key in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS'):
@@ -120,9 +135,15 @@ def main():
             summaries.append({'variant': name, 'requested_threads': threads,
                 'median_apply_ms_per_image': statistics.median(values), 'process_medians_ms_per_image': values,
                 'median_copy_apply_ms_per_image': statistics.median(total),
+                'prepare_wall_seconds': [w[name]['prepare_wall_seconds'] for w in matched],
+                'median_prepare_plus_first_100_apply_seconds': statistics.median(
+                    w[name]['prepare_plus_first_100_apply_seconds'] for w in matched),
+                'median_prepare_plus_first_100_copy_apply_seconds': statistics.median(
+                    w[name]['prepare_plus_first_100_copy_apply_seconds'] for w in matched),
                 'model_accounting_bytes': matched[0][name]['model_accounting_bytes']})
         ratios = [statistics.median(w['candidate']['apply_seconds'])/statistics.median(w['reference']['apply_seconds']) for w in matched]
         totals = [statistics.median(w['candidate']['copy_apply_seconds'])/statistics.median(w['reference']['copy_apply_seconds']) for w in matched]
+        prepared = [w['candidate']['prepare_plus_first_100_copy_apply_seconds']/w['reference']['prepare_plus_first_100_copy_apply_seconds'] for w in matched]
         gates = policy['adoption_gate']
         if statistics.median(ratios) > gates['median_apply_ratio_max']:
             failures.append(f'{threads}线程apply中位比未达门槛')
@@ -130,9 +151,13 @@ def main():
             failures.append(f'{threads}线程至少一个进程退化超限')
         if statistics.median(totals) > gates['median_copy_apply_ratio_max']:
             failures.append(f'{threads}线程copy+apply退化')
+        if 'median_prepare_plus_100_ratio_max' in gates and statistics.median(prepared) > gates['median_prepare_plus_100_ratio_max']:
+            failures.append(f'{threads}线程准备+100图退化')
         paired.append({'requested_threads': threads, 'process_apply_ratios': ratios,
             'median_apply_ratio': statistics.median(ratios), 'process_copy_apply_ratios': totals,
-            'median_copy_apply_ratio': statistics.median(totals)})
+            'median_copy_apply_ratio': statistics.median(totals),
+            'process_prepare_plus_100_copy_apply_ratios': prepared,
+            'median_prepare_plus_100_copy_apply_ratio': statistics.median(prepared)})
     unchanged(identity)
     result = {'measurement_completed': True, 'accepted_on_this_host': not failures, 'failed_gates': failures,
         'summary': summaries, 'paired': paired, 'worker_sha256': [digest(out/f'worker{i}.json') for i in range(4)],

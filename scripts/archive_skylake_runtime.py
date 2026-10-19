@@ -13,6 +13,7 @@ def main():
     parser.add_argument('--plan', type=Path, required=True)
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--contract', type=Path, required=True)
+    parser.add_argument('--cache-contract', type=Path)
     parser.add_argument('--full', type=Path, required=True)
     parser.add_argument('--performance', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
@@ -37,13 +38,21 @@ def main():
         if statistics.median(ratios) > gates['median_apply_ratio_max']: failures.append(f'{threads}线程apply中位比未达门槛')
         if max(ratios) > gates['any_process_apply_ratio_max']: failures.append(f'{threads}线程至少一个进程退化超限')
         if statistics.median(total) > gates['median_copy_apply_ratio_max']: failures.append(f'{threads}线程copy+apply退化')
+        if 'median_prepare_plus_100_ratio_max' in gates:
+            prepared = [w['candidate']['prepare_plus_first_100_copy_apply_seconds']/w['reference']['prepare_plus_first_100_copy_apply_seconds'] for w in matched]
+            if prepared != old['process_prepare_plus_100_copy_apply_ratios']:
+                raise ValueError('准备+100图配对统计不能复算')
+            if statistics.median(prepared) > gates['median_prepare_plus_100_ratio_max']: failures.append(f'{threads}线程准备+100图退化')
         recomputed.append({'requested_threads': threads, 'median_apply_ratio': statistics.median(ratios),
             'max_process_apply_ratio': max(ratios), 'median_copy_apply_ratio': statistics.median(total)})
     if failures != perf['failed_gates'] or (not failures) != perf['accepted_on_this_host']:
         raise ValueError('性能门槛结论复算不同')
     out.mkdir(parents=True)
     mappings = [(args.plan, 'plan.json')]
-    for folder, prefix in [(args.build, 'build'), (args.contract, 'contract'), (args.full, 'full'), (args.performance, 'performance')]:
+    folders = [(args.build, 'build'), (args.contract, 'contract'), (args.full, 'full'), (args.performance, 'performance')]
+    if args.cache_contract:
+        folders.append((args.cache_contract, 'cache-contract'))
+    for folder, prefix in folders:
         for p in folder.iterdir():
             if p.is_file() and p.suffix in ('.json', '.log', '.zip'):
                 mappings.append((p, prefix+'-'+p.name))

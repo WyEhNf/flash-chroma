@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "purpose": "有界精确后缀缓存与同次参考的平衡比较；另列准备与准备+100图，不更改缓存范围",
+  "plan": {
+    "path": "experiments/skylake-suffix-cache-v1.json",
+    "sha256": "a4552393135e1db4f90ca9eb1e3c0a4e39c264994ee8f62e9917770cd878188a"
+  },
+  "build_path": "artifacts/skylake-suffix-cache-build-v1",
+  "build": {
+    "path": "artifacts/skylake-suffix-cache-build-v1/build.json",
+    "sha256": "adf5caf1224846a4418389b4f6138bf7fa5bc15324738f85170027363edb8046"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-suffix-cache-full-v1/results.json",
+    "sha256": "8ce6a1961abb19885204635d2a007d28dc7011736c38539482d743048c27a114"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备",
+    "缓存范围与容量已在测试前冻结；额外内存与缓存准备时间必须披露",
+    "准备+100图指创建墙钟加首个已预热的原生测量轮；不等同首次冷启动端到端"
+  ]
+}
