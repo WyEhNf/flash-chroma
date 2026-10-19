@@ -1,0 +1,52 @@
+{
+  "purpose": "只导出已验模型的独立uint64后缀表预期，供无NumPy服务器逐字节核验；不调用原生后端或拟合。",
+  "generation_completed": true,
+  "plan_sha256": "e6096d8d2a3fc48dc5b1a0bb4328019eae67678e26d640c16f06418a04088e52",
+  "prior_full_sha256": "b63b43f34996243b832e6d60e2198c2b3ec2f70af2cc747d7c6216385a7d4898",
+  "inputs": {
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "suffix": [
+      {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+        "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+      },
+      {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+        "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+      },
+      {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+        "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+      }
+    ]
+  },
+  "bounds": {
+    "r_min": 0,
+    "r_max": 231,
+    "dg_min": -16,
+    "dg_max": 3,
+    "db_min": -36,
+    "db_max": 3
+  },
+  "entries": 185600,
+  "valid_entries": 171056,
+  "invalid_entries_zero": 14544,
+  "bytes": 742400,
+  "gold_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+  "format": "little-endian uint32, R|(G<<8)|(B<<16), R/dG/dB字典序",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4"
+  },
+  "source_sha256": {
+    "scripts/export_skylake_cache_gold.py": "46b28da671a9e74380c7ecffe03f8e48374696c7a162c215db0e81d7ef04e10a",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce"
+  },
+  "native_calls": 0,
+  "new_fits": 0,
+  "performance_calls": 0
+}

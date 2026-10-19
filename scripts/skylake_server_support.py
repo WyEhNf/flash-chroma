@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import sys
 from verify_skylake_linux_stdlib import bind, create, apply
 
@@ -57,30 +58,62 @@ def topology(explicit=None):
         raise ValueError('不能把SMT兄弟当成4个物理核')
     if len({(r['l3'],tuple(r['numa'])) for r in chosen})!=1:raise ValueError('CPU必须在同L3与NUMA域')
     return {'initial_allowed_cpus':allowed,'selected_cpus':selected,'rows':rows,'selection':'固定同L3/NUMA的4个不同物理核，不更改系统拓扑'}
-def environment():
-    cpu=Path('/proc/cpuinfo').read_text().split('\n\n')[0]
-    details={k.strip():v.strip() for line in cpu.splitlines() if ':' in line for k,v in [line.split(':',1)]}
+def cpu_details():
+    rows={}
+    for block in Path('/proc/cpuinfo').read_text().strip().split('\n\n'):
+        d={k.strip():v.strip() for line in block.splitlines() if ':' in line for k,v in [line.split(':',1)]}
+        if 'processor' in d:rows[int(d['processor'])]=d
+    return rows
+def environment(selected=None):
+    rows=cpu_details();details=rows[min(rows)]
+    selected=sorted(os.sched_getaffinity(0)) if selected is None else list(selected)
     gds=Path('/sys/devices/system/cpu/vulnerabilities/gather_data_sampling')
     return {'platform':platform.platform(),'python':sys.version,'machine':platform.machine(),'cpu':details,
+        'selected_cpu_details':{str(c):rows[c] for c in selected},
         'loadavg':os.getloadavg(),'gather_data_sampling':gds.read_text().strip() if gds.is_file() else '系统未提供',
         'thread_environment':{k:v for k,v in sorted(os.environ.items()) if k.startswith(('OMP_','GOMP_','KMP_'))},
         'frequency_temperature_security_changes':'本入口不修改频率、温度或安全缓解设置',
         'target_scope':'报告实际CPU/微码/系统；不根据AVX2、型号数字或编译参数自动认定为Skylake'}
+def mapped_paths():
+    paths=set()
+    for line in Path('/proc/self/maps').read_text().splitlines():
+        parts=line.split(maxsplit=5)
+        if len(parts)!=6 or not parts[5].startswith('/'):continue
+        path=Path(re.sub(r'\\([0-7]{3})',lambda m:chr(int(m[1],8)),parts[5]))
+        if path.is_file():paths.add(path.resolve())
+    return paths
 def loaded(expected):
-    paths={Path(line.split(maxsplit=5)[-1]).resolve() for line in Path('/proc/self/maps').read_text().splitlines()
-           if '/' in line and Path(line.split(maxsplit=5)[-1]).is_file()}
-    for s in expected:
-        if checked(s).resolve() not in paths:raise ValueError('实际映射缺少冻结库：'+s['path'])
+    paths=mapped_paths()
+    expected_paths={checked(s).resolve() for s in expected}
+    if not expected_paths<=paths:raise ValueError('实际映射缺少冻结库：'+str(expected_paths-paths))
     gomp={p for p in paths if p.name.startswith('libgomp.')}
     if len(gomp)!=1:raise ValueError('后端与探针必须共享唯一libgomp运行库')
     return [{'path':str(p),'sha256':digest(p)} for p in sorted(paths)
-            if p in {checked(s).resolve() for s in expected} or p.name.startswith(('libgomp.','libstdc++.','libgcc_s.','libc.','libm.'))]
+            if p in expected_paths or p.name.startswith(('libgomp.','libstdc++.','libgcc_s.','libc.','libm.'))]
 def layouts(d,handle,count):
     if not hasattr(d,'jshc_cc_get_layouts'):return None
     f=d.jshc_cc_get_layouts;f.argtypes=[ct.c_void_p,ct.POINTER(ct.c_uint32),ct.c_size_t];f.restype=ct.c_int
     values=(ct.c_uint32*count)()
     if f(handle,values,count):raise ValueError('布局诊断失败')
     return list(values)
+class CacheInfo(ct.Structure):
+    _fields_=[(n,ct.c_uint32) for n in ('version','enabled','reason','reserved')]
+    _fields_ += [(n,ct.c_uint64) for n in ('entries','valid_entries','table_capacity_bytes','temporary_capacity_bytes')]
+    _fields_ += [('prepare_seconds',ct.c_double)]
+    _fields_ += [(n,ct.c_int32) for n in ('r_min','r_max','dg_min','dg_max','db_min','db_max')]
+def cache_details(d,handle,table_hash=False):
+    if not hasattr(d,'jshc_cc_get_cache_info'):return None
+    f=d.jshc_cc_get_cache_info;f.argtypes=[ct.c_void_p,ct.POINTER(CacheInfo),ct.c_size_t];f.restype=ct.c_int
+    info=CacheInfo()
+    if f(handle,ct.byref(info),ct.sizeof(info)) or info.version!=1:raise ValueError('缓存诊断ABI不符')
+    result={n:getattr(info,n) for n,_ in info._fields_}
+    if table_hash:
+        if info.entries>262144:raise ValueError('诊断表超过既有1MiB预算')
+        values=(ct.c_uint32*info.entries)();copy=d.jshc_cc_copy_cache
+        copy.argtypes=[ct.c_void_p,ct.POINTER(ct.c_uint32),ct.c_size_t];copy.restype=ct.c_int
+        if copy(handle,values,len(values)):raise ValueError('缓存只读复制失败')
+        result['table_sha256']=hashlib.sha256(values).hexdigest()
+    return result
 def driver_bind(path):
     d=ct.CDLL(str(path));d.jshc_sb_abi_version.restype=ct.c_uint32
     if d.jshc_sb_abi_version()!=1:raise ValueError('计时器ABI不匹配')
