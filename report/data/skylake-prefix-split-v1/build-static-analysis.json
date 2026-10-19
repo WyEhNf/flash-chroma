@@ -1,0 +1,116 @@
+{
+  "purpose": "首级/后缀单边界拆分的静态潜力检查，不是实测周期",
+  "variants": {
+    "candidate": [
+      {
+        "function": "jshc_channel::(anonymous namespace)::first_stage(jshc_channel::View const&, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0x110",
+          "end": "0x563",
+          "span": 1107,
+          "instructions": 202,
+          "gathers": 17,
+          "all_rsp_operands": 27,
+          "gpr_memory_loads": 0
+        },
+        "mca": {
+          "Total Cycles": 19821.0,
+          "Total uOps": 32900.0,
+          "Block RThroughput": 88.0
+        },
+        "mca_command": [
+          "C:/Program Files/LLVM/bin/llvm-mca.exe",
+          "-mcpu=skylake",
+          "-iterations=100",
+          "-resource-pressure",
+          "artifacts\\skylake-prefix-split-build-v1\\candidate-first-hot.s"
+        ]
+      },
+      {
+        "function": "jshc_channel::(anonymous namespace)::suffix_stages(jshc_channel::View const*, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0x670",
+          "end": "0xd9b",
+          "span": 1835,
+          "instructions": 369,
+          "gathers": 21,
+          "all_rsp_operands": 9,
+          "gpr_memory_loads": 18
+        },
+        "mca": {
+          "Total Cycles": 28134.0,
+          "Total uOps": 52000.0,
+          "Block RThroughput": 105.5
+        },
+        "mca_command": [
+          "C:/Program Files/LLVM/bin/llvm-mca.exe",
+          "-mcpu=skylake",
+          "-iterations=100",
+          "-resource-pressure",
+          "artifacts\\skylake-prefix-split-build-v1\\candidate-suffix-hot.s"
+        ]
+      },
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0xe73",
+          "end": "0x1554",
+          "span": 1761,
+          "instructions": 329,
+          "gathers": 17,
+          "all_rsp_operands": 48,
+          "gpr_memory_loads": 12
+        }
+      }
+    ],
+    "reference": [
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0x806",
+          "end": "0x1399",
+          "span": 2963,
+          "instructions": 568,
+          "gathers": 38,
+          "all_rsp_operands": 38,
+          "gpr_memory_loads": 30
+        },
+        "mca": {
+          "Total Cycles": 55235.0,
+          "Total uOps": 84200.0,
+          "Block RThroughput": 196.5
+        },
+        "mca_command": [
+          "C:/Program Files/LLVM/bin/llvm-mca.exe",
+          "-mcpu=skylake",
+          "-iterations=100",
+          "-resource-pressure",
+          "artifacts\\skylake-prefix-split-build-v1\\reference-fused-hot.s"
+        ]
+      }
+    ]
+  },
+  "sum": {
+    "instructions": 571,
+    "gathers": 38,
+    "all_rsp_operands": 36,
+    "gpr_memory_loads": 18
+  },
+  "mca_sum": {
+    "Total Cycles": 47955.0,
+    "Total uOps": 84900.0,
+    "Block RThroughput": 193.5
+  },
+  "native_calls": 0,
+  "performance_calls": 0,
+  "mca": {
+    "path": "C:/Program Files/LLVM/bin/llvm-mca.exe",
+    "sha256": "0d2693ce8dfb1afd490a14c199c2b53bc2befbb4894967917e162f1f4436be21",
+    "version": [
+      "LLVM (http://llvm.org/):",
+      "  LLVM version 21.1.0",
+      "  Optimized build.",
+      "  Default target: x86_64-pc-windows-msvc"
+    ]
+  }
+}

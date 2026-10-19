@@ -6,6 +6,8 @@
 
 [按阶段遍历像素块](skylake-stage-major-v1/README.md)保持实际四级字节与准备容量不变，一次比较1/4线程apply配对中位耗时下降6.1047%/3.2690%，但一个4线程进程退化8.6293%，未通过“任一进程退化≤2%”门槛，不采用、不排除该进程或重跑。
 
+[首级/后缀单边界拆分](skylake-prefix-split-v1/README.md)同模型完整字节一致、容量不变；一次比较1线程apply配对中位下降4.3414%，4线程增加0.3322%、最差进程增加5.9418%，门槛失败，不采用。保留聚合绝对中位与同进程比中位的区别，不能挑较好的口径。融合边界族停止，不追加块尺寸/线程扫描。
+
 最新本地汇总见[当前精度结果](../../docs/stages/2026-10-19-precision-latest.md)。`cinema-current-anchor-accept-v1`保存a399真实四级完整域/百图/独立整数与原生终验、逐图退化、约46%成本背景；`channel-runtime-specialized-v1`保存同a399模型的唯一编译期专门化合同、完整原生等价和受控配对速度收益，两个阶段的速度不跨阶段相乘。
 
 `cinema-channel-suffix-coordinates-v1`、`cinema-channel-suffix-joint-nodes-v1`保留两个未入围候选；`cinema-cap-anchor-diagnosis-v1`保留唯一原色的逐级轨迹；`cinema-current-anchor-v1`保留统一收紧191色及唯一整合拟合/选择。`channel-runtime-reuse-v1`保留节点读取减少却变慢的负结果。新格式未接公共默认/GUI/C99，仍无官方数据或Threshold。
