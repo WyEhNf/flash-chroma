@@ -10,6 +10,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('plan','build','output'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--objdump',required=True);p.add_argument('--mca',required=True)
+    p.add_argument('--reference-gathers',type=int,default=18)
+    p.add_argument('--candidate-gathers',type=int,default=15)
     args=p.parse_args();plan=read(args.plan);build=read(args.build/'build.json')
     if build['plan_sha256']!=digest(args.plan) or build['source_sha256']!=plan['source_sha256']:raise ValueError('构建身份不同')
     for name,sha in plan['source_sha256'].items():
@@ -17,7 +19,7 @@ def main():
     out=args.output.resolve()
     if out.exists():raise ValueError('不覆盖静态分析')
     out.mkdir(parents=True);result={};commands=[]
-    for role,target,count in zip(('reference','candidate'),plan['cmake_targets'],(18,15)):
+    for role,target,count in zip(('reference','candidate'),plan['cmake_targets'],(args.reference_gathers,args.candidate_gathers)):
         objects=[x for x in args.build.rglob('channel_avx2.cpp.obj') if target+'.dir' in x.parts]
         if len(objects)!=1:raise ValueError('无法唯一确定对象')
         obj=objects[0];command=[args.objdump,'-d','-C',str(obj)];commands.append(command)

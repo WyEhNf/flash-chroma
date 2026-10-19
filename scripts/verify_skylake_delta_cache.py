@@ -62,7 +62,11 @@ def main():
                 np.testing.assert_array_equal(table[valid],packed)
                 assert np.all(table[~valid]==0) and infos[name]['valid_entries']==int(valid.sum())
             np.testing.assert_array_equal(tables['reference'],tables['candidate'])
-            assert handles['reference'].model_bytes-handles['candidate'].model_bytes==3072*flags.count(2)
+            if plan.get('reference_delta16',False):
+                assert layouts(handles['reference'])==flags
+                assert handles['reference'].model_bytes==handles['candidate'].model_bytes
+            else:
+                assert handles['reference'].model_bytes-handles['candidate'].model_bytes==3072*flags.count(2)
             entries.append({'fixture':label,'layouts':flags,'cache_entries':6400,'legal_slots_per_library':int(valid.sum()),
                 'invalid_slots_zero_per_library':int((~valid).sum()),'two_tables_byte_mismatches':0,
                 'reference_cache_info':infos['reference'],'candidate_cache_info':infos['candidate']})

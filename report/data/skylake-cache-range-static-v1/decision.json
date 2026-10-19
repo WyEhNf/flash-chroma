@@ -1,0 +1,40 @@
+{
+  "purpose": "数学证明与静态潜力审核；信号不足，停止而不运行数值或性能",
+  "reference_objects_equal_previous_passed_combo": [
+    {
+      "file": "channel_runtime.cpp.obj",
+      "old_combo_sha256": "bcafec963a2b1f41ad0568abd84c81b740a59eda543db9de8cfbcd15af6cd2ee",
+      "current_reference_sha256": "bcafec963a2b1f41ad0568abd84c81b740a59eda543db9de8cfbcd15af6cd2ee",
+      "byte_equal": true
+    },
+    {
+      "file": "channel_avx2.cpp.obj",
+      "old_combo_sha256": "1617d789c9606bfd908611d4b6e31dc1cfb4991b8d863e228a038c8f4db676d9",
+      "current_reference_sha256": "1617d789c9606bfd908611d4b6e31dc1cfb4991b8d863e228a038c8f4db676d9",
+      "byte_equal": true
+    }
+  ],
+  "runtime_validation_performed": false,
+  "full_domain_performed": false,
+  "photo_validation_performed": false,
+  "performance_performed": false,
+  "decision": "stop_static_not_adopted",
+  "reason": "各少13条指令但Total Cycles一增一减，吞吐下界仅约1.2%改善；不支持实质加速判断",
+  "sources": [
+    {
+      "path": "E:\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\15.2.0\\include\\avx2intrin.h",
+      "sha256": "65fe56bbdd23558b68ec90d5685b0a958c74afde8d9086ed83d208b94703fc14"
+    },
+    {
+      "path": "E:\\mingw64\\lib\\gcc\\x86_64-w64-mingw32\\15.2.0\\include\\avxintrin.h",
+      "sha256": "4f89ad3aeffa61d2a39d26c4d1492c095b83f0f114a2574a82ddbd5c092ad05b"
+    }
+  ],
+  "primary_documentation": [
+    "https://clang.llvm.org/doxygen/avx2intrin_8h.html",
+    "https://www.intel.com/content/dam/develop/external/us/en/documents/cpp_compiler_classic.pdf"
+  ],
+  "new_native_calls": 0,
+  "new_fits": 0,
+  "new_performance_calls": 0
+}

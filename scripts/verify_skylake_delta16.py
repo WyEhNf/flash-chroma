@@ -82,7 +82,11 @@ def main():
             if flags != expected_flags:
                 raise AssertionError('实际压缩/回退布局不同：'+label+str(flags))
             memory = {name: h.model_bytes for name, h in handles.items()}
-            assert memory['reference']-memory['candidate'] == expected_flags.count(2)*3072
+            if plan.get('reference_delta16', False):
+                assert layouts(handles['reference']) == expected_flags
+                assert memory['reference'] == memory['candidate']
+            else:
+                assert memory['reference']-memory['candidate'] == expected_flags.count(2)*3072
             accounting.append({'fixture': label, 'layouts': flags, 'model_accounting_bytes': memory})
             h = handles['candidate']; d = bind(h); n = len(model_paths)
             storage = (ct.c_uint32*(n+2))(*([0xa7a7a7a7]*(n+2)))
