@@ -75,9 +75,15 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('plan', 'build', 'single-oracle-stream', 'output'):
         p.add_argument('--'+name, type=Path, required=True)
+    p.add_argument('--affinity-cpus', help='可选固定CPU集合；由服务器入口预先核对物理核/L3/NUMA')
     args = p.parse_args()
     if platform.system() != 'Linux' or not Path('/proc/self/maps').is_file():
         raise ValueError('此入口只核验Linux原生库，不把其他系统伪装为Linux')
+    if args.affinity_cpus:
+        cpus = {int(x) for x in args.affinity_cpus.split(',')}
+        if not cpus or not cpus <= os.sched_getaffinity(0):
+            raise ValueError('请求CPU不在允许集合')
+        os.sched_setaffinity(0, cpus)
     plan = read(args.plan); build = read(args.build/'build.json')
     if build['plan_sha256'] != digest(args.plan) or build['source_sha256'] != plan['source_sha256']:
         raise ValueError('构建不属于冻结计划')
@@ -97,7 +103,8 @@ def main():
     out.mkdir(parents=True)
     cpu = Path('/proc/cpuinfo').read_text().split('\n\n')[0]
     environment = {'platform': platform.platform(), 'python': sys.version, 'machine': platform.machine(),
-        'cpu': cpu, 'thread_environment': {k: os.environ.get(k) for k in ('OMP_NUM_THREADS', 'OMP_DYNAMIC', 'OMP_PROC_BIND')},
+        'cpu': cpu, 'initial_affinity': sorted(os.sched_getaffinity(0)),
+        'thread_environment': {k: os.environ.get(k) for k in ('OMP_NUM_THREADS', 'OMP_DYNAMIC', 'OMP_PROC_BIND', 'OMP_PLACES')},
         'gather_data_sampling': Path('/sys/devices/system/cpu/vulnerabilities/gather_data_sampling').read_text().strip()
             if Path('/sys/devices/system/cpu/vulnerabilities/gather_data_sampling').is_file() else '系统未提供'}
     save(out/'run.json', {'purpose': __doc__, 'source_sha256': sources, 'environment': environment,
@@ -174,7 +181,7 @@ def main():
         'finite_backend_offset_comparisons': finite, 'full_domain_pixels_per_configuration': counts,
         'output_sha256': outputs, 'byte_mismatches': 0, 'sentinel_mismatches': 0,
         'model_accounting_bytes': memory, 'performance_calls': 0, 'photo_calls': 0, 'new_fits': 0,
-        'scope': 'WSL2/Linux同一AMD主机；两库单级/四级的标量1与AVX2请求1/4完整字节比较。'
+        'scope': 'Linux实际主机见run.json；两库单级/四级的标量1与AVX2请求1/4完整字节比较。'
             '预期来自Windows已验独立u64/完整流；本脚本不重算独立oracle，不代表Skylake实机。'})
     print('Linux标准库入口通过：', finite, '个有限后端/偏移比较，12组完整RGB8输出一致', flush=True)
 

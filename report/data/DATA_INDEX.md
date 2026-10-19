@@ -77,3 +77,5 @@
 `velvia-channel-joint-nodes-v1`保存最后一次8色26方向RGB联合提议及集中独立整数合同；相对3e5选择双mean仅降约0.107%，未入围，节点族收束，未执行新完整精度或性能验收。
 
 `skylake-clang-static-v1`保留同源GCC/Clang对象级比较，信号不一致而未运行。`skylake-delta16-v2`保存无损坐标差压缩的55+88组合同、完整色域/百图零差、唯一80轮性能及门槛复算，本机1/4线程耗时降约12.0%/8.1%；[阶段说明](../../docs/stages/2026-10-20-skylake-delta16.md)。AMD结果不代表Skylake实测，独立缓存候选收益不相乘。
+
+`skylake-server-entry-v1`保存纯标准库服务器入口、固定输入清单、独立Linux构建及12组完整色域/2112次边界比较/百图SHA回执。实际为同AMD的WSL2，正式性能分支未执行；最终本地传输ZIP约188MB，原始流不提交Git。[复现与限制](../../docs/stages/2026-10-20-skylake-server-entry.md)。

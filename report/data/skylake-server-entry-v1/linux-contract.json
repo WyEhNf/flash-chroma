@@ -1,0 +1,362 @@
+{
+  "pass": true,
+  "purpose": "Linux边界合同与两种真实原生调度的100图正确性，不作性能结论",
+  "build_sha256": "171b601a0d8e3eb11fd10432dce780ad2d09b7acd89b1f5e0b40b87f36f1dfe2",
+  "plan_sha256": "51270cb4996f01d52a2b35e02b08d7f2a3fb93a745bf067fe55d20a056ccdfcc",
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "machine": "x86_64",
+    "cpu": {
+      "processor": "0",
+      "vendor_id": "AuthenticAMD",
+      "cpu family": "25",
+      "model": "97",
+      "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+      "stepping": "2",
+      "microcode": "0xffffffff",
+      "cpu MHz": "2495.237",
+      "cache size": "1024 KB",
+      "physical id": "0",
+      "siblings": "32",
+      "core id": "0",
+      "cpu cores": "16",
+      "apicid": "0",
+      "initial apicid": "0",
+      "fpu": "yes",
+      "fpu_exception": "yes",
+      "cpuid level": "13",
+      "wp": "yes",
+      "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+      "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+      "bogomips": "4990.47",
+      "TLB size": "3584 4K pages",
+      "clflush size": "64",
+      "cache_alignment": "64",
+      "address sizes": "48 bits physical, 48 bits virtual",
+      "power management": ""
+    },
+    "loadavg": [
+      1.28125,
+      0.37744140625,
+      0.1328125
+    ],
+    "gather_data_sampling": "Not affected",
+    "thread_environment": {
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_NUM_THREADS": "1",
+      "OMP_PLACES": "{0},{2},{4},{6}",
+      "OMP_PROC_BIND": "CLOSE",
+      "OMP_SCHEDULE": "STATIC",
+      "OMP_THREAD_LIMIT": "256"
+    },
+    "frequency_temperature_security_changes": "本入口不修改频率、温度或安全缓解设置",
+    "target_scope": "报告实际CPU/微码/系统；不根据AVX2、型号数字或编译参数自动认定为Skylake"
+  },
+  "libraries": {
+    "reference": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-server-bundle-v1/artifacts/linux-check-v1/backend/libjshc_skylake_reference.so",
+      "sha256": "f76dab1168e4ae532c676d77b6d1fc5d058a541c1e7bb589a0ce168d56813c24"
+    },
+    "candidate": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-server-bundle-v1/artifacts/linux-check-v1/backend/libjshc_skylake_delta16.so",
+      "sha256": "f11cc5f1120a99543a9b04f865492cadc392c0aa231b15a5fd4f3ac3ce6afaf9"
+    }
+  },
+  "loaded_libraries": [
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-server-bundle-v1/artifacts/linux-check-v1/backend/libjshc_skylake_delta16.so",
+      "sha256": "f11cc5f1120a99543a9b04f865492cadc392c0aa231b15a5fd4f3ac3ce6afaf9"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-server-bundle-v1/artifacts/linux-check-v1/backend/libjshc_skylake_reference.so",
+      "sha256": "f76dab1168e4ae532c676d77b6d1fc5d058a541c1e7bb589a0ce168d56813c24"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-server-bundle-v1/artifacts/linux-check-v1/driver/libjshc_server_driver.so",
+      "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "d763925433ff9b757390549e1b20c085f5e6de27ae700fe89194178d96a8a2b0"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0",
+      "sha256": "645478cbe100d1465b9d45f7047bca3965358f4d399937e544f55ac7a924d5a3"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "670fb59bd462ee2f833e2ed7c0a1814e0dcdbec0b8bfa048bec46e2e6fd66334"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+    }
+  ],
+  "teams": {
+    "1": {
+      "requested": 1,
+      "actual": 1,
+      "cpus": [
+        0
+      ],
+      "main_allowed_cpus_after_openmp": [
+        0
+      ]
+    },
+    "4": {
+      "requested": 4,
+      "actual": 4,
+      "cpus": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "main_allowed_cpus_after_openmp": [
+        0
+      ]
+    }
+  },
+  "finite_backend_offset_comparisons": 2112,
+  "diagnostic_negative_checks": 32,
+  "memory": [
+    {
+      "case": "delta_single_bounds",
+      "reference": 54203,
+      "candidate": 51131,
+      "layouts": [
+        2
+      ]
+    },
+    {
+      "case": "delta_shared_shared_shared",
+      "reference": 487737,
+      "candidate": 484665,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "three_delta",
+      "reference": 243926,
+      "candidate": 234710,
+      "layouts": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "case": "shared_delta_shared_delta",
+      "reference": 496953,
+      "candidate": 490809,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "case": "delta_unpacked_shared_delta",
+      "reference": 506169,
+      "candidate": 500025,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "case": "over_positive_single",
+      "reference": 54203,
+      "candidate": 54203,
+      "layouts": [
+        0
+      ]
+    },
+    {
+      "case": "over_negative_single",
+      "reference": 54203,
+      "candidate": 54203,
+      "layouts": [
+        0
+      ]
+    },
+    {
+      "case": "equal_changed_shared",
+      "reference": 487737,
+      "candidate": 487737,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "driver_negative_contract": [
+    {
+      "case": "空回调",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "空模型",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "空源",
+      "returncode": 1,
+      "error": "基准指针或范围无效"
+    },
+    {
+      "case": "空工作区",
+      "returncode": 1,
+      "error": "基准指针或范围无效"
+    },
+    {
+      "case": "非RGB长度",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零图",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "非法后端",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零线程",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "非法模式",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零轮次",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "源工作区重叠",
+      "returncode": 1,
+      "error": "源、工作区与计时数组不得重叠"
+    },
+    {
+      "case": "图像总长度溢出",
+      "returncode": 1,
+      "error": "基准长度溢出"
+    },
+    {
+      "case": "计时长度溢出",
+      "returncode": 1,
+      "error": "基准长度溢出"
+    },
+    {
+      "case": "计时数组重叠",
+      "returncode": 1,
+      "error": "源、工作区与计时数组不得重叠"
+    }
+  ],
+  "driver_callback_failure_aborted": true,
+  "photos": [
+    {
+      "variant": "reference",
+      "threads": 1,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": null
+    },
+    {
+      "variant": "reference",
+      "threads": 1,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": null
+    },
+    {
+      "variant": "reference",
+      "threads": 4,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": null
+    },
+    {
+      "variant": "reference",
+      "threads": 4,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": null
+    },
+    {
+      "variant": "candidate",
+      "threads": 1,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "variant": "candidate",
+      "threads": 1,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "variant": "candidate",
+      "threads": 4,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "variant": "candidate",
+      "threads": 4,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "photo_source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "timings_used_for_selection": false,
+  "new_fits": 0,
+  "byte_mismatches": 0
+}
