@@ -1,0 +1,1085 @@
+{
+  "pass": true,
+  "purpose": "集中核验坐标差打包：int16两边界、越界回退、混合链及尾部，独立u64逐字节比较，不测性能。",
+  "build_sha256": "0352d86ba431157c1ac2aa470f12a0f476d139e71842f3eaea1b0730bb95d082",
+  "plan_sha256": "51270cb4996f01d52a2b35e02b08d7f2a3fb93a745bf067fe55d20a056ccdfcc",
+  "libraries": {
+    "reference": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-build-v2\\libjshc_skylake_reference.dll",
+      "sha256": "6d4bd6cbe9badf373b9d554084954cae63e214ad1b5dae325c121b5c9741de97"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-build-v2\\libjshc_skylake_delta16.dll",
+      "sha256": "a7894315b1819a2bc9679757beb8cb831daac230032be4c36bf12798906a56b0"
+    }
+  },
+  "base_contract_sha256": "f6fda36c03e93ac35b9e4a74073408d4d57b4aaa91cad997aaf991f022cfb20f",
+  "layout_length_cases": 88,
+  "cases": [
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 0,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 1,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 7,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 8,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 9,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 15,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 16,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 17,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 4095,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 4096,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_single_bounds",
+      "pixels": 4097,
+      "layouts": [
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 0,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 1,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 7,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 8,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 9,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 15,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 16,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 17,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 4095,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 4096,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "pixels": 4097,
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 0,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 1,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 7,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 8,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 9,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 15,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 16,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 17,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 4095,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 4096,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "three_delta",
+      "pixels": 4097,
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 0,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 1,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 7,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 8,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 9,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 15,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 16,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 17,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 4095,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 4096,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "pixels": 4097,
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 0,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 1,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 7,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 8,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 9,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 15,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 16,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 17,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 4095,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 4096,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "pixels": 4097,
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 0,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 1,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 7,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 8,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 9,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 15,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 16,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 17,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 4095,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 4096,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_positive_single",
+      "pixels": 4097,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 0,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 1,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 7,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 8,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 9,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 15,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 16,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 17,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 4095,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 4096,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "over_negative_single",
+      "pixels": 4097,
+      "layouts": [
+        0
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 0,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 1,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 7,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 8,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 9,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 15,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 16,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 17,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 4095,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 4096,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "pixels": 4097,
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "byte_mismatches": 0,
+      "sentinel_mismatches": 0
+    }
+  ],
+  "layout_memory_checks": [
+    {
+      "fixture": "delta_single_bounds",
+      "layouts": [
+        2
+      ],
+      "model_accounting_bytes": {
+        "reference": 54203,
+        "candidate": 51131
+      }
+    },
+    {
+      "fixture": "delta_shared_shared_shared",
+      "layouts": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "model_accounting_bytes": {
+        "reference": 487737,
+        "candidate": 484665
+      }
+    },
+    {
+      "fixture": "three_delta",
+      "layouts": [
+        2,
+        2,
+        2
+      ],
+      "model_accounting_bytes": {
+        "reference": 243926,
+        "candidate": 234710
+      }
+    },
+    {
+      "fixture": "shared_delta_shared_delta",
+      "layouts": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "model_accounting_bytes": {
+        "reference": 496953,
+        "candidate": 490809
+      }
+    },
+    {
+      "fixture": "delta_unpacked_shared_delta",
+      "layouts": [
+        2,
+        0,
+        1,
+        2
+      ],
+      "model_accounting_bytes": {
+        "reference": 506169,
+        "candidate": 500025
+      }
+    },
+    {
+      "fixture": "over_positive_single",
+      "layouts": [
+        0
+      ],
+      "model_accounting_bytes": {
+        "reference": 54203,
+        "candidate": 54203
+      }
+    },
+    {
+      "fixture": "over_negative_single",
+      "layouts": [
+        0
+      ],
+      "model_accounting_bytes": {
+        "reference": 54203,
+        "candidate": 54203
+      }
+    },
+    {
+      "fixture": "equal_changed_shared",
+      "layouts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "model_accounting_bytes": {
+        "reference": 487737,
+        "candidate": 487737
+      }
+    }
+  ],
+  "diagnostic_negative_checks": 32,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "fixture_sha256": {
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-contract-v2\\model0.slut": "78500e7a9ebd6b2bab87fabede4f21172a86056653fa6d2dc787631ef83c109d",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-contract-v2\\model1.slut": "ab2d9e0ecf673ddd26089343738b3ae8e0031bd93cb058ffdb00d74f7196dc6a",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-contract-v2\\model2.slut": "2f85e39a2d0e8f3262401be330fd3430804b08f8a534eeb63dc58b9ed1546e7e",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-contract-v2\\model3.slut": "e6783e7d4bd75fb712b5a04829a90002956dc0848ce4a4ddeeb86ee2e501ecce",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\bounds-0.bin": "cb45a3f86d70e0e7aaa08df27cb5cf10d042195ca41e44289d46eefe628c3b85",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\bounds-1.bin": "e8d99ea6a7e3201a022bf959d6c057b53319c8113e8dc453493b213cdc474fa2",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\bounds-2.bin": "4630031083042784c2f8e36dd25dff3290d94434d77581032662f619f45e7637",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\bounds-3.bin": "dcd00bc947bdf00115c332802d906afb8c0db558d0d8a3fdd3956321e0f6a46e",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\equal-changed.bin": "b4e4654f8e603e4935a3d6d899825d592e27e2fe23f62a84003a9412b968536d",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_negative-0.bin": "bb694b70bae0d856e4140fa0734c5a5cece371dba5f94aa7a2a9e7823d6138fe",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_negative-1.bin": "874902fbb695e2ef4f05cb85463fbe75e8c35cfaad7489f7900ef1ab7ec31598",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_negative-2.bin": "d4c60c593f37afe5d5fb9781b2399e6b71a103ca187aca837bceada2a4c87eff",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_negative-3.bin": "e898b5ea16c228ee9f26dda4f9b3e7c22b862fea64594c76fac7acebe9a722af",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_positive-0.bin": "dac92e40483803549d7620aa756af17aa8d2b128e063d2b2248feee65e5bdf6d",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_positive-1.bin": "82757232a501ad6d6ff8f707dc23b87b8316f0199cb47c1cec0216204cb851ae",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_positive-2.bin": "f8d2704c6a44765dd8cc728a982ae34dd673bbd6d1d900b1ec901d85094c31eb",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-delta16-layout-contract-v2\\over_positive-3.bin": "3eb9ab5271b5f95541dd9c8ede4a165b923409f93de80af55d968539b15c7f2f"
+  },
+  "scope": "有限整数编码/布局合同；不替代实际完整色域、百图、Skylake实机或性能。"
+}

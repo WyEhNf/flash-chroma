@@ -8,6 +8,7 @@ from PIL import Image
 from skylake_support import ROOT, build_libraries, checked, claim, digest, read, save, unchanged
 from lutlab import channel_coordinates as cc, io
 from suffix_cache_support import cache_info, cache_table, coverage
+from delta16_support import layouts
 from verify_channel_coordinates import integer_oracle
 
 
@@ -17,6 +18,7 @@ def main():
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--contract', type=Path, required=True)
     parser.add_argument('--cache-contract', type=Path)
+    parser.add_argument('--layout-contract', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     plan, build, libraries, loaded = build_libraries(args.plan, args.build)
@@ -25,6 +27,14 @@ def main():
             or contract['libraries'] != build['libraries']):
         raise ValueError('有限合同未通过或不是相同构建')
     cache_contract = None
+    layout_contract = None
+    if 'delta16_policy' in plan:
+        if args.layout_contract is None:
+            raise ValueError('坐标差候选需要边界/布局集中合同')
+        layout_contract = read(args.layout_contract)
+        if (not layout_contract['pass'] or layout_contract['build_sha256'] != digest(args.build/'build.json')
+                or layout_contract['libraries'] != build['libraries']):
+            raise ValueError('坐标差集中合同不是相同构建')
     if 'cache_policy' in plan:
         if args.cache_contract is None:
             raise ValueError('缓存候选需要单独表槽与命中合同')
@@ -46,11 +56,12 @@ def main():
     out, identity = claim(args.output, args.plan,
         [*plan['source_sha256'], 'scripts/accept_skylake_runtime.py', 'scripts/verify_skylake_packed.py',
          'scripts/verify_channel_coordinates.py', 'scripts/suffix_cache_support.py',
+         'scripts/delta16_support.py',
          'python/lutlab/channel_coordinates.py', 'python/lutlab/io.py'],
         {'purpose': __doc__, 'build_sha256': digest(args.build/'build.json'),
          'contract_sha256': digest(args.contract), 'loaded_libraries': loaded})
     operators = {}; hashes = {}; photos = []; photos_hash = {name: hashlib.sha256() for name in libraries}
-    memory = {}; cache_record = None; first_stream = None
+    memory = {}; cache_record = None; first_stream = None; layout_record = None
     try:
         for name, lib in libraries.items():
             operators[name] = {
@@ -58,6 +69,12 @@ def main():
                 'chain': lib.chain([paths['base'], *suffix], [paths['sidecar'], None, None, None])}
             memory[name] = {mode: h.model_bytes for mode, h in operators[name].items()}
             hashes[name] = {mode+'_'+kernel: hashlib.sha256() for mode in ('single', 'chain') for kernel in ('scalar', 'avx2')}
+        if layout_contract is not None:
+            layout_record = {'contract_sha256': digest(args.layout_contract),
+                'candidate': {mode: layouts(h) for mode, h in operators['candidate'].items()}}
+            if (layout_record['candidate']['single'] != [2]
+                    or layout_record['candidate']['chain'] != plan['delta16_policy']['actual_chain_layouts']):
+                raise AssertionError('实际模型未使用冻结的有符号差布局')
         if cache_contract is not None:
             handle = operators['candidate']['chain']; info = cache_info(handle)
             if not info or not info['enabled'] or info['table_capacity_bytes'] > plan['cache_policy']['budget_bytes']:
@@ -141,7 +158,8 @@ def main():
         'sidecar': plan['fixed_inputs']['sidecar'], 'suffix_models': plan['suffix_models'],
         'cube': {'pixels': 256**3, 'single_oracle_sha256': single_hash.hexdigest(), 'outputs': values, 'byte_mismatches': 0},
         'photos': {'count': 100, 'output_sha256': photo_values, 'per_image': photos, 'byte_mismatches': 0},
-        'model_accounting_bytes': memory, 'suffix_cache': cache_record, 'new_fits': 0, 'performance_calls': 0,
+        'model_accounting_bytes': memory, 'suffix_cache': cache_record, 'coordinate_layouts': layout_record,
+        'new_fits': 0, 'performance_calls': 0,
         'scope': '冻结同模型的完整后端等价；精度数据复用相同输出流，不新增精度选型，不代表Skylake服务器运行或性能。'}
     save(out/'results.json', result)
     print('完整等价通过；准备后模型容量：', memory, flush=True)

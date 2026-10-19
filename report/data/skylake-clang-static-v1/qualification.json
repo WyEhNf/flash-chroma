@@ -1,0 +1,50 @@
+{
+  "gcc_includes": {
+    "command": [
+      "E:/mingw64/bin/g++.exe",
+      "-x",
+      "c++",
+      "-E",
+      "-v",
+      "-"
+    ],
+    "returncode": 0
+  },
+  "clang_includes": {
+    "command": [
+      "C:/Program Files/LLVM/bin/clang++.exe",
+      "--target=x86_64-w64-windows-gnu",
+      "--sysroot=E:/mingw64",
+      "-x",
+      "c++",
+      "-E",
+      "-v",
+      "-"
+    ],
+    "returncode": 0
+  },
+  "clang_compile": {
+    "command": [
+      "C:/Program Files/LLVM/bin/clang++.exe",
+      "--target=x86_64-w64-windows-gnu",
+      "--sysroot=E:/mingw64",
+      "-std=c++17",
+      "-O3",
+      "-DNDEBUG",
+      "-fvisibility=hidden",
+      "-Wall",
+      "-Wextra",
+      "-mavx2",
+      "-mtune=skylake",
+      "-ffp-contract=off",
+      "-Iexperiments/channel-runtime",
+      "-c",
+      "experiments/channel-runtime-specialized/channel_avx2.cpp",
+      "-o",
+      "artifacts\\skylake-clang-probe-v1\\channel_clang.obj"
+    ],
+    "returncode": 0,
+    "source_sha256": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "compiler_sha256": "07e62068e7cbce378c053cfd0633b1a235fa8b38ebd57b27998dda17fe375a8c"
+  }
+}

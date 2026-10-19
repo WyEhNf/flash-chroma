@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--contract', type=Path, required=True)
     parser.add_argument('--cache-contract', type=Path)
+    parser.add_argument('--layout-contract', type=Path)
     parser.add_argument('--full', type=Path, required=True)
     parser.add_argument('--performance', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
@@ -52,14 +53,19 @@ def main():
     folders = [(args.build, 'build'), (args.contract, 'contract'), (args.full, 'full'), (args.performance, 'performance')]
     if args.cache_contract:
         folders.append((args.cache_contract, 'cache-contract'))
+    if args.layout_contract:
+        folders.append((args.layout_contract, 'layout-contract'))
     for folder, prefix in folders:
         for p in folder.iterdir():
-            if p.is_file() and p.suffix in ('.json', '.log', '.zip'):
+            if p.is_file() and p.suffix in ('.json', '.log', '.zip') and not ('-mca.' in p.name and p.suffix=='.log'):
                 mappings.append((p, prefix+'-'+p.name))
     for source, name in mappings:
         shutil.copyfile(source, out/name)
     with zipfile.ZipFile(out/'assembly.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
-        for p in sorted(args.build.glob('*.asm')):
+        # 原始诊断可能含有行尾空格，统一放入ZIP而不改写或重复展开。
+        diagnostics = {*args.build.glob('*.asm'), *args.build.glob('*-hot*.s'),
+                       *args.build.glob('*-mca.stdout.log'), *args.build.glob('*-mca.stderr.log')}
+        for p in sorted(diagnostics):
             archive.write(p, p.name)
     binaries = {Path(v['path']).resolve() for v in build['libraries'].values()}
     binaries |= {(args.build/name).resolve() for name in build['dependencies']}

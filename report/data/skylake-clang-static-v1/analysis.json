@@ -1,0 +1,103 @@
+{
+  "reference": {
+    "functions": [
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "loop": {
+          "start": "0x806",
+          "end": "0x1399",
+          "span": 2963,
+          "instructions": 568,
+          "gathers": 38,
+          "vpmulld": 44,
+          "rsp_operands": 38,
+          "calls": 0
+        },
+        "mca": {
+          "Total Cycles": 55235.0,
+          "Total uOps": 84200.0,
+          "Block RThroughput": 196.5
+        }
+      }
+    ],
+    "all_functions": [
+      "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)"
+    ]
+  },
+  "candidate": {
+    "functions": [
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "loop": {
+          "start": "0x100",
+          "end": "0xca2",
+          "span": 2978,
+          "instructions": 588,
+          "gathers": 38,
+          "vpmulld": 44,
+          "rsp_operands": 39,
+          "calls": 0
+        },
+        "mca": {
+          "Total Cycles": 57541.0,
+          "Total uOps": 83500.0,
+          "Block RThroughput": 186.0
+        }
+      }
+    ],
+    "all_functions": [
+      "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)"
+    ]
+  },
+  "purpose": "同源Clang对象级可行性，不链接或执行候选。",
+  "decision": "stop_before_link_and_runtime",
+  "reason": "吞吐下界改善但依赖周期增加，uOps改善很小，无一致实质收益依据；不扫参数。",
+  "clang_version": [
+    "clang version 21.1.0",
+    "Target: x86_64-pc-windows-msvc",
+    "Thread model: posix",
+    "InstalledDir: C:\\Program Files\\LLVM\\bin"
+  ],
+  "selected_target": "x86_64-w64-windows-gnu",
+  "mca_version": [
+    "LLVM (http://llvm.org/):",
+    "  LLVM version 21.1.0",
+    "  Optimized build.",
+    "  Default target: x86_64-pc-windows-msvc"
+  ],
+  "mca_sha256": "0d2693ce8dfb1afd490a14c199c2b53bc2befbb4894967917e162f1f4436be21",
+  "mca_commands": [
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "artifacts\\skylake-clang-probe-v1\\reference-hot.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "artifacts\\skylake-clang-probe-v1\\candidate-hot.s"
+    ]
+  ],
+  "source_sha256": {
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c"
+  },
+  "reference_build_sha256": "5dcee6103e5d4081a25e49afee2715961af4956705450ae339b11ee3d36aeaae",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "objects": {
+    "reference": {
+      "path": "artifacts\\skylake-prefix-split-build-v1\\CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\projects\\16-lut-color\\experiments\\channel-runtime-specialized\\channel_avx2.cpp.obj",
+      "sha256": "a92db8508d5df851a5cb4e70c4dbab07c18c7e2f64faad3bf053aa859e32a34b"
+    },
+    "candidate": {
+      "path": "artifacts\\skylake-clang-probe-v1\\channel_clang.obj",
+      "sha256": "50086f3ec91d6689541e4f300d15cfb97b4e9c633875e2f93d047ba5e06bd7d5"
+    }
+  }
+}
