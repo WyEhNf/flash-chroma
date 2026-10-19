@@ -1,0 +1,13 @@
+{
+  "purpose": "只改变非连续读取实现的独立候选：无派生缓存，保持delta16布局及全部插值语义",
+  "base_commit": "bdf40219d1449a8e805d161b1653b1a777cd023b",
+  "reference_revision": 5,
+  "candidate_revision": 8,
+  "scope": "先构建、汇编及MCA；当前AMD/WSL不是Skylake，未取得目标GDS状态，不关闭任何安全缓解",
+  "hypothesis": "显式硬件gather逐个替换为既有core所用的8个标量读取加SIMD组装；使GDS相关热点指令归零，代价为提取/组装与寄存器压力。",
+  "stop": "先检查实际对象确实无gather、全部同形固定四级循环和调用；静态收益不足则不在AMD做像素/性能测试。MCA不建模GDS，不能用它证明目标更快或更慢。",
+  "no_scan": "一个完整替换候选；不扫轴/节点混合策略、块大小或编译器开关",
+  "prior_failed_families_unchanged": true,
+  "native_calls": 0,
+  "performance_calls": 0
+}

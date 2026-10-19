@@ -1,0 +1,354 @@
+{
+  "schema": 1,
+  "purpose": "缓存命中直接写回packed RGB，消除拆分后又合并的8条位运算；缓存/坐标/插值/范围/回退保持",
+  "deadline_shanghai": "2026-10-20T10:00:00+08:00",
+  "base_commit": "bdf40219d1449a8e805d161b1653b1a777cd023b",
+  "candidate": "对任意32位v，(v&255)|(((v>>8)&255)<<8)|((v>>16)<<16)==v；直接复用原shuffle和24字节写回。",
+  "unchanged": [
+    "a399模型及后三模型",
+    "源参考与RGB欧氏误差口径",
+    "17..33网格与节点",
+    "单级Q16及逐级RGB8 half-up",
+    "原始SLUT/侧表磁盘格式",
+    "公共默认与冠军"
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-cache-range-runtime/CMakeLists.txt": "8cc0b81b85aba058ab0a04fb3b44c9f59abe5ef02c81abbfd3e590ccb0701434",
+    "experiments/skylake-cache-range-runtime/channel_avx2.cpp": "a1b838dc57a475e117576233ae47b7fea7792845a7ce170a79f409897ca9fbaa",
+    "experiments/skylake-cache-range-runtime/channel_runtime.cpp": "d1978e4eb79c4fc17d83ea2a5ac0f75c5ef95b2cf24d483f860231156d884da0",
+    "experiments/skylake-cache-range-runtime/channel_views.hpp": "dbe071596a9944326db48627ebe69f1fc568cdb8332de44e33f8d8f30a3df316",
+    "experiments/skylake-cache-range-runtime/suffix_cache.hpp": "18903aa54cd6a42613ef54e4aa334fa16736a6d72060f551769c2e3fe9aa4aaf",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-delta-cache-runtime/CMakeLists.txt": "0cfbf915c7af05499699b2f8dcdc283098b60f7152f8e1fda21e66dca26f1e39",
+    "experiments/skylake-delta-cache-runtime/channel_avx2.cpp": "51a81363c1d4879312f7745ad71ac1db657418bea2799ce0727cddaf439aa907",
+    "experiments/skylake-delta-cache-runtime/channel_runtime.cpp": "fefeac36b505673c0bc94c6d27c3b8b44134ddec004ce9aae6305aae0c0e72c4",
+    "experiments/skylake-delta-cache-runtime/channel_views.hpp": "b5952b019bbe408c0b3e149855d810d2d08c78dcc3b98bb6ed3bd43bdc3cdfc0",
+    "experiments/skylake-delta-cache-runtime/suffix_cache.hpp": "7568ec66faaa3720858d1551090105a4b54dae9d61044f42a44563cfd9e2a311",
+    "experiments/skylake-delta16-runtime/CMakeLists.txt": "43134d9d1710333a62e91aa78f6c8f5345aad48ecc9cf809bcacafb7ff39ef38",
+    "experiments/skylake-delta16-runtime/channel_avx2.cpp": "c9074f9accaecfa4b643ecd0f2386019e81190c244c86a7250378cfe86dbeb37",
+    "experiments/skylake-delta16-runtime/channel_runtime.cpp": "08b97cc99692f879a8e8c4c259c0aefac45a25b80e7fa6f34d1a66d2cd2c1fbc",
+    "experiments/skylake-delta16-runtime/channel_views.hpp": "72c9f4619446e1032f8d5e75f65216431d595fca9179bfb28c56fa0f8adc6673",
+    "experiments/skylake-packed-store-runtime/CMakeLists.txt": "70aeefd19452cb748f9590ff2ca995da7ff8473ede9cf1c1694077beb6969f3f",
+    "experiments/skylake-packed-store-runtime/channel_avx2.cpp": "6e2463dec67f2eb3d454e19889a337f2c02410ab5e2b34d131501e9314b37401",
+    "experiments/skylake-packed-store-runtime/channel_runtime.cpp": "e4df234f71b44e3871c8585cbd9e66b21d9a352c8e3974f8c4b75a2655d2ffdb",
+    "experiments/skylake-packed-store-runtime/channel_views.hpp": "c05a5c30e7c29debe8e5f4f4e099f4c46091f1ef2e98169c0745aa7bbe7ec7a8",
+    "experiments/skylake-packed-store-runtime/suffix_cache.hpp": "2ee742ac7233c314975542a07c2d5e7b08045b3fabb5fb32d1bcc49bfeacb387",
+    "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp": "fb1ffabd1bad41abf44d1513c4feadd3479392e9cda625b2842db234e519ad79",
+    "experiments/skylake-suffix-cache-runtime/channel_runtime.cpp": "ef4bca4d772ef6d0a6a708d9b5792f062f37911644e55f9e27a5614c004292d6",
+    "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp": "c31d01ead445ab1e3e432061d9cddd59835a70f14052a84d3e2050e06703e17f",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "35b52b9bc1c9d3fa6572efbf4144653b55902539036ce5634f0e9ce38dc8f81f",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/bench_skylake_runtime.py": "20926bbb34cabe4d2b226124057de9b26c90a6817d25118344d8c006a543afde",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/inspect_skylake_cached.py": "ba4ab11e0676586d167a1a3af651883a6efb48af2d5adb83e418becda4fa0fbe",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_cache_range.py": "47b7df867757c0c9bda95f7c71d2bf3435741dbee04d994650e914122e445be2",
+    "scripts/verify_skylake_delta16.py": "1bd365f8278dbdad21ca13bc22d64642984d0332635e482f44dce4a24fd04eb4",
+    "scripts/verify_skylake_delta_cache.py": "bca38b34b38544f73540229dad53256bc7ac161c861f394e699505b90b6a9a35",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1",
+    "scripts/verify_skylake_suffix_cache.py": "75fe91bb10f147095d1c00fce6f62f52df5e002d0a370ad73af481b9d14aefdb"
+  },
+  "local_compiler": {
+    "path": "E:/mingw64/bin/g++.exe",
+    "sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "compile_policy": {
+    "runtime_dispatch": "标量/CPU检测TU无-mavx2",
+    "simd": "-mavx2 -mtune=skylake -ffp-contract=off；不启用FMA/fast-math",
+    "forbidden": [
+      "-march=native",
+      "-mavx512*",
+      "fast-math",
+      "改变模型以换速度"
+    ]
+  },
+  "fixed_inputs": {
+    "library": {
+      "path": "artifacts/channel-native-specialized-v1/jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    },
+    "build": {
+      "path": "artifacts/channel-native-specialized-v1/build.json",
+      "sha256": "66b05e3986e3988813a03ab5f534469ea3715ee200cb3f4efa5a8852fe512ded"
+    },
+    "contract": {
+      "path": "artifacts/channel-native-specialized-contract-v1/results.json",
+      "sha256": "ecfd23a9e793adf3e7e45b21b16975ed7c4827b56d089b09eb31c6b6a29720f5"
+    },
+    "policy": {
+      "path": "experiments/channel-runtime-specialized-v1.json",
+      "sha256": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839"
+    },
+    "prior_full": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f"
+    },
+    "prior_run": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/run.json",
+      "sha256": "f2cdc12d609814cc313e80e6f84cfbbdfad1c8f4abe89505e24462442964e41a"
+    },
+    "cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    },
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    },
+    "model": {
+      "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+      "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    }
+  },
+  "suffix_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "contract": {
+    "seed": 2026102001,
+    "mixed_m": [
+      17,
+      18,
+      25,
+      33
+    ],
+    "lengths": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      15,
+      16,
+      17,
+      4095,
+      4096,
+      4097
+    ],
+    "byte_offsets": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "paths": [
+      "unshared/shared/shared/shared",
+      "shared/unshared/shared/unshared",
+      "equal-sidecar-but-different-base/shared/shared/shared",
+      "single-unshared",
+      "three-unshared"
+    ],
+    "backend_threads": [
+      [
+        "scalar",
+        1
+      ],
+      [
+        "avx2",
+        1
+      ],
+      [
+        "avx2",
+        4
+      ]
+    ],
+    "edge_fracs": [
+      0,
+      1,
+      32767,
+      32768,
+      32769,
+      65535,
+      65536
+    ],
+    "oracle": "scripts/verify_channel_coordinates.py.integer_oracle，独立uint64逐级输出",
+    "acceptance": "整数全部字节与哨兵零差；先有限集中合同后才一次实际完整域与百图，不重新拟合"
+  },
+  "performance": {
+    "variants": [
+      "reference",
+      "candidate"
+    ],
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "repeats": 5,
+    "scope": "每次完整100图；apply与copy+apply分列，源预载，不含IO/解码/加载/统计；先通过完整正确性",
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.97,
+      "any_process_apply_ratio_max": 1.02,
+      "median_copy_apply_ratio_max": 1.0,
+      "median_prepare_plus_100_ratio_max": 1.0
+    },
+    "failure_policy": "失败保留不采用；不按噪声继续参数扫描。Skylake服务器结果单独验收，不以AMD本机取代。"
+  },
+  "server_status": "仍未取得具体CPU/系统/连接入口；仅本机研究，最终Skylake单独测试",
+  "evidence_sources": [
+    "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/x86-Options.html",
+    "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/resources/gds-mitigation-performance-analysis.html"
+  ],
+  "limits": [
+    "当前本机是AMD，不能宣称Skylake实测收益",
+    "GDS缓解/微码/NUMA状态须在最终服务器记录，不修改安全缓解设置",
+    "原实验停止条件仅约束其既有阶段，本轮新范围由当前用户目标授权"
+  ],
+  "cmake_project": "experiments/skylake-packed-store-runtime",
+  "cmake_targets": [
+    "jshc_skylake_reference",
+    "jshc_skylake_packed_store"
+  ],
+  "revisions": {
+    "reference": 6,
+    "candidate": 9
+  },
+  "delta16_policy": {
+    "contract_seed": 2026102004,
+    "difference_min": -32768,
+    "difference_max": 32767,
+    "encoding": "R/idx保留原32位；另一u32低半字int16(G-R)、高半字int16(B-R)，签名明确恢复再加R",
+    "eligibility": "逐级检查全部3轴×256码值；仅非共享且所有坐标差可表示时压缩，任一越界全部保留原九表",
+    "disk_format": "原9216字节Q16侧表不变；压缩只在创建后内部内存",
+    "actual_chain_layouts": [
+      2,
+      1,
+      1,
+      1
+    ],
+    "layout_diagnostic": "0原九表非共享、1共享、2有符号双差值；候选C ABI修订5提供只读诊断",
+    "raw_contract_cases": 55,
+    "extra_contract_layouts": [
+      "delta_single_bounds",
+      "delta_shared_shared_shared",
+      "three_delta",
+      "shared_delta_shared_delta",
+      "delta_unpacked_shared_delta",
+      "over_positive_single",
+      "over_negative_single",
+      "equal_changed_shared"
+    ],
+    "boundary_differences": [
+      -32769,
+      -32768,
+      32767,
+      32768
+    ],
+    "scope": "先静态评估，只有有可解释的实质潜力才一次集中合同/完整域/百图/平衡性能；不扫描位宽、阈值或块大小",
+    "source_range_evidence": {
+      "path": "artifacts/skylake-delta16-design-v1/ranges.json",
+      "sha256": "1760a0e4b907b67d697292730924110876c2fee127f1499e087049643b2c19c9"
+    },
+    "boundary_field_coverage": "R/B轴低-32768高+32767，G轴低+32767高-32768；另检+32768/-32769明确回退"
+  },
+  "cache_policy": {
+    "budget_bytes": 1048576,
+    "node_difference_margin": 2,
+    "contract_seed": 2026102002,
+    "dimensions": "节点R最小至最大；节点G-R与B-R各扩大固定2码并夹[-255,255]",
+    "enable": "恰好四级且矩形u32槽容量不超过预算；分配失败自动回退",
+    "construction": "仅现有后三个稀疏模型的标量整数逐级RGB8 half-up；合法槽全部生成，非法RGB槽初始化零",
+    "lookup": "每8像素均检查R/G-R/B-R的上下界；全部命中才gather，否则整包复用首级结果计算原后三层；尾部原标量",
+    "limits": [
+      "节点通道差不构成分输出坐标的输出差界证明",
+      "不从自然照片调缓存范围、不更改拟合模型",
+      "额外内存与准备时间单独列出",
+      "题目对合成缓存的具体约束尚需官方确认；本阶段独立研究，不改默认"
+    ]
+  },
+  "combination_policy": {
+    "contract_seed": 2026102006,
+    "reference": "已验缓存+delta16，修订6",
+    "candidate": "同样编码/缓存，仅简化范围判断，修订7",
+    "interaction_contract": "先旧55+88+55合同，再77个交互布局/包/长度；全命中及7命中1未命中；两库缓存表全部合法槽对独立u64",
+    "actual_cache_table_capacity_bytes": 742400,
+    "no_multiplication_of_prior_speedups": true
+  },
+  "reference_delta16": true,
+  "packed_store_policy": {
+    "purpose": "缓存命中直接写回packed RGB，消除拆分后又合并的8条位运算；缓存/坐标/插值/范围/回退保持",
+    "base_commit": "bdf40219d1449a8e805d161b1653b1a777cd023b",
+    "reference_revision": 6,
+    "candidate_revision": 9,
+    "proof": "对任意32位v，(v&255)|(((v>>8)&255)<<8)|((v>>16)<<16)==v；直接复用原shuffle和24字节写回。",
+    "scope": "Windows/AMD的构建、全部同形循环和Skylake MCA先验潜力；不是目标服务器性能",
+    "stop": "全部两处全命中循环须保持15 gather且无调用，模型周期一致改善且达到3%实质潜力才考虑一次集中运行验证；否则静态停止，不扫描写回变体",
+    "native_calls": 0,
+    "performance_calls": 0,
+    "design_sha256": "f21604e1844e633fcbf7157970857c688b0e69b088c665d0e4e37c3ad2b27f10"
+  }
+}

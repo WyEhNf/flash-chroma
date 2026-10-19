@@ -35,3 +35,5 @@ G−R/B−R仍须检查。对`offset=(G−R)−dg_min`及B对应量，RGB8与缓
 冻结计划为`experiments/skylake-cache-range-v1.json`。构建用统一`build_skylake_runtime.py`，静态入口为`inspect_skylake_cached.py --reference-gathers 15 --candidate-gathers 15`；旧18/15默认保持。准确命令、源码原字节、两库/对象、完整汇编、全部MCA原日志及头文件SHA见[原始证据](../../report/data/skylake-cache-range-static-v1/README.md)。历史实验继续使用各自源码ZIP，不把新辅助脚本换行/哈希冒充历史来源。
 
 本判定族不继续扫变体或参数，除非目标硬件给出新的实测依据。接下来将已验的组合方案纳入服务器同次比较；静态停止原型不进入服务器默认评测矩阵。具体Skylake/官方规则仍待验收，现有组合的本机收益保持原结论。
+
+后续[直接写回阶段](2026-10-20-skylake-packed-store.md)在修订6/9上执行并通过了辅助合同“参考也已编码”的分支；这只补充该辅助分支的实际运行证据。修订7本体及其边界原型仍未加载或通过数值验证，本阶段静态停止不变。

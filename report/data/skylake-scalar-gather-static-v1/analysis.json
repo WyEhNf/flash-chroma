@@ -1,0 +1,1401 @@
+{
+  "purpose": "静态检查完整软件gather、全部四级调用及固定坐标排序；不加载库或运行像素/MCA/性能。",
+  "static_check_pass": true,
+  "plan_sha256": "3c9c68a05ad42239460243385174f3d1ebb0d28fb248b1d685bd0905e7bee8af",
+  "build_sha256": "e60f5fa5ceb2c916b5a87baf9c9ff5b37c2f5090929ecfb81788e74344c52b0e",
+  "analysis_sources": {
+    "scripts/inspect_skylake_scalar_gather.py": "8aca5b1e13267a79725b90945089ecea630486b15eb98ba3fb58b8a2f70227d1",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4"
+  },
+  "commands": [
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-scalar-gather-build-v1\\CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_avx2.cpp.obj"
+    ],
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-scalar-gather-build-v1\\CMakeFiles\\jshc_skylake_scalar_gather.dir\\channel_avx2.cpp.obj"
+    ]
+  ],
+  "variants": {
+    "reference": {
+      "object_sha256": "7781d5c8d5111fb468a81d8be7a0109000373a042585c340c931e39fe2ef1151",
+      "whole_simd_tu_gathers": 94,
+      "functions": {
+        "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)": 1632
+      },
+      "all_loops": [
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x130",
+          "end": "0x5d8",
+          "span_bytes": 1192,
+          "instructions": 218,
+          "gathers": 14,
+          "vpmulld": 11,
+          "rsp_operands": 39,
+          "calls": 0,
+          "branches": 3,
+          "gpr_memory_loads": 9,
+          "mnemonics": {
+            "vpsrad": 6,
+            "vmovdqa": 17,
+            "vpaddd": 31,
+            "vpslld": 6,
+            "vmovdqu": 28,
+            "vpmaxsd": 6,
+            "vpcmpgtd": 12,
+            "vpminsd": 6,
+            "vpsubd": 17,
+            "vpblendvb": 12,
+            "vpgatherdd": 14,
+            "vpsrld": 14,
+            "vpand": 15,
+            "vpmulld": 11,
+            "add": 1,
+            "cmp": 1,
+            "je": 1,
+            "mov": 9,
+            "vmovd": 3,
+            "vpbroadcastd": 3,
+            "lea": 1,
+            "cmpb": 2,
+            "jne": 2
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x351",
+          "end": "0x891",
+          "span_bytes": 1344,
+          "instructions": 245,
+          "gathers": 17,
+          "vpmulld": 15,
+          "rsp_operands": 39,
+          "calls": 0,
+          "branches": 4,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "mov": 12,
+            "vmovdqu": 30,
+            "vmovdqa": 22,
+            "vmovd": 3,
+            "vpgatherdd": 17,
+            "vpbroadcastd": 3,
+            "vpsrld": 19,
+            "lea": 1,
+            "vpmulld": 15,
+            "vpand": 25,
+            "vpminsd": 6,
+            "vpaddd": 30,
+            "vpslld": 3,
+            "vpcmpgtd": 12,
+            "vpblendvb": 12,
+            "vpsubd": 20,
+            "cmpb": 2,
+            "vpmaxsd": 6,
+            "jne": 3,
+            "jmp": 1,
+            "nopl": 1,
+            "add": 1,
+            "cmp": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xd8",
+          "end": "0x8eb",
+          "span_bytes": 2067,
+          "instructions": 379,
+          "gathers": 21,
+          "vpmulld": 21,
+          "rsp_operands": 59,
+          "calls": 0,
+          "branches": 8,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "vmovdqu": 42,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpsrld": 27,
+            "vpand": 31,
+            "test": 1,
+            "je": 2,
+            "vmovdqa": 32,
+            "mov": 13,
+            "jmp": 2,
+            "nop": 1,
+            "vpsrad": 6,
+            "vpaddd": 48,
+            "vpslld": 8,
+            "vpmaxsd": 10,
+            "vpcmpgtd": 20,
+            "vpminsd": 10,
+            "vpsubd": 32,
+            "vpblendvb": 20,
+            "vpgatherdd": 21,
+            "vpmulld": 21,
+            "add": 3,
+            "cmp": 3,
+            "vmovd": 3,
+            "vpbroadcastd": 3,
+            "lea": 1,
+            "cmpb": 2,
+            "jne": 4,
+            "nopl": 1,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x96d",
+          "span_bytes": 2300,
+          "instructions": 420,
+          "gathers": 21,
+          "vpmulld": 21,
+          "rsp_operands": 73,
+          "calls": 0,
+          "branches": 11,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "test": 2,
+            "je": 3,
+            "dec": 1,
+            "vmovdqa": 35,
+            "lea": 4,
+            "shr": 1,
+            "shl": 1,
+            "vmovdqu": 45,
+            "add": 5,
+            "mov": 14,
+            "vmovd": 4,
+            "vpcmpeqd": 1,
+            "vpbroadcastd": 4,
+            "vpsrld": 28,
+            "nopl": 3,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpand": 31,
+            "jmp": 3,
+            "nop": 1,
+            "vpsrad": 6,
+            "vpaddd": 48,
+            "vpslld": 8,
+            "vpmaxsd": 10,
+            "vpcmpgtd": 20,
+            "vpminsd": 10,
+            "vpsubd": 32,
+            "vpblendvb": 20,
+            "vpgatherdd": 21,
+            "vpmulld": 21,
+            "cmp": 3,
+            "cmpb": 3,
+            "jne": 5,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "vzeroupper": 1,
+            "vmovaps": 10,
+            "pop": 3,
+            "ret": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x97a",
+          "span_bytes": 2313,
+          "instructions": 422,
+          "gathers": 21,
+          "vpmulld": 21,
+          "rsp_operands": 73,
+          "calls": 0,
+          "branches": 12,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "test": 2,
+            "je": 4,
+            "dec": 1,
+            "vmovdqa": 35,
+            "lea": 4,
+            "shr": 1,
+            "shl": 1,
+            "vmovdqu": 45,
+            "add": 5,
+            "mov": 14,
+            "vmovd": 4,
+            "vpcmpeqd": 1,
+            "vpbroadcastd": 4,
+            "vpsrld": 28,
+            "nopl": 3,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpand": 31,
+            "jmp": 3,
+            "nop": 1,
+            "vpsrad": 6,
+            "vpaddd": 48,
+            "vpslld": 8,
+            "vpmaxsd": 10,
+            "vpcmpgtd": 20,
+            "vpminsd": 10,
+            "vpsubd": 32,
+            "vpblendvb": 20,
+            "vpgatherdd": 21,
+            "vpmulld": 21,
+            "cmp": 3,
+            "cmpb": 4,
+            "jne": 5,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "vzeroupper": 1,
+            "vmovaps": 10,
+            "pop": 3,
+            "ret": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x987",
+          "span_bytes": 2326,
+          "instructions": 424,
+          "gathers": 21,
+          "vpmulld": 21,
+          "rsp_operands": 73,
+          "calls": 0,
+          "branches": 13,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "test": 2,
+            "je": 5,
+            "dec": 1,
+            "vmovdqa": 35,
+            "lea": 4,
+            "shr": 1,
+            "shl": 1,
+            "vmovdqu": 45,
+            "add": 5,
+            "mov": 14,
+            "vmovd": 4,
+            "vpcmpeqd": 1,
+            "vpbroadcastd": 4,
+            "vpsrld": 28,
+            "nopl": 3,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpand": 31,
+            "jmp": 3,
+            "nop": 1,
+            "vpsrad": 6,
+            "vpaddd": 48,
+            "vpslld": 8,
+            "vpmaxsd": 10,
+            "vpcmpgtd": 20,
+            "vpminsd": 10,
+            "vpsubd": 32,
+            "vpblendvb": 20,
+            "vpgatherdd": 21,
+            "vpmulld": 21,
+            "cmp": 3,
+            "cmpb": 5,
+            "jne": 5,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "vzeroupper": 1,
+            "vmovaps": 10,
+            "pop": 3,
+            "ret": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x994",
+          "span_bytes": 2339,
+          "instructions": 426,
+          "gathers": 21,
+          "vpmulld": 21,
+          "rsp_operands": 73,
+          "calls": 0,
+          "branches": 14,
+          "gpr_memory_loads": 12,
+          "mnemonics": {
+            "test": 2,
+            "je": 6,
+            "dec": 1,
+            "vmovdqa": 35,
+            "lea": 4,
+            "shr": 1,
+            "shl": 1,
+            "vmovdqu": 45,
+            "add": 5,
+            "mov": 14,
+            "vmovd": 4,
+            "vpcmpeqd": 1,
+            "vpbroadcastd": 4,
+            "vpsrld": 28,
+            "nopl": 3,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpand": 31,
+            "jmp": 3,
+            "nop": 1,
+            "vpsrad": 6,
+            "vpaddd": 48,
+            "vpslld": 8,
+            "vpmaxsd": 10,
+            "vpcmpgtd": 20,
+            "vpminsd": 10,
+            "vpsubd": 32,
+            "vpblendvb": 20,
+            "vpgatherdd": 21,
+            "vpmulld": 21,
+            "cmp": 3,
+            "cmpb": 6,
+            "jne": 5,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "vzeroupper": 1,
+            "vmovaps": 10,
+            "pop": 3,
+            "ret": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f4",
+          "end": "0x9a7",
+          "span_bytes": 179,
+          "instructions": 30,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 11,
+          "calls": 0,
+          "branches": 7,
+          "gpr_memory_loads": 0,
+          "mnemonics": {
+            "vmovaps": 10,
+            "add": 1,
+            "pop": 3,
+            "ret": 1,
+            "nopl": 1,
+            "vmovdqa": 1,
+            "jmp": 1,
+            "cmpb": 5,
+            "jne": 2,
+            "je": 4,
+            "test": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x9fe",
+          "end": "0x1598",
+          "span_bytes": 2970,
+          "instructions": 570,
+          "gathers": 38,
+          "vpmulld": 44,
+          "rsp_operands": 38,
+          "calls": 0,
+          "branches": 1,
+          "gpr_memory_loads": 30,
+          "mnemonics": {
+            "vmovdqu": 29,
+            "vmovq": 2,
+            "vmovdqa": 42,
+            "mov": 30,
+            "add": 1,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vmovd": 12,
+            "vpshufb": 2,
+            "vpbroadcastd": 12,
+            "vpand": 68,
+            "vpsrld": 58,
+            "lea": 4,
+            "vpgatherdd": 38,
+            "vpmulld": 44,
+            "vpmaxsd": 12,
+            "vpaddd": 84,
+            "vpcmpgtd": 24,
+            "vpminsd": 12,
+            "vpblendvb": 24,
+            "vpsubd": 48,
+            "vpslld": 14,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "cmp": 1,
+            "jne": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f4",
+          "end": "0x15a6",
+          "span_bytes": 3250,
+          "instructions": 617,
+          "gathers": 38,
+          "vpmulld": 44,
+          "rsp_operands": 52,
+          "calls": 0,
+          "branches": 10,
+          "gpr_memory_loads": 30,
+          "mnemonics": {
+            "vmovaps": 10,
+            "add": 2,
+            "pop": 3,
+            "ret": 1,
+            "nopl": 1,
+            "vmovdqa": 45,
+            "jmp": 2,
+            "cmpb": 5,
+            "jne": 3,
+            "je": 5,
+            "test": 2,
+            "lea": 7,
+            "vpcmpeqd": 1,
+            "shr": 1,
+            "vpsrld": 59,
+            "vmovdqu": 32,
+            "mov": 31,
+            "vmovd": 13,
+            "vpbroadcastd": 13,
+            "vmovq": 2,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpand": 68,
+            "vpgatherdd": 38,
+            "vpmulld": 44,
+            "vpmaxsd": 12,
+            "vpaddd": 84,
+            "vpcmpgtd": 24,
+            "vpminsd": 12,
+            "vpblendvb": 24,
+            "vpsubd": 48,
+            "vpslld": 14,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "cmp": 1
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x15fd",
+          "end": "0x219d",
+          "span_bytes": 2976,
+          "instructions": 575,
+          "gathers": 35,
+          "vpmulld": 44,
+          "rsp_operands": 41,
+          "calls": 0,
+          "branches": 1,
+          "gpr_memory_loads": 27,
+          "mnemonics": {
+            "vmovdqu": 32,
+            "vmovq": 2,
+            "vmovdqa": 41,
+            "mov": 27,
+            "add": 1,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vmovd": 12,
+            "vpshufb": 2,
+            "vpbroadcastd": 12,
+            "vpand": 62,
+            "vpsrld": 58,
+            "vpgatherdd": 35,
+            "lea": 4,
+            "vpmulld": 44,
+            "vpaddd": 90,
+            "vpcmpgtd": 24,
+            "vpmaxsd": 12,
+            "vpminsd": 12,
+            "vpblendvb": 24,
+            "vpsubd": 48,
+            "vpslld": 17,
+            "vpsrad": 6,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "cmp": 1,
+            "jne": 1
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "object_sha256": "8ec3c921cb6efd5608849e5a65f52c8ba49fa7fdce6e71b6537df86e996a378d",
+      "whole_simd_tu_gathers": 0,
+      "functions": {
+        "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)": 282,
+        "void jshc_scalar_gather::(anonymous namespace)::transform<false, true>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)": 516,
+        "void jshc_scalar_gather::(anonymous namespace)::transform<false, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)": 569,
+        "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)": 507
+      },
+      "all_loops": [
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1e10",
+          "end": "0x1e6a",
+          "span_bytes": 90,
+          "instructions": 18,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 1,
+          "calls": 1,
+          "branches": 3,
+          "gpr_memory_loads": 1,
+          "mnemonics": {
+            "vzeroupper": 1,
+            "call": 1,
+            "vmovdqa": 6,
+            "inc": 1,
+            "add": 1,
+            "cmp": 1,
+            "je": 1,
+            "cmpb": 2,
+            "jne": 2,
+            "mov": 2
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1e3c",
+          "end": "0x1e96",
+          "span_bytes": 90,
+          "instructions": 18,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 1,
+          "calls": 1,
+          "branches": 3,
+          "gpr_memory_loads": 1,
+          "mnemonics": {
+            "cmpb": 2,
+            "jne": 3,
+            "mov": 2,
+            "vmovdqa": 6,
+            "vzeroupper": 1,
+            "call": 1,
+            "inc": 1,
+            "add": 1,
+            "cmp": 1
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1d59",
+          "end": "0x244c",
+          "span_bytes": 1779,
+          "instructions": 333,
+          "gathers": 0,
+          "vpmulld": 11,
+          "rsp_operands": 17,
+          "calls": 2,
+          "branches": 11,
+          "gpr_memory_loads": 10,
+          "mnemonics": {
+            "test": 2,
+            "je": 4,
+            "lea": 3,
+            "vmovdqa": 14,
+            "mov": 18,
+            "shr": 1,
+            "xor": 2,
+            "vmovdqu": 5,
+            "nopl": 2,
+            "vmovq": 2,
+            "vpcmpeqd": 3,
+            "vpsrld": 19,
+            "vpalignr": 1,
+            "vinserti128": 8,
+            "vpshufb": 2,
+            "vpand": 17,
+            "jmp": 3,
+            "vzeroupper": 2,
+            "call": 2,
+            "inc": 3,
+            "add": 3,
+            "cmp": 3,
+            "cmpb": 3,
+            "jne": 4,
+            "vpslld": 5,
+            "vpor": 3,
+            "vextracti128": 8,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "xchg": 1,
+            "vmovd": 46,
+            "vpextrd": 42,
+            "vpinsrd": 28,
+            "vpunpcklqdq": 14,
+            "vpbroadcastd": 4,
+            "vpmulld": 11,
+            "vpminsd": 2,
+            "vpcmpgtd": 4,
+            "vpaddd": 20,
+            "vpmaxsd": 2,
+            "vpblendvb": 4,
+            "vpsubd": 11
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1d59",
+          "end": "0x2459",
+          "span_bytes": 1792,
+          "instructions": 335,
+          "gathers": 0,
+          "vpmulld": 11,
+          "rsp_operands": 17,
+          "calls": 2,
+          "branches": 12,
+          "gpr_memory_loads": 10,
+          "mnemonics": {
+            "test": 2,
+            "je": 5,
+            "lea": 3,
+            "vmovdqa": 14,
+            "mov": 18,
+            "shr": 1,
+            "xor": 2,
+            "vmovdqu": 5,
+            "nopl": 2,
+            "vmovq": 2,
+            "vpcmpeqd": 3,
+            "vpsrld": 19,
+            "vpalignr": 1,
+            "vinserti128": 8,
+            "vpshufb": 2,
+            "vpand": 17,
+            "jmp": 3,
+            "vzeroupper": 2,
+            "call": 2,
+            "inc": 3,
+            "add": 3,
+            "cmp": 3,
+            "cmpb": 4,
+            "jne": 4,
+            "vpslld": 5,
+            "vpor": 3,
+            "vextracti128": 8,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "xchg": 1,
+            "vmovd": 46,
+            "vpextrd": 42,
+            "vpinsrd": 28,
+            "vpunpcklqdq": 14,
+            "vpbroadcastd": 4,
+            "vpmulld": 11,
+            "vpminsd": 2,
+            "vpcmpgtd": 4,
+            "vpaddd": 20,
+            "vpmaxsd": 2,
+            "vpblendvb": 4,
+            "vpsubd": 11
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1d59",
+          "end": "0x2466",
+          "span_bytes": 1805,
+          "instructions": 337,
+          "gathers": 0,
+          "vpmulld": 11,
+          "rsp_operands": 17,
+          "calls": 2,
+          "branches": 13,
+          "gpr_memory_loads": 10,
+          "mnemonics": {
+            "test": 2,
+            "je": 6,
+            "lea": 3,
+            "vmovdqa": 14,
+            "mov": 18,
+            "shr": 1,
+            "xor": 2,
+            "vmovdqu": 5,
+            "nopl": 2,
+            "vmovq": 2,
+            "vpcmpeqd": 3,
+            "vpsrld": 19,
+            "vpalignr": 1,
+            "vinserti128": 8,
+            "vpshufb": 2,
+            "vpand": 17,
+            "jmp": 3,
+            "vzeroupper": 2,
+            "call": 2,
+            "inc": 3,
+            "add": 3,
+            "cmp": 3,
+            "cmpb": 5,
+            "jne": 4,
+            "vpslld": 5,
+            "vpor": 3,
+            "vextracti128": 8,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "xchg": 1,
+            "vmovd": 46,
+            "vpextrd": 42,
+            "vpinsrd": 28,
+            "vpunpcklqdq": 14,
+            "vpbroadcastd": 4,
+            "vpmulld": 11,
+            "vpminsd": 2,
+            "vpcmpgtd": 4,
+            "vpaddd": 20,
+            "vpmaxsd": 2,
+            "vpblendvb": 4,
+            "vpsubd": 11
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1d59",
+          "end": "0x2473",
+          "span_bytes": 1818,
+          "instructions": 339,
+          "gathers": 0,
+          "vpmulld": 11,
+          "rsp_operands": 17,
+          "calls": 2,
+          "branches": 14,
+          "gpr_memory_loads": 10,
+          "mnemonics": {
+            "test": 2,
+            "je": 7,
+            "lea": 3,
+            "vmovdqa": 14,
+            "mov": 18,
+            "shr": 1,
+            "xor": 2,
+            "vmovdqu": 5,
+            "nopl": 2,
+            "vmovq": 2,
+            "vpcmpeqd": 3,
+            "vpsrld": 19,
+            "vpalignr": 1,
+            "vinserti128": 8,
+            "vpshufb": 2,
+            "vpand": 17,
+            "jmp": 3,
+            "vzeroupper": 2,
+            "call": 2,
+            "inc": 3,
+            "add": 3,
+            "cmp": 3,
+            "cmpb": 6,
+            "jne": 4,
+            "vpslld": 5,
+            "vpor": 3,
+            "vextracti128": 8,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "xchg": 1,
+            "vmovd": 46,
+            "vpextrd": 42,
+            "vpinsrd": 28,
+            "vpunpcklqdq": 14,
+            "vpbroadcastd": 4,
+            "vpmulld": 11,
+            "vpminsd": 2,
+            "vpcmpgtd": 4,
+            "vpaddd": 20,
+            "vpmaxsd": 2,
+            "vpblendvb": 4,
+            "vpsubd": 11
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x24d9",
+          "end": "0x25a5",
+          "span_bytes": 204,
+          "instructions": 40,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 2,
+          "calls": 4,
+          "branches": 1,
+          "gpr_memory_loads": 0,
+          "mnemonics": {
+            "vmovdqu": 2,
+            "vmovq": 2,
+            "mov": 4,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpsrld": 2,
+            "vpand": 2,
+            "vmovdqa": 7,
+            "vzeroupper": 1,
+            "call": 4,
+            "inc": 1,
+            "add": 1,
+            "vpslld": 2,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "cmp": 1,
+            "jne": 1
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x25b3",
+          "end": "0x2624",
+          "span_bytes": 113,
+          "instructions": 22,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 11,
+          "calls": 0,
+          "branches": 1,
+          "gpr_memory_loads": 0,
+          "mnemonics": {
+            "vmovaps": 10,
+            "add": 1,
+            "pop": 8,
+            "ret": 1,
+            "test": 1,
+            "je": 1
+          }
+        },
+        {
+          "function": "jshc_scalar_gather::avx2_chain(jshc_scalar_gather::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x265d",
+          "end": "0x271e",
+          "span_bytes": 193,
+          "instructions": 41,
+          "gathers": 0,
+          "vpmulld": 0,
+          "rsp_operands": 2,
+          "calls": 4,
+          "branches": 1,
+          "gpr_memory_loads": 0,
+          "mnemonics": {
+            "vmovdqu": 2,
+            "vmovq": 2,
+            "mov": 5,
+            "vpalignr": 1,
+            "vinserti128": 1,
+            "vpshufb": 2,
+            "vpsrld": 2,
+            "vpand": 2,
+            "vmovdqa": 7,
+            "vzeroupper": 1,
+            "call": 4,
+            "inc": 1,
+            "add": 1,
+            "vpslld": 2,
+            "vpor": 3,
+            "vextracti128": 1,
+            "vpslldq": 1,
+            "vpsrldq": 1,
+            "cmp": 1,
+            "jne": 1
+          }
+        }
+      ]
+    }
+  },
+  "reference_fixed_loops": [
+    {
+      "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+      "start": "0x9fe",
+      "end": "0x1598",
+      "span_bytes": 2970,
+      "instructions": 570,
+      "gathers": 38,
+      "vpmulld": 44,
+      "rsp_operands": 38,
+      "calls": 0,
+      "branches": 1,
+      "gpr_memory_loads": 30,
+      "mnemonics": {
+        "vmovdqu": 29,
+        "vmovq": 2,
+        "vmovdqa": 42,
+        "mov": 30,
+        "add": 1,
+        "vpalignr": 1,
+        "vinserti128": 1,
+        "vmovd": 12,
+        "vpshufb": 2,
+        "vpbroadcastd": 12,
+        "vpand": 68,
+        "vpsrld": 58,
+        "lea": 4,
+        "vpgatherdd": 38,
+        "vpmulld": 44,
+        "vpmaxsd": 12,
+        "vpaddd": 84,
+        "vpcmpgtd": 24,
+        "vpminsd": 12,
+        "vpblendvb": 24,
+        "vpsubd": 48,
+        "vpslld": 14,
+        "vpor": 3,
+        "vextracti128": 1,
+        "vpslldq": 1,
+        "vpsrldq": 1,
+        "cmp": 1,
+        "jne": 1
+      }
+    },
+    {
+      "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+      "start": "0x15fd",
+      "end": "0x219d",
+      "span_bytes": 2976,
+      "instructions": 575,
+      "gathers": 35,
+      "vpmulld": 44,
+      "rsp_operands": 41,
+      "calls": 0,
+      "branches": 1,
+      "gpr_memory_loads": 27,
+      "mnemonics": {
+        "vmovdqu": 32,
+        "vmovq": 2,
+        "vmovdqa": 41,
+        "mov": 27,
+        "add": 1,
+        "vpalignr": 1,
+        "vinserti128": 1,
+        "vmovd": 12,
+        "vpshufb": 2,
+        "vpbroadcastd": 12,
+        "vpand": 62,
+        "vpsrld": 58,
+        "vpgatherdd": 35,
+        "lea": 4,
+        "vpmulld": 44,
+        "vpaddd": 90,
+        "vpcmpgtd": 24,
+        "vpmaxsd": 12,
+        "vpminsd": 12,
+        "vpblendvb": 24,
+        "vpsubd": 48,
+        "vpslld": 17,
+        "vpsrad": 6,
+        "vpor": 3,
+        "vextracti128": 1,
+        "vpslldq": 1,
+        "vpsrldq": 1,
+        "cmp": 1,
+        "jne": 1
+      }
+    }
+  ],
+  "candidate_fixed_loops": [
+    {
+      "start": "0x24d9",
+      "loop_instructions": 40,
+      "callees": [
+        {
+          "address": "0x2526",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<false, true>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 516,
+          "rsp_operands": 85
+        },
+        {
+          "address": "0x2531",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        },
+        {
+          "address": "0x253d",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        },
+        {
+          "address": "0x2545",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        }
+      ],
+      "static_instruction_budget": 1402,
+      "static_rsp_operand_budget": 159,
+      "scope": "按每函数完整反汇编和调用次数求和，含序言/尾声/填充；不是动态指令或周期"
+    },
+    {
+      "start": "0x265d",
+      "loop_instructions": 41,
+      "callees": [
+        {
+          "address": "0x26a6",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<false, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 569,
+          "rsp_operands": 99
+        },
+        {
+          "address": "0x26b1",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        },
+        {
+          "address": "0x26bd",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        },
+        {
+          "address": "0x26c5",
+          "function": "void jshc_scalar_gather::(anonymous namespace)::transform<true, false>(jshc_scalar_gather::View const&, jshc_scalar_gather::(anonymous namespace)::Rgb&)",
+          "instructions": 282,
+          "rsp_operands": 24
+        }
+      ],
+      "static_instruction_budget": 1456,
+      "static_rsp_operand_budget": 173,
+      "scope": "按每函数完整反汇编和调用次数求和，含序言/尾声/填充；不是动态指令或周期"
+    }
+  ],
+  "reference_object_proof": {
+    "channel_avx2.cpp.obj": {
+      "prior_sha256": "7781d5c8d5111fb468a81d8be7a0109000373a042585c340c931e39fe2ef1151",
+      "reference_sha256": "7781d5c8d5111fb468a81d8be7a0109000373a042585c340c931e39fe2ef1151",
+      "byte_equal": true
+    },
+    "channel_runtime.cpp.obj": {
+      "prior_sha256": "02c2947cbf3abfc5a168bf49e71ed13b71afbef171e38ba2048bede59cb078e1",
+      "reference_sha256": "02c2947cbf3abfc5a168bf49e71ed13b71afbef171e38ba2048bede59cb078e1",
+      "byte_equal": true
+    }
+  },
+  "coordinate_sidecar_sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff",
+  "geometry_axis_code_pair_comparisons": 589824,
+  "geometry_channel_pairs": [
+    {
+      "channels": [
+        0,
+        1
+      ],
+      "identical_axes": [
+        false,
+        false,
+        false
+      ],
+      "axis_pairs": [
+        {
+          "axes": [
+            0,
+            1
+          ],
+          "strict_reversals": 5528,
+          "tie_mismatches": 4,
+          "first_reversal": {
+            "codes": [
+              1,
+              210
+            ],
+            "fractions": [
+              [
+                17047,
+                18312
+              ],
+              [
+                16441,
+                9730
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            0,
+            2
+          ],
+          "strict_reversals": 3967,
+          "tie_mismatches": 3,
+          "first_reversal": {
+            "codes": [
+              1,
+              178
+            ],
+            "fractions": [
+              [
+                17047,
+                16802
+              ],
+              [
+                16441,
+                18741
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            1,
+            2
+          ],
+          "strict_reversals": 4843,
+          "tie_mismatches": 9,
+          "first_reversal": {
+            "codes": [
+              1,
+              1
+            ],
+            "fractions": [
+              [
+                35922,
+                33113
+              ],
+              [
+                36438,
+                36441
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "channels": [
+        0,
+        2
+      ],
+      "identical_axes": [
+        false,
+        false,
+        false
+      ],
+      "axis_pairs": [
+        {
+          "axes": [
+            0,
+            1
+          ],
+          "strict_reversals": 6241,
+          "tie_mismatches": 6,
+          "first_reversal": {
+            "codes": [
+              1,
+              60
+            ],
+            "fractions": [
+              [
+                17047,
+                14164
+              ],
+              [
+                13733,
+                14127
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            0,
+            2
+          ],
+          "strict_reversals": 6371,
+          "tie_mismatches": 1,
+          "first_reversal": {
+            "codes": [
+              1,
+              39
+            ],
+            "fractions": [
+              [
+                17047,
+                13733
+              ],
+              [
+                13733,
+                14011
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            1,
+            2
+          ],
+          "strict_reversals": 7513,
+          "tie_mismatches": 7,
+          "first_reversal": {
+            "codes": [
+              1,
+              10
+            ],
+            "fractions": [
+              [
+                35922,
+                41270
+              ],
+              [
+                35653,
+                23656
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "channels": [
+        1,
+        2
+      ],
+      "identical_axes": [
+        false,
+        false,
+        false
+      ],
+      "axis_pairs": [
+        {
+          "axes": [
+            0,
+            1
+          ],
+          "strict_reversals": 5643,
+          "tie_mismatches": 2,
+          "first_reversal": {
+            "codes": [
+              1,
+              60
+            ],
+            "fractions": [
+              [
+                16441,
+                14800
+              ],
+              [
+                13733,
+                14127
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            0,
+            2
+          ],
+          "strict_reversals": 6379,
+          "tie_mismatches": 2,
+          "first_reversal": {
+            "codes": [
+              1,
+              39
+            ],
+            "fractions": [
+              [
+                16441,
+                13918
+              ],
+              [
+                13733,
+                14011
+              ]
+            ]
+          }
+        },
+        {
+          "axes": [
+            1,
+            2
+          ],
+          "strict_reversals": 7621,
+          "tie_mismatches": 6,
+          "first_reversal": {
+            "codes": [
+              1,
+              1
+            ],
+            "fractions": [
+              [
+                36438,
+                36441
+              ],
+              [
+                35653,
+                22558
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "ordering_probe": {
+    "rgb": [
+      1,
+      210,
+      0
+    ],
+    "fractions": [
+      [
+        17047,
+        18312,
+        0
+      ],
+      [
+        16441,
+        9730,
+        0
+      ],
+      [
+        13733,
+        18793,
+        0
+      ]
+    ],
+    "maximum_axes": [
+      1,
+      0,
+      1
+    ]
+  },
+  "decision": "静态停止；消除gather却打破融合且增加静态预算。目标GDS未确定，不在AMD追加运行验收，也不证明Skylake更慢。",
+  "scope": "SIMD对象零gather不表示整个库；无侧表仍委托既有core。排序反例只否定无条件共用前提，未测共享错误输出。",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "mca_calls": 0
+}
