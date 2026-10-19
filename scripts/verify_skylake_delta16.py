@@ -7,6 +7,7 @@ import zipfile
 import numpy as np
 from skylake_support import build_libraries, claim, digest, read, save, unchanged
 from delta16_support import bind, layouts
+from restrict_support import info as domain_info
 from lutlab import channel_coordinates as cc, io
 from verify_channel_coordinates import integer_oracle
 
@@ -84,7 +85,11 @@ def main():
             memory = {name: h.model_bytes for name, h in handles.items()}
             if plan.get('reference_delta16', False):
                 assert layouts(handles['reference']) == expected_flags
-                assert memory['reference'] == memory['candidate']
+                if 'restrict_policy' in plan:
+                    domains=domain_info(handles['candidate'])
+                    assert domains and memory['candidate']-memory['reference']==domains['extra_model_bytes']
+                else:
+                    assert memory['reference'] == memory['candidate']
             else:
                 assert memory['reference']-memory['candidate'] == expected_flags.count(2)*3072
             accounting.append({'fixture': label, 'layouts': flags, 'model_accounting_bytes': memory})

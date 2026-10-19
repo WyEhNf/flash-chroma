@@ -91,3 +91,5 @@
 `skylake-axis-preweight-static-v1`保存共享轴索引预计算的可逆条件、修正元数据、构建/完整MCA及静态停止；另保存固定节点与已见100图的结构剖面，首级后整包同色约16.03%支持后续精确后缀快路。[阶段说明](../../docs/stages/2026-10-20-skylake-axis-preweight-static.md)明确未执行修订10运行验收；该阶段记录时修订11尚未实现，不把结构覆盖写成加速。
 
 `skylake-uniform-suffix-static-v1`保存后续修订11的源码/库、完整CFG全部436条MCA和静态停止：同色包便宜但普通包成本上升，固定剖面不足以抵消，没有进入运行测试。[后续说明](../../docs/stages/2026-10-20-skylake-uniform-suffix-static.md)更新提案状态，不把它补记为上一阶段已实施或已验证。
+
+`skylake-restrict-static-v1`保存修订12的不重叠读取域及restrict方案、原字节构建、两类完整循环和静态停止。循环指令下降但rsp操作数增加，两族建模周期改善2.224%/5.477%、吞吐下界均略差，未触发运行测试；新域保护与资源诊断尚未验证。[阶段说明](../../docs/stages/2026-10-20-skylake-restrict-static.md)不把预计568字节当作实测资源，也不升级服务器包。

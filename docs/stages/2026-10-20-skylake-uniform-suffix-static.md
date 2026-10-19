@@ -40,3 +40,5 @@ Agent：Codex；Operator：WyEhNf；Task：利用首级RGB8同色包减少重复
 源码为`experiments/skylake-uniform-suffix-runtime`，计划`experiments/skylake-uniform-suffix-v1.json`，分析入口`inspect_skylake_uniform.py`；当前候选ABI修订只在计划/源中声明，未加载调用。完整原始路径放入ZIP，主档案只保留可读汇总，避免把数十万行诊断当作实现改动。[原始证据](../../report/data/skylake-uniform-suffix-static-v1/README.md)同时保留216×2条同色路径和两条普通路径、两条参考，不省略昂贵路径。
 
 下一步检查图像写入与模型读取域的别名约束，判断编译器能否安全提升不变字段；必须先建立可验证的不重叠前提，不能只加restrict假设。此方向尚未实现或验证。默认、冠军、公共CLI/GUI/C99、AGENTS.md和现有四方案服务器包不变。Skylake具体SKU/系统/入口/GDS、正式实测、官方数据/Threshold及侧表/缓存许可仍待取得，Draft不合并。
+
+后续状态：[不重叠域与restrict阶段](2026-10-20-skylake-restrict-static.md)已实现私有原型并完成一次静态筛选，但没有运行候选，因两族信号不一致而停止；不将它追记为本阶段已有的运行成果。

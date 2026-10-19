@@ -1,0 +1,44 @@
+{
+  "purpose": "下一独立候选：建立可验证的不重叠域，再给私有SIMD图像指针GNU __restrict__，检查是否可减少模型元数据重复加载",
+  "reference_revision": 5,
+  "candidate_revision_planned": 12,
+  "status": "原型和只读诊断已写；冻结一次构建/完整两族静态分析，尚无原生/性能调用",
+  "source_evidence": "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/Restricted-Pointers.html",
+  "hypothesis": "uint8_t图像写入可合法别名任意对象，可能阻止View字段/轴指针不变式提升。先证明实际C ABI调用图像范围与shader读取域不重叠，再只给私有AVX2定义中的data与chain加__restrict__。不要把未验证的别名假设当优化。",
+  "architecture": [
+    "复制已验无缓存delta16修订5，私有命名空间/修订12；不混合停止的10/11，不加颜色查表或改变Q16。",
+    "Handle增加vector<Domain{uintptr_t begin,end}>，创建完成所有views/fractions/models后构建，最多reserve(6+7*stages)。",
+    "保护&Handle、models对象数组、fractions外层vector数组、views数组、original数组；每个model的canonical nodes、3个grid向量、PackedTables对象(含axis)、packed nodes及私有fractions数据；包含Domain自身容量区。不要尝试枚举std::shared_ptr控制块或分配器内部元数据，不宣称完整指针安全。",
+    "Range使用每个实际所有者区域，不能用整个堆地址min/max凸包，否则会误拒夹在模型分配之间的合法图像。合并只允许交叠/相邻范围，排序/resize不改变容量；self区域在reserve完成后加入。",
+    "apply在写图像或启动线程前检查uintptr溢出以及图像半开区间与读取域交叠，交叠拒绝不写；零字节保留原行为。C ABI错误缓冲区仍按原有效独立输出约定，不扩成通用安全重构。",
+    "__restrict__只给私有AVX2入口及固定四级data定义，按GCC说明不必改原型，ABI接口不变。原标量/无sidecar core正常输入语义不变；不修改公共core。",
+    "只读domain_count与copy_domains诊断用于独立验证范围、失配不写、模型不可被图像覆盖；公共报告不存实际地址。",
+    "x64预计新增Handle vector头24字节+Domain容量16*(6+7*stages)，实际四级约568字节；model_bytes计入，不当RSS。",
+    "先一份源码与静态两类路径/MCA；若无一致至少3%潜力就停止，不尝试alias开关或snapshot变体。"
+  ],
+  "validation_if_justified": [
+    "原55+6和88+32合同，期望delta布局相同，内存差独立核算24+16*capacity而非误判相同。需要新专用合同，不要篡改旧模型或放宽旧默认。",
+    "实际模型8组完整域/百图与独立整数一致；固定benchmark仍一次80轮原门槛，包含新增guard和准备成本。",
+    "新拒绝合同只在新库上对各诊断域起点/内点/边界交叠及地址溢出检查返回1，模型/哨兵不改；不可在旧无保护参考上实际写这些区域。",
+    "确认RGB分配在实际域之间但未交叠时允许；不能用总堆凸包。不给任意无效指针或所有模型私有控制块安全性作承诺。"
+  ],
+  "scope": "合理输入的数学输出不变；私有研究ABI新增必要域检查，确保restrict前提，不升级默认或关闭issue8。",
+  "project_native_calls": 0,
+  "performance_calls": 0,
+  "header_verified_types": {
+    "SparseLut": "m uint32; grid[3] vector<float>; idx/fracs/off/stride inline; nodes vector<uint8>; PackedTables axis array<768,u32> plus nodes vector<u32>; caches private shared_ptr<const>; 禁止修改缓存。",
+    "PackedTables_scope": "保护对象和packed.nodes容量；std::shared_ptr控制块/分配器头不在shader读取域内，不声称通用指针安全。"
+  },
+  "diagnostic_plan": [
+    "domain_count/capacity和copy_domains只读导出；默认报告只保存数量/容量/哈希，不提交实际地址。",
+    "为避免只检验自报保护域，再从实际View.axes/节点指针构造独立只读region列表（含View元数据本身，忽略null）；专用合同必须证明每个实际shader读取区间包含于保护域并先核对，再在新库做拒绝测试。",
+    "旧delta88内存校验要显式支持新restrict_policy，只对新计划按24+16*domain_capacity算差；旧默认行为不改。新支持模块/诊断若需要，应在冻结计划前准备，避免编译后变更冻结source_sha。",
+    "guard reserve(6+7*stages)，实际最多5+7*stages外区间再加self共6+7*stages；cap34在4级约544B，Handle vector头24B，合计约568B，必须实际核对。",
+    "只改私有代码不含旧停止的标量后缀11；不复制其always_inline/noinline组织，确保这次比较聚焦别名/不变式。"
+  ],
+  "prototype_next": "先复制已验修订5新私有源，建立保护域及拒绝、对AVX2定义data/chain与fixed_four的data加GNU __restrict__，其余数学完全不变；一次静态两条平坦循环。无明确潜力则不写/运行大量专用数值合同。",
+  "plan": {
+    "path": "experiments/skylake-restrict-v1.json",
+    "sha256": "9ef5ac83a442981dbbd1e09e87ada53c6bef3612cb2f3b06370be056f1730aeb"
+  }
+}
