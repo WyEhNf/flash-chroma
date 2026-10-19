@@ -17,22 +17,6 @@
       "sha256": "585d0cb7c518f3fcc35211d9af320b44eefc3644155333326a5ab46b472ccd62",
       "bytes": 10486
     },
-    "build-candidate-shared-mca.stderr.log": {
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "bytes": 0
-    },
-    "build-candidate-shared-mca.stdout.log": {
-      "sha256": "ed1edaad9f3dd1e94a6dd35b27fd97d91bb6c7d724ca97c660da8ae033445edf",
-      "bytes": 21574
-    },
-    "build-candidate-unshared-mca.stderr.log": {
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "bytes": 0
-    },
-    "build-candidate-unshared-mca.stdout.log": {
-      "sha256": "788bb96b71301ef176cd3739029d7f930ff1d0f156a8c3e016d6a3175c5b12db",
-      "bytes": 34948
-    },
     "build-compile_commands.json": {
       "sha256": "527d65cb75d156ebdc1e135fe316c2472976da153e5176ed3583c559d26def5c",
       "bytes": 6471
@@ -52,14 +36,6 @@
     "build-performance.stdout.log": {
       "sha256": "7be8c3734b90d0764793e9778c3b5813d5eb7c05bfd83db867f56e976ab292eb",
       "bytes": 1187
-    },
-    "build-reference-fused-mca.stderr.log": {
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "bytes": 0
-    },
-    "build-reference-fused-mca.stdout.log": {
-      "sha256": "f2de03daf59bee868997cb077badb0c69525a632981bb4821899b0c7624dfe4a",
-      "bytes": 95733
     },
     "build-static-analysis.json": {
       "sha256": "d99c4c2a8a1af0f95375f04f3a46cb5b1f060f83d626ebc48a54fd9e728e327e",
@@ -183,5 +159,35 @@
     }
   },
   "models": "复用PR42的report/data/cinema-current-anchor-accept-v1/models.zip，输入身份见plan/full结果",
-  "scope": "归档及统计复算；原始测试范围以contract/full/performance回执为准，未运行新实验。"
+  "scope": "归档及统计复算；原始测试范围以contract/full/performance回执为准，未运行新实验。",
+  "raw_mca_logs": {
+    "archive": "build-static-mca.zip",
+    "members": [
+      {
+        "member": "candidate-shared-mca.stdout.log",
+        "sha256": "ed1edaad9f3dd1e94a6dd35b27fd97d91bb6c7d724ca97c660da8ae033445edf"
+      },
+      {
+        "member": "candidate-shared-mca.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "member": "candidate-unshared-mca.stdout.log",
+        "sha256": "788bb96b71301ef176cd3739029d7f930ff1d0f156a8c3e016d6a3175c5b12db"
+      },
+      {
+        "member": "candidate-unshared-mca.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "member": "reference-fused-mca.stdout.log",
+        "sha256": "f2de03daf59bee868997cb077badb0c69525a632981bb4821899b0c7624dfe4a"
+      },
+      {
+        "member": "reference-fused-mca.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "reason": "原输出含行尾空格，只移除已逐字节核对的展开重复文件，ZIP内原字节保持不变；不重跑任何实验。"
+  }
 }
