@@ -1,0 +1,129 @@
+{
+  "purpose": "按阶段循环的静态潜力检查；不测像素或性能",
+  "functions": {
+    "reference": [
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0x806",
+          "end": "0x1399",
+          "span": 2963,
+          "instructions": 568,
+          "gathers": 38,
+          "vpmulld": 44,
+          "all_rsp_operands": 38,
+          "gpr_memory_loads": 30,
+          "vpbroadcastd": 12
+        },
+        "mca": {
+          "Total Cycles": 55235.0,
+          "Total uOps": 84200.0,
+          "Block RThroughput": 196.5
+        }
+      }
+    ],
+    "candidate": [
+      {
+        "function": "void jshc_channel::(anonymous namespace)::stage<true>(jshc_channel::View const&, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0xe0",
+          "end": "0x345",
+          "span": 613,
+          "instructions": 124,
+          "gathers": 7,
+          "vpmulld": 11,
+          "all_rsp_operands": 6,
+          "gpr_memory_loads": 0,
+          "vpbroadcastd": 0
+        },
+        "mca": {
+          "Total Cycles": 11342.0,
+          "Total uOps": 18100.0,
+          "Block RThroughput": 35.5
+        }
+      },
+      {
+        "function": "void jshc_channel::(anonymous namespace)::stage<false>(jshc_channel::View const&, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0x4c0",
+          "end": "0x913",
+          "span": 1107,
+          "instructions": 202,
+          "gathers": 17,
+          "vpmulld": 11,
+          "all_rsp_operands": 27,
+          "gpr_memory_loads": 0,
+          "vpbroadcastd": 0
+        },
+        "mca": {
+          "Total Cycles": 19821.0,
+          "Total uOps": 32900.0,
+          "Block RThroughput": 88.0
+        }
+      },
+      {
+        "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+        "hot": {
+          "start": "0xa03",
+          "end": "0x10e4",
+          "span": 1761,
+          "instructions": 329,
+          "gathers": 17,
+          "vpmulld": 17,
+          "all_rsp_operands": 48,
+          "gpr_memory_loads": 12,
+          "vpbroadcastd": 4
+        }
+      }
+    ]
+  },
+  "fixed_four_aggregate": {
+    "instructions": 574,
+    "gathers": 38,
+    "vpmulld": 44,
+    "all_rsp_operands": 45,
+    "gpr_memory_loads": 0,
+    "vpbroadcastd": 0
+  },
+  "mca_sum": {
+    "Total Cycles": 53847.0,
+    "Total uOps": 87200.0,
+    "Block RThroughput": 194.5
+  },
+  "mca_sum_scope": "单级模型预测按1次非共享+3次共享相加；不含阶段调用/准备、真实缓存、微码、GDS或主机计时，不是实测周期。",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "mca": {
+    "path": "C:/Program Files/LLVM/bin/llvm-mca.exe",
+    "sha256": "0d2693ce8dfb1afd490a14c199c2b53bc2befbb4894967917e162f1f4436be21",
+    "version": [
+      "LLVM (http://llvm.org/):",
+      "  LLVM version 21.1.0",
+      "  Optimized build.",
+      "  Default target: x86_64-pc-windows-msvc"
+    ],
+    "commands": [
+      [
+        "C:/Program Files/LLVM/bin/llvm-mca.exe",
+        "-mcpu=skylake",
+        "-iterations=100",
+        "-resource-pressure",
+        "artifacts\\skylake-stage-major-build-v1\\reference-fused-hot.s"
+      ],
+      [
+        "C:/Program Files/LLVM/bin/llvm-mca.exe",
+        "-mcpu=skylake",
+        "-iterations=100",
+        "-resource-pressure",
+        "artifacts\\skylake-stage-major-build-v1\\candidate-shared-hot.s"
+      ],
+      [
+        "C:/Program Files/LLVM/bin/llvm-mca.exe",
+        "-mcpu=skylake",
+        "-iterations=100",
+        "-resource-pressure",
+        "artifacts\\skylake-stage-major-build-v1\\candidate-unshared-hot.s"
+      ]
+    ]
+  }
+}

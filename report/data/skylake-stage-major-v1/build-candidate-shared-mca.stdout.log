@@ -1,0 +1,289 @@
+Iterations:        100
+Instructions:      12400
+Total Cycles:      11342
+Total uOps:        18100
+
+Dispatch Width:    6
+uOps Per Cycle:    1.60
+IPC:               1.09
+Block RThroughput: 35.5
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      6     0.50    *                   vmovdqu	(%rdx), %xmm0
+ 1      5     0.50    *                   vmovq	16(%rdx), %xmm1
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm4
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm7
+ 1      1     0.25                        addq	$24, %rdx
+ 1      1     1.00                        vpalignr	$12, %xmm0, %xmm1, %xmm1
+ 1      3     1.00                        vinserti128	$1, %xmm1, %ymm0, %ymm0
+ 2      8     1.00    *                   vpshufb	(%rip), %ymm0, %ymm0
+ 1      1     0.50                        vpsrld	$16, %ymm0, %ymm2
+ 1      1     0.50                        vpsrld	$8, %ymm0, %ymm1
+ 1      1     0.33                        vpand	%ymm3, %ymm0, %ymm0
+ 5      22    4.00    *                   vpgatherdd	%ymm4, (%r11,%ymm0,4), %ymm5
+ 1      1     0.33                        vpand	%ymm3, %ymm1, %ymm1
+ 5      22    4.00    *                   vpgatherdd	%ymm7, (%r10,%ymm1,4), %ymm4
+ 1      1     0.50                        vpsrld	$17, %ymm5, %ymm1
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm7
+ 2      10    1.00                        vpmulld	%ymm13, %ymm1, %ymm1
+ 5      22    4.00    *                   vpgatherdd	%ymm7, (%r9,%ymm2,4), %ymm6
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm7
+ 1      1     0.50                        vpsrld	$17, %ymm4, %ymm2
+ 1      1     0.50                        vpsrld	$17, %ymm6, %ymm0
+ 2      8     0.50    *                   vpand	96(%rip), %ymm4, %ymm4
+ 3      17    1.00    *                   vpmulld	(%rsp), %ymm2, %ymm2
+ 2      8     0.50    *                   vpand	96(%rip), %ymm6, %ymm6
+ 1      1     0.33                        vpaddd	%ymm1, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm0, %ymm2, %ymm2
+ 2      8     0.50    *                   vpand	96(%rip), %ymm5, %ymm0
+ 2      8     0.50    *                   vpaddd	64(%rsp), %ymm2, %ymm8
+ 5      22    4.00    *                   vpgatherdd	%ymm7, (%rax,%ymm2,4), %ymm5
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm7
+ 1      1     0.50                        vpmaxsd	%ymm4, %ymm0, %ymm10
+ 1      1     0.50                        vpminsd	%ymm4, %ymm0, %ymm14
+ 5      22    4.00    *                   vpgatherdd	%ymm7, (%rax,%ymm8,4), %ymm1
+ 1      1     0.50                        vpcmpgtd	%ymm0, %ymm4, %ymm7
+ 1      1     0.33                        vpaddd	%ymm4, %ymm0, %ymm15
+ 1      1     0.50                        vpcmpgtd	%ymm10, %ymm6, %ymm9
+ 1      1     0.50                        vpcmpgtd	%ymm4, %ymm0, %ymm0
+ 1      1     0.50                        vpminsd	%ymm6, %ymm14, %ymm12
+ 1      1     0.50                        vpcmpgtd	%ymm6, %ymm14, %ymm14
+ 1      1     0.50                        vpmaxsd	%ymm6, %ymm10, %ymm10
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm4
+ 3      8     0.67    *                   vpblendvb	%ymm7, (%rsp), %ymm13, %ymm7
+ 3      8     0.67    *                   vpblendvb	%ymm9, 31(%rip), %ymm7, %ymm7
+ 3      8     0.67    *                   vpblendvb	%ymm0, (%rsp), %ymm13, %ymm0
+ 1      1     0.33                        vpaddd	%ymm12, %ymm10, %ymm9
+ 3      8     0.67    *                   vpblendvb	%ymm14, 31(%rip), %ymm0, %ymm0
+ 1      1     0.33                        vpsubd	%ymm9, %ymm6, %ymm9
+ 1      1     0.33                        vpaddd	%ymm7, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm15, %ymm9, %ymm9
+ 1      1     0.33                        vpsubd	%ymm0, %ymm8, %ymm8
+ 1      1     0.33                        vmovdqa	%ymm11, %ymm15
+ 5      22    4.00    *                   vpgatherdd	%ymm15, (%rax,%ymm2,4), %ymm7
+ 5      22    4.00    *                   vpgatherdd	%ymm4, (%rax,%ymm8,4), %ymm2
+ 1      1     0.33                        vpand	%ymm3, %ymm5, %ymm0
+ 1      1     0.33                        vpand	%ymm3, %ymm7, %ymm15
+ 1      1     0.33                        vpand	%ymm3, %ymm2, %ymm6
+ 1      1     0.33                        vpand	%ymm3, %ymm1, %ymm8
+ 1      1     0.50                        vpslld	$16, %ymm0, %ymm14
+ 1      1     0.33                        vpsubd	%ymm6, %ymm8, %ymm8
+ 1      1     0.33                        vpsubd	%ymm0, %ymm15, %ymm0
+ 1      1     0.33                        vpsubd	%ymm15, %ymm6, %ymm6
+ 2      10    1.00                        vpmulld	%ymm12, %ymm8, %ymm8
+ 2      8     0.50    *                   vpaddd	32(%rsp), %ymm14, %ymm14
+ 2      10    1.00                        vpmulld	%ymm10, %ymm0, %ymm0
+ 2      10    1.00                        vpmulld	%ymm9, %ymm6, %ymm6
+ 1      1     0.33                        vpaddd	%ymm0, %ymm8, %ymm0
+ 1      1     0.33                        vpaddd	%ymm6, %ymm14, %ymm6
+ 1      1     0.50                        vpsrld	$8, %ymm5, %ymm8
+ 1      1     0.33                        vpaddd	%ymm6, %ymm0, %ymm0
+ 1      1     0.50                        vpsrld	$8, %ymm7, %ymm14
+ 1      1     0.33                        vpand	%ymm3, %ymm8, %ymm8
+ 1      1     0.50                        vpsrld	$16, %ymm0, %ymm4
+ 1      1     0.50                        vpsrld	$8, %ymm2, %ymm6
+ 1      1     0.33                        vpand	%ymm3, %ymm14, %ymm14
+ 1      1     0.50                        vpsrld	$8, %ymm1, %ymm0
+ 1      1     0.50                        vpslld	$16, %ymm8, %ymm15
+ 1      1     0.33                        vpand	%ymm3, %ymm6, %ymm6
+ 1      1     0.33                        vpand	%ymm3, %ymm0, %ymm0
+ 1      1     0.50                        vpsrld	$16, %ymm5, %ymm5
+ 1      1     0.33                        vpsubd	%ymm8, %ymm14, %ymm8
+ 1      1     0.33                        vpsubd	%ymm6, %ymm0, %ymm0
+ 1      1     0.33                        vpsubd	%ymm14, %ymm6, %ymm6
+ 2      10    1.00                        vpmulld	%ymm10, %ymm8, %ymm8
+ 1      7     0.50    *                   vmovdqu	32(%rsp), %ymm14
+ 2      10    1.00                        vpmulld	%ymm12, %ymm0, %ymm0
+ 2      10    1.00                        vpmulld	%ymm9, %ymm6, %ymm6
+ 1      1     0.33                        vpand	%ymm3, %ymm5, %ymm5
+ 1      1     0.50                        vpsrld	$16, %ymm7, %ymm7
+ 1      1     0.50                        vpsrld	$16, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm14, %ymm15, %ymm15
+ 1      1     0.50                        vpsrld	$16, %ymm1, %ymm1
+ 1      1     0.33                        vpand	%ymm3, %ymm2, %ymm2
+ 1      1     0.33                        vpand	%ymm3, %ymm7, %ymm7
+ 1      1     0.33                        vpand	%ymm3, %ymm1, %ymm1
+ 1      1     0.33                        vpsubd	%ymm2, %ymm1, %ymm1
+ 1      1     0.33                        vpsubd	%ymm7, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm6, %ymm15, %ymm6
+ 1      1     0.33                        vpaddd	%ymm0, %ymm8, %ymm0
+ 2      10    1.00                        vpmulld	%ymm12, %ymm1, %ymm1
+ 1      1     0.33                        vpaddd	%ymm6, %ymm0, %ymm0
+ 1      1     0.50                        vpslld	$16, %ymm5, %ymm6
+ 1      1     0.33                        vpsubd	%ymm5, %ymm7, %ymm5
+ 2      10    1.00                        vpmulld	%ymm10, %ymm5, %ymm5
+ 2      10    1.00                        vpmulld	%ymm9, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm6, %ymm14, %ymm6
+ 1      1     0.50                        vpsrld	$16, %ymm0, %ymm0
+ 1      1     0.50                        vpslld	$8, %ymm0, %ymm0
+ 1      1     0.33                        vpaddd	%ymm6, %ymm2, %ymm2
+ 1      1     0.33                        vpaddd	%ymm5, %ymm1, %ymm1
+ 1      1     0.33                        vpaddd	%ymm2, %ymm1, %ymm1
+ 1      1     0.50                        vpsrld	$16, %ymm1, %ymm1
+ 1      1     0.50                        vpslld	$16, %ymm1, %ymm1
+ 1      1     0.33                        vpor	%ymm1, %ymm0, %ymm0
+ 1      1     0.33                        vpor	%ymm4, %ymm0, %ymm0
+ 2      8     1.00    *                   vpshufb	64(%rip), %ymm0, %ymm0
+ 1      1     0.33                        vmovdqa	%xmm0, %xmm2
+ 1      3     1.00                        vextracti128	$1, %ymm0, %xmm0
+ 1      1     1.00                        vpslldq	$12, %xmm0, %xmm1
+ 1      1     1.00                        vpsrldq	$4, %xmm0, %xmm0
+ 1      1     0.33                        vpor	%xmm2, %xmm1, %xmm1
+ 2      1     1.00           *            vmovq	%xmm0, -8(%rdx)
+ 2      1     1.00           *            vmovdqu	%xmm1, -24(%rdx)
+ 1      1     0.25                        cmpq	%rdx, %rcx
+ 1      1     0.50                        jne	.Lloop
+
+
+Resources:
+[0]   - SKLDivider
+[1]   - SKLFPDivider
+[2]   - SKLPort0
+[3]   - SKLPort1
+[4]   - SKLPort2
+[5]   - SKLPort3
+[6]   - SKLPort4
+[7]   - SKLPort5
+[8]   - SKLPort6
+[9]   - SKLPort7
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]    [8]    [9]    
+ -      -     48.99  49.00  35.43  35.57  2.00   47.01  3.00   2.00   
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]    [8]    [9]    Instructions:
+ -      -      -      -     0.50   0.50    -      -      -      -     vmovdqu	(%rdx), %xmm0
+ -      -      -      -     0.50   0.50    -      -      -      -     vmovq	16(%rdx), %xmm1
+ -      -      -      -      -      -      -     1.00    -      -     vmovdqa	%ymm11, %ymm4
+ -      -      -     0.01    -      -      -     0.99    -      -     vmovdqa	%ymm11, %ymm7
+ -      -      -      -      -      -      -      -     1.00    -     addq	$24, %rdx
+ -      -      -      -      -      -      -     1.00    -      -     vpalignr	$12, %xmm0, %xmm1, %xmm1
+ -      -      -      -      -      -      -     1.00    -      -     vinserti128	$1, %xmm1, %ymm0, %ymm0
+ -      -      -      -     0.50   0.50    -     1.00    -      -     vpshufb	(%rip), %ymm0, %ymm0
+ -      -     0.99   0.01    -      -      -      -      -      -     vpsrld	$16, %ymm0, %ymm2
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$8, %ymm0, %ymm1
+ -      -      -      -      -      -      -     1.00    -      -     vpand	%ymm3, %ymm0, %ymm0
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm4, (%r11,%ymm0,4), %ymm5
+ -      -     0.99   0.01    -      -      -      -      -      -     vpand	%ymm3, %ymm1, %ymm1
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm7, (%r10,%ymm1,4), %ymm4
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$17, %ymm5, %ymm1
+ -      -     0.01    -      -      -      -     0.99    -      -     vmovdqa	%ymm11, %ymm7
+ -      -     1.98   0.02    -      -      -      -      -      -     vpmulld	%ymm13, %ymm1, %ymm1
+ -      -     1.00   1.00   3.92   4.08    -     1.00    -      -     vpgatherdd	%ymm7, (%r9,%ymm2,4), %ymm6
+ -      -      -      -      -      -      -     1.00    -      -     vmovdqa	%ymm11, %ymm7
+ -      -     0.99   0.01    -      -      -      -      -      -     vpsrld	$17, %ymm4, %ymm2
+ -      -     0.01   0.99    -      -      -      -      -      -     vpsrld	$17, %ymm6, %ymm0
+ -      -      -      -     0.50   0.50    -     1.00    -      -     vpand	96(%rip), %ymm4, %ymm4
+ -      -     0.02   1.98   0.50   0.50    -      -      -      -     vpmulld	(%rsp), %ymm2, %ymm2
+ -      -      -     1.00   0.50   0.50    -      -      -      -     vpand	96(%rip), %ymm6, %ymm6
+ -      -     0.01   0.99    -      -      -      -      -      -     vpaddd	%ymm1, %ymm2, %ymm2
+ -      -     0.99    -      -      -      -     0.01    -      -     vpaddd	%ymm0, %ymm2, %ymm2
+ -      -     0.99    -     0.51   0.49    -     0.01    -      -     vpand	96(%rip), %ymm5, %ymm0
+ -      -      -     0.01   0.50   0.50    -     0.99    -      -     vpaddd	64(%rsp), %ymm2, %ymm8
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm7, (%rax,%ymm2,4), %ymm5
+ -      -      -     0.01    -      -      -     0.99    -      -     vmovdqa	%ymm11, %ymm7
+ -      -     0.99   0.01    -      -      -      -      -      -     vpmaxsd	%ymm4, %ymm0, %ymm10
+ -      -     0.01   0.99    -      -      -      -      -      -     vpminsd	%ymm4, %ymm0, %ymm14
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm7, (%rax,%ymm8,4), %ymm1
+ -      -     0.99   0.01    -      -      -      -      -      -     vpcmpgtd	%ymm0, %ymm4, %ymm7
+ -      -      -      -      -      -      -     1.00    -      -     vpaddd	%ymm4, %ymm0, %ymm15
+ -      -     0.01   0.99    -      -      -      -      -      -     vpcmpgtd	%ymm10, %ymm6, %ymm9
+ -      -     0.01   0.99    -      -      -      -      -      -     vpcmpgtd	%ymm4, %ymm0, %ymm0
+ -      -     0.99   0.01    -      -      -      -      -      -     vpminsd	%ymm6, %ymm14, %ymm12
+ -      -     0.01   0.99    -      -      -      -      -      -     vpcmpgtd	%ymm6, %ymm14, %ymm14
+ -      -     0.99   0.01    -      -      -      -      -      -     vpmaxsd	%ymm6, %ymm10, %ymm10
+ -      -     0.01    -      -      -      -     0.99    -      -     vmovdqa	%ymm11, %ymm4
+ -      -      -      -     0.50   0.50    -     2.00    -      -     vpblendvb	%ymm7, (%rsp), %ymm13, %ymm7
+ -      -      -      -     0.50   0.50    -     2.00    -      -     vpblendvb	%ymm9, 31(%rip), %ymm7, %ymm7
+ -      -     1.98   0.02   0.50   0.50    -      -      -      -     vpblendvb	%ymm0, (%rsp), %ymm13, %ymm0
+ -      -      -      -      -      -      -     1.00    -      -     vpaddd	%ymm12, %ymm10, %ymm9
+ -      -     0.02   1.98   0.50   0.50    -      -      -      -     vpblendvb	%ymm14, 31(%rip), %ymm0, %ymm0
+ -      -     0.99    -      -      -      -     0.01    -      -     vpsubd	%ymm9, %ymm6, %ymm9
+ -      -     0.01   0.99    -      -      -      -      -      -     vpaddd	%ymm7, %ymm2, %ymm2
+ -      -      -     0.01    -      -      -     0.99    -      -     vpaddd	%ymm15, %ymm9, %ymm9
+ -      -     0.99    -      -      -      -     0.01    -      -     vpsubd	%ymm0, %ymm8, %ymm8
+ -      -     0.01    -      -      -      -     0.99    -      -     vmovdqa	%ymm11, %ymm15
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm15, (%rax,%ymm2,4), %ymm7
+ -      -     1.00   1.00   4.00   4.00    -     1.00    -      -     vpgatherdd	%ymm4, (%rax,%ymm8,4), %ymm2
+ -      -      -     0.01    -      -      -     0.99    -      -     vpand	%ymm3, %ymm5, %ymm0
+ -      -      -      -      -      -      -     1.00    -      -     vpand	%ymm3, %ymm7, %ymm15
+ -      -      -     0.99    -      -      -     0.01    -      -     vpand	%ymm3, %ymm2, %ymm6
+ -      -      -     1.00    -      -      -      -      -      -     vpand	%ymm3, %ymm1, %ymm8
+ -      -      -     1.00    -      -      -      -      -      -     vpslld	$16, %ymm0, %ymm14
+ -      -      -     0.99    -      -      -     0.01    -      -     vpsubd	%ymm6, %ymm8, %ymm8
+ -      -      -      -      -      -      -     1.00    -      -     vpsubd	%ymm0, %ymm15, %ymm0
+ -      -     0.99   0.01    -      -      -      -      -      -     vpsubd	%ymm15, %ymm6, %ymm6
+ -      -     1.98   0.02    -      -      -      -      -      -     vpmulld	%ymm12, %ymm8, %ymm8
+ -      -      -      -     0.50   0.50    -     1.00    -      -     vpaddd	32(%rsp), %ymm14, %ymm14
+ -      -      -     2.00    -      -      -      -      -      -     vpmulld	%ymm10, %ymm0, %ymm0
+ -      -     0.02   1.98    -      -      -      -      -      -     vpmulld	%ymm9, %ymm6, %ymm6
+ -      -      -     0.99    -      -      -     0.01    -      -     vpaddd	%ymm0, %ymm8, %ymm0
+ -      -     0.99   0.01    -      -      -      -      -      -     vpaddd	%ymm6, %ymm14, %ymm6
+ -      -     0.01   0.99    -      -      -      -      -      -     vpsrld	$8, %ymm5, %ymm8
+ -      -     0.01    -      -      -      -     0.99    -      -     vpaddd	%ymm6, %ymm0, %ymm0
+ -      -      -     1.00    -      -      -      -      -      -     vpsrld	$8, %ymm7, %ymm14
+ -      -     1.00    -      -      -      -      -      -      -     vpand	%ymm3, %ymm8, %ymm8
+ -      -     0.01   0.99    -      -      -      -      -      -     vpsrld	$16, %ymm0, %ymm4
+ -      -     0.99   0.01    -      -      -      -      -      -     vpsrld	$8, %ymm2, %ymm6
+ -      -      -     1.00    -      -      -      -      -      -     vpand	%ymm3, %ymm14, %ymm14
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$8, %ymm1, %ymm0
+ -      -     1.00    -      -      -      -      -      -      -     vpslld	$16, %ymm8, %ymm15
+ -      -     0.01    -      -      -      -     0.99    -      -     vpand	%ymm3, %ymm6, %ymm6
+ -      -      -     1.00    -      -      -      -      -      -     vpand	%ymm3, %ymm0, %ymm0
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$16, %ymm5, %ymm5
+ -      -      -      -      -      -      -     1.00    -      -     vpsubd	%ymm8, %ymm14, %ymm8
+ -      -      -      -      -      -      -     1.00    -      -     vpsubd	%ymm6, %ymm0, %ymm0
+ -      -      -      -      -      -      -     1.00    -      -     vpsubd	%ymm14, %ymm6, %ymm6
+ -      -     2.00    -      -      -      -      -      -      -     vpmulld	%ymm10, %ymm8, %ymm8
+ -      -      -      -     0.50   0.50    -      -      -      -     vmovdqu	32(%rsp), %ymm14
+ -      -     1.98   0.02    -      -      -      -      -      -     vpmulld	%ymm12, %ymm0, %ymm0
+ -      -     0.02   1.98    -      -      -      -      -      -     vpmulld	%ymm9, %ymm6, %ymm6
+ -      -     1.00    -      -      -      -      -      -      -     vpand	%ymm3, %ymm5, %ymm5
+ -      -     0.99   0.01    -      -      -      -      -      -     vpsrld	$16, %ymm7, %ymm7
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$16, %ymm2, %ymm2
+ -      -      -      -      -      -      -     1.00    -      -     vpaddd	%ymm14, %ymm15, %ymm15
+ -      -     1.00    -      -      -      -      -      -      -     vpsrld	$16, %ymm1, %ymm1
+ -      -     0.99    -      -      -      -     0.01    -      -     vpand	%ymm3, %ymm2, %ymm2
+ -      -      -     1.00    -      -      -      -      -      -     vpand	%ymm3, %ymm7, %ymm7
+ -      -      -      -      -      -      -     1.00    -      -     vpand	%ymm3, %ymm1, %ymm1
+ -      -      -     1.00    -      -      -      -      -      -     vpsubd	%ymm2, %ymm1, %ymm1
+ -      -     1.00    -      -      -      -      -      -      -     vpsubd	%ymm7, %ymm2, %ymm2
+ -      -     0.99    -      -      -      -     0.01    -      -     vpaddd	%ymm6, %ymm15, %ymm6
+ -      -      -     0.01    -      -      -     0.99    -      -     vpaddd	%ymm0, %ymm8, %ymm0
+ -      -      -     2.00    -      -      -      -      -      -     vpmulld	%ymm12, %ymm1, %ymm1
+ -      -      -     0.99    -      -      -     0.01    -      -     vpaddd	%ymm6, %ymm0, %ymm0
+ -      -     1.00    -      -      -      -      -      -      -     vpslld	$16, %ymm5, %ymm6
+ -      -      -     0.98    -      -      -     0.02    -      -     vpsubd	%ymm5, %ymm7, %ymm5
+ -      -     0.02   1.98    -      -      -      -      -      -     vpmulld	%ymm10, %ymm5, %ymm5
+ -      -     1.98   0.02    -      -      -      -      -      -     vpmulld	%ymm9, %ymm2, %ymm2
+ -      -      -      -      -      -      -     1.00    -      -     vpaddd	%ymm6, %ymm14, %ymm6
+ -      -     0.01   0.99    -      -      -      -      -      -     vpsrld	$16, %ymm0, %ymm0
+ -      -      -     1.00    -      -      -      -      -      -     vpslld	$8, %ymm0, %ymm0
+ -      -      -     0.01    -      -      -     0.99    -      -     vpaddd	%ymm6, %ymm2, %ymm2
+ -      -      -     0.99    -      -      -     0.01    -      -     vpaddd	%ymm5, %ymm1, %ymm1
+ -      -     1.00    -      -      -      -      -      -      -     vpaddd	%ymm2, %ymm1, %ymm1
+ -      -     0.01   0.99    -      -      -      -      -      -     vpsrld	$16, %ymm1, %ymm1
+ -      -     0.99   0.01    -      -      -      -      -      -     vpslld	$16, %ymm1, %ymm1
+ -      -      -      -      -      -      -     1.00    -      -     vpor	%ymm1, %ymm0, %ymm0
+ -      -      -      -      -      -      -     1.00    -      -     vpor	%ymm4, %ymm0, %ymm0
+ -      -      -      -     0.50   0.50    -     1.00    -      -     vpshufb	64(%rip), %ymm0, %ymm0
+ -      -      -     1.00    -      -      -      -      -      -     vmovdqa	%xmm0, %xmm2
+ -      -      -      -      -      -      -     1.00    -      -     vextracti128	$1, %ymm0, %xmm0
+ -      -      -      -      -      -      -     1.00    -      -     vpslldq	$12, %xmm0, %xmm1
+ -      -      -      -      -      -      -     1.00    -      -     vpsrldq	$4, %xmm0, %xmm0
+ -      -     0.01   0.99    -      -      -      -      -      -     vpor	%xmm2, %xmm1, %xmm1
+ -      -      -      -      -      -     1.00    -      -     1.00   vmovq	%xmm0, -8(%rdx)
+ -      -      -      -      -      -     1.00    -      -     1.00   vmovdqu	%xmm1, -24(%rdx)
+ -      -      -      -      -      -      -      -     1.00    -     cmpq	%rdx, %rcx
+ -      -      -      -      -      -      -      -     1.00    -     jne	.Lloop
