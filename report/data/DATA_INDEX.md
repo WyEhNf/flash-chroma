@@ -88,4 +88,6 @@
 
 `skylake-scalar-gather-static-v1`保存软件读取的对象/全部调用预算及固定侧表589824个排序比较；未执行像素/MCA/性能，不采用。`skylake-packed-store-v1`保存直接写回的完整CFG/MCA、集中整数、8组完整色域/百图及唯一80轮；1线程未达3%、4线程回退，保留失败不重测。[软件读取边界](../../docs/stages/2026-10-20-skylake-scalar-gather-static.md)与[写回实测](../../docs/stages/2026-10-20-skylake-packed-store.md)分别说明。
 
-`skylake-axis-preweight-static-v1`保存共享轴索引预计算的可逆条件、修正元数据、构建/完整MCA及静态停止；另保存固定节点与已见100图的结构剖面，首级后整包同色约16.03%支持下一项仅提案的精确后缀快路。[阶段说明](../../docs/stages/2026-10-20-skylake-axis-preweight-static.md)明确未执行修订10运行验收，也尚未实现修订11，不把结构覆盖写成加速。
+`skylake-axis-preweight-static-v1`保存共享轴索引预计算的可逆条件、修正元数据、构建/完整MCA及静态停止；另保存固定节点与已见100图的结构剖面，首级后整包同色约16.03%支持后续精确后缀快路。[阶段说明](../../docs/stages/2026-10-20-skylake-axis-preweight-static.md)明确未执行修订10运行验收；该阶段记录时修订11尚未实现，不把结构覆盖写成加速。
+
+`skylake-uniform-suffix-static-v1`保存后续修订11的源码/库、完整CFG全部436条MCA和静态停止：同色包便宜但普通包成本上升，固定剖面不足以抵消，没有进入运行测试。[后续说明](../../docs/stages/2026-10-20-skylake-uniform-suffix-static.md)更新提案状态，不把它补记为上一阶段已实施或已验证。

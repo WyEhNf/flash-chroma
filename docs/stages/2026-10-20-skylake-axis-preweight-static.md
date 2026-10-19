@@ -52,3 +52,5 @@ artifacts/error-study-py312/Scripts/python.exe -X utf8 scripts/profile_skylake_s
 ```
 
 [档案](../../report/data/skylake-axis-preweight-static-v1/README.md)保留完整构建/对象/源码、全部汇编/MCA、错误草稿及修正、资格检查、结构统计与尚未实现的提案。默认、冠军、CLI/GUI/C99、AGENTS.md和已验四方案包不变。Skylake具体SKU/系统/入口、正式实测、官方数据/Threshold及侧表/缓存许可仍待取得，Draft不合并。
+
+后续[同色后缀阶段](2026-10-20-skylake-uniform-suffix-static.md)实现了该提案，并因普通包成本抵消覆盖收益而停在静态阶段；本档案中的“尚未实现”是本阶段记录时的状态，两阶段都没有给修订10/11运行正确性或真实性能结论。
