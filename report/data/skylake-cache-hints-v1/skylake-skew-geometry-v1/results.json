@@ -1,0 +1,79 @@
+{
+  "purpose": "只读索引几何：证明缓存行置换及2MiB页号不变，组分散仅为低位组索引模型，不冒充真实替换。",
+  "pass": true,
+  "verified_line_permutation_entries": 262144,
+  "line_bytes": 64,
+  "within_line_permutation": "低6bit与固定G高6bit异或，逐行64字节双射",
+  "two_mib_page_number_preserved": true,
+  "cacheline_group_cardinality_preserved": true,
+  "cpu0_observed_caches": [
+    {
+      "level": "1",
+      "type": "Data",
+      "size": "32K",
+      "number_of_sets": "64",
+      "ways_of_associativity": "8",
+      "coherency_line_size": "64"
+    },
+    {
+      "level": "1",
+      "type": "Instruction",
+      "size": "32K",
+      "number_of_sets": "64",
+      "ways_of_associativity": "8",
+      "coherency_line_size": "64"
+    },
+    {
+      "level": "2",
+      "type": "Unified",
+      "size": "1024K",
+      "number_of_sets": "2048",
+      "ways_of_associativity": "8",
+      "coherency_line_size": "64"
+    },
+    {
+      "level": "3",
+      "type": "Unified",
+      "size": "32768K",
+      "number_of_sets": "32768",
+      "ways_of_associativity": "16",
+      "coherency_line_size": "64"
+    }
+  ],
+  "conventional_low_bits_index_model": [
+    {
+      "model_sets": 64,
+      "fixed_rg": [
+        128,
+        128
+      ],
+      "varying_b_values": 256,
+      "plain_unique_model_sets": 1,
+      "skew_unique_model_sets": 64
+    },
+    {
+      "model_sets": 1024,
+      "fixed_rg": [
+        128,
+        128
+      ],
+      "varying_b_values": 256,
+      "plain_unique_model_sets": 1,
+      "skew_unique_model_sets": 256
+    },
+    {
+      "model_sets": 2048,
+      "fixed_rg": [
+        128,
+        128
+      ],
+      "varying_b_values": 256,
+      "plain_unique_model_sets": 2,
+      "skew_unique_model_sets": 256
+    }
+  ],
+  "limitations": "仅通常低位组索引的模型；CPU可使用其他哈希/替换策略，没有测L1/L2真实miss或预测吞吐；不是Skylake实机",
+  "script_sha256": "41436c642b8bd22f3eb9969f0538d4625d5ff251a10cad9f251a27f3b61a1d81",
+  "new_native_pixel_calls": 0,
+  "new_performance_calls": 0
+}

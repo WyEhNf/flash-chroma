@@ -1,0 +1,11 @@
+{
+  "purpose": "记录首次42验收失败，不把退出码1写作通过",
+  "exit_code": 1,
+  "failed_assertion": "memory['candidate']['chain']-memory['reference']['chain']==24+2**24",
+  "reason": "新8MiB主词表的预期仍沿用旧16MiB；仅验证器结束断言错误，原执行源/库不变",
+  "original_validation": "scripts/verify_skylake_wordload_linux.py",
+  "revised_validation": "scripts/verify_skylake_wordload_fixed_linux.py",
+  "original_complete_result_present": false,
+  "performance_calls": 0,
+  "policy": "修正后在full-v2重新完整验收，full-v1不混算且不覆盖"
+}
