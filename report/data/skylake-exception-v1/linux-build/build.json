@@ -1,0 +1,125 @@
+{
+  "purpose": "按冻结输入同时构建Skylake调度的参考库与独立候选，不覆盖既有构建。",
+  "plan_sha256": "07a35255dc684158dedba50143481c24c6d160b07a4c9db6707f69c79a87f3af",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]"
+  },
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-domain-isolated-runtime/CMakeLists.txt": "bca28de36adab593624707521dd9ee4b8053e2f84e5452b040239b7457e5119f",
+    "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+    "experiments/skylake-domain-isolated-runtime/channel_runtime.cpp": "ee1e91bcd4b2d8ee9bbdbfc49cf12a37cad5f7790d664d6c0817ee42b84a9fd7",
+    "experiments/skylake-domain-isolated-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp": "c77dbb77d076d4dd1b3c897af27d176ebf1e6ba1a484437ac38ba68803343cfa",
+    "experiments/skylake-palette-runtime/CMakeLists.txt": "21bae119cec6c2a0fc60acb1de39f007b9d64b3a01b9abf7cf55392e4fffe344",
+    "experiments/skylake-palette-runtime/channel_avx2.cpp": "1dc798f7220b2e8f41681c1c1f12a29bd983a90eded342bebb924c3b92dafce9",
+    "experiments/skylake-palette-runtime/channel_runtime.cpp": "58e2b0aab846014f0ee534071082b3faff6e8a318dc7be3b57cb27f33351dcaf",
+    "experiments/skylake-palette-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-palette-runtime/suffix_cache.hpp": "232964b7e7af56f585b8421c8f5facd0dbd7faab7dc1edd495c01f81e3da2a1c",
+    "experiments/skylake-suffix-cache-runtime/CMakeLists.txt": "1a1e710d2a584c63753af266adfbe3a4a8ca61a9a2d97759f902b468f4169196",
+    "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp": "fb1ffabd1bad41abf44d1513c4feadd3479392e9cda625b2842db234e519ad79",
+    "experiments/skylake-suffix-cache-runtime/channel_runtime.cpp": "ef4bca4d772ef6d0a6a708d9b5792f062f37911644e55f9e27a5614c004292d6",
+    "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp": "c31d01ead445ab1e3e432061d9cddd59835a70f14052a84d3e2050e06703e17f",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "9adc824542c320c3ddb93a2e6da7f7ba676373e55eaa0fe6f7637e5ff2fb33cf",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_runtime.py": "fc86cd071c3a7180a22b368a5b4c5ed8cc5de3d06be5e14989b3151ae6235bdb",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/domain_cache_support.py": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+    "scripts/inspect_skylake_preweight.py": "c469c4898d98d17fc2aed0737c8221dd34473ecee507aeb9d6df9e63d95da4c1",
+    "scripts/inspect_skylake_rcontiguous.py": "b0f55efc3837304b5752e13f82663b5aa010f8d437781edfebb6b402eade01a4",
+    "scripts/profile_skylake_cache.py": "4b3fd9ec8af15a42b61de9a26315322e24a6410828ea3251d3c9a968f05b8b37",
+    "scripts/restrict_support.py": "1f2fabfd9a277238ac25c3ea321018ad9032c77de437c98598ea78eb2c8877c6",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_domain_cache.py": "bc0e279f8c61d4e24e75364e1044bcd496c5f66d57d7693f45ce616b537eb8a9",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1",
+    "scripts/verify_skylake_rcontiguous.py": "3fbc15ba1739a7aeee864aec25472b19044a93b654981017cfd3d90795b143dc",
+    "scripts/verify_skylake_suffix_cache.py": "75fe91bb10f147095d1c00fce6f62f52df5e002d0a370ad73af481b9d14aefdb",
+    "experiments/skylake-exception-runtime/channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+    "experiments/skylake-exception-runtime/channel_runtime.cpp": "ba539a1c585ddbebb1635bfda6eae49786592a88a4c044d479a42ff272edde3c",
+    "experiments/skylake-exception-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-exception-runtime/CMakeLists.txt": "42afb008406ea1f9e49597b8517593da10f2fb492526a31e6977fe89a172656c",
+    "experiments/skylake-exception-runtime/suffix_cache.hpp": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c"
+  },
+  "libraries": {
+    "reference": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-exception-linux-build-v1/libjshc_skylake_reference.so",
+      "sha256": "4cdcfcbf2673f85f7fa1bc4898abd844546528e6a14b8779c1cd2749744b78e5"
+    },
+    "candidate": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-exception-linux-build-v1/libjshc_skylake_exception.so",
+      "sha256": "3fe465a8ecd3d55586f937784dc06537f8c6b056e68694537ea5a3e71f3978bb"
+    }
+  },
+  "dependencies": {},
+  "compile_commands_sha256": "a2597bb33011f2e0e28a9d042dc429f25a29bc779642c8771d855d0e4a2fdfaa",
+  "commands": [
+    {
+      "command": [
+        "cmake",
+        "-S",
+        "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime",
+        "-B",
+        "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-exception-linux-build-v1",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++",
+        "-DCMAKE_C_COMPILER=/usr/bin/gcc"
+      ],
+      "returncode": 0,
+      "stdout": "-- The CXX compiler identification is GNU 15.2.0\n-- The C compiler identification is GNU 15.2.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: /usr/bin/g++ - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: /usr/bin/gcc - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Performing Test JSHC_TARGET_X86\n-- Performing Test JSHC_TARGET_X86 - Success\n-- Performing Test JSHC_COMPILER_HAS_AVX2\n-- Performing Test JSHC_COMPILER_HAS_AVX2 - Success\n-- jshc: C++17 portable baseline; AVX2=ON; OpenMP=ON\n-- jshc optional backends: C++ SIMD=OFF; Zig=OFF; Rust=OFF\n-- jshc C99/structured bridge=ON\n-- Found OpenMP_CXX: -fopenmp (found version \"4.5\")\n-- Found OpenMP: TRUE (found version \"4.5\") found components: CXX\n-- Configuring done (24.4s)\n-- Generating done (1.1s)\n-- Build files have been written to: /mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-exception-linux-build-v1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "cmake",
+        "--build",
+        "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-exception-linux-build-v1",
+        "--config",
+        "Release",
+        "--parallel",
+        "4",
+        "--target",
+        "jshc_skylake_reference",
+        "jshc_skylake_exception"
+      ],
+      "returncode": 0,
+      "stdout": "[  9%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut.cpp.o\n[ 18%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/fit_r14.cpp.o\n[ 27%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/portable_bridge.cpp.o\n[ 36%] Building C object core/CMakeFiles/jshc_core.dir/portable/src/jshc_portable.c.o\n[ 45%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut_simd_avx2.cpp.o\n[ 54%] Linking CXX static library libjshc_core.a\n[ 54%] Built target jshc_core\n[ 63%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp.o\n[ 72%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_avx2.cpp.o\n[ 81%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp.o\n[ 90%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp.o\n[100%] Linking CXX shared library libjshc_skylake_reference.so\n[100%] Built target jshc_skylake_reference\n[ 54%] Built target jshc_core\n[ 72%] Building CXX object CMakeFiles/jshc_skylake_exception.dir/channel_runtime.cpp.o\n[ 72%] Building CXX object CMakeFiles/jshc_skylake_exception.dir/channel_avx2.cpp.o\n[ 81%] Building CXX object CMakeFiles/jshc_skylake_exception.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp.o\n[ 90%] Building CXX object CMakeFiles/jshc_skylake_exception.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp.o\n[100%] Linking CXX shared library libjshc_skylake_exception.so\n[100%] Built target jshc_skylake_exception\n",
+      "stderr": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp: In function ‘std::vector<unsigned int> {anonymous}::read_fractions(const char*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:102:47: warning: ignoring attributes on template argument ‘int (*)(FILE*)’ [-Wignored-attributes]\n  102 |   std::unique_ptr<FILE, decltype(&std::fclose)> f(std::fopen(path, \"rb\"), &std::fclose);\n      |                                               ^\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp: In function ‘size_t jshc_cc_model_bytes(const void*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:323:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  323 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:323:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  323 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp: In function ‘int jshc_cc_copy_cache(const void*, uint32_t*, size_t)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:335:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  335 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:335:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  335 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:337:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  337 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-palette-runtime/channel_runtime.cpp:337:72: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  337 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |                                                                        ^~~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp: In function ‘std::vector<unsigned int> {anonymous}::read_fractions(const char*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:103:47: warning: ignoring attributes on template argument ‘int (*)(FILE*)’ [-Wignored-attributes]\n  103 |   std::unique_ptr<FILE, decltype(&std::fclose)> f(std::fopen(path, \"rb\"), &std::fclose);\n      |                                               ^\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp: In function ‘size_t jshc_cc_model_bytes(const void*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:342:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  342 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:342:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  342 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp: In function ‘int jshc_cc_copy_cache(const void*, uint32_t*, size_t)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:354:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  354 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:354:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  354 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:356:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  356 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:356:72: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  356 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |                                                                        ^~~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp: In function ‘int jshc_cc_copy_exceptions(const void*, uint32_t*, size_t)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:384:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  384 |   if(entries)std::memcpy(output,values.data(),entries*sizeof(uint32_t));return 0;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp:384:73: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  384 |   if(entries)std::memcpy(output,values.data(),entries*sizeof(uint32_t));return 0;\n      |                                                                         ^~~~~~\n"
+    }
+  ],
+  "abi": 1,
+  "revisions": {
+    "reference": 22,
+    "candidate": 23
+  },
+  "scope": "只完成构建与编译参数核对；尚无新增整数正确性、全色域或性能结论。"
+}
