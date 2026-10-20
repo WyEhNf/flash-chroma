@@ -1,0 +1,114 @@
+{
+  "purpose": "40直接对45原地GPR重叠写的单次用户态计数；不替代ABBA速度，不跨画像相除",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/profile_skylake_overlap_pmu.py",
+    "sha256": "5922dc08a43115ad28359cfab24fefb903da535de290a2a732241ba3e0f537f2"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "models_plan": {
+    "path": "experiments/skylake-overlap-v1.json",
+    "sha256": "5afbf0d4111f7133c4ce0a6a4ccda1a8390c6d828e0903582153bb215f5837f7"
+  },
+  "cases": {
+    "reference40": {
+      "revision": 40,
+      "plan": {
+        "path": "experiments/skylake-batchspan-v1.json",
+        "sha256": "7a0bf316436d4a178d1721dd842567ed106d458bf6b5910c407474af26060bed"
+      },
+      "build": {
+        "path": "artifacts/skylake-batchspan-linux-build-v1/build.json",
+        "sha256": "1ae9e1806787ddbf22464f598c75ec647dc1df5d4d6bd88d8a60a0da6165f80b"
+      },
+      "full": {
+        "path": "artifacts/skylake-batchspan-linux-full-v1/results.json",
+        "sha256": "e412d02df80f22d2e026400038cb74f8518b88966bc00a5b1e1a4445c9b19a47"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-batchspan-linux-build-v1/libjshc_skylake_batchspan.so",
+        "sha256": "44716bb2e562fc6b661de5d2e14c37a799a86a5eefd6d93813640b324ec27bbc"
+      }
+    },
+    "overlap45": {
+      "revision": 45,
+      "plan": {
+        "path": "experiments/skylake-overlap-v1.json",
+        "sha256": "5afbf0d4111f7133c4ce0a6a4ccda1a8390c6d828e0903582153bb215f5837f7"
+      },
+      "build": {
+        "path": "artifacts/skylake-overlap-linux-build-v1/build.json",
+        "sha256": "741e1a450fac8fc725d60fb286cb7313370a7d5df7e63f922d7b4a586c402ee1"
+      },
+      "full": {
+        "path": "artifacts/skylake-overlap-linux-full-v1/results.json",
+        "sha256": "e7a712cb2bced5864cf19ed9d8174870d8cfe632743102a0225e0c81093c9914"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-overlap-linux-build-v1/libjshc_skylake_overlap.so",
+        "sha256": "2a181fe8c92c29990b6c7d76232877b10e31630a59e52741d3ec9e0c753bf7c3"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    {
+      "threads": 1,
+      "variants": [
+        "reference40",
+        "overlap45"
+      ]
+    },
+    {
+      "threads": 4,
+      "variants": [
+        "overlap45",
+        "reference40"
+      ]
+    }
+  ],
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "events": [
+    "cycles",
+    "instructions",
+    "cache_references",
+    "cache_misses"
+  ],
+  "counter_scope": "每个参与TID独立组，exclude_kernel/exclude_hv，启停与ct开销少量包含；running/enabled>=0.99才可解释",
+  "python_sources": [
+    "scripts/profile_skylake_overlap_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "reference": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+  "limits": [
+    "不计墙钟，不替代已冻结ABBA性能",
+    "泛化cache计数与具体缓存层的映射依赖CPU/虚拟PMU，不冒充精确L3指标",
+    "不改系统权限/缓解，不安装工具",
+    "每配置一个预热与一个计数调用（共4+4），完整235MB输出SHA及保护区验证"
+  ]
+}

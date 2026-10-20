@@ -1,0 +1,17 @@
+{
+  "purpose": "保留静态首版计数断言失败；尾部已有一次movzwl，改核对两版差值。",
+  "exit_code": 1,
+  "first_script_sha256": "39bed582f283739d94c5a57fd0ed3dcf0089154ee9d1af8c5e0642403f7738e7",
+  "observed_old": {
+    "group_mask_ffff00": 17,
+    "movzwl_total": 1
+  },
+  "observed_new": {
+    "group_mask_ffff00": 0,
+    "movzwl_total": 18
+  },
+  "reason": "整函数中精确标量尾部也有一次16位加载，首版把整函数movzwl计数误当成只有组首；实际差值17与16个展开组+一个短循环一致",
+  "runtime_or_benchmark_changes": false,
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}

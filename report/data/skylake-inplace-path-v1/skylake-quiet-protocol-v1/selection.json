@@ -1,0 +1,19 @@
+{
+  "purpose": "在首轮前冻结新空闲协议：只比较原40及修正46各一次，完整保留全部旧协议结果。",
+  "variants": [
+    40,
+    46
+  ],
+  "policy_paths": [
+    "experiments/skylake-batchspan-quiet-perf-v1.json",
+    "experiments/skylake-overlap16-quiet-perf-v1.json"
+  ],
+  "reason": "只读进程快照观察到WSL命令间重新启动及启动服务CPU工作，旧协议原样保留；新协议预先冻结不选取最快运行",
+  "prior_unexecuted_proposal": [
+    40,
+    45
+  ],
+  "selection_refinement_before_any_quiet_measurement": "45有已验证的组间首加载/上一写入单字节交叠及严重纯映射回退，改测修正46；原45所有旧协议数据保留。46不再执行旧协议计时。",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}
