@@ -1,0 +1,139 @@
+{
+  "source_sha256": {
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/skylake-palette-perf-v1.json": "281405c6ddf744fb391d688545539efb1abad921a4161a8142ad82338adc79d2",
+    "experiments/skylake-palette-v1.json": "dec25980271c4eca4f219bbfae8151c2f7fed566fa91e5336d177f9c8844d440",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_palette.py": "dd524a27931ed06bea81b3a9d54173e68b7a8e4d21b30456b6c8459a447539ba",
+    "scripts/cache_encoding_support.py": "3fda8ea58c7e5406761d1d772e668646c3c2a93607b5636fdaba03aaf991f372",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/domain_cache_support.py": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/restrict_support.py": "1f2fabfd9a277238ac25c3ea321018ad9032c77de437c98598ea78eb2c8877c6",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    },
+    "target_status": "本机AMD可行性；不能替代Skylake服务器验收",
+    "gather_data_sampling": "未通过此脚本取得Windows微码/缓解状态；没有修改安全缓解设置"
+  },
+  "purpose": "同模型、同机、固定CPU集合的四进程平衡性能比较；AMD与最终服务器结果分别保存。",
+  "policy": {
+    "schema": 1,
+    "purpose": "修订22对当前已验16的唯一80轮比较；用户要求吞吐至少1.5倍；两线程档apply/copy均须达到，准备单列",
+    "plan": {
+      "path": "experiments/skylake-palette-v1.json",
+      "sha256": "dec25980271c4eca4f219bbfae8151c2f7fed566fa91e5336d177f9c8844d440"
+    },
+    "build_path": "artifacts/skylake-palette-build-v1",
+    "build": {
+      "path": "artifacts/skylake-palette-build-v1/build.json",
+      "sha256": "151e3c54f56cb423afd6546b001f3f8a26c0a7620819307a52bcf9248ef1a79f"
+    },
+    "full_acceptance": {
+      "path": "artifacts/skylake-palette-full-v2/results.json",
+      "sha256": "7ad0dd29953d2802226c6c0882e92aa2fbd147c3a44fd594de43ddf0428cb02f"
+    },
+    "topology": {
+      "path": "artifacts/skylake-packed-build-v1/topology.json",
+      "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+    },
+    "affinity_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "repeats": 5,
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.6666666666666666,
+      "any_process_apply_ratio_max": 0.9,
+      "median_copy_apply_ratio_max": 0.6666666666666666,
+      "median_prepare_plus_100_ratio_max": 1.0
+    },
+    "limits": [
+      "本机AMD，不推断Skylake服务器实测",
+      "同L3域4物理核；未锁频控温",
+      "预载100图，原生apply与copy+apply分列，不含IO/解码/准备"
+    ],
+    "domain_contract": {
+      "path": "artifacts/skylake-palette-domain-contract-v1/results.json",
+      "sha256": "30f24b278bdb0aa9ac92502f9234d60a60aae465484f5ac746209ace1765f47b"
+    },
+    "verify_each_measured_round": true,
+    "packed_contract": {
+      "path": "artifacts/skylake-palette-packed-contract-v1/results.json",
+      "sha256": "a6616f3dc24b9ee4ae22e996b2b9ebffb226386455136b2acd4e52820aad8b00"
+    },
+    "signed_contract": {
+      "path": "artifacts/skylake-palette-signed-contract-v1/results.json",
+      "sha256": "8658736201bed9b83c08ebdbdf73dcf2904418efc75de612328393091f0501ce"
+    },
+    "validation": {
+      "path": "experiments/skylake-palette-validation-v3.json",
+      "sha256": "302de44592bfb8019b60e26604c174b703df9163c7c98393624e7c216523e75d"
+    }
+  },
+  "scope": "一次100图完整组，稳态毫秒每图不含准备/IO/解码；另外列准备墙钟与准备+首轮100图，后者仍已预热"
+}

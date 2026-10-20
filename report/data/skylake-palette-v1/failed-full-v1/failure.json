@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "exception": "ValueError: 调色板诊断ABI不同",
+  "location": "accept_skylake_palette.py回执构造中的palette_info(h)",
+  "cause": "测试程序在with退出并销毁句柄后读取诊断；未生成results.json",
+  "repair": "只将诊断读取移到句柄生命周期内；原生源/构建/模型未变，完整验收v2重跑；性能仅在v2通过后执行一次"
+}
