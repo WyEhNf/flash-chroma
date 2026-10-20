@@ -1,0 +1,114 @@
+{
+  "purpose": "38直接对41固定可逆置换的单次计数；两版1/4线程四配置，不替代ABBA速度，不与其他画像相除",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/profile_skylake_skew_pmu.py",
+    "sha256": "c14135818df7b2f871b3067e57a8a97c30a75fcdf66b8256ac191a8430411a4f"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "models_plan": {
+    "path": "experiments/skylake-skew-v1.json",
+    "sha256": "8bbb4c140def347161c91819e95f3edf7da0fa6162f403f5bfe46eb51d2c84de"
+  },
+  "cases": {
+    "reference38": {
+      "revision": 38,
+      "plan": {
+        "path": "experiments/skylake-sourcehint-v1.json",
+        "sha256": "1c9bac5c6633e3169ac12ae61b69ceb427007980adc2513121a7d4eea3d625da"
+      },
+      "build": {
+        "path": "artifacts/skylake-sourcehint-linux-build-v1/build.json",
+        "sha256": "f8374499d47f1adf72de3266434667929c78491a44f47a6ea32aeac5e021efba"
+      },
+      "full": {
+        "path": "artifacts/skylake-sourcehint-linux-full-v1/results.json",
+        "sha256": "4c0e4e76989f4849eb6769e6f3370898fdc2b9d52f9fb5af8d91026f1d76fd47"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-sourcehint-linux-build-v1/libjshc_skylake_sourcehint.so",
+        "sha256": "a0619ae1deba65cd5ff4fe5a1b4b4252e000ba93b29c73cdf9562407c1e22c14"
+      }
+    },
+    "skew41": {
+      "revision": 41,
+      "plan": {
+        "path": "experiments/skylake-skew-v1.json",
+        "sha256": "8bbb4c140def347161c91819e95f3edf7da0fa6162f403f5bfe46eb51d2c84de"
+      },
+      "build": {
+        "path": "artifacts/skylake-skew-linux-build-v1/build.json",
+        "sha256": "8e3f3ba64591d0337ae9b6ffcf85453cc55f84d00ec7d2db66e3b9a21a517b27"
+      },
+      "full": {
+        "path": "artifacts/skylake-skew-linux-full-v1/results.json",
+        "sha256": "ca5c200d10ec7c08e845a5c05b32dda5c685b2c56737301a0623dcad3c805d7e"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-skew-linux-build-v1/libjshc_skylake_skew.so",
+        "sha256": "36f30eab343f5241db4ad3a5c38233b49cf287af6cc87bc6e58a122d8eaf5bee"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    {
+      "threads": 1,
+      "variants": [
+        "reference38",
+        "skew41"
+      ]
+    },
+    {
+      "threads": 4,
+      "variants": [
+        "skew41",
+        "reference38"
+      ]
+    }
+  ],
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "events": [
+    "cycles",
+    "instructions",
+    "cache_references",
+    "cache_misses"
+  ],
+  "counter_scope": "每个参与TID独立组，exclude_kernel/exclude_hv，启停与ct开销少量包含；running/enabled>=0.99才可解释",
+  "python_sources": [
+    "scripts/profile_skylake_skew_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "reference": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+  "limits": [
+    "不计墙钟，不替代已冻结ABBA性能",
+    "泛化cache计数与具体缓存层的映射依赖CPU/虚拟PMU，不冒充精确L3指标",
+    "不改系统权限/缓解，不安装工具",
+    "每配置一个预热与一个计数调用（共4+4），完整235MB输出SHA及保护区验证"
+  ]
+}

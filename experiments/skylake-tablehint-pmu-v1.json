@@ -1,0 +1,114 @@
+{
+  "purpose": "37直接对39固定索引表T0前瞻的单次用户态计数，四配置不产生墙钟速度；全部保留，不与38混算",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/profile_skylake_tablehint_pmu.py",
+    "sha256": "fe9db532f249f98ae1c6b94228ac6c37814e2231a528b28c301033ed243a1e85"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "models_plan": {
+    "path": "experiments/skylake-tablehint-v1.json",
+    "sha256": "1bc61af95e49cee265a49118c59f7a1b6c785b4fe77d4fd8677b7690c6e219b3"
+  },
+  "cases": {
+    "reference37": {
+      "revision": 37,
+      "plan": {
+        "path": "experiments/skylake-stream-v1.json",
+        "sha256": "3ac275b61f0ef2b6606437aaacd2b22783820b25c2349143c6e5c08c8e2527a5"
+      },
+      "build": {
+        "path": "artifacts/skylake-stream-linux-build-v1/build.json",
+        "sha256": "f67afdc3e693f7b9c65e0ec69bdbf5cea4b3de7aef824af0eb6e583f1159b2fd"
+      },
+      "full": {
+        "path": "artifacts/skylake-stream-linux-full-v1/results.json",
+        "sha256": "6967bb9cf7c0a7130fc893b784f075fadd1b75ea54f0e192f56490aa983485d2"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-stream-linux-build-v1/libjshc_skylake_stream.so",
+        "sha256": "8fad9b4066fb39fbd49f2237c1652fa216bc0b5aeee0f4e0fcfdce1f893cff63"
+      }
+    },
+    "tablehint39": {
+      "revision": 39,
+      "plan": {
+        "path": "experiments/skylake-tablehint-v1.json",
+        "sha256": "1bc61af95e49cee265a49118c59f7a1b6c785b4fe77d4fd8677b7690c6e219b3"
+      },
+      "build": {
+        "path": "artifacts/skylake-tablehint-linux-build-v1/build.json",
+        "sha256": "5b63cef421b2cd1aa67e52a48416878152c875d48c74fe0781a367b9f35d9d27"
+      },
+      "full": {
+        "path": "artifacts/skylake-tablehint-linux-full-v1/results.json",
+        "sha256": "a90a48a770d0a79eb95c2ba61b437583ffbef9069e743198313d5b2402c832a7"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tablehint-linux-build-v1/libjshc_skylake_tablehint.so",
+        "sha256": "b352ea3d51b0851d7c36ca70caa59d401e70cb980b9920523a5c984b32e76a7c"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    {
+      "threads": 1,
+      "variants": [
+        "reference37",
+        "tablehint39"
+      ]
+    },
+    {
+      "threads": 4,
+      "variants": [
+        "tablehint39",
+        "reference37"
+      ]
+    }
+  ],
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "events": [
+    "cycles",
+    "instructions",
+    "cache_references",
+    "cache_misses"
+  ],
+  "counter_scope": "每个参与TID独立组，exclude_kernel/exclude_hv，启停与ct开销少量包含；running/enabled>=0.99才可解释",
+  "python_sources": [
+    "scripts/profile_skylake_tablehint_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "reference": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+  "limits": [
+    "不计墙钟，不替代已冻结ABBA性能",
+    "泛化cache计数与具体缓存层的映射依赖CPU/虚拟PMU，不冒充精确L3指标",
+    "不改系统权限/缓解，不安装工具",
+    "每配置一个预热与一个计数调用（共4+4），完整235MB输出SHA及保护区验证"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "purpose": "38固定输入NTA提示，首次四物理核绑定直接对23；所有提示与fence计入真实API，不因计数画像而重测",
+  "plan": {
+    "path": "experiments/skylake-sourcehint-v1.json",
+    "sha256": "1c9bac5c6633e3169ac12ae61b69ceb427007980adc2513121a7d4eea3d625da"
+  },
+  "build": {
+    "path": "artifacts/skylake-sourcehint-linux-build-v1/build.json",
+    "sha256": "f8374499d47f1adf72de3266434667929c78491a44f47a6ea32aeac5e021efba"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-sourcehint-linux-full-v1/results.json",
+    "sha256": "4c0e4e76989f4849eb6769e6f3370898fdc2b9d52f9fb5af8d91026f1d76fd47"
+  },
+  "validation": {
+    "path": "experiments/skylake-sourcehint-validation-v1.json",
+    "sha256": "23b5c1708b8905686e236d85e5f1d4b06bb3d9a02f8cf13e9944abf4b9854f0b"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_sourcehint_pinned_linux.py",
+    "sha256": "6b6292f48fd684fdf3d3fd39e0af5ee576d0d132350a9e223e86409d589a877a"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_prepare_plus_100_ratio_max": 1,
+    "median_outplace_ratio_max": 0.3333333333333333
+  },
+  "limits": [
+    "仅自身分配范围MADV_HUGEPAGE，不改全局设置或权限",
+    "每个候选句柄smaps必须证明16MiB全部THP",
+    "纯apply及真实输出均须达到3倍；旧copy+apply完整报告，不能声称该接口达标",
+    "同机WSL不是Skylake实测",
+    "IO/解码/分配/哈希不计稳态，准备时间单列",
+    "v2为显式线程绑定的新协议，不与旧未绑定绝对时间或比值叠乘"
+  ],
+  "mode_order": "(进程序号+轮序号)偶数先legacy后outplace，否则反向；两个模式各自100图及逐轮完整SHA",
+  "pinning_support": {
+    "path": "scripts/pinned_openmp_support.py",
+    "sha256": "15dee1c6e6464976002ab1ea7c911411be27bab9dc8e9a131e8447dee24900e8"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "affinity_protocol": {
+    "OMP_PROC_BIND": "TRUE",
+    "OMP_PLACES": "{0},{2},{4},{6}",
+    "main_cpu": 0,
+    "selected_physical_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "validation": "初始4线程与每档团队的实际CPU顺序、前后每TID单CPU允许集合；不更改系统设置"
+  },
+  "binding_motivation": {
+    "run": {
+      "path": "artifacts/skylake-pack32-linux-perf-v1/run.json",
+      "sha256": "c662d28cdf136071b189b160f5f86f4438370a7a76c22611ea558886d714e33e"
+    },
+    "reason": "worker3团队未覆盖不同物理核；只有worker0—2回执，没有完整results，不参与新汇总"
+  }
+}
