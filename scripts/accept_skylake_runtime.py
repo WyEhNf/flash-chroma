@@ -12,6 +12,7 @@ from delta16_support import layouts
 from axis_preweight_support import formats as axis_formats
 from restrict_support import info as domain_info
 from cache_encoding_support import info as encoding_info
+from domain_cache_support import info as cache_domain_info
 from verify_channel_coordinates import integer_oracle
 
 
@@ -22,6 +23,7 @@ def main():
     parser.add_argument('--contract', type=Path, required=True)
     parser.add_argument('--cache-contract', type=Path)
     parser.add_argument('--layout-contract', type=Path)
+    parser.add_argument('--domain-contract', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     plan, build, libraries, loaded = build_libraries(args.plan, args.build)
@@ -31,6 +33,14 @@ def main():
         raise ValueError('有限合同未通过或不是相同构建')
     cache_contract = None
     layout_contract = None
+    domain_contract = None
+    if 'domain_cache_policy' in plan:
+        if args.domain_contract is None:
+            raise ValueError('完整域省检查候选需要独立证书合同')
+        domain_contract=read(args.domain_contract)
+        if (not domain_contract['pass'] or domain_contract['build_sha256']!=digest(args.build/'build.json')
+                or domain_contract['libraries']!=build['libraries']):
+            raise ValueError('完整域证书合同不是同一构建')
     if 'delta16_policy' in plan:
         if args.layout_contract is None:
             raise ValueError('坐标差候选需要边界/布局集中合同')
@@ -63,11 +73,12 @@ def main():
          'scripts/axis_preweight_support.py',
          'scripts/restrict_support.py',
          'scripts/cache_encoding_support.py',
+         'scripts/domain_cache_support.py',
          'python/lutlab/channel_coordinates.py', 'python/lutlab/io.py'],
         {'purpose': __doc__, 'build_sha256': digest(args.build/'build.json'),
          'contract_sha256': digest(args.contract), 'loaded_libraries': loaded})
     operators = {}; hashes = {}; photos = []; photos_hash = {name: hashlib.sha256() for name in libraries}
-    memory = {}; cache_record = None; first_stream = None; layout_record = None; axis_record = None; domain_record = None; encoding_record = None
+    memory = {}; cache_record = None; first_stream = None; layout_record = None; axis_record = None; domain_record = None; encoding_record = None; cache_domain_record = None
     try:
         for name, lib in libraries.items():
             operators[name] = {
@@ -75,6 +86,13 @@ def main():
                 'chain': lib.chain([paths['base'], *suffix], [paths['sidecar'], None, None, None])}
             memory[name] = {mode: h.model_bytes for mode, h in operators[name].items()}
             hashes[name] = {mode+'_'+kernel: hashlib.sha256() for mode in ('single', 'chain') for kernel in ('scalar', 'avx2')}
+        if 'domain_cache_policy' in plan:
+            cache_domain_record={mode:cache_domain_info(h) for mode,h in operators['candidate'].items()}
+            if cache_domain_record['single']['eligible'] or not cache_domain_record['chain']['eligible']:
+                raise AssertionError('实际模型的完整域缓存证明与计划不同')
+            for mode in ('single','chain'):
+                if memory['candidate'][mode]!=memory['reference'][mode]:
+                    raise AssertionError('域证明不得增加模型持久容量')
         if layout_contract is not None:
             layout_record = {'contract_sha256': digest(args.layout_contract),
                 'candidate': {mode: layouts(h) for mode, h in operators['candidate'].items()}}
@@ -186,6 +204,8 @@ def main():
         'shared_axis_formats': axis_record,
         'model_read_domains': domain_record,
         'cache_encoding': encoding_record,
+        'cache_domain_certificate': cache_domain_record,
+        'cache_domain_contract_sha256': None if domain_contract is None else digest(args.domain_contract),
         'new_fits': 0, 'performance_calls': 0,
         'scope': '冻结同模型的完整后端等价；精度数据复用相同输出流，不新增精度选型，不代表Skylake服务器运行或性能。'}
     save(out/'results.json', result)

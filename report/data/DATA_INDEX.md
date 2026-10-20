@@ -1,5 +1,7 @@
 # 报告数据索引
 
+[单元域证书](skylake-domain-certificate-v1/README.md)、[模板版静态停止](skylake-domain-template-static-v1/README.md)、[隔离版完整验收](skylake-domain-isolated-v1/README.md)保存原缓存覆盖的数学证明及修订16：相对修订4，本机1/4线程apply配对中位下降7.07%/5.10%，1800836字节模型容量保持，80个测量轮均核对完整100图SHA；不是Skylake成绩，不叠乘旧收益。
+
 [坐标与节点局部性](skylake-coordinate-locality-v1/README.md)保存固定100图三项数据资格及一次编译调度比较：八像素组共享排序34.09%、两个端点标志反例、节点R连续逐块仅约1%行数改善、客户端/服务器调度对象逐字节相同。没有新运行库、完整域输出或性能调用。
 
 2026-10-20新增[时间优化阶段](../../docs/stages/2026-10-20-skylake-runtime-delivery.md)：[56位轴表](skylake-packed-v1/README.md)、[精确16位乘加](skylake-madd-v1/README.md)、[精确binary32](skylake-float-v1/README.md)均未达本机速度门槛；[有界精确后缀缓存](skylake-suffix-cache-v1/README.md)在同模型、同核集合的Windows/AMD对照中使1/4线程apply耗时下降约52%，增加742544字节准备容量，准备成本另列。缓存另有WSL/Linux完整字节比较，不代表Skylake实测；派生缓存的题目许可与目标服务器验收仍待办。四候选各自保留冻结计划、原始轮次及源码/二进制身份，不更新默认或历史PDF。

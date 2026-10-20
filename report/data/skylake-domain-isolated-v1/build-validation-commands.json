@@ -1,0 +1,102 @@
+[
+  {
+    "label": "base-contract",
+    "command": [
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "F:\\Hackathon\\projects\\16-lut-color\\scripts\\verify_skylake_packed.py",
+      "--plan",
+      "experiments/skylake-domain-isolated-v1.json",
+      "--build",
+      "artifacts/skylake-domain-isolated-build-v1",
+      "--output",
+      "artifacts/skylake-domain-isolated-base-contract-v1"
+    ],
+    "started_at_utc": "2026-10-20T01:11:12.729740+00:00",
+    "returncode": 0,
+    "finished_at_utc": "2026-10-20T01:11:15.995132+00:00"
+  },
+  {
+    "label": "cache-contract",
+    "command": [
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "F:\\Hackathon\\projects\\16-lut-color\\scripts\\verify_skylake_suffix_cache.py",
+      "--plan",
+      "experiments/skylake-domain-isolated-v1.json",
+      "--build",
+      "artifacts/skylake-domain-isolated-build-v1",
+      "--contract",
+      "artifacts/skylake-domain-isolated-base-contract-v1/results.json",
+      "--output",
+      "artifacts/skylake-domain-isolated-cache-contract-v1"
+    ],
+    "started_at_utc": "2026-10-20T01:11:15.996132+00:00",
+    "returncode": 0,
+    "finished_at_utc": "2026-10-20T01:11:20.816853+00:00"
+  },
+  {
+    "label": "domain-contract",
+    "command": [
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "F:\\Hackathon\\projects\\16-lut-color\\scripts\\verify_skylake_domain_cache.py",
+      "--plan",
+      "experiments/skylake-domain-isolated-v1.json",
+      "--build",
+      "artifacts/skylake-domain-isolated-build-v1",
+      "--contract",
+      "artifacts/skylake-domain-isolated-base-contract-v1/results.json",
+      "--cache-contract",
+      "artifacts/skylake-domain-isolated-cache-contract-v1/results.json",
+      "--output",
+      "artifacts/skylake-domain-isolated-domain-contract-v1"
+    ],
+    "started_at_utc": "2026-10-20T01:11:20.818340+00:00",
+    "returncode": 0,
+    "finished_at_utc": "2026-10-20T01:11:23.090220+00:00"
+  },
+  {
+    "label": "full",
+    "command": [
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "F:\\Hackathon\\projects\\16-lut-color\\scripts\\accept_skylake_runtime.py",
+      "--plan",
+      "experiments/skylake-domain-isolated-v1.json",
+      "--build",
+      "artifacts/skylake-domain-isolated-build-v1",
+      "--contract",
+      "artifacts/skylake-domain-isolated-base-contract-v1/results.json",
+      "--cache-contract",
+      "artifacts/skylake-domain-isolated-cache-contract-v1/results.json",
+      "--domain-contract",
+      "artifacts/skylake-domain-isolated-domain-contract-v1/results.json",
+      "--output",
+      "artifacts/skylake-domain-isolated-full-v1"
+    ],
+    "started_at_utc": "2026-10-20T01:11:23.091220+00:00",
+    "returncode": 0,
+    "finished_at_utc": "2026-10-20T01:11:54.305379+00:00"
+  },
+  {
+    "label": "performance",
+    "command": [
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "F:\\Hackathon\\projects\\16-lut-color\\scripts\\bench_skylake_runtime.py",
+      "--policy",
+      "experiments/skylake-domain-isolated-perf-v1.json",
+      "--output",
+      "artifacts/skylake-domain-isolated-perf-v1"
+    ],
+    "started_at_utc": "2026-10-20T01:12:01.116792+00:00",
+    "returncode": 0,
+    "finished_at_utc": "2026-10-20T01:13:07.601504+00:00"
+  }
+]

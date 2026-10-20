@@ -17,6 +17,7 @@ from delta16_support import layouts
 from axis_preweight_support import formats as axis_formats
 from restrict_support import info as domain_info
 from cache_encoding_support import info as encoding_info
+from domain_cache_support import info as cache_domain_info, checked_bench
 
 
 def worker(args, policy):
@@ -65,6 +66,9 @@ def worker(args, policy):
                 shared_axis_formats = axis_formats(chain)
                 read_domains = domain_info(chain)
                 cache_encoding = encoding_info(chain)
+                cache_domain = cache_domain_info(chain)
+                if name=='candidate' and 'domain_cache_policy' in plan and (cache_domain is None or not cache_domain['eligible'] or not cache_domain.get('fast_path_enabled')):
+                    raise ValueError('实际计时模型未完成完整域缓存覆盖证明')
                 if name=='candidate' and 'compact_cache_policy' in plan and (cache_encoding is None or cache_encoding['format']!=1):
                     raise ValueError('实际计时模型未使用冻结的可逆半字编码')
                 if name == 'candidate' and 'restrict_policy' in plan and read_domains is None:
@@ -81,7 +85,11 @@ def worker(args, policy):
                     raise AssertionError('计时前完整100图输出不同')
                 freq = psutil.cpu_freq()
                 start = {'affinity': process.cpu_affinity(), 'frequency_reported_mhz': None if freq is None else freq.current}
-                measured = chain.bench(source, kernel='avx2', threads=threads, repeats=policy['repeats'])
+                if policy.get('verify_each_measured_round'):
+                    measured=checked_bench(chain,source,threads=threads,repeats=policy['repeats'],
+                        expected_sha256=full['photos']['output_sha256'][name])
+                else:
+                    measured = chain.bench(source, kernel='avx2', threads=threads, repeats=policy['repeats'])
                 if any(a <= 0 or b < a for a, b in zip(measured['apply_seconds'], measured['copy_apply_seconds'])):
                     raise ValueError('原生回执计时非法')
                 records.append({'variant': name, 'requested_threads': threads, 'kernel': 'avx2', 'stages': 4,
@@ -92,6 +100,7 @@ def worker(args, policy):
                     'shared_axis_formats': shared_axis_formats,
                     'model_read_domains': read_domains,
                     'cache_encoding': cache_encoding,
+                    'cache_domain_certificate': cache_domain,
                     'prepare_plus_first_100_apply_seconds': prepare_seconds+measured['apply_seconds'][0],
                     'prepare_plus_first_100_copy_apply_seconds': prepare_seconds+measured['copy_apply_seconds'][0],
                     'serialized_input_bytes': sum(p.stat().st_size for p in models)+sum(p.stat().st_size for p in sides if p),
@@ -128,6 +137,7 @@ def main():
          'scripts/axis_preweight_support.py',
          'scripts/restrict_support.py',
          'scripts/cache_encoding_support.py',
+         'scripts/domain_cache_support.py',
          args.policy.resolve().relative_to(ROOT).as_posix()],
         {'purpose': __doc__, 'policy': policy,
          'scope': '一次100图完整组，稳态毫秒每图不含准备/IO/解码；另外列准备墙钟与准备+首轮100图，后者仍已预热'})

@@ -1,0 +1,1076 @@
+{
+  "pass": true,
+  "purpose": "双库集中整数、原字典序缓存全表、完整域与两种逐轮百图调度核验，不作性能结论",
+  "policy_sha256": "289bef12b1f74d4cd1da42607accb97a656a3f6bf7cda42a88b463ab82e3ad13",
+  "libraries": {
+    "cache": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/backend-domain/libjshc_skylake_reference.so",
+      "sha256": "6152adfe36f5bd2fac3c9a53fa2e16836083f3392d4486581ba66d0d0bbf9f16"
+    },
+    "domain_isolated": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/backend-domain/libjshc_skylake_domain_isolated.so",
+      "sha256": "44273f77482a85e50ec89ade5f1cb5c033d91637e87bf4844fa85ee470839b2d"
+    }
+  },
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "machine": "x86_64",
+    "cpu": {
+      "processor": "0",
+      "vendor_id": "AuthenticAMD",
+      "cpu family": "25",
+      "model": "97",
+      "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+      "stepping": "2",
+      "microcode": "0xffffffff",
+      "cpu MHz": "2495.237",
+      "cache size": "1024 KB",
+      "physical id": "0",
+      "siblings": "32",
+      "core id": "0",
+      "cpu cores": "16",
+      "apicid": "0",
+      "initial apicid": "0",
+      "fpu": "yes",
+      "fpu_exception": "yes",
+      "cpuid level": "13",
+      "wp": "yes",
+      "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+      "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+      "bogomips": "4990.47",
+      "TLB size": "3584 4K pages",
+      "clflush size": "64",
+      "cache_alignment": "64",
+      "address sizes": "48 bits physical, 48 bits virtual",
+      "power management": ""
+    },
+    "selected_cpu_details": {
+      "0": {
+        "processor": "0",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "0",
+        "cpu cores": "16",
+        "apicid": "0",
+        "initial apicid": "0",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "2": {
+        "processor": "2",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "1",
+        "cpu cores": "16",
+        "apicid": "2",
+        "initial apicid": "2",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "4": {
+        "processor": "4",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "2",
+        "cpu cores": "16",
+        "apicid": "4",
+        "initial apicid": "4",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "6": {
+        "processor": "6",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "3",
+        "cpu cores": "16",
+        "apicid": "6",
+        "initial apicid": "6",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      }
+    },
+    "loadavg": [
+      1.1982421875,
+      0.3505859375,
+      0.12255859375
+    ],
+    "gather_data_sampling": "Not affected",
+    "thread_environment": {
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_NUM_THREADS": "1",
+      "OMP_PLACES": "{0},{2},{4},{6}",
+      "OMP_PROC_BIND": "CLOSE",
+      "OMP_SCHEDULE": "STATIC",
+      "OMP_THREAD_LIMIT": "256"
+    },
+    "frequency_temperature_security_changes": "本入口不修改频率、温度或安全缓解设置",
+    "target_scope": "报告实际CPU/微码/系统；不根据AVX2、型号数字或编译参数自动认定为Skylake"
+  },
+  "teams": {
+    "1": {
+      "requested": 1,
+      "actual": 1,
+      "cpus": [
+        0
+      ],
+      "main_allowed_cpus_after_openmp": [
+        0
+      ]
+    },
+    "4": {
+      "requested": 4,
+      "actual": 4,
+      "cpus": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "main_allowed_cpus_after_openmp": [
+        0
+      ]
+    }
+  },
+  "loaded_libraries": [
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/backend-domain/libjshc_skylake_domain_isolated.so",
+      "sha256": "44273f77482a85e50ec89ade5f1cb5c033d91637e87bf4844fa85ee470839b2d"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/backend-domain/libjshc_skylake_reference.so",
+      "sha256": "6152adfe36f5bd2fac3c9a53fa2e16836083f3392d4486581ba66d0d0bbf9f16"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+      "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "d763925433ff9b757390549e1b20c085f5e6de27ae700fe89194178d96a8a2b0"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0",
+      "sha256": "645478cbe100d1465b9d45f7047bca3965358f4d399937e544f55ac7a924d5a3"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "670fb59bd462ee2f833e2ed7c0a1814e0dcdbec0b8bfa048bec46e2e6fd66334"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+    }
+  ],
+  "finite_backend_offset_comparisons": 3432,
+  "diagnostic_negative_checks": 72,
+  "finite_memory": [
+    {
+      "case": "delta_single_bounds",
+      "bytes": {
+        "cache": 54347,
+        "domain_isolated": 54347
+      },
+      "upstream_coordinate_profile": [
+        2
+      ]
+    },
+    {
+      "case": "delta_shared_shared_shared",
+      "bytes": {
+        "cache": 487881,
+        "domain_isolated": 487881
+      },
+      "upstream_coordinate_profile": [
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "three_delta",
+      "bytes": {
+        "cache": 244070,
+        "domain_isolated": 244070
+      },
+      "upstream_coordinate_profile": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "case": "shared_delta_shared_delta",
+      "bytes": {
+        "cache": 497097,
+        "domain_isolated": 497097
+      },
+      "upstream_coordinate_profile": [
+        1,
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "case": "delta_unpacked_shared_delta",
+      "bytes": {
+        "cache": 506313,
+        "domain_isolated": 506313
+      },
+      "upstream_coordinate_profile": [
+        2,
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "case": "over_positive_single",
+      "bytes": {
+        "cache": 54347,
+        "domain_isolated": 54347
+      },
+      "upstream_coordinate_profile": [
+        0
+      ]
+    },
+    {
+      "case": "over_negative_single",
+      "bytes": {
+        "cache": 54347,
+        "domain_isolated": 54347
+      },
+      "upstream_coordinate_profile": [
+        0
+      ]
+    },
+    {
+      "case": "equal_changed_shared",
+      "bytes": {
+        "cache": 487881,
+        "domain_isolated": 487881
+      },
+      "upstream_coordinate_profile": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "cache_shared_shared",
+      "bytes": {
+        "cache": 497865,
+        "domain_isolated": 497865
+      },
+      "upstream_coordinate_profile": null
+    },
+    {
+      "case": "cache_unshared_shared",
+      "bytes": {
+        "cache": 507081,
+        "domain_isolated": 507081
+      },
+      "upstream_coordinate_profile": null
+    },
+    {
+      "case": "cache_shared_mixed",
+      "bytes": {
+        "cache": 516297,
+        "domain_isolated": 516297
+      },
+      "upstream_coordinate_profile": null
+    },
+    {
+      "case": "cache_unshared_mixed",
+      "bytes": {
+        "cache": 534729,
+        "domain_isolated": 534729
+      },
+      "upstream_coordinate_profile": null
+    },
+    {
+      "case": "cache_equal_changed_shared",
+      "bytes": {
+        "cache": 507081,
+        "domain_isolated": 507081
+      },
+      "upstream_coordinate_profile": null
+    }
+  ],
+  "actual_models": {
+    "cache": {
+      "single": {
+        "coordinate_layouts": null,
+        "cache_info": {
+          "version": 1,
+          "enabled": 0,
+          "reason": 1,
+          "reserved": 0,
+          "entries": 0,
+          "valid_entries": 0,
+          "table_capacity_bytes": 0,
+          "temporary_capacity_bytes": 0,
+          "prepare_seconds": 5e-08,
+          "r_min": 0,
+          "r_max": 0,
+          "dg_min": 0,
+          "dg_max": 0,
+          "db_min": 0,
+          "db_max": 0,
+          "table_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "domain_certificate": null,
+        "model_accounting_bytes": 271707
+      },
+      "chain": {
+        "coordinate_layouts": null,
+        "cache_info": {
+          "version": 1,
+          "enabled": 1,
+          "reason": 0,
+          "reserved": 0,
+          "entries": 185600,
+          "valid_entries": 171056,
+          "table_capacity_bytes": 742400,
+          "temporary_capacity_bytes": 556800,
+          "prepare_seconds": 0.00590421,
+          "r_min": 0,
+          "r_max": 231,
+          "dg_min": -16,
+          "dg_max": 3,
+          "db_min": -36,
+          "db_max": 3,
+          "table_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90"
+        },
+        "domain_certificate": null,
+        "model_accounting_bytes": 1800836
+      }
+    },
+    "domain_isolated": {
+      "single": {
+        "coordinate_layouts": null,
+        "cache_info": {
+          "version": 1,
+          "enabled": 0,
+          "reason": 1,
+          "reserved": 0,
+          "entries": 0,
+          "valid_entries": 0,
+          "table_capacity_bytes": 0,
+          "temporary_capacity_bytes": 0,
+          "prepare_seconds": 3e-07,
+          "r_min": 0,
+          "r_max": 0,
+          "dg_min": 0,
+          "dg_max": 0,
+          "db_min": 0,
+          "db_max": 0,
+          "table_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "domain_certificate": {
+          "version": 1,
+          "eligible": 0,
+          "cache_enabled": 0,
+          "reserved": 0,
+          "reachable_cells": 0,
+          "unproven_cells": 0,
+          "dg_min": 0,
+          "dg_max": 0,
+          "db_min": 0,
+          "db_max": 0,
+          "fast_path_enabled": 0,
+          "diagnostic_negative_checks": 0
+        },
+        "model_accounting_bytes": 271707
+      },
+      "chain": {
+        "coordinate_layouts": null,
+        "cache_info": {
+          "version": 1,
+          "enabled": 1,
+          "reason": 0,
+          "reserved": 0,
+          "entries": 185600,
+          "valid_entries": 171056,
+          "table_capacity_bytes": 742400,
+          "temporary_capacity_bytes": 556800,
+          "prepare_seconds": 0.007109177,
+          "r_min": 0,
+          "r_max": 231,
+          "dg_min": -16,
+          "dg_max": 3,
+          "db_min": -36,
+          "db_max": 3,
+          "table_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90"
+        },
+        "domain_certificate": {
+          "version": 1,
+          "eligible": 1,
+          "cache_enabled": 1,
+          "reserved": 0,
+          "reachable_cells": 32768,
+          "unproven_cells": 0,
+          "dg_min": -15,
+          "dg_max": 2,
+          "db_min": -35,
+          "db_max": 2,
+          "fast_path_enabled": 1,
+          "diagnostic_negative_checks": 0
+        },
+        "model_accounting_bytes": 1800836
+      }
+    }
+  },
+  "full_domain_pixels_per_configuration": {
+    "cache_single_0_1": 16777216,
+    "cache_single_1_1": 16777216,
+    "cache_single_1_4": 16777216,
+    "cache_chain_0_1": 16777216,
+    "cache_chain_1_1": 16777216,
+    "cache_chain_1_4": 16777216,
+    "domain_isolated_single_0_1": 16777216,
+    "domain_isolated_single_1_1": 16777216,
+    "domain_isolated_single_1_4": 16777216,
+    "domain_isolated_chain_0_1": 16777216,
+    "domain_isolated_chain_1_1": 16777216,
+    "domain_isolated_chain_1_4": 16777216
+  },
+  "cache_table_audits": [
+    {
+      "role": "cache",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 497865,
+      "diagnostic_negative_checks": 0,
+      "case": "cache_shared_shared"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 497865,
+      "diagnostic_negative_checks": 3,
+      "case": "cache_shared_shared"
+    },
+    {
+      "role": "cache",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 507081,
+      "diagnostic_negative_checks": 0,
+      "case": "cache_unshared_shared"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 507081,
+      "diagnostic_negative_checks": 3,
+      "case": "cache_unshared_shared"
+    },
+    {
+      "role": "cache",
+      "entries": 4800,
+      "canonical_sha256": "dc09ab43eb6a412a96ed7018cb6be4a8092bfc650fecf6c6884f67128a3b577c",
+      "copied_sha256": "dc09ab43eb6a412a96ed7018cb6be4a8092bfc650fecf6c6884f67128a3b577c",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 516297,
+      "diagnostic_negative_checks": 0,
+      "case": "cache_shared_mixed"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 4800,
+      "canonical_sha256": "dc09ab43eb6a412a96ed7018cb6be4a8092bfc650fecf6c6884f67128a3b577c",
+      "copied_sha256": "dc09ab43eb6a412a96ed7018cb6be4a8092bfc650fecf6c6884f67128a3b577c",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 516297,
+      "diagnostic_negative_checks": 3,
+      "case": "cache_shared_mixed"
+    },
+    {
+      "role": "cache",
+      "entries": 4800,
+      "canonical_sha256": "d30360d35d82be9d3b5a039cef8c87ba749a987ba2e042b06a40f32c3539bf7b",
+      "copied_sha256": "d30360d35d82be9d3b5a039cef8c87ba749a987ba2e042b06a40f32c3539bf7b",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 534729,
+      "diagnostic_negative_checks": 0,
+      "case": "cache_unshared_mixed"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 4800,
+      "canonical_sha256": "d30360d35d82be9d3b5a039cef8c87ba749a987ba2e042b06a40f32c3539bf7b",
+      "copied_sha256": "d30360d35d82be9d3b5a039cef8c87ba749a987ba2e042b06a40f32c3539bf7b",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 534729,
+      "diagnostic_negative_checks": 3,
+      "case": "cache_unshared_mixed"
+    },
+    {
+      "role": "cache",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 507081,
+      "diagnostic_negative_checks": 0,
+      "case": "cache_equal_changed_shared"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 4800,
+      "canonical_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "copied_sha256": "4648c1064204d35579a9c83acb01e75c5333376f9cb790b497504727af912c62",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 507081,
+      "diagnostic_negative_checks": 3,
+      "case": "cache_equal_changed_shared"
+    },
+    {
+      "role": "cache",
+      "entries": 185600,
+      "canonical_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "copied_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 1800836,
+      "diagnostic_negative_checks": 0,
+      "case": "actual_a399"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 185600,
+      "canonical_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "copied_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 1800836,
+      "diagnostic_negative_checks": 3,
+      "case": "actual_a399"
+    },
+    {
+      "role": "domain_isolated",
+      "entries": 0,
+      "canonical_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "copied_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "canonical_export_checked": true,
+      "model_accounting_bytes": 271707,
+      "diagnostic_negative_checks": 2,
+      "case": "disabled_single"
+    }
+  ],
+  "first_stage_coverage": [
+    {
+      "case": "cache_shared_shared",
+      "pixels": 4097,
+      "pixel_hits": 4097,
+      "first_two_packet_hits": [
+        8,
+        8
+      ]
+    },
+    {
+      "case": "cache_unshared_shared",
+      "pixels": 4097,
+      "pixel_hits": 3841,
+      "first_two_packet_hits": [
+        8,
+        7
+      ]
+    },
+    {
+      "case": "cache_shared_mixed",
+      "pixels": 4097,
+      "pixel_hits": 4097,
+      "first_two_packet_hits": [
+        8,
+        8
+      ]
+    },
+    {
+      "case": "cache_unshared_mixed",
+      "pixels": 4097,
+      "pixel_hits": 3841,
+      "first_two_packet_hits": [
+        8,
+        7
+      ]
+    },
+    {
+      "case": "cache_equal_changed_shared",
+      "pixels": 4097,
+      "pixel_hits": 4097,
+      "first_two_packet_hits": [
+        8,
+        8
+      ]
+    }
+  ],
+  "domain_diagnostics": [
+    {
+      "case": "delta_single_bounds",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "delta_shared_shared_shared",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "three_delta",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "shared_delta_shared_delta",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "delta_unpacked_shared_delta",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "over_positive_single",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "over_negative_single",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "equal_changed_shared",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 0,
+      "reserved": 0,
+      "reachable_cells": 0,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "cache_shared_shared",
+      "version": 1,
+      "eligible": 1,
+      "cache_enabled": 1,
+      "reserved": 0,
+      "reachable_cells": 4096,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "cache_unshared_shared",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 1,
+      "reserved": 0,
+      "reachable_cells": 4096,
+      "unproven_cells": 4096,
+      "dg_min": -8,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 8,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "cache_shared_mixed",
+      "version": 1,
+      "eligible": 1,
+      "cache_enabled": 1,
+      "reserved": 0,
+      "reachable_cells": 4096,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "cache_unshared_mixed",
+      "version": 1,
+      "eligible": 0,
+      "cache_enabled": 1,
+      "reserved": 0,
+      "reachable_cells": 4096,
+      "unproven_cells": 4096,
+      "dg_min": -8,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 8,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    },
+    {
+      "case": "cache_equal_changed_shared",
+      "version": 1,
+      "eligible": 1,
+      "cache_enabled": 1,
+      "reserved": 0,
+      "reachable_cells": 4096,
+      "unproven_cells": 0,
+      "dg_min": 0,
+      "dg_max": 0,
+      "db_min": 0,
+      "db_max": 0,
+      "fast_path_enabled": 0,
+      "diagnostic_negative_checks": 4
+    }
+  ],
+  "full_output_sha256": {
+    "cache_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "cache_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "cache_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "cache_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "cache_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "cache_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "domain_isolated_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "domain_isolated_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "domain_isolated_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "domain_isolated_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "domain_isolated_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "domain_isolated_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "photos": [
+    {
+      "role": "cache",
+      "threads": 1,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "cache",
+      "threads": 1,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "cache",
+      "threads": 4,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "cache",
+      "threads": 4,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "domain_isolated",
+      "threads": 1,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "domain_isolated",
+      "threads": 1,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "domain_isolated",
+      "threads": 4,
+      "mode": 0,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    },
+    {
+      "role": "domain_isolated",
+      "threads": 4,
+      "mode": 1,
+      "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "round_output_sha256": [
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+        "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+      ],
+      "validation_rounds": 2
+    }
+  ],
+  "photo_source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "driver_negative_contract": [
+    {
+      "case": "空回调",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "空模型",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "空源",
+      "returncode": 1,
+      "error": "基准指针或范围无效"
+    },
+    {
+      "case": "空工作区",
+      "returncode": 1,
+      "error": "基准指针或范围无效"
+    },
+    {
+      "case": "非RGB长度",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零图",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "非法后端",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零线程",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "非法模式",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "零轮次",
+      "returncode": 1,
+      "error": "基准参数无效"
+    },
+    {
+      "case": "源工作区重叠",
+      "returncode": 1,
+      "error": "源、工作区与计时数组不得重叠"
+    },
+    {
+      "case": "图像总长度溢出",
+      "returncode": 1,
+      "error": "基准长度溢出"
+    },
+    {
+      "case": "计时长度溢出",
+      "returncode": 1,
+      "error": "基准长度溢出"
+    },
+    {
+      "case": "计时数组重叠",
+      "returncode": 1,
+      "error": "源、工作区与计时数组不得重叠"
+    }
+  ],
+  "driver_callback_failure_aborted": true,
+  "byte_mismatches": 0,
+  "sentinel_mismatches": 0,
+  "performance_comparison_performed": false,
+  "new_fits": 0
+}

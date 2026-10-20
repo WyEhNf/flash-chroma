@@ -1,0 +1,103 @@
+{
+  "purpose": "只读固定模型，以全节点轴向差分和坐标偏移推导完整输入域的后缀缓存范围证书。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4"
+  },
+  "inputs": {
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    }
+  },
+  "source_sha256": "32e5b599fefe7414588d572479b907f74c567e30b54bbabcbfb1f4f3ac6a1c63",
+  "io_source_sha256": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+  "plan_sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867",
+  "gradient_max_channel_axis": [
+    [
+      21,
+      15,
+      17
+    ],
+    [
+      18,
+      14,
+      15
+    ],
+    [
+      16,
+      12,
+      13
+    ]
+  ],
+  "fraction_delta_max_channel_axis": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      11764,
+      12338,
+      18650
+    ],
+    [
+      8026,
+      24593,
+      21384
+    ]
+  ],
+  "warp_numerator_channel": [
+    0,
+    664234,
+    701524
+  ],
+  "denominator": 65536,
+  "required_integer_padding_channel": [
+    0,
+    11,
+    11
+  ],
+  "node_difference_min_GB": [
+    -14,
+    -34
+  ],
+  "node_difference_max_GB": [
+    1,
+    1
+  ],
+  "proven_output_difference_min_GB": [
+    -25,
+    -45
+  ],
+  "proven_output_difference_max_GB": [
+    12,
+    12
+  ],
+  "existing_cache_difference_min_GB": [
+    -16,
+    -36
+  ],
+  "existing_cache_difference_max_GB": [
+    3,
+    3
+  ],
+  "certificate_eligible": false,
+  "proof": [
+    "同一共享idx下每个通道为单位立方体上连续分段仿射四面体函数T_c。",
+    "沿轴a的绝对斜率不超过所有该轴相邻节点差最大值L_ca；坐标改变引起的输出差不超过sum(L_ca*abs(df_ca))/65536。",
+    "先把G/B坐标移动到R坐标；共同权重时G-R/B-R是对应节点差的凸组合。",
+    "整数half-up满足round(A)-round(B)<=ceil(A-B)，故节点差界加ceil(sum(L*df)/65536)覆盖最终RGB8差。",
+    "R本身始终在全节点R整数最小/最大内；证明范围必须被现有缓存界完整包含，且缓存已经成功创建。"
+  ],
+  "decision": "保守界不能证明当前缓存完整覆盖，不实现省检查路径",
+  "project_native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "scope": "仅固定输入的小型整数界推导；不是新C++实现、完整色域输出或性能证明，未调整缓存预算/两码边界。"
+}
