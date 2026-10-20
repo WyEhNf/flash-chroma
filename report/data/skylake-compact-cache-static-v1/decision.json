@@ -1,0 +1,126 @@
+{
+  "purpose": "按冻结的全语义静态条件决定是否进入新运行阶段",
+  "decision": "stop_static",
+  "cases": [
+    {
+      "case": "encoded/shared/shared",
+      "instructions": [
+        176,
+        181
+      ],
+      "rsp_operands": [
+        12,
+        13
+      ],
+      "skylake_cycles_ratio": 1.165882948708674,
+      "skylake_throughput_ratio": 1.0555555555555556
+    },
+    {
+      "case": "encoded/shared/mixed",
+      "instructions": [
+        176,
+        181
+      ],
+      "rsp_operands": [
+        12,
+        13
+      ],
+      "skylake_cycles_ratio": 1.3172389443022332,
+      "skylake_throughput_ratio": 1.0555555555555556
+    },
+    {
+      "case": "encoded/unshared/shared",
+      "instructions": [
+        261,
+        263
+      ],
+      "rsp_operands": [
+        34,
+        34
+      ],
+      "skylake_cycles_ratio": 1.0374605136657054,
+      "skylake_throughput_ratio": 1.0198019801980198
+    },
+    {
+      "case": "encoded/unshared/mixed",
+      "instructions": [
+        261,
+        262
+      ],
+      "rsp_operands": [
+        34,
+        30
+      ],
+      "skylake_cycles_ratio": 1.465265895558141,
+      "skylake_throughput_ratio": 1.0792079207920793
+    },
+    {
+      "case": "raw/shared/shared",
+      "instructions": [
+        176,
+        172
+      ],
+      "rsp_operands": [
+        12,
+        11
+      ],
+      "skylake_cycles_ratio": 0.8549518917745786,
+      "skylake_throughput_ratio": 1.0
+    },
+    {
+      "case": "raw/shared/mixed",
+      "instructions": [
+        176,
+        172
+      ],
+      "rsp_operands": [
+        12,
+        11
+      ],
+      "skylake_cycles_ratio": 1.254744461117486,
+      "skylake_throughput_ratio": 1.0
+    },
+    {
+      "case": "raw/unshared/shared",
+      "instructions": [
+        261,
+        254
+      ],
+      "rsp_operands": [
+        34,
+        32
+      ],
+      "skylake_cycles_ratio": 0.9893558577118527,
+      "skylake_throughput_ratio": 0.995049504950495
+    },
+    {
+      "case": "raw/unshared/mixed",
+      "instructions": [
+        261,
+        253
+      ],
+      "rsp_operands": [
+        34,
+        28
+      ],
+      "skylake_cycles_ratio": 1.1754500034220792,
+      "skylake_throughput_ratio": 1.0594059405940595
+    }
+  ],
+  "reason": "相对已验13，实际a399编码路径建模周期30215/29124=1.03746，超过1.03；其他编码/原格式路径亦有明显回退，不缩减失败家族或改内联/编码开关。",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "candidate_library_loaded": false,
+  "unexecuted": [
+    "编码/解码与word/metadata只读诊断的C++运行合同",
+    "跨度15/16、正负大偏移、奇数项与混合命中的专用合同",
+    "新编码辅助元数据/资源分支",
+    "实际模型准备容量与峰值读取",
+    "有限整数55/缓存55及完整域/100图",
+    "13对14的任何性能比较",
+    "分配失败/OOM强制实验",
+    "Skylake实测"
+  ],
+  "resource_scope": "sizeof只编译期断言，预计载荷减半和头增加16字节未运行核验；Python整表数学往返不替代C++实现正确性。"
+}

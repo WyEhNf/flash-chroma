@@ -11,6 +11,7 @@ from suffix_cache_support import cache_info, cache_table, coverage
 from delta16_support import layouts
 from axis_preweight_support import formats as axis_formats
 from restrict_support import info as domain_info
+from cache_encoding_support import info as encoding_info
 from verify_channel_coordinates import integer_oracle
 
 
@@ -61,11 +62,12 @@ def main():
          'scripts/delta16_support.py',
          'scripts/axis_preweight_support.py',
          'scripts/restrict_support.py',
+         'scripts/cache_encoding_support.py',
          'python/lutlab/channel_coordinates.py', 'python/lutlab/io.py'],
         {'purpose': __doc__, 'build_sha256': digest(args.build/'build.json'),
          'contract_sha256': digest(args.contract), 'loaded_libraries': loaded})
     operators = {}; hashes = {}; photos = []; photos_hash = {name: hashlib.sha256() for name in libraries}
-    memory = {}; cache_record = None; first_stream = None; layout_record = None; axis_record = None; domain_record = None
+    memory = {}; cache_record = None; first_stream = None; layout_record = None; axis_record = None; domain_record = None; encoding_record = None
     try:
         for name, lib in libraries.items():
             operators[name] = {
@@ -92,6 +94,13 @@ def main():
                     raise AssertionError('实际模型读取域容量核算不同')
         if cache_contract is not None:
             handle = operators['candidate']['chain']; info = cache_info(handle)
+            if 'compact_cache_policy' in plan:
+                encoding_record={mode:encoding_info(h) for mode,h in operators['candidate'].items()}
+                if encoding_record['single']['format']!=0 or encoding_record['chain']['format']!=1:
+                    raise AssertionError('实际单级/四级编码状态不同')
+                old=cache_info(operators['reference']['chain'])
+                if memory['candidate']['single']-memory['reference']['single']!=16 or memory['candidate']['chain']-memory['reference']['chain']!=16+info['table_capacity_bytes']-old['table_capacity_bytes']:
+                    raise AssertionError('实际编码容量不符合独立头/载荷核算')
             if not info or not info['enabled'] or info['table_capacity_bytes'] > plan['cache_policy']['budget_bytes']:
                 raise AssertionError('实际模型未按冻结容量政策启用缓存')
             axes = [np.arange(info[a], info[b]+1, dtype=np.int32) for a, b in
@@ -176,6 +185,7 @@ def main():
         'model_accounting_bytes': memory, 'suffix_cache': cache_record, 'coordinate_layouts': layout_record,
         'shared_axis_formats': axis_record,
         'model_read_domains': domain_record,
+        'cache_encoding': encoding_record,
         'new_fits': 0, 'performance_calls': 0,
         'scope': '冻结同模型的完整后端等价；精度数据复用相同输出流，不新增精度选型，不代表Skylake服务器运行或性能。'}
     save(out/'results.json', result)
