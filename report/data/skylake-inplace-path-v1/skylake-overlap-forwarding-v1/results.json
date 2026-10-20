@@ -1,0 +1,44 @@
+{
+  "pass": true,
+  "purpose": "静态对比45/46的组首读取宽度；地址相交说明不代替硬件stall事件。",
+  "old45": {
+    "assembly": "artifacts/skylake-overlap-linux-static-v1/candidate.asm",
+    "assembly_sha256": "34559056ec8a95d7bc45267271c506d7adbcdfaf5e7d364c450ec3d8f2b4d352",
+    "first_symbol": "jshc_channel::avx2_chain_overlap(unsigned int const*, unsigned int const*, unsigned char*, unsigned long)",
+    "group_mask_ffff00_count": 17,
+    "first_function_movzwl_count": 1,
+    "first_function_non_temporal_store_count": 0,
+    "outplace_non_temporal_store_count": 6
+  },
+  "new46": {
+    "assembly": "artifacts/skylake-overlap16-linux-static-v1/candidate.asm",
+    "assembly_sha256": "0a458ba7029c99e0df66c69859c8fa6203387fdcc738b9189d1804b2d774af63",
+    "first_symbol": "jshc_channel::avx2_chain_overlap16(unsigned int const*, unsigned int const*, unsigned char*, unsigned long)",
+    "group_mask_ffff00_count": 0,
+    "first_function_movzwl_count": 18,
+    "first_function_non_temporal_store_count": 0,
+    "outplace_non_temporal_store_count": 6
+  },
+  "source_address_intervals_half_open": {
+    "previous_last_write": [
+      -3,
+      1
+    ],
+    "old_first_read": [
+      0,
+      4
+    ],
+    "new_first_read": [
+      1,
+      3
+    ],
+    "old_intersection_bytes": [
+      0
+    ],
+    "new_intersection_bytes": []
+  },
+  "limitation": "静态观察首读32位再掩码和首读16位的变化；未测专用store forwarding stall事件，周期变化必须另看同场配对",
+  "new_native_calls": 0,
+  "new_performance_calls": 0,
+  "script_sha256": "dde5d1654bc9e30de898b4a0116a860dc095898e30b529dc8ab93a2bde890a92"
+}

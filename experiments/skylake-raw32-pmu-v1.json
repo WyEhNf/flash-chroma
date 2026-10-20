@@ -1,0 +1,114 @@
+{
+  "purpose": "40直接对44直接RGB32普通加载的单次用户态计数；不替代ABBA速度，不跨画像相除",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/profile_skylake_raw32_pmu.py",
+    "sha256": "5fa121af814bbeb02df21a2d83d9a13ac0c946368be623ae0bfccc846243ae3b"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "models_plan": {
+    "path": "experiments/skylake-raw32-v1.json",
+    "sha256": "031834b1e40ac273a9e8abb7ac777a7d74a88dcce6c6a864ded1af2c63ca4b94"
+  },
+  "cases": {
+    "reference40": {
+      "revision": 40,
+      "plan": {
+        "path": "experiments/skylake-batchspan-v1.json",
+        "sha256": "7a0bf316436d4a178d1721dd842567ed106d458bf6b5910c407474af26060bed"
+      },
+      "build": {
+        "path": "artifacts/skylake-batchspan-linux-build-v1/build.json",
+        "sha256": "1ae9e1806787ddbf22464f598c75ec647dc1df5d4d6bd88d8a60a0da6165f80b"
+      },
+      "full": {
+        "path": "artifacts/skylake-batchspan-linux-full-v1/results.json",
+        "sha256": "e412d02df80f22d2e026400038cb74f8518b88966bc00a5b1e1a4445c9b19a47"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-batchspan-linux-build-v1/libjshc_skylake_batchspan.so",
+        "sha256": "44716bb2e562fc6b661de5d2e14c37a799a86a5eefd6d93813640b324ec27bbc"
+      }
+    },
+    "raw3244": {
+      "revision": 44,
+      "plan": {
+        "path": "experiments/skylake-raw32-v1.json",
+        "sha256": "031834b1e40ac273a9e8abb7ac777a7d74a88dcce6c6a864ded1af2c63ca4b94"
+      },
+      "build": {
+        "path": "artifacts/skylake-raw32-linux-build-v1/build.json",
+        "sha256": "36657cc745644b2251a68a148665d00061e83faddc34cc239d7c89090e3f4287"
+      },
+      "full": {
+        "path": "artifacts/skylake-raw32-linux-full-v1/results.json",
+        "sha256": "2b28cb8e721248121d36416c78c23abbc12f7a068e3610b830502555025047c5"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-raw32-linux-build-v1/libjshc_skylake_raw32.so",
+        "sha256": "c79bdfe8e9a1f0f752bbe2e8710956c26f4fc67d0c7556d326f55c9a2258aec2"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    {
+      "threads": 1,
+      "variants": [
+        "reference40",
+        "raw3244"
+      ]
+    },
+    {
+      "threads": 4,
+      "variants": [
+        "raw3244",
+        "reference40"
+      ]
+    }
+  ],
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "events": [
+    "cycles",
+    "instructions",
+    "cache_references",
+    "cache_misses"
+  ],
+  "counter_scope": "每个参与TID独立组，exclude_kernel/exclude_hv，启停与ct开销少量包含；running/enabled>=0.99才可解释",
+  "python_sources": [
+    "scripts/profile_skylake_raw32_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "reference": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+  "limits": [
+    "不计墙钟，不替代已冻结ABBA性能",
+    "泛化cache计数与具体缓存层的映射依赖CPU/虚拟PMU，不冒充精确L3指标",
+    "不改系统权限/缓解，不安装工具",
+    "每配置一个预热与一个计数调用（共4+4），完整235MB输出SHA及保护区验证"
+  ]
+}

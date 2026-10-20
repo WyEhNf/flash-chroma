@@ -1,0 +1,46 @@
+{
+  "purpose": "转录首次45计时启动前只读ps快照中的来宾启动状态，不重启或复现系统启动",
+  "command": "ps -eo pid,stat,pcpu,etime,comm",
+  "observed_pid1_elapsed": "00:13",
+  "rows": [
+    {
+      "pid": 1,
+      "comm": "systemd",
+      "pcpu_since_start": 27.7,
+      "elapsed": "00:13"
+    },
+    {
+      "pid": 65,
+      "comm": "systemd-journal",
+      "pcpu_since_start": 9.4,
+      "elapsed": "00:10"
+    },
+    {
+      "pid": 108,
+      "comm": "systemd-udevd",
+      "pcpu_since_start": 19.4,
+      "elapsed": "00:09"
+    },
+    {
+      "pid": 188,
+      "comm": "snapd",
+      "pcpu_since_start": 10.7,
+      "elapsed": "00:07"
+    },
+    {
+      "pid": 304,
+      "comm": "unattended-upgr",
+      "pcpu_since_start": 15.1,
+      "elapsed": "00:07"
+    },
+    {
+      "pid": 493,
+      "comm": "systemd",
+      "pcpu_since_start": 51.4,
+      "elapsed": "00:01"
+    }
+  ],
+  "limitation": "ps百分比为进程存活期间平均，快照在计时前，不能证明具体计时轮受到竞争；据此预先增加新协议前置条件，不删除或否定旧回执",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}
