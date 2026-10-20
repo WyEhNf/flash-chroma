@@ -1,5 +1,7 @@
 # 文档索引
 
+[2026-10-20 坐标与节点局部性](stages/2026-10-20-skylake-coordinate-locality.md)：共享顶点排序覆盖不足、端点压缩条件不成立、首级节点重排仅约1%缓存行改善；仅切换服务器调度生成相同对象，四项均停止，零新增性能调用。
+
 [2026-10-19 最新精度与后端结果](stages/2026-10-19-precision-latest.md)汇总当前已验模型、误差来源和速度代价；新研究方案未自动替换公共默认。
 
 当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列阶段文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。

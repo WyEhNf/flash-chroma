@@ -1,0 +1,4230 @@
+{
+  "purpose": "只读固定坐标与100图，统计稳定四面体排序一致覆盖及共享ONE端点编码资格，不拟合/调用原生/计时。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4"
+  },
+  "source_sha256": "ecfe0c5e5f72c719c7542060cb4c72dfd46daa0d713e6f5253fc54d76b63ab88",
+  "plan_sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867",
+  "sidecar_sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff",
+  "photo_stream_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "stable_tie_priority": "R优先于G优先于B，使用(y>x,z>x,z>y)三位分类；共享时必须按稳定优先级构造首/末轴，不能直接复用旧全相等时首末可能同轴的几何结果",
+  "geometry_profile_gate_before_native": 0.6,
+  "endpoint_profile": {
+    "eligible": false,
+    "common_one_mismatched_axis_codes": 2,
+    "one_counts_channel_axis": [
+      [
+        1,
+        2,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        1
+      ]
+    ],
+    "frac65535_counts_channel_axis": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "mathematical_expansion_mismatches": 3,
+    "encoding": "R保留原17位fraction/idx；另一个u32存G16/B16，若三通道ONE掩码逐轴逐码相同，则R的bit16可恢复两通道17位值",
+    "simd_proposal": "G用VPBLENDW(pair, Rword&65536, 0xAA)，B用(pair>>16)|(Rword&65536)；不假设65535缺失",
+    "scope": "共享端点标志不等于共享三通道坐标或顶点排序；这不是新C++实现验证"
+  },
+  "total_pixels": 78643200,
+  "total_packets": 9830400,
+  "same_order_pixel_fraction": 0.678897565205892,
+  "same_order_packet_fraction": 0.34091420491536456,
+  "geometry_profile_gate_pass": false,
+  "class_histograms": [
+    [
+      12320688,
+      12285637,
+      0,
+      13480768,
+      14636675,
+      0,
+      14354705,
+      11564727
+    ],
+    [
+      13633718,
+      14825745,
+      0,
+      11164500,
+      12268168,
+      0,
+      14098945,
+      12652124
+    ],
+    [
+      12494493,
+      21343395,
+      0,
+      12295282,
+      11113696,
+      0,
+      10667149,
+      10729185
+    ]
+  ],
+  "first_order_counterexample": {
+    "image": "kodak-kodim03",
+    "pixel_index": 3644,
+    "rgb": [
+      96,
+      95,
+      95
+    ],
+    "classes": [
+      6,
+      6,
+      4
+    ],
+    "fractions_channel_axis": [
+      [
+        62221,
+        94,
+        62369
+      ],
+      [
+        62292,
+        597,
+        62339
+      ],
+      [
+        62926,
+        657,
+        62885
+      ]
+    ]
+  },
+  "per_image": [
+    {
+      "image": "kodak-kodim03",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 698719,
+      "all_eight_same_order_packets": 62558,
+      "same_order_pixel_fraction": 0.8884671529134115,
+      "same_order_packet_fraction": 0.6363728841145834,
+      "class_histograms": [
+        [
+          125871,
+          138541,
+          0,
+          139635,
+          134589,
+          0,
+          107710,
+          140086
+        ],
+        [
+          134744,
+          137524,
+          0,
+          141510,
+          126620,
+          0,
+          109413,
+          136621
+        ],
+        [
+          132864,
+          148229,
+          0,
+          142176,
+          128936,
+          0,
+          100919,
+          133308
+        ]
+      ]
+    },
+    {
+      "image": "kodak-kodim06",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 650576,
+      "all_eight_same_order_packets": 56279,
+      "same_order_pixel_fraction": 0.8272501627604166,
+      "same_order_packet_fraction": 0.5724995930989584,
+      "class_histograms": [
+        [
+          173751,
+          139630,
+          0,
+          116241,
+          105359,
+          0,
+          129239,
+          122212
+        ],
+        [
+          198963,
+          116904,
+          0,
+          111497,
+          112840,
+          0,
+          140825,
+          105403
+        ],
+        [
+          173608,
+          143443,
+          0,
+          118318,
+          100932,
+          0,
+          111102,
+          139029
+        ]
+      ]
+    },
+    {
+      "image": "kodak-kodim07",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 703187,
+      "all_eight_same_order_packets": 61364,
+      "same_order_pixel_fraction": 0.8941485087076823,
+      "same_order_packet_fraction": 0.6242268880208334,
+      "class_histograms": [
+        [
+          132428,
+          132610,
+          0,
+          133700,
+          134553,
+          0,
+          116853,
+          136288
+        ],
+        [
+          141187,
+          131211,
+          0,
+          136002,
+          127229,
+          0,
+          117336,
+          133467
+        ],
+        [
+          138642,
+          141551,
+          0,
+          139793,
+          127453,
+          0,
+          110570,
+          128423
+        ]
+      ]
+    },
+    {
+      "image": "kodak-kodim08",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 633844,
+      "all_eight_same_order_packets": 44614,
+      "same_order_pixel_fraction": 0.8059743245442709,
+      "same_order_packet_fraction": 0.4538370768229167,
+      "class_histograms": [
+        [
+          139127,
+          131142,
+          0,
+          120931,
+          125516,
+          0,
+          144420,
+          125296
+        ],
+        [
+          135186,
+          146358,
+          0,
+          124279,
+          122049,
+          0,
+          134705,
+          123855
+        ],
+        [
+          125548,
+          165752,
+          0,
+          136045,
+          109679,
+          0,
+          114634,
+          134774
+        ]
+      ]
+    },
+    {
+      "image": "kodak-kodim12",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 628826,
+      "all_eight_same_order_packets": 45739,
+      "same_order_pixel_fraction": 0.7995936075846354,
+      "same_order_packet_fraction": 0.4652811686197917,
+      "class_histograms": [
+        [
+          147669,
+          128850,
+          0,
+          134659,
+          107947,
+          0,
+          150671,
+          116636
+        ],
+        [
+          150210,
+          122552,
+          0,
+          127021,
+          125099,
+          0,
+          150037,
+          111513
+        ],
+        [
+          146331,
+          130400,
+          0,
+          130749,
+          107545,
+          0,
+          140912,
+          130495
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-034",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 457345,
+      "all_eight_same_order_packets": 20323,
+      "same_order_pixel_fraction": 0.5815442403157552,
+      "same_order_packet_fraction": 0.20673624674479166,
+      "class_histograms": [
+        [
+          116019,
+          108341,
+          0,
+          139579,
+          165146,
+          0,
+          165803,
+          91544
+        ],
+        [
+          127008,
+          156755,
+          0,
+          98809,
+          107734,
+          0,
+          150973,
+          145153
+        ],
+        [
+          115549,
+          303489,
+          0,
+          111504,
+          93038,
+          0,
+          80924,
+          81928
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-041",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 674523,
+      "all_eight_same_order_packets": 56467,
+      "same_order_pixel_fraction": 0.8577003479003906,
+      "same_order_packet_fraction": 0.5744120279947916,
+      "class_histograms": [
+        [
+          170765,
+          113539,
+          0,
+          112704,
+          157600,
+          0,
+          122215,
+          109609
+        ],
+        [
+          184584,
+          148704,
+          0,
+          116589,
+          107585,
+          0,
+          121261,
+          107709
+        ],
+        [
+          168005,
+          177630,
+          0,
+          116684,
+          106672,
+          0,
+          109593,
+          107848
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-047",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 453579,
+      "all_eight_same_order_packets": 25365,
+      "same_order_pixel_fraction": 0.5767555236816406,
+      "same_order_packet_fraction": 0.258026123046875,
+      "class_histograms": [
+        [
+          107870,
+          112429,
+          0,
+          175686,
+          118900,
+          0,
+          144320,
+          127227
+        ],
+        [
+          113549,
+          107581,
+          0,
+          96164,
+          128282,
+          0,
+          183715,
+          157141
+        ],
+        [
+          139867,
+          228988,
+          0,
+          123721,
+          92351,
+          0,
+          104452,
+          97053
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-050",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 459303,
+      "all_eight_same_order_packets": 31705,
+      "same_order_pixel_fraction": 0.5840339660644531,
+      "same_order_packet_fraction": 0.3225199381510417,
+      "class_histograms": [
+        [
+          101469,
+          132301,
+          0,
+          93325,
+          164158,
+          0,
+          174334,
+          120845
+        ],
+        [
+          146815,
+          145299,
+          0,
+          94239,
+          138827,
+          0,
+          157771,
+          103481
+        ],
+        [
+          102855,
+          265512,
+          0,
+          102663,
+          101058,
+          0,
+          116227,
+          98117
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-055",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 610258,
+      "all_eight_same_order_packets": 50325,
+      "same_order_pixel_fraction": 0.7759831746419271,
+      "same_order_packet_fraction": 0.511932373046875,
+      "class_histograms": [
+        [
+          144709,
+          121594,
+          0,
+          123225,
+          120615,
+          0,
+          147851,
+          128438
+        ],
+        [
+          147878,
+          127773,
+          0,
+          123997,
+          122639,
+          0,
+          149412,
+          114733
+        ],
+        [
+          131744,
+          176761,
+          0,
+          121947,
+          103389,
+          0,
+          127985,
+          124606
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-056",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 597857,
+      "all_eight_same_order_packets": 41799,
+      "same_order_pixel_fraction": 0.7602144877115885,
+      "same_order_packet_fraction": 0.425201416015625,
+      "class_histograms": [
+        [
+          119814,
+          123652,
+          0,
+          110628,
+          160714,
+          0,
+          146786,
+          124838
+        ],
+        [
+          164570,
+          140511,
+          0,
+          108973,
+          130441,
+          0,
+          137450,
+          104487
+        ],
+        [
+          143578,
+          172559,
+          0,
+          120362,
+          114631,
+          0,
+          128034,
+          107268
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-060",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 576006,
+      "all_eight_same_order_packets": 37725,
+      "same_order_pixel_fraction": 0.7324295043945312,
+      "same_order_packet_fraction": 0.383758544921875,
+      "class_histograms": [
+        [
+          110989,
+          105369,
+          0,
+          118159,
+          159836,
+          0,
+          177646,
+          114433
+        ],
+        [
+          135963,
+          143147,
+          0,
+          113168,
+          104917,
+          0,
+          153833,
+          135404
+        ],
+        [
+          121863,
+          207081,
+          0,
+          114624,
+          98369,
+          0,
+          123006,
+          121489
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-068",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 349477,
+      "all_eight_same_order_packets": 14147,
+      "same_order_pixel_fraction": 0.4443829854329427,
+      "same_order_packet_fraction": 0.14391072591145834,
+      "class_histograms": [
+        [
+          122923,
+          82740,
+          0,
+          115493,
+          144278,
+          0,
+          240454,
+          80544
+        ],
+        [
+          124965,
+          104791,
+          0,
+          82277,
+          94279,
+          0,
+          226793,
+          153327
+        ],
+        [
+          119541,
+          386147,
+          0,
+          98044,
+          73385,
+          0,
+          55366,
+          53949
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-083",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 661108,
+      "all_eight_same_order_packets": 49309,
+      "same_order_pixel_fraction": 0.8406422932942709,
+      "same_order_packet_fraction": 0.5015970865885416,
+      "class_histograms": [
+        [
+          130252,
+          127882,
+          0,
+          114635,
+          142618,
+          0,
+          143479,
+          127566
+        ],
+        [
+          145450,
+          134501,
+          0,
+          115092,
+          124694,
+          0,
+          144626,
+          122069
+        ],
+        [
+          128456,
+          170339,
+          0,
+          120242,
+          118275,
+          0,
+          122903,
+          126217
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-085",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 546274,
+      "all_eight_same_order_packets": 34406,
+      "same_order_pixel_fraction": 0.6946233113606771,
+      "same_order_packet_fraction": 0.3499959309895833,
+      "class_histograms": [
+        [
+          140004,
+          108601,
+          0,
+          92980,
+          203169,
+          0,
+          134873,
+          106805
+        ],
+        [
+          193220,
+          154639,
+          0,
+          103376,
+          107275,
+          0,
+          130536,
+          97386
+        ],
+        [
+          139421,
+          235792,
+          0,
+          110747,
+          96511,
+          0,
+          104703,
+          99258
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-092",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 597962,
+      "all_eight_same_order_packets": 45110,
+      "same_order_pixel_fraction": 0.7603480021158854,
+      "same_order_packet_fraction": 0.4588826497395833,
+      "class_histograms": [
+        [
+          174597,
+          127561,
+          0,
+          120401,
+          126107,
+          0,
+          141199,
+          96567
+        ],
+        [
+          188113,
+          147761,
+          0,
+          108811,
+          114792,
+          0,
+          143865,
+          83090
+        ],
+        [
+          174384,
+          192238,
+          0,
+          108483,
+          113005,
+          0,
+          95424,
+          102898
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-095",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 398203,
+      "all_eight_same_order_packets": 30183,
+      "same_order_pixel_fraction": 0.506341298421224,
+      "same_order_packet_fraction": 0.307037353515625,
+      "class_histograms": [
+        [
+          89624,
+          91661,
+          0,
+          118136,
+          146070,
+          0,
+          231481,
+          109460
+        ],
+        [
+          103319,
+          174554,
+          0,
+          83793,
+          131861,
+          0,
+          170817,
+          122088
+        ],
+        [
+          124628,
+          309476,
+          0,
+          122634,
+          80515,
+          0,
+          79071,
+          70108
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-098",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 369657,
+      "all_eight_same_order_packets": 14995,
+      "same_order_pixel_fraction": 0.4700431823730469,
+      "same_order_packet_fraction": 0.15253702799479166,
+      "class_histograms": [
+        [
+          104162,
+          96946,
+          0,
+          108003,
+          145951,
+          0,
+          237632,
+          93738
+        ],
+        [
+          104794,
+          121541,
+          0,
+          96384,
+          122021,
+          0,
+          148099,
+          193593
+        ],
+        [
+          106046,
+          278793,
+          0,
+          126666,
+          120476,
+          0,
+          75023,
+          79428
+        ]
+      ]
+    },
+    {
+      "image": "dped-sony-107",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 466594,
+      "all_eight_same_order_packets": 25905,
+      "same_order_pixel_fraction": 0.5933049519856771,
+      "same_order_packet_fraction": 0.263519287109375,
+      "class_histograms": [
+        [
+          94253,
+          228881,
+          0,
+          132351,
+          109764,
+          0,
+          104711,
+          116472
+        ],
+        [
+          199044,
+          120740,
+          0,
+          117761,
+          128057,
+          0,
+          135543,
+          85287
+        ],
+        [
+          135846,
+          201383,
+          0,
+          134107,
+          114832,
+          0,
+          101638,
+          98626
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0801",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 575066,
+      "all_eight_same_order_packets": 39657,
+      "same_order_pixel_fraction": 0.7312342325846354,
+      "same_order_packet_fraction": 0.403411865234375,
+      "class_histograms": [
+        [
+          125912,
+          140692,
+          0,
+          117471,
+          128386,
+          0,
+          135250,
+          138721
+        ],
+        [
+          142486,
+          139470,
+          0,
+          111382,
+          128470,
+          0,
+          153085,
+          111539
+        ],
+        [
+          110260,
+          174963,
+          0,
+          120670,
+          108573,
+          0,
+          126026,
+          145940
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0802",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 358696,
+      "all_eight_same_order_packets": 7309,
+      "same_order_pixel_fraction": 0.4561055501302083,
+      "same_order_packet_fraction": 0.07435099283854167,
+      "class_histograms": [
+        [
+          89310,
+          110770,
+          0,
+          213435,
+          141071,
+          0,
+          142767,
+          89079
+        ],
+        [
+          92930,
+          82764,
+          0,
+          161606,
+          147798,
+          0,
+          147050,
+          154284
+        ],
+        [
+          115504,
+          313236,
+          0,
+          103497,
+          152266,
+          0,
+          47950,
+          53979
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0803",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 639074,
+      "all_eight_same_order_packets": 40368,
+      "same_order_pixel_fraction": 0.8126246134440104,
+      "same_order_packet_fraction": 0.41064453125,
+      "class_histograms": [
+        [
+          136050,
+          155323,
+          0,
+          122454,
+          128392,
+          0,
+          126227,
+          117986
+        ],
+        [
+          152984,
+          145826,
+          0,
+          122374,
+          123898,
+          0,
+          126236,
+          115114
+        ],
+        [
+          143716,
+          160538,
+          0,
+          129237,
+          115571,
+          0,
+          117615,
+          119755
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0804",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 525990,
+      "all_eight_same_order_packets": 27214,
+      "same_order_pixel_fraction": 0.6688308715820312,
+      "same_order_packet_fraction": 0.2768351236979167,
+      "class_histograms": [
+        [
+          108572,
+          139922,
+          0,
+          118454,
+          95249,
+          0,
+          180092,
+          144143
+        ],
+        [
+          124200,
+          130321,
+          0,
+          123514,
+          113919,
+          0,
+          155250,
+          139228
+        ],
+        [
+          100926,
+          174218,
+          0,
+          152103,
+          90501,
+          0,
+          128443,
+          140241
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0805",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 543784,
+      "all_eight_same_order_packets": 33626,
+      "same_order_pixel_fraction": 0.6914571126302084,
+      "same_order_packet_fraction": 0.3420613606770833,
+      "class_histograms": [
+        [
+          151027,
+          137451,
+          0,
+          116994,
+          103825,
+          0,
+          149540,
+          127595
+        ],
+        [
+          171325,
+          119115,
+          0,
+          102192,
+          131529,
+          0,
+          156780,
+          105491
+        ],
+        [
+          147747,
+          175692,
+          0,
+          110727,
+          94307,
+          0,
+          123830,
+          134129
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0806",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 569886,
+      "all_eight_same_order_packets": 38778,
+      "same_order_pixel_fraction": 0.7246475219726562,
+      "same_order_packet_fraction": 0.39447021484375,
+      "class_histograms": [
+        [
+          122890,
+          124353,
+          0,
+          153931,
+          106132,
+          0,
+          142184,
+          136942
+        ],
+        [
+          121463,
+          112377,
+          0,
+          139908,
+          126147,
+          0,
+          149913,
+          136624
+        ],
+        [
+          123917,
+          144396,
+          0,
+          153728,
+          96804,
+          0,
+          125613,
+          141974
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0807",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 559758,
+      "all_eight_same_order_packets": 19324,
+      "same_order_pixel_fraction": 0.7117691040039062,
+      "same_order_packet_fraction": 0.19657389322916666,
+      "class_histograms": [
+        [
+          120354,
+          136776,
+          0,
+          149741,
+          111410,
+          0,
+          143959,
+          124192
+        ],
+        [
+          127053,
+          132075,
+          0,
+          130233,
+          107542,
+          0,
+          130903,
+          158626
+        ],
+        [
+          112650,
+          219600,
+          0,
+          130529,
+          104275,
+          0,
+          101101,
+          118277
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0808",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 583654,
+      "all_eight_same_order_packets": 34984,
+      "same_order_pixel_fraction": 0.7421544392903646,
+      "same_order_packet_fraction": 0.3558756510416667,
+      "class_histograms": [
+        [
+          103414,
+          114764,
+          0,
+          115481,
+          118230,
+          0,
+          178612,
+          155931
+        ],
+        [
+          116755,
+          125207,
+          0,
+          125653,
+          99159,
+          0,
+          173889,
+          145769
+        ],
+        [
+          98693,
+          181678,
+          0,
+          131590,
+          92132,
+          0,
+          153613,
+          128726
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0810",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 703200,
+      "all_eight_same_order_packets": 59561,
+      "same_order_pixel_fraction": 0.8941650390625,
+      "same_order_packet_fraction": 0.6058858235677084,
+      "class_histograms": [
+        [
+          125434,
+          137316,
+          0,
+          130392,
+          133526,
+          0,
+          128185,
+          131579
+        ],
+        [
+          137147,
+          138099,
+          0,
+          128604,
+          122829,
+          0,
+          132031,
+          127722
+        ],
+        [
+          123938,
+          159288,
+          0,
+          130970,
+          120105,
+          0,
+          123469,
+          128662
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0811",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 445442,
+      "all_eight_same_order_packets": 19986,
+      "same_order_pixel_fraction": 0.5664087931315104,
+      "same_order_packet_fraction": 0.20330810546875,
+      "class_histograms": [
+        [
+          136504,
+          118472,
+          0,
+          116652,
+          176606,
+          0,
+          146690,
+          91508
+        ],
+        [
+          135738,
+          192659,
+          0,
+          98635,
+          87930,
+          0,
+          130514,
+          140956
+        ],
+        [
+          91921,
+          314978,
+          0,
+          104383,
+          103567,
+          0,
+          80375,
+          91208
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0812",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 557585,
+      "all_eight_same_order_packets": 41575,
+      "same_order_pixel_fraction": 0.7090059916178385,
+      "same_order_packet_fraction": 0.4229227701822917,
+      "class_histograms": [
+        [
+          117747,
+          138260,
+          0,
+          111843,
+          147675,
+          0,
+          130595,
+          140312
+        ],
+        [
+          141987,
+          134694,
+          0,
+          103848,
+          146355,
+          0,
+          136462,
+          123086
+        ],
+        [
+          109316,
+          179831,
+          0,
+          112480,
+          117433,
+          0,
+          131729,
+          135643
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0813",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 411523,
+      "all_eight_same_order_packets": 23933,
+      "same_order_pixel_fraction": 0.523278554280599,
+      "same_order_packet_fraction": 0.24345906575520834,
+      "class_histograms": [
+        [
+          147225,
+          104912,
+          0,
+          124251,
+          129746,
+          0,
+          182094,
+          98204
+        ],
+        [
+          119990,
+          161731,
+          0,
+          76261,
+          153858,
+          0,
+          152305,
+          122287
+        ],
+        [
+          118183,
+          272910,
+          0,
+          91734,
+          76062,
+          0,
+          110944,
+          116599
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0814",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 728067,
+      "all_eight_same_order_packets": 72400,
+      "same_order_pixel_fraction": 0.9257850646972656,
+      "same_order_packet_fraction": 0.7364908854166666,
+      "class_histograms": [
+        [
+          215349,
+          83717,
+          0,
+          143577,
+          116712,
+          0,
+          142112,
+          84965
+        ],
+        [
+          211792,
+          81326,
+          0,
+          142936,
+          119258,
+          0,
+          148110,
+          83010
+        ],
+        [
+          213147,
+          90447,
+          0,
+          143147,
+          116590,
+          0,
+          138815,
+          84286
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0815",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 660872,
+      "all_eight_same_order_packets": 49501,
+      "same_order_pixel_fraction": 0.8403422037760416,
+      "same_order_packet_fraction": 0.5035502115885416,
+      "class_histograms": [
+        [
+          129917,
+          139555,
+          0,
+          131797,
+          140090,
+          0,
+          126514,
+          118559
+        ],
+        [
+          138060,
+          150261,
+          0,
+          133298,
+          122006,
+          0,
+          119896,
+          122911
+        ],
+        [
+          132348,
+          170926,
+          0,
+          136230,
+          120758,
+          0,
+          109847,
+          116323
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0816",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 624856,
+      "all_eight_same_order_packets": 49994,
+      "same_order_pixel_fraction": 0.7945454915364584,
+      "same_order_packet_fraction": 0.5085652669270834,
+      "class_histograms": [
+        [
+          138724,
+          132492,
+          0,
+          114544,
+          120609,
+          0,
+          150364,
+          129699
+        ],
+        [
+          139014,
+          136189,
+          0,
+          115814,
+          145495,
+          0,
+          139131,
+          110789
+        ],
+        [
+          153633,
+          151044,
+          0,
+          133778,
+          114416,
+          0,
+          108624,
+          124937
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0817",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 563529,
+      "all_eight_same_order_packets": 30739,
+      "same_order_pixel_fraction": 0.7165641784667969,
+      "same_order_packet_fraction": 0.3126932779947917,
+      "class_histograms": [
+        [
+          96821,
+          136571,
+          0,
+          110862,
+          143407,
+          0,
+          143342,
+          155429
+        ],
+        [
+          113543,
+          155656,
+          0,
+          120075,
+          105336,
+          0,
+          148484,
+          143338
+        ],
+        [
+          95774,
+          183885,
+          0,
+          116055,
+          96331,
+          0,
+          135680,
+          158707
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0818",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 428486,
+      "all_eight_same_order_packets": 19463,
+      "same_order_pixel_fraction": 0.5448481241861979,
+      "same_order_packet_fraction": 0.19798787434895834,
+      "class_histograms": [
+        [
+          133864,
+          126946,
+          0,
+          137794,
+          124607,
+          0,
+          165466,
+          97755
+        ],
+        [
+          153771,
+          119590,
+          0,
+          98015,
+          135173,
+          0,
+          167855,
+          112028
+        ],
+        [
+          136409,
+          210862,
+          0,
+          112219,
+          87201,
+          0,
+          133195,
+          106546
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0820",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 506496,
+      "all_eight_same_order_packets": 24599,
+      "same_order_pixel_fraction": 0.64404296875,
+      "same_order_packet_fraction": 0.2502339680989583,
+      "class_histograms": [
+        [
+          118592,
+          108421,
+          0,
+          113381,
+          124361,
+          0,
+          224930,
+          96747
+        ],
+        [
+          125061,
+          140432,
+          0,
+          113721,
+          151771,
+          0,
+          164942,
+          90505
+        ],
+        [
+          161423,
+          200534,
+          0,
+          121271,
+          84204,
+          0,
+          108684,
+          110316
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0822",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 530289,
+      "all_eight_same_order_packets": 24789,
+      "same_order_pixel_fraction": 0.6742973327636719,
+      "same_order_packet_fraction": 0.252166748046875,
+      "class_histograms": [
+        [
+          117578,
+          150689,
+          0,
+          132720,
+          152385,
+          0,
+          147167,
+          85893
+        ],
+        [
+          125554,
+          160974,
+          0,
+          110420,
+          124644,
+          0,
+          133444,
+          131396
+        ],
+        [
+          113380,
+          285073,
+          0,
+          112426,
+          124670,
+          0,
+          78215,
+          72668
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0823",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 495832,
+      "all_eight_same_order_packets": 22285,
+      "same_order_pixel_fraction": 0.6304829915364584,
+      "same_order_packet_fraction": 0.22669474283854166,
+      "class_histograms": [
+        [
+          88504,
+          110809,
+          0,
+          123680,
+          123150,
+          0,
+          134605,
+          205684
+        ],
+        [
+          88201,
+          103452,
+          0,
+          108346,
+          118047,
+          0,
+          173838,
+          194548
+        ],
+        [
+          111362,
+          165025,
+          0,
+          154638,
+          91961,
+          0,
+          115762,
+          147684
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0824",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 570695,
+      "all_eight_same_order_packets": 35381,
+      "same_order_pixel_fraction": 0.7256762186686198,
+      "same_order_packet_fraction": 0.3599141438802083,
+      "class_histograms": [
+        [
+          139121,
+          115929,
+          0,
+          128527,
+          113285,
+          0,
+          160011,
+          129559
+        ],
+        [
+          110238,
+          132260,
+          0,
+          133225,
+          115981,
+          0,
+          161838,
+          132890
+        ],
+        [
+          125742,
+          155800,
+          0,
+          150563,
+          102574,
+          0,
+          128912,
+          122841
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0825",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 545187,
+      "all_eight_same_order_packets": 34431,
+      "same_order_pixel_fraction": 0.6932411193847656,
+      "same_order_packet_fraction": 0.350250244140625,
+      "class_histograms": [
+        [
+          117460,
+          138074,
+          0,
+          113511,
+          151828,
+          0,
+          131427,
+          134132
+        ],
+        [
+          159700,
+          135779,
+          0,
+          110880,
+          129287,
+          0,
+          142390,
+          108396
+        ],
+        [
+          134626,
+          182438,
+          0,
+          124918,
+          106999,
+          0,
+          121653,
+          115798
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0826",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 492480,
+      "all_eight_same_order_packets": 27740,
+      "same_order_pixel_fraction": 0.626220703125,
+      "same_order_packet_fraction": 0.2821858723958333,
+      "class_histograms": [
+        [
+          117825,
+          110792,
+          0,
+          121572,
+          132205,
+          0,
+          162972,
+          141066
+        ],
+        [
+          137546,
+          110539,
+          0,
+          94723,
+          128384,
+          0,
+          158647,
+          156593
+        ],
+        [
+          155913,
+          183135,
+          0,
+          121383,
+          92176,
+          0,
+          111692,
+          122133
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0827",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 279476,
+      "all_eight_same_order_packets": 14875,
+      "same_order_pixel_fraction": 0.3553721110026042,
+      "same_order_packet_fraction": 0.15131632486979166,
+      "class_histograms": [
+        [
+          109744,
+          52696,
+          0,
+          65954,
+          314208,
+          0,
+          165744,
+          78086
+        ],
+        [
+          94858,
+          315353,
+          0,
+          62669,
+          52240,
+          0,
+          140293,
+          121019
+        ],
+        [
+          56222,
+          480632,
+          0,
+          68368,
+          53963,
+          0,
+          51400,
+          75847
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0829",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 634972,
+      "all_eight_same_order_packets": 44568,
+      "same_order_pixel_fraction": 0.8074086507161459,
+      "same_order_packet_fraction": 0.453369140625,
+      "class_histograms": [
+        [
+          133596,
+          145198,
+          0,
+          125596,
+          150815,
+          0,
+          114190,
+          117037
+        ],
+        [
+          164821,
+          145394,
+          0,
+          133638,
+          121237,
+          0,
+          113162,
+          108180
+        ],
+        [
+          147567,
+          172944,
+          0,
+          139727,
+          126744,
+          0,
+          96975,
+          102475
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0830",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 622177,
+      "all_eight_same_order_packets": 38976,
+      "same_order_pixel_fraction": 0.7911389668782552,
+      "same_order_packet_fraction": 0.396484375,
+      "class_histograms": [
+        [
+          114391,
+          135900,
+          0,
+          142294,
+          142665,
+          0,
+          124211,
+          126971
+        ],
+        [
+          127115,
+          126149,
+          0,
+          144649,
+          135139,
+          0,
+          133030,
+          120350
+        ],
+        [
+          107538,
+          138241,
+          0,
+          146093,
+          135772,
+          0,
+          124659,
+          134129
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0831",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 534300,
+      "all_eight_same_order_packets": 35525,
+      "same_order_pixel_fraction": 0.6793975830078125,
+      "same_order_packet_fraction": 0.3613789876302083,
+      "class_histograms": [
+        [
+          129468,
+          110870,
+          0,
+          148363,
+          155423,
+          0,
+          133793,
+          108515
+        ],
+        [
+          140557,
+          136693,
+          0,
+          107937,
+          113511,
+          0,
+          127911,
+          159823
+        ],
+        [
+          141212,
+          247050,
+          0,
+          125357,
+          101621,
+          0,
+          85991,
+          85201
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0832",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 550838,
+      "all_eight_same_order_packets": 34856,
+      "same_order_pixel_fraction": 0.7004267374674479,
+      "same_order_packet_fraction": 0.3545735677083333,
+      "class_histograms": [
+        [
+          133258,
+          119456,
+          0,
+          108703,
+          165726,
+          0,
+          161764,
+          97525
+        ],
+        [
+          145552,
+          165310,
+          0,
+          112581,
+          113414,
+          0,
+          142313,
+          107262
+        ],
+        [
+          121117,
+          240822,
+          0,
+          117872,
+          106765,
+          0,
+          92247,
+          107609
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0833",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 309747,
+      "all_eight_same_order_packets": 17629,
+      "same_order_pixel_fraction": 0.3938636779785156,
+      "same_order_packet_fraction": 0.17933146158854166,
+      "class_histograms": [
+        [
+          105177,
+          143697,
+          0,
+          136867,
+          92394,
+          0,
+          161889,
+          146408
+        ],
+        [
+          175333,
+          111099,
+          0,
+          70072,
+          150445,
+          0,
+          202515,
+          76968
+        ],
+        [
+          111885,
+          193727,
+          0,
+          85157,
+          82220,
+          0,
+          182137,
+          131306
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0834",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 567448,
+      "all_eight_same_order_packets": 40195,
+      "same_order_pixel_fraction": 0.7215474446614584,
+      "same_order_packet_fraction": 0.4088846842447917,
+      "class_histograms": [
+        [
+          106622,
+          80870,
+          0,
+          94560,
+          105521,
+          0,
+          255851,
+          143008
+        ],
+        [
+          120901,
+          105827,
+          0,
+          102725,
+          72772,
+          0,
+          237513,
+          146694
+        ],
+        [
+          107087,
+          126647,
+          0,
+          103330,
+          67267,
+          0,
+          169960,
+          212141
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0835",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 618493,
+      "all_eight_same_order_packets": 34625,
+      "same_order_pixel_fraction": 0.7864545186360677,
+      "same_order_packet_fraction": 0.3522237141927083,
+      "class_histograms": [
+        [
+          113729,
+          130590,
+          0,
+          143394,
+          128065,
+          0,
+          140440,
+          130214
+        ],
+        [
+          121769,
+          150398,
+          0,
+          136402,
+          110794,
+          0,
+          135645,
+          131424
+        ],
+        [
+          117664,
+          186387,
+          0,
+          141696,
+          101732,
+          0,
+          122472,
+          116481
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0836",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 503931,
+      "all_eight_same_order_packets": 30707,
+      "same_order_pixel_fraction": 0.6407814025878906,
+      "same_order_packet_fraction": 0.3123677571614583,
+      "class_histograms": [
+        [
+          176374,
+          189150,
+          0,
+          88345,
+          106377,
+          0,
+          120294,
+          105892
+        ],
+        [
+          132405,
+          174386,
+          0,
+          82258,
+          125250,
+          0,
+          169598,
+          102535
+        ],
+        [
+          116109,
+          262355,
+          0,
+          118687,
+          85093,
+          0,
+          98297,
+          105891
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0837",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 505714,
+      "all_eight_same_order_packets": 28006,
+      "same_order_pixel_fraction": 0.6430486043294271,
+      "same_order_packet_fraction": 0.2848917643229167,
+      "class_histograms": [
+        [
+          127255,
+          112074,
+          0,
+          141009,
+          151371,
+          0,
+          131153,
+          123570
+        ],
+        [
+          144286,
+          117554,
+          0,
+          108438,
+          125012,
+          0,
+          130200,
+          160942
+        ],
+        [
+          145283,
+          229512,
+          0,
+          136726,
+          99028,
+          0,
+          84398,
+          91485
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0841",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 473454,
+      "all_eight_same_order_packets": 29967,
+      "same_order_pixel_fraction": 0.6020278930664062,
+      "same_order_packet_fraction": 0.304840087890625,
+      "class_histograms": [
+        [
+          98145,
+          103781,
+          0,
+          81404,
+          315325,
+          0,
+          72498,
+          115279
+        ],
+        [
+          154562,
+          267908,
+          0,
+          125491,
+          94927,
+          0,
+          72796,
+          70748
+        ],
+        [
+          123037,
+          277510,
+          0,
+          133244,
+          99128,
+          0,
+          73672,
+          79841
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0842",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 394708,
+      "all_eight_same_order_packets": 23727,
+      "same_order_pixel_fraction": 0.5018971761067709,
+      "same_order_packet_fraction": 0.241363525390625,
+      "class_histograms": [
+        [
+          136336,
+          134882,
+          0,
+          102285,
+          106179,
+          0,
+          186140,
+          120610
+        ],
+        [
+          128038,
+          160381,
+          0,
+          88601,
+          133547,
+          0,
+          208402,
+          67463
+        ],
+        [
+          98645,
+          247981,
+          0,
+          91635,
+          65942,
+          0,
+          146521,
+          135708
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0843",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 95669,
+      "all_eight_same_order_packets": 6093,
+      "same_order_pixel_fraction": 0.12164942423502605,
+      "same_order_packet_fraction": 0.061981201171875,
+      "class_histograms": [
+        [
+          20869,
+          23225,
+          0,
+          18081,
+          681386,
+          0,
+          20447,
+          22424
+        ],
+        [
+          28240,
+          677449,
+          0,
+          20252,
+          20219,
+          0,
+          21996,
+          18276
+        ],
+        [
+          20772,
+          682203,
+          0,
+          21781,
+          18812,
+          0,
+          20058,
+          22806
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0844",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 265099,
+      "all_eight_same_order_packets": 10427,
+      "same_order_pixel_fraction": 0.33709081013997394,
+      "same_order_packet_fraction": 0.10606892903645833,
+      "class_histograms": [
+        [
+          37695,
+          102438,
+          0,
+          79666,
+          312285,
+          0,
+          121186,
+          133162
+        ],
+        [
+          187838,
+          172993,
+          0,
+          42081,
+          211485,
+          0,
+          60392,
+          111643
+        ],
+        [
+          211922,
+          256869,
+          0,
+          117099,
+          78714,
+          0,
+          49880,
+          71948
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0845",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 321118,
+      "all_eight_same_order_packets": 12365,
+      "same_order_pixel_fraction": 0.40832265218098956,
+      "same_order_packet_fraction": 0.12578328450520834,
+      "class_histograms": [
+        [
+          104264,
+          124049,
+          0,
+          102788,
+          99012,
+          0,
+          261368,
+          94951
+        ],
+        [
+          90671,
+          139680,
+          0,
+          58279,
+          80014,
+          0,
+          264761,
+          153027
+        ],
+        [
+          76223,
+          431241,
+          0,
+          101615,
+          50185,
+          0,
+          64411,
+          62757
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0846",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 492118,
+      "all_eight_same_order_packets": 35261,
+      "same_order_pixel_fraction": 0.6257603963216146,
+      "same_order_packet_fraction": 0.3586934407552083,
+      "class_histograms": [
+        [
+          233019,
+          80895,
+          0,
+          89764,
+          88678,
+          0,
+          219110,
+          74966
+        ],
+        [
+          234047,
+          105530,
+          0,
+          67164,
+          89691,
+          0,
+          188101,
+          101899
+        ],
+        [
+          244269,
+          221879,
+          0,
+          91243,
+          55420,
+          0,
+          75878,
+          97743
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0847",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 480245,
+      "all_eight_same_order_packets": 23882,
+      "same_order_pixel_fraction": 0.610663096110026,
+      "same_order_packet_fraction": 0.24294026692708334,
+      "class_histograms": [
+        [
+          124583,
+          115595,
+          0,
+          121147,
+          186543,
+          0,
+          133046,
+          105518
+        ],
+        [
+          130714,
+          136243,
+          0,
+          91039,
+          166275,
+          0,
+          131719,
+          130442
+        ],
+        [
+          162311,
+          225575,
+          0,
+          104315,
+          90557,
+          0,
+          103832,
+          99842
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0848",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 467426,
+      "all_eight_same_order_packets": 22767,
+      "same_order_pixel_fraction": 0.5943628946940104,
+      "same_order_packet_fraction": 0.231597900390625,
+      "class_histograms": [
+        [
+          110646,
+          128138,
+          0,
+          149095,
+          136724,
+          0,
+          125014,
+          136815
+        ],
+        [
+          146575,
+          126944,
+          0,
+          92186,
+          122053,
+          0,
+          130680,
+          167994
+        ],
+        [
+          123349,
+          220090,
+          0,
+          147818,
+          95141,
+          0,
+          103704,
+          96330
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0849",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 496969,
+      "all_eight_same_order_packets": 13523,
+      "same_order_pixel_fraction": 0.6319287618001302,
+      "same_order_packet_fraction": 0.13756306966145834,
+      "class_histograms": [
+        [
+          160024,
+          129462,
+          0,
+          114342,
+          129987,
+          0,
+          169408,
+          83209
+        ],
+        [
+          160444,
+          131152,
+          0,
+          110853,
+          118563,
+          0,
+          163329,
+          102091
+        ],
+        [
+          146906,
+          228684,
+          0,
+          129283,
+          116521,
+          0,
+          72263,
+          92775
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0850",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 592735,
+      "all_eight_same_order_packets": 47105,
+      "same_order_pixel_fraction": 0.7537015279134115,
+      "same_order_packet_fraction": 0.4791768391927083,
+      "class_histograms": [
+        [
+          123345,
+          119804,
+          0,
+          134399,
+          144779,
+          0,
+          134490,
+          129615
+        ],
+        [
+          119851,
+          162583,
+          0,
+          108159,
+          124243,
+          0,
+          126066,
+          145530
+        ],
+        [
+          120307,
+          221334,
+          0,
+          121569,
+          104432,
+          0,
+          101214,
+          117576
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0851",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 580570,
+      "all_eight_same_order_packets": 25984,
+      "same_order_pixel_fraction": 0.7382329305013021,
+      "same_order_packet_fraction": 0.2643229166666667,
+      "class_histograms": [
+        [
+          61865,
+          104504,
+          0,
+          213959,
+          66257,
+          0,
+          129044,
+          210803
+        ],
+        [
+          63305,
+          108464,
+          0,
+          195438,
+          59360,
+          0,
+          128057,
+          231808
+        ],
+        [
+          59265,
+          162052,
+          0,
+          199624,
+          50853,
+          0,
+          119317,
+          195321
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0853",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 362866,
+      "all_eight_same_order_packets": 21302,
+      "same_order_pixel_fraction": 0.46140797932942706,
+      "same_order_packet_fraction": 0.21669514973958334,
+      "class_histograms": [
+        [
+          75056,
+          87321,
+          0,
+          88721,
+          274402,
+          0,
+          148399,
+          112533
+        ],
+        [
+          213549,
+          149884,
+          0,
+          66973,
+          77914,
+          0,
+          151826,
+          126286
+        ],
+        [
+          76690,
+          424448,
+          0,
+          81493,
+          71979,
+          0,
+          71092,
+          60730
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0854",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 562666,
+      "all_eight_same_order_packets": 25621,
+      "same_order_pixel_fraction": 0.7154668172200521,
+      "same_order_packet_fraction": 0.2606302897135417,
+      "class_histograms": [
+        [
+          121898,
+          144239,
+          0,
+          138264,
+          144739,
+          0,
+          123200,
+          114092
+        ],
+        [
+          152832,
+          127670,
+          0,
+          130334,
+          136714,
+          0,
+          133258,
+          105624
+        ],
+        [
+          135456,
+          150824,
+          0,
+          143214,
+          116560,
+          0,
+          139934,
+          100444
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0855",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 572669,
+      "all_eight_same_order_packets": 41737,
+      "same_order_pixel_fraction": 0.728186289469401,
+      "same_order_packet_fraction": 0.4245707194010417,
+      "class_histograms": [
+        [
+          114964,
+          109495,
+          0,
+          137516,
+          135235,
+          0,
+          160107,
+          129115
+        ],
+        [
+          133443,
+          105541,
+          0,
+          114374,
+          122351,
+          0,
+          158841,
+          151882
+        ],
+        [
+          115211,
+          191457,
+          0,
+          134075,
+          103787,
+          0,
+          135452,
+          106450
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0857",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 693271,
+      "all_eight_same_order_packets": 57018,
+      "same_order_pixel_fraction": 0.8815396626790365,
+      "same_order_packet_fraction": 0.58001708984375,
+      "class_histograms": [
+        [
+          122425,
+          127753,
+          0,
+          131354,
+          126851,
+          0,
+          144342,
+          133707
+        ],
+        [
+          121378,
+          119620,
+          0,
+          133046,
+          129781,
+          0,
+          148408,
+          134199
+        ],
+        [
+          115308,
+          118603,
+          0,
+          133214,
+          126978,
+          0,
+          148294,
+          144035
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0860",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 514758,
+      "all_eight_same_order_packets": 19378,
+      "same_order_pixel_fraction": 0.6545486450195312,
+      "same_order_packet_fraction": 0.19712320963541666,
+      "class_histograms": [
+        [
+          135654,
+          115294,
+          0,
+          135361,
+          143937,
+          0,
+          157554,
+          98632
+        ],
+        [
+          124518,
+          146532,
+          0,
+          113739,
+          110528,
+          0,
+          147067,
+          144048
+        ],
+        [
+          116911,
+          267572,
+          0,
+          112126,
+          106758,
+          0,
+          89438,
+          93627
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0861",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 260118,
+      "all_eight_same_order_packets": 7532,
+      "same_order_pixel_fraction": 0.33075714111328125,
+      "same_order_packet_fraction": 0.07661946614583333,
+      "class_histograms": [
+        [
+          64594,
+          59753,
+          0,
+          329056,
+          97734,
+          0,
+          154170,
+          81125
+        ],
+        [
+          82750,
+          80811,
+          0,
+          50219,
+          55094,
+          0,
+          164619,
+          352939
+        ],
+        [
+          55477,
+          511709,
+          0,
+          64793,
+          54576,
+          0,
+          53513,
+          46364
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0862",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 612374,
+      "all_eight_same_order_packets": 42387,
+      "same_order_pixel_fraction": 0.7786738077799479,
+      "same_order_packet_fraction": 0.431182861328125,
+      "class_histograms": [
+        [
+          127804,
+          114599,
+          0,
+          162162,
+          134677,
+          0,
+          120967,
+          126223
+        ],
+        [
+          117560,
+          102655,
+          0,
+          140637,
+          143437,
+          0,
+          139174,
+          142969
+        ],
+        [
+          137278,
+          111510,
+          0,
+          168071,
+          132789,
+          0,
+          120990,
+          115794
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0864",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 660304,
+      "all_eight_same_order_packets": 55169,
+      "same_order_pixel_fraction": 0.8396199544270834,
+      "same_order_packet_fraction": 0.5612080891927084,
+      "class_histograms": [
+        [
+          132678,
+          119933,
+          0,
+          131690,
+          160229,
+          0,
+          128521,
+          113381
+        ],
+        [
+          138240,
+          169002,
+          0,
+          132209,
+          103615,
+          0,
+          130395,
+          112971
+        ],
+        [
+          123047,
+          195906,
+          0,
+          132243,
+          104722,
+          0,
+          124735,
+          105779
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0865",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 642479,
+      "all_eight_same_order_packets": 48657,
+      "same_order_pixel_fraction": 0.8169542948404948,
+      "same_order_packet_fraction": 0.494964599609375,
+      "class_histograms": [
+        [
+          133981,
+          133834,
+          0,
+          137576,
+          126414,
+          0,
+          122811,
+          131816
+        ],
+        [
+          143663,
+          122731,
+          0,
+          131708,
+          130204,
+          0,
+          141173,
+          116953
+        ],
+        [
+          129438,
+          127903,
+          0,
+          143830,
+          122836,
+          0,
+          131655,
+          130770
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0867",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 613178,
+      "all_eight_same_order_packets": 37534,
+      "same_order_pixel_fraction": 0.7796961466471354,
+      "same_order_packet_fraction": 0.3818155924479167,
+      "class_histograms": [
+        [
+          119733,
+          145155,
+          0,
+          117929,
+          156247,
+          0,
+          117730,
+          129638
+        ],
+        [
+          161206,
+          145722,
+          0,
+          119961,
+          122081,
+          0,
+          122438,
+          115024
+        ],
+        [
+          140457,
+          182117,
+          0,
+          131252,
+          116279,
+          0,
+          109918,
+          106409
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0868",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 83432,
+      "all_eight_same_order_packets": 3025,
+      "same_order_pixel_fraction": 0.10608927408854167,
+      "same_order_packet_fraction": 0.030771891276041668,
+      "class_histograms": [
+        [
+          18416,
+          21278,
+          0,
+          637412,
+          39899,
+          0,
+          40401,
+          29026
+        ],
+        [
+          36492,
+          640320,
+          0,
+          28310,
+          48743,
+          0,
+          18375,
+          14192
+        ],
+        [
+          31105,
+          28993,
+          0,
+          30405,
+          660489,
+          0,
+          16773,
+          18667
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0869",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 578797,
+      "all_eight_same_order_packets": 38951,
+      "same_order_pixel_fraction": 0.7359784444173177,
+      "same_order_packet_fraction": 0.3962300618489583,
+      "class_histograms": [
+        [
+          130257,
+          138681,
+          0,
+          115778,
+          136655,
+          0,
+          135156,
+          129905
+        ],
+        [
+          151961,
+          144887,
+          0,
+          110720,
+          130859,
+          0,
+          131663,
+          116342
+        ],
+        [
+          128690,
+          194537,
+          0,
+          129948,
+          103235,
+          0,
+          115934,
+          114088
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0871",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 646036,
+      "all_eight_same_order_packets": 51291,
+      "same_order_pixel_fraction": 0.8214772542317709,
+      "same_order_packet_fraction": 0.521759033203125,
+      "class_histograms": [
+        [
+          136480,
+          140919,
+          0,
+          120886,
+          124814,
+          0,
+          138762,
+          124571
+        ],
+        [
+          137597,
+          140818,
+          0,
+          116315,
+          139526,
+          0,
+          141298,
+          110878
+        ],
+        [
+          123110,
+          138844,
+          0,
+          121111,
+          117595,
+          0,
+          158632,
+          127140
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0872",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 599826,
+      "all_eight_same_order_packets": 35461,
+      "same_order_pixel_fraction": 0.7627182006835938,
+      "same_order_packet_fraction": 0.3607279459635417,
+      "class_histograms": [
+        [
+          127926,
+          147391,
+          0,
+          117309,
+          124511,
+          0,
+          144150,
+          125145
+        ],
+        [
+          135858,
+          147848,
+          0,
+          117350,
+          137694,
+          0,
+          141374,
+          106308
+        ],
+        [
+          125252,
+          164274,
+          0,
+          130231,
+          103950,
+          0,
+          133432,
+          129293
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0873",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 637447,
+      "all_eight_same_order_packets": 42944,
+      "same_order_pixel_fraction": 0.8105557759602865,
+      "same_order_packet_fraction": 0.4368489583333333,
+      "class_histograms": [
+        [
+          118646,
+          121213,
+          0,
+          130059,
+          142741,
+          0,
+          132473,
+          141300
+        ],
+        [
+          119256,
+          131193,
+          0,
+          133103,
+          122414,
+          0,
+          136043,
+          144423
+        ],
+        [
+          125362,
+          148572,
+          0,
+          136275,
+          115004,
+          0,
+          121014,
+          140205
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0875",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 578987,
+      "all_eight_same_order_packets": 32569,
+      "same_order_pixel_fraction": 0.7362200419108073,
+      "same_order_packet_fraction": 0.3313090006510417,
+      "class_histograms": [
+        [
+          129965,
+          124398,
+          0,
+          143524,
+          136677,
+          0,
+          122133,
+          129735
+        ],
+        [
+          141532,
+          139196,
+          0,
+          119337,
+          110160,
+          0,
+          123733,
+          152474
+        ],
+        [
+          125609,
+          229573,
+          0,
+          131490,
+          111372,
+          0,
+          95063,
+          93325
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0876",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 447701,
+      "all_eight_same_order_packets": 15376,
+      "same_order_pixel_fraction": 0.569281260172526,
+      "same_order_packet_fraction": 0.15641276041666666,
+      "class_histograms": [
+        [
+          145978,
+          112474,
+          0,
+          191857,
+          132520,
+          0,
+          133002,
+          70601
+        ],
+        [
+          141786,
+          137475,
+          0,
+          88745,
+          94365,
+          0,
+          100869,
+          223192
+        ],
+        [
+          114545,
+          359374,
+          0,
+          103446,
+          86365,
+          0,
+          63640,
+          59062
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0877",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 688567,
+      "all_eight_same_order_packets": 47017,
+      "same_order_pixel_fraction": 0.8755582173665365,
+      "same_order_packet_fraction": 0.4782816569010417,
+      "class_histograms": [
+        [
+          96263,
+          118693,
+          0,
+          97386,
+          360981,
+          0,
+          56648,
+          56461
+        ],
+        [
+          94631,
+          130001,
+          0,
+          100583,
+          332393,
+          0,
+          59876,
+          68948
+        ],
+        [
+          110472,
+          120985,
+          0,
+          98186,
+          339425,
+          0,
+          62758,
+          54606
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0878",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 573339,
+      "all_eight_same_order_packets": 40516,
+      "same_order_pixel_fraction": 0.7290382385253906,
+      "same_order_packet_fraction": 0.4121500651041667,
+      "class_histograms": [
+        [
+          116298,
+          149525,
+          0,
+          114910,
+          127413,
+          0,
+          139381,
+          138905
+        ],
+        [
+          149578,
+          125629,
+          0,
+          108434,
+          140391,
+          0,
+          156635,
+          105765
+        ],
+        [
+          111840,
+          162573,
+          0,
+          119117,
+          113212,
+          0,
+          137811,
+          141879
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0879",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 568908,
+      "all_eight_same_order_packets": 31916,
+      "same_order_pixel_fraction": 0.7234039306640625,
+      "same_order_packet_fraction": 0.3246663411458333,
+      "class_histograms": [
+        [
+          116383,
+          150617,
+          0,
+          136823,
+          105425,
+          0,
+          130518,
+          146666
+        ],
+        [
+          111830,
+          143279,
+          0,
+          148247,
+          102117,
+          0,
+          143325,
+          137634
+        ],
+        [
+          89921,
+          182617,
+          0,
+          142851,
+          84292,
+          0,
+          146781,
+          139970
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0880",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 685231,
+      "all_eight_same_order_packets": 62663,
+      "same_order_pixel_fraction": 0.8713162740071615,
+      "same_order_packet_fraction": 0.6374409993489584,
+      "class_histograms": [
+        [
+          123922,
+          125602,
+          0,
+          142093,
+          135709,
+          0,
+          133100,
+          126006
+        ],
+        [
+          136164,
+          122811,
+          0,
+          141066,
+          129628,
+          0,
+          135658,
+          121105
+        ],
+        [
+          117268,
+          122944,
+          0,
+          148683,
+          130449,
+          0,
+          140096,
+          126992
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0881",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 621022,
+      "all_eight_same_order_packets": 50908,
+      "same_order_pixel_fraction": 0.7896703084309896,
+      "same_order_packet_fraction": 0.5178629557291666,
+      "class_histograms": [
+        [
+          128862,
+          141009,
+          0,
+          128359,
+          117649,
+          0,
+          132597,
+          137956
+        ],
+        [
+          138625,
+          126013,
+          0,
+          124732,
+          129869,
+          0,
+          156821,
+          110372
+        ],
+        [
+          116628,
+          141831,
+          0,
+          131844,
+          117661,
+          0,
+          145487,
+          132981
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0882",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 536017,
+      "all_eight_same_order_packets": 32181,
+      "same_order_pixel_fraction": 0.6815808614095052,
+      "same_order_packet_fraction": 0.327362060546875,
+      "class_histograms": [
+        [
+          111688,
+          125454,
+          0,
+          138891,
+          139165,
+          0,
+          148880,
+          122354
+        ],
+        [
+          129488,
+          149548,
+          0,
+          116017,
+          121993,
+          0,
+          146891,
+          122495
+        ],
+        [
+          119225,
+          208625,
+          0,
+          125699,
+          110116,
+          0,
+          116553,
+          106214
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0883",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 615507,
+      "all_eight_same_order_packets": 39571,
+      "same_order_pixel_fraction": 0.7826576232910156,
+      "same_order_packet_fraction": 0.4025370279947917,
+      "class_histograms": [
+        [
+          126285,
+          135005,
+          0,
+          131650,
+          140400,
+          0,
+          136846,
+          116246
+        ],
+        [
+          136257,
+          134632,
+          0,
+          123647,
+          135093,
+          0,
+          138210,
+          118593
+        ],
+        [
+          125728,
+          180580,
+          0,
+          131654,
+          123895,
+          0,
+          113699,
+          110876
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0884",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 602040,
+      "all_eight_same_order_packets": 34750,
+      "same_order_pixel_fraction": 0.765533447265625,
+      "same_order_packet_fraction": 0.3534952799479167,
+      "class_histograms": [
+        [
+          137737,
+          138729,
+          0,
+          130976,
+          144508,
+          0,
+          120395,
+          114087
+        ],
+        [
+          158296,
+          134032,
+          0,
+          120611,
+          134617,
+          0,
+          117485,
+          121391
+        ],
+        [
+          161937,
+          174901,
+          0,
+          138033,
+          117850,
+          0,
+          97610,
+          96101
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0885",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 725469,
+      "all_eight_same_order_packets": 54995,
+      "same_order_pixel_fraction": 0.9224815368652344,
+      "same_order_packet_fraction": 0.5594380696614584,
+      "class_histograms": [
+        [
+          133832,
+          134418,
+          0,
+          130413,
+          130474,
+          0,
+          133287,
+          124008
+        ],
+        [
+          142595,
+          130300,
+          0,
+          129071,
+          133001,
+          0,
+          131980,
+          119485
+        ],
+        [
+          137094,
+          132046,
+          0,
+          128571,
+          126960,
+          0,
+          134354,
+          127407
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0887",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 480705,
+      "all_eight_same_order_packets": 20849,
+      "same_order_pixel_fraction": 0.6112480163574219,
+      "same_order_packet_fraction": 0.21208699544270834,
+      "class_histograms": [
+        [
+          110832,
+          102564,
+          0,
+          173383,
+          143157,
+          0,
+          145704,
+          110792
+        ],
+        [
+          108303,
+          96206,
+          0,
+          155523,
+          148762,
+          0,
+          136832,
+          140806
+        ],
+        [
+          129539,
+          193699,
+          0,
+          154855,
+          136167,
+          0,
+          83856,
+          88316
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0888",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 490981,
+      "all_eight_same_order_packets": 24098,
+      "same_order_pixel_fraction": 0.6243146260579427,
+      "same_order_packet_fraction": 0.24513753255208334,
+      "class_histograms": [
+        [
+          108026,
+          118080,
+          0,
+          144856,
+          156932,
+          0,
+          152613,
+          105925
+        ],
+        [
+          127402,
+          157106,
+          0,
+          110875,
+          115274,
+          0,
+          151698,
+          124077
+        ],
+        [
+          105389,
+          249290,
+          0,
+          116117,
+          101975,
+          0,
+          117238,
+          96423
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0889",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 549012,
+      "all_eight_same_order_packets": 21219,
+      "same_order_pixel_fraction": 0.6981048583984375,
+      "same_order_packet_fraction": 0.215850830078125,
+      "class_histograms": [
+        [
+          144010,
+          138345,
+          0,
+          142097,
+          118896,
+          0,
+          139730,
+          103354
+        ],
+        [
+          146077,
+          139399,
+          0,
+          135179,
+          122198,
+          0,
+          133155,
+          110424
+        ],
+        [
+          145498,
+          207406,
+          0,
+          130811,
+          112049,
+          0,
+          93652,
+          97016
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0890",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 714669,
+      "all_eight_same_order_packets": 62987,
+      "same_order_pixel_fraction": 0.9087486267089844,
+      "same_order_packet_fraction": 0.6407368977864584,
+      "class_histograms": [
+        [
+          129640,
+          126963,
+          0,
+          138915,
+          141916,
+          0,
+          124612,
+          124386
+        ],
+        [
+          136636,
+          127355,
+          0,
+          132843,
+          139746,
+          0,
+          126523,
+          123329
+        ],
+        [
+          127952,
+          130393,
+          0,
+          136134,
+          137438,
+          0,
+          125924,
+          128591
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0891",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 565406,
+      "all_eight_same_order_packets": 33757,
+      "same_order_pixel_fraction": 0.7189509073893229,
+      "same_order_packet_fraction": 0.3433939615885417,
+      "class_histograms": [
+        [
+          130877,
+          135980,
+          0,
+          126460,
+          141676,
+          0,
+          132693,
+          118746
+        ],
+        [
+          138427,
+          139144,
+          0,
+          121459,
+          121269,
+          0,
+          147790,
+          118343
+        ],
+        [
+          125651,
+          188952,
+          0,
+          125567,
+          104133,
+          0,
+          125999,
+          116130
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0892",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 548806,
+      "all_eight_same_order_packets": 35988,
+      "same_order_pixel_fraction": 0.6978429158528646,
+      "same_order_packet_fraction": 0.3660888671875,
+      "class_histograms": [
+        [
+          123251,
+          107458,
+          0,
+          126709,
+          136097,
+          0,
+          172364,
+          120553
+        ],
+        [
+          128884,
+          130176,
+          0,
+          129872,
+          140204,
+          0,
+          149353,
+          107943
+        ],
+        [
+          139146,
+          175584,
+          0,
+          134211,
+          118116,
+          0,
+          108414,
+          110961
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0894",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 453420,
+      "all_eight_same_order_packets": 24357,
+      "same_order_pixel_fraction": 0.5765533447265625,
+      "same_order_packet_fraction": 0.247772216796875,
+      "class_histograms": [
+        [
+          121503,
+          154780,
+          0,
+          122020,
+          102075,
+          0,
+          194448,
+          91606
+        ],
+        [
+          118049,
+          144447,
+          0,
+          104936,
+          140241,
+          0,
+          188443,
+          90316
+        ],
+        [
+          132089,
+          241473,
+          0,
+          138618,
+          90191,
+          0,
+          98147,
+          85914
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0897",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 444494,
+      "all_eight_same_order_packets": 8507,
+      "same_order_pixel_fraction": 0.5652033487955729,
+      "same_order_packet_fraction": 0.08653767903645833,
+      "class_histograms": [
+        [
+          112549,
+          118162,
+          0,
+          205138,
+          125990,
+          0,
+          127418,
+          97175
+        ],
+        [
+          123793,
+          130752,
+          0,
+          84887,
+          96076,
+          0,
+          129561,
+          221363
+        ],
+        [
+          95252,
+          350703,
+          0,
+          104501,
+          87897,
+          0,
+          77520,
+          70559
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0898",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 572960,
+      "all_eight_same_order_packets": 18824,
+      "same_order_pixel_fraction": 0.7285563151041666,
+      "same_order_packet_fraction": 0.19148763020833334,
+      "class_histograms": [
+        [
+          126381,
+          147150,
+          0,
+          179519,
+          139486,
+          0,
+          102471,
+          91425
+        ],
+        [
+          116918,
+          127208,
+          0,
+          172972,
+          156353,
+          0,
+          107480,
+          105501
+        ],
+        [
+          111663,
+          134335,
+          0,
+          184683,
+          159828,
+          0,
+          96110,
+          99813
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0899",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 575900,
+      "all_eight_same_order_packets": 20992,
+      "same_order_pixel_fraction": 0.7322947184244791,
+      "same_order_packet_fraction": 0.21354166666666666,
+      "class_histograms": [
+        [
+          165865,
+          222161,
+          0,
+          110356,
+          163991,
+          0,
+          67930,
+          56129
+        ],
+        [
+          149481,
+          249961,
+          0,
+          115227,
+          154237,
+          0,
+          70862,
+          46664
+        ],
+        [
+          130522,
+          244499,
+          0,
+          123419,
+          159549,
+          0,
+          69182,
+          59261
+        ]
+      ]
+    },
+    {
+      "image": "div2k-0900",
+      "pixels": 786432,
+      "packets": 98304,
+      "same_order_pixels": 370363,
+      "all_eight_same_order_packets": 12258,
+      "same_order_pixel_fraction": 0.47094090779622394,
+      "same_order_packet_fraction": 0.12469482421875,
+      "class_histograms": [
+        [
+          195134,
+          78662,
+          0,
+          207810,
+          110956,
+          0,
+          121330,
+          72540
+        ],
+        [
+          150681,
+          74709,
+          0,
+          74922,
+          156978,
+          0,
+          101331,
+          227811
+        ],
+        [
+          184739,
+          313948,
+          0,
+          114487,
+          90781,
+          0,
+          42890,
+          39587
+        ]
+      ]
+    }
+  ],
+  "project_native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "scope": "已见照片的确定性结构剖面，不是时间收益、全色域质量或新实现正确性，不扫描覆盖门槛/排序规则。"
+}
