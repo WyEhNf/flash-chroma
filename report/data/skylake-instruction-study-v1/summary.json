@@ -1,0 +1,99 @@
+{
+  "purpose": "只归档既有四次构建/静态证据，复算门槛；不执行像素、拟合或性能。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "local_snapshot": "860d6bf",
+  "remote_snapshot": "b19c5a0",
+  "integration_commit": "93499f2",
+  "records": [
+    {
+      "name": "geometry",
+      "plan_sha256": "9edc0517bb24f6a050529fcbf5d06453cdf9995f289406b94ee46d8133bf6365",
+      "build_sha256": "863922c30fb4864f1d0c2bcfcb5572bc7a86fa465e13e832792bc0ba9708f325",
+      "static_sha256": "4f495eb6550a0116678b2fa49230238bf9277cf97ec7e0eabc89142b867a5868",
+      "accepted_static": false,
+      "gate": {
+        "cycle_ratio_max_0_97": false,
+        "rsp_ratio_max_1_10": true
+      },
+      "analysis_script_sha256": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+      "analysis_source_recovered_by_exact_hash": false,
+      "source_identity_checked": true,
+      "numerical_calls": 0,
+      "performance_calls": 0
+    },
+    {
+      "name": "evex256",
+      "plan_sha256": "e888fc929e1106c6fed5cfd06be457ec393bcbf9d7f8999be5898119efd12122",
+      "build_sha256": "f49d81d5e415c0027e41f70acde75858d557007ad1066826c6b1f05457537d7b",
+      "static_sha256": "b660255a1ff207a3c2d69a97e05ee510273f0da8e310b43d8cfee7e9709019c6",
+      "accepted_static": false,
+      "gate": {
+        "cycles_at_least_5_percent": false,
+        "rsp_not_increased": true
+      },
+      "analysis_script_sha256": "a08efa6288f7c91cd5fd0264cfc1265954a45c5a0839511a95438382019a906a",
+      "analysis_source_recovered_by_exact_hash": false,
+      "source_identity_checked": true,
+      "numerical_calls": 0,
+      "performance_calls": 0
+    },
+    {
+      "name": "grid33",
+      "plan_sha256": "f766a99b81b2070aa71b08796ac54b174f77ad04213cf83cb30cfd825d5e751b",
+      "build_sha256": "941e4b87e72a0371307cf6eb7d7026e7d19711b1edbde2fe0d156ca361386bc6",
+      "static_sha256": "5b65849961d4b7c6d97160c72e1e1f0b68fc14bf50a2f88d3819f2a92955d2af",
+      "accepted_static": false,
+      "gate": {
+        "35": {
+          "cycles_at_least_3_percent": true,
+          "rsp_not_increased": false
+        },
+        "38": {
+          "cycles_at_least_3_percent": true,
+          "rsp_not_increased": false
+        }
+      },
+      "analysis_script_sha256": "76de08d045a22d5e13540c9686aceab115acf414c3174ae682faffe4339e9446",
+      "analysis_source_recovered_by_exact_hash": true,
+      "source_identity_checked": true,
+      "numerical_calls": 0,
+      "performance_calls": 0
+    },
+    {
+      "name": "grid-geometry",
+      "plan_sha256": "607fb0367ef70584ab0af7280970e2e375959203b1032c5627b3430b5f68773d",
+      "build_sha256": "1be820caf74d10212b7886b5fe5e618bdb57f530b4a7b97e47338a375e670ea2",
+      "static_sha256": "f0be5a402f3380e4f216138f5f7fd90c0a17bfe2aba7c90ba2d7f08b65336e79",
+      "accepted_static": false,
+      "gate": {
+        "35": {
+          "cycles_at_least_3_percent": true,
+          "rsp_not_increased": false
+        },
+        "38": {
+          "cycles_at_least_3_percent": false,
+          "rsp_not_increased": false
+        }
+      },
+      "analysis_script_sha256": "dde0f2f98f3bb1f34753fa619d208a76d917dd1ac12b926326d2040dcf1038e6",
+      "analysis_source_recovered_by_exact_hash": false,
+      "source_identity_checked": true,
+      "numerical_calls": 0,
+      "performance_calls": 0
+    }
+  ],
+  "all_rejected": true,
+  "new_fits": 0,
+  "new_numerical_calls": 0,
+  "new_performance_calls": 0,
+  "cpu_environment_probe": "AVX2=1 AVX512F=1 AVX512VL=1；通用ISA的GCC builtin CPU/OS检测",
+  "notes": [
+    "geometry原计划“原8次gather”是文字笔误；命令与结果实际35/35；不修改原计划SHA",
+    "EVEX首次静态脚本因CMake本项目对象路径短写未定位对象；修正工具后分析同一构建，未改C++",
+    "grid33分析脚本后续推广为从计划读target；归档按原结果SHA恢复原脚本，未重做分析",
+    "四候选均只构建/静态分析，不能宣称数值正确或实际更快；公共默认未改"
+  ]
+}
