@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "purpose": "25直接对23的一次固定80轮，目标为apply/copy吞吐3倍；未达到继续研究，不改门槛",
+  "plan": {
+    "path": "experiments/skylake-byteindex-v1.json",
+    "sha256": "f9f82a9669e9d1e9d59640ee625718616c52b66746eb3ac95a7cf00d8c1a1fbf"
+  },
+  "build_path": "artifacts/skylake-byteindex-build-v1",
+  "build": {
+    "path": "artifacts/skylake-byteindex-build-v1/build.json",
+    "sha256": "a64d8ffad45f84041418007d58b9567cb865700b8626e69f72d9c2fdf70205cc"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-byteindex-full-v1/results.json",
+    "sha256": "f78dcf1f65f6616152cd1e8c650287f65291814d6c6ba0c35b2588ef300b27c8"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_copy_apply_ratio_max": 0.3333333333333333,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备",
+    "例外池实际269708个u32，1078832字节；任意模型容量不同，官方许可仍待确认",
+    "16MiB字节直索引及尾保护，四包交错；完整保留23；只接受同场配对结果，不跨次相乘"
+  ],
+  "domain_contract": {
+    "path": "artifacts/skylake-byteindex-domain-contract-v1/results.json",
+    "sha256": "ae7880873b3da3c1f95d67baa485e6e6cf3720038522a2c71f3d04769a224102"
+  },
+  "verify_each_measured_round": true,
+  "packed_contract": {
+    "path": "artifacts/skylake-byteindex-packed-contract-v1/results.json",
+    "sha256": "81d597e739be8ad6a46e38316cb175fe58c01a12cda9a6e0b84b374646ee9ec0"
+  },
+  "signed_contract": {
+    "path": "artifacts/skylake-byteindex-signed-contract-v1/results.json",
+    "sha256": "1e3a46eb4f9c25d4acfc533fc382038fb32b764f76f931c016722071f3c34044"
+  },
+  "validation": {
+    "path": "experiments/skylake-byteindex-validation-v1.json",
+    "sha256": "34d928b732918823409e3b7d73ee2bb3841d500502ce551c51fb9954823a393a"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_byteindex.py",
+    "sha256": "e1315d2321aaec99353fbe8e1e7c5383c56e59e45839ea1066ae566b9f7aead4"
+  },
+  "exception_support": {
+    "path": "scripts/exception_support.py",
+    "sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645"
+  },
+  "direct_support": {
+    "path": "scripts/direct16_support.py",
+    "sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7"
+  }
+}
