@@ -13,6 +13,13 @@ def main():
     if args.output.exists():raise ValueError('不得覆盖既有核对回执')
     manifest=json.loads((args.archive/'manifest.json').read_text(encoding='utf-8'))
     summary=json.loads((args.archive/'summary.json').read_text(encoding='utf-8'))
+    extra=args.archive/'domain-delta-manifest.json'
+    if extra.exists():
+        extension=json.loads(extra.read_text(encoding='utf-8'))
+        with zipfile.ZipFile(args.archive/'domain-delta.zip') as z:
+            static=json.loads(z.read('static/results.json'))
+        manifest['files'].update(extension['files'])
+        summary['records'].append({**extension,'name':'domain-delta','analysis_script_sha256':static['script_sha256']})
     for name,spec in manifest['files'].items():
         data=(args.archive/name).read_bytes()
         if sha(data)!=spec['sha256'] or len(data)!=spec['bytes']:raise ValueError('档案不同：'+name)
@@ -34,27 +41,31 @@ def main():
                 for file,digest in plan['source_sha256'].items():
                     if sha(sources.read(file))!=digest:raise ValueError('原字节源码身份不同：'+file)
             variants=static['variants']
-            if name in {'geometry','evex256'}:
+            if name=='domain-delta':
+                family={'18_to_15':{role:value for role,value in variants.items()}}
+            elif name in {'geometry','evex256'}:
                 family={'35':{role:value for role,value in variants.items()}}
             else:
                 family={count:{role:v['families'][count] for role,v in variants.items()} for count in ('35','38')}
             recomputed={}
             for count,roles in family.items():
                 for role,value in roles.items():
-                    log=z.read('static/'+(f'{role}-mca.stdout.log' if name in {'geometry','evex256'} else f'{role}-{count}-mca.stdout.log')).decode('utf-8')
+                    log=z.read('static/'+(f'{role}-mca.stdout.log' if name in {'geometry','evex256','domain-delta'} else f'{role}-{count}-mca.stdout.log')).decode('utf-8')
                     for key,expected in value['mca'].items():
                         actual=float(re.search('^'+key+r':\s*([0-9.]+)',log,re.M)[1])
                         if actual!=expected:raise ValueError('原始MCA日志不能复现JSON')
                 ref,cand=roles['reference'],roles['candidate']
                 rh=ref.get('selected',ref.get('hot'));ch=cand.get('selected',cand.get('hot'))
                 cycle_limit=.95 if name=='evex256' else .97
-                stack_limit=1.1 if name=='geometry' else 1.
+                stack_limit=1.1 if name in {'geometry','domain-delta'} else 1.
                 recomputed[count]={'cycle_pass':cand['mca']['Total Cycles']<=cycle_limit*ref['mca']['Total Cycles'],
                     'stack_pass':ch['rsp_operands']<=stack_limit*rh['rsp_operands'],
+                    'throughput_pass':name!='domain-delta' or cand['mca']['Block RThroughput']<=1.03*ref['mca']['Block RThroughput'],
                     'cycle_ratio':cand['mca']['Total Cycles']/ref['mca']['Total Cycles']}
-                if rh['gathers']!=int(count) or ch['gathers']!=int(count) or rh['calls'] or ch['calls']:
+                rg,cg=(18,15) if name=='domain-delta' else (int(count),int(count))
+                if rh['gathers']!=rg or ch['gathers']!=cg or rh['calls'] or ch['calls']:
                     raise ValueError('家族gather或调用数不同')
-            accepted=all(x['cycle_pass'] and x['stack_pass'] for x in recomputed.values())
+            accepted=all(x['cycle_pass'] and x['stack_pass'] and x['throughput_pass'] for x in recomputed.values())
             if accepted or old['accepted_static']:raise ValueError('原拒绝结论不能复现')
             records.append({'name':name,'pass':True,'accepted_static':accepted,'families':recomputed,
                 'checked_sources':len(plan['source_sha256'])})
