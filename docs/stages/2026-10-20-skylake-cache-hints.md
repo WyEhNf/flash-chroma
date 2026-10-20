@@ -4,7 +4,7 @@ Agent：Codex；Operator：WyEhNf；Task：精度不降、当前吞吐达到300%
 
 本阶段的新输出接口已有单项超过3倍的本机结果，整体目标仍未完成。40真实source→destination接口的1/4线程配对吞吐为修订23的3.0559倍／3.8973倍，41为3.0942倍／4.3711倍；相同候选的纯映射尚未同时达到3倍。所有候选的`accepted_on_this_host=false`。公共模型、默认实现和已验23保持原样。
 
-本阶段基于`acaf2b2fea95151a7b35e2d5158b6e236d2d47fd`，衔接[上一阶段](2026-10-20-skylake-load-packing.md)与[Draft PR #48](https://github.com/WyEhNf/flash-chroma/pull/48)。本阶段提交号由交付元数据记录；具体源、构建、动态库与计时源码的完整SHA均在[证据目录](../../report/data/skylake-cache-hints-v1/README.md)，不以分支名代替测量身份。
+本阶段基于`acaf2b2fea95151a7b35e2d5158b6e236d2d47fd`，衔接[上一阶段](2026-10-20-skylake-load-packing.md)与[Draft PR #48](https://github.com/WyEhNf/flash-chroma/pull/48)。本阶段实现及原始证据提交为`68c6f4941976dc2632023553752f83bf5828e4a9`，后续只补交付元数据；具体源、构建、动态库与计时源码的完整SHA均在[证据目录](../../report/data/skylake-cache-hints-v1/README.md)，不以分支名代替测量身份。
 
 ## 本阶段改动及取舍
 
@@ -96,6 +96,8 @@ python3 scripts/audit_skylake_cache_hints.py --output artifacts/skylake-cache-hi
 
 这些是原始冻结路径，不能直接在已有目录重跑覆盖。新的环境或构建须创建独立计划/输出并保留新SHA；不要修改历史计划来使哈希通过。235MB照片和两个50MB完整域流按计划同SHA恢复，模型来自已有`report/data/skylake-palette-v1/fixed-models.zip`；本档案不重复打包大流。构造及冻结验证生成器在证据ZIP中，恢复到原路径后可检查生成过程。
 
-创建PR前已完整检查42个PR、2个独立issue、2个Discussion、128组REST意见、0条审查线程，分页完整；与上一阶段全部已读意见比较未变化，新增#48完整正文已读。相关修复337a3dd（#7/#9基线和绑定）、876e15b8（#27保护）、397cc367（#29相等mean）及依赖acaf2b2均为当前祖先。[协作检查](../../report/data/skylake-cache-hints-v1/remote-check.json)保留原链接、处理状态和未解决事项；操作前还会刷新逐项比较两份快照，覆盖新#48的正文/头/base及全部意见。
+创建PR前已完整检查42个PR、2个独立issue、2个Discussion、128组REST意见、0条审查线程，分页完整；与上一阶段全部已读意见比较未变化，新增#48完整正文已读。相关修复337a3dd（#7/#9基线和绑定）、876e15b8（#27保护）、397cc367（#29相等mean）及依赖acaf2b2均为当前祖先。[协作检查](../../report/data/skylake-cache-hints-v1/remote-check.json)保留原链接、处理状态和未解决事项；[操作前刷新](../../report/data/skylake-cache-hints-v1/pre-create-remote-check.json)已逐项比较两份完整快照，覆盖新#48的正文/头/base及全部意见，没有新增变化。
 
 仍未解决：3倍整体门槛、派生表官方许可与内存预算、Threshold、实际Skylake速度、issue #8接口/实板及GUI #40事项。保持Draft，不合并、不关闭事项。下一阶段优先研究纯映射的访存与输出路径，以新候选直接对23验证；停止全量T0预取和本版主词解码扩展，不把画像周期或新接口单项达标写成整体完成。
+
+静态交付已核验21份新Python语法、278项Git blob与101项冻结源；最终元数据另做静态核验。提交及PR创建不代表已通过项目最终性能或官方验收。
