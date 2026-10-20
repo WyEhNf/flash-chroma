@@ -215,3 +215,33 @@ scripts/report_quantile_tail_study.py -text
 /scripts/*skylake_exception*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /scripts/exception_support.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /report/data/skylake-exception-v1/static/candidate.asm -text -diff
+# 三倍目标检查点保留冻结源字节；原始汇编由归档哈希检查。
+/experiments/skylake-direct16* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-direct16-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-byteindex* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-byteindex-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-paged32* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-paged32-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-pageindex* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-pageindex-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-fused16* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-fused16-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-load16* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-load16-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-tileindex* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-tileindex-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_direct16*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_byteindex*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_paged32*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_pageindex*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_fused16*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_load16*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_tileindex*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_threefold*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/inspect_skylake_exact_linux.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/direct16_support.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/paged_table_support.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/outplace_support.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/report/data/skylake-threefold-v1/**/candidate.asm -text -diff
+# CMake原始缓存保留生成器的EOF空行，作为原始构建元数据核对。
+/report/data/skylake-threefold-v1/**/CMakeCache.txt -text -diff

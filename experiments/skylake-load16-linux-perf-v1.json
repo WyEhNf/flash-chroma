@@ -1,0 +1,89 @@
+{
+  "purpose": "同WSL/AMD的29直接对23；80轮分别计纯apply、旧copy+apply及真实source→destination输出，后者是可调用API，绝不替换旧数据；独立16bit读取",
+  "plan": {
+    "path": "experiments/skylake-load16-v1.json",
+    "sha256": "abe3484c46ce2e713718fb85fe957923d07784ce9ee477ebdddd6b1d8988e416"
+  },
+  "build": {
+    "path": "artifacts/skylake-load16-linux-build-v1/build.json",
+    "sha256": "a6e811c30ebd8fbcf4997ff1f8b80da842f7129063de4c9c9cb67d7bc4bb0174"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-load16-linux-full-v1/results.json",
+    "sha256": "0ea9a1132cf7824771b8f96c0538123666019f06e68fd66fcee49b00dd5b3c8b"
+  },
+  "validation": {
+    "path": "experiments/skylake-load16-validation-v1.json",
+    "sha256": "53539c275ce86df0b523e8e91cbd4408a72ab6adbd4011f3d1c02219dd4a1fae"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_load16_linux.py",
+    "sha256": "843c141868ed45da637e09b315004c0c9ad9be743ade053a49878f9596e62bc7"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_prepare_plus_100_ratio_max": 1,
+    "median_outplace_ratio_max": 0.3333333333333333
+  },
+  "limits": [
+    "仅自身分配范围MADV_HUGEPAGE，不改全局设置或权限",
+    "每个候选句柄smaps必须证明32MiB主体THP，4字节保护尾部不要求大页",
+    "纯apply及真实输出均须达到3倍；旧copy+apply完整报告，不能声称该接口达标",
+    "同机WSL不是Skylake实测",
+    "IO/解码/分配/哈希不计稳态，准备时间单列"
+  ],
+  "mode_order": "(进程序号+轮序号)偶数先legacy后outplace，否则反向；两个模式各自100图及逐轮完整SHA"
+}

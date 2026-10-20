@@ -1,0 +1,155 @@
+{
+  "source_sha256": {
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/skylake-direct16-perf-v1.json": "41cdbd23240b85a710dd77cc5f96155b182298999cec40f917085d9357f62c35",
+    "experiments/skylake-direct16-v1.json": "eba4c15b6d635d4ab862b685b65602eb3a2da427d487929f44b70ede7d9fde87",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_direct16.py": "11309c3173c8f7224d291adeede0c0c2723c326d32e8b9bb5aebde118be16e05",
+    "scripts/cache_encoding_support.py": "3fda8ea58c7e5406761d1d772e668646c3c2a93607b5636fdaba03aaf991f372",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/direct16_support.py": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7",
+    "scripts/domain_cache_support.py": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+    "scripts/exception_support.py": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645",
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/restrict_support.py": "1f2fabfd9a277238ac25c3ea321018ad9032c77de437c98598ea78eb2c8877c6",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    },
+    "target_status": "本机AMD可行性；不能替代Skylake服务器验收",
+    "gather_data_sampling": "未通过此脚本取得Windows微码/缓解状态；没有修改安全缓解设置"
+  },
+  "purpose": "同模型、同机、固定CPU集合的四进程平衡性能比较；AMD与最终服务器结果分别保存。",
+  "policy": {
+    "schema": 1,
+    "purpose": "24直接对23的一次固定80轮，验收目标为apply/copy吞吐达到3倍；未达到则继续研究，不改门槛",
+    "plan": {
+      "path": "experiments/skylake-direct16-v1.json",
+      "sha256": "eba4c15b6d635d4ab862b685b65602eb3a2da427d487929f44b70ede7d9fde87"
+    },
+    "build_path": "artifacts/skylake-direct16-build-v1",
+    "build": {
+      "path": "artifacts/skylake-direct16-build-v1/build.json",
+      "sha256": "ed3e27bee2860438d8fd15a0e47c31bfa65d69cb3c1f9cd26dc160fc52fe5101"
+    },
+    "full_acceptance": {
+      "path": "artifacts/skylake-direct16-full-v1/results.json",
+      "sha256": "1c3547c0883a0aa56f20cebe401ba1983580ce896159809d47cc1d936478c8f9"
+    },
+    "topology": {
+      "path": "artifacts/skylake-packed-build-v1/topology.json",
+      "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+    },
+    "affinity_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "repeats": 5,
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.3333333333333333,
+      "any_process_apply_ratio_max": 0.9,
+      "median_copy_apply_ratio_max": 0.3333333333333333,
+      "median_prepare_plus_100_ratio_max": 1.0
+    },
+    "limits": [
+      "本机AMD，不推断Skylake服务器实测",
+      "同L3域4物理核；未锁频控温",
+      "预载100图，原生apply与copy+apply分列，不含IO/解码/准备",
+      "例外池实际269708个u32，1078832字节；任意模型容量不同，官方许可仍待确认",
+      "32MiB新直表，完整保留23的数据和回退；额外内存与准备单列；3倍未测先不宣称"
+    ],
+    "domain_contract": {
+      "path": "artifacts/skylake-direct16-domain-contract-v1/results.json",
+      "sha256": "f11c18b59b09703cad7c1eeb887bf763046872914e8070b3469a8a524de06482"
+    },
+    "verify_each_measured_round": true,
+    "packed_contract": {
+      "path": "artifacts/skylake-direct16-packed-contract-v1/results.json",
+      "sha256": "2f816f3f8d62fbb1d79800d4fc06818adc1551094691e466cda468e26bbf8ff6"
+    },
+    "signed_contract": {
+      "path": "artifacts/skylake-direct16-signed-contract-v1/results.json",
+      "sha256": "d78744f7b1682418574f5fcf48703571afb4a1444e84d1fea601593f1a0f8138"
+    },
+    "validation": {
+      "path": "experiments/skylake-direct16-validation-v2.json",
+      "sha256": "80079ff3d01a3474de782fc567774f8f932fdf878f31fd139500cd560a169759"
+    },
+    "benchmark_script": {
+      "path": "scripts/bench_skylake_direct16.py",
+      "sha256": "11309c3173c8f7224d291adeede0c0c2723c326d32e8b9bb5aebde118be16e05"
+    },
+    "exception_support": {
+      "path": "scripts/exception_support.py",
+      "sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645"
+    },
+    "direct_support": {
+      "path": "scripts/direct16_support.py",
+      "sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7"
+    }
+  },
+  "scope": "一次100图完整组，稳态毫秒每图不含准备/IO/解码；另外列准备墙钟与准备+首轮100图，后者仍已预热"
+}

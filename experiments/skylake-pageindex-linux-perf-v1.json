@@ -1,0 +1,87 @@
+{
+  "purpose": "同WSL/AMD的27直接对23，紧凑精确索引+THP；3倍目标和80轮不变",
+  "plan": {
+    "path": "experiments/skylake-pageindex-v1.json",
+    "sha256": "27e66b4d831e2cf8a3d5b93b1b8de2ddbb9a1ff30ad0a9642512f8e2debaab69"
+  },
+  "build": {
+    "path": "artifacts/skylake-pageindex-linux-build-v1/build.json",
+    "sha256": "53fa2e66c1012c484a72ad39e0dbf7dee2f5ef4223a49eef0e37845bc3f13601"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-pageindex-linux-full-v1/results.json",
+    "sha256": "e3af6517a039fd10de3f7538e96538f07d267fa4062560ddc1af78fc6327c244"
+  },
+  "validation": {
+    "path": "experiments/skylake-pageindex-validation-v1.json",
+    "sha256": "faf891676514bbf7950c0540e31603e2dea4d3f97050fcccd2f61d2f0073ecf0"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_pageindex_linux.py",
+    "sha256": "b81fcf671d822c92bef25ac59db09721c8d322f718a3f62675ea2053d0e6675a"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "median_copy_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_prepare_plus_100_ratio_max": 1
+  },
+  "limits": [
+    "仅进程内THP建议，不改全局设置或安全权限",
+    "候选每次句柄必须由smaps证明16MiB全部THP",
+    "同机WSL不是Skylake实测",
+    "IO/解码/分配/哈希不计入稳态，但准备单列"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "purpose": "只读几何分析：相邻32像素在固定16MiB索引中的缓存行数；不是内核性能测试或选优扫描。",
+  "input_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "packets_32_pixels": 2457600,
+  "line_size": 64,
+  "bytes_per_entry": 1,
+  "mean_unique_cachelines_per_32_pixels": {
+    "linear": 25.811787109375,
+    "tile4": 20.4990625
+  },
+  "limitation": "只统计包内空间复用；未模拟包间缓存、TLB或指令成本，不能直接推断提速"
+}
