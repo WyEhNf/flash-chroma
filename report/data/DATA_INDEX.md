@@ -1,5 +1,7 @@
 # 报告数据索引
 
+[正负斜率快路径补验](skylake-domain-signed-contract-v1/README.md)保存m17/18/25/33四个固定样例、全部证书及48×8203像素的有限整数/哨兵比较；明确启用获证快路径，不把回退通过当新路径覆盖。原二进制/性能数据不变。
+
 [服务器包恢复](skylake-packet-restore-v1/README.md)保存一次114文件/339633805字节恢复的全部落盘SHA，及独立标准库入口。恢复包与已验4/16包身份相同；零新构建、像素或性能，原生候选计数不变。
 
 [单元域证书](skylake-domain-certificate-v1/README.md)、[模板版静态停止](skylake-domain-template-static-v1/README.md)、[隔离版完整验收](skylake-domain-isolated-v1/README.md)保存原缓存覆盖的数学证明及修订16：相对修订4，本机1/4线程apply配对中位下降7.07%/5.10%，1800836字节模型容量保持，80个测量轮均核对完整100图SHA；不是Skylake成绩，不叠乘旧收益。
