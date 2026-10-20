@@ -1,0 +1,98 @@
+{
+  "pass": true,
+  "purpose": "从四个完整绑定进程独立复算；不加载动态库、不重新计时，允许原汇总层失败。",
+  "worker_measurements_completed": true,
+  "original_aggregation_completed": true,
+  "accepted_on_this_host": false,
+  "legacy_interface_threefold_accepted": false,
+  "failed_gates": [
+    "1线程纯映射未达三倍",
+    "1线程真实输出未达三倍",
+    "4线程纯映射未达三倍",
+    "4线程真实输出未达三倍"
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "process_apply_ratios": [
+        0.5173458001729974,
+        0.5137841524693996,
+        0.4909577978894302,
+        0.507211191024991
+      ],
+      "median_apply_ratio": 0.5104976717471953,
+      "apply_throughput_multiple": 1.9588727928522507,
+      "process_legacy_copy_apply_ratios": [
+        0.6056295211693186,
+        0.5931792585485561,
+        0.5546579777996499,
+        0.5959970928916783
+      ],
+      "median_legacy_copy_apply_ratio": 0.5945881757201172,
+      "legacy_copy_apply_throughput_multiple": 1.6818363378802155,
+      "process_outplace_ratios": [
+        0.5349536628468698,
+        0.4910132601189026,
+        0.4849414334561877,
+        0.49905569650806186
+      ],
+      "median_outplace_ratio": 0.49503447831348224,
+      "outplace_throughput_multiple": 2.0200613165508576,
+      "process_prepare_plus_100_outplace_ratios": [
+        0.6581441228984652,
+        0.7178176098774389,
+        0.864544844019519,
+        0.6130898720442894
+      ],
+      "median_prepare_plus_100_outplace_ratio": 0.6879808663879521
+    },
+    {
+      "requested_threads": 4,
+      "process_apply_ratios": [
+        0.6768862299478775,
+        0.7526860942932756,
+        0.6530083651199009,
+        0.7194310554187241
+      ],
+      "median_apply_ratio": 0.6981586426833009,
+      "apply_throughput_multiple": 1.4323392118395941,
+      "process_legacy_copy_apply_ratios": [
+        0.8255641494701395,
+        0.8599211487449521,
+        0.8316228234486104,
+        1.174915803055366
+      ],
+      "median_legacy_copy_apply_ratio": 0.8457719860967812,
+      "legacy_copy_apply_throughput_multiple": 1.1823517643507888,
+      "process_outplace_ratios": [
+        0.4229763818291309,
+        0.4324542147832174,
+        0.43376568610864574,
+        0.499960498408893
+      ],
+      "median_outplace_ratio": 0.4331099504459316,
+      "outplace_throughput_multiple": 2.3088825342627115,
+      "process_prepare_plus_100_outplace_ratios": [
+        0.9047204856727245,
+        1.0629247345351585,
+        0.9429365836933594,
+        0.8229154462920495
+      ],
+      "median_prepare_plus_100_outplace_ratio": 0.9238285346830419
+    }
+  ],
+  "worker_sha256": [
+    "0ca7ed5b800fe00ac21f68b98d3ad37c5e568d2a5176f81b97caeefd94575722",
+    "c9a75e5cb8dd8976605bde90729a568c47b3ebd5b62824c3a60ffdcab5d24b6d",
+    "2e40c57f12a27d7d58a8b37fef2574aeccc7b8e474d2d537e97c9b8357acb542",
+    "f89e28de30d74bc79e1d5fecbcfbe5ecf2a57e8752731bbf3564f0136b26e3db"
+  ],
+  "script_sha256": "c0d7af39cc1266e36627bba1b25576f9c7ad59abaa32c2a72b213ddcfe80e11c",
+  "new_native_calls": 0,
+  "new_performance_calls": 0,
+  "mode_rounds": {
+    "legacy": 80,
+    "outplace": 80
+  },
+  "scope": "独立复算完整四进程，不选取v1失败运行中的部分记录，不将汇总修复伪装为新测量"
+}

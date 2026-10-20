@@ -1,0 +1,124 @@
+{
+  "purpose": "34未来复现修复入口，仅删除父汇总层误插入的worker局部变量；本阶段v3未执行",
+  "plan": {
+    "path": "experiments/skylake-pack32-v1.json",
+    "sha256": "145bbfe3be4cceca3d09ee8e827ce2ce87534f43d3898135fba87a919a230b2b"
+  },
+  "build": {
+    "path": "artifacts/skylake-pack32-linux-build-v1/build.json",
+    "sha256": "351abf7390fb8f472c2b8635f9273563dacc19937f2b69fa19db03e9a6d16fa9"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-pack32-linux-full-v1/results.json",
+    "sha256": "30fc998253c8f586227aa9220f7f09b8c98b016a857defb833c0cc53f7bebdef"
+  },
+  "validation": {
+    "path": "experiments/skylake-pack32-validation-v1.json",
+    "sha256": "ece9f440439ea7b338a733d485c66bc5f6435e9e84374e91828893f03fb4d803"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_pack32_pinned_fixed_linux.py",
+    "sha256": "675f3116499e4c6010d05b4c61d76ed1be41f39b3b5fafdbde0c37bf0af7b08e"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_prepare_plus_100_ratio_max": 1,
+    "median_outplace_ratio_max": 0.3333333333333333
+  },
+  "limits": [
+    "仅自身分配范围MADV_HUGEPAGE，不改全局设置或权限",
+    "每个候选句柄smaps必须证明16MiB全部THP",
+    "纯apply及真实输出均须达到3倍；旧copy+apply完整报告，不能声称该接口达标",
+    "同机WSL不是Skylake实测",
+    "IO/解码/分配/哈希不计稳态，准备时间单列",
+    "v2为显式线程绑定的新协议，不与旧未绑定绝对时间或比值叠乘"
+  ],
+  "mode_order": "(进程序号+轮序号)偶数先legacy后outplace，否则反向；两个模式各自100图及逐轮完整SHA",
+  "pinning_support": {
+    "path": "scripts/pinned_openmp_support.py",
+    "sha256": "15dee1c6e6464976002ab1ea7c911411be27bab9dc8e9a131e8447dee24900e8"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "affinity_protocol": {
+    "OMP_PROC_BIND": "TRUE",
+    "OMP_PLACES": "{0},{2},{4},{6}",
+    "main_cpu": 0,
+    "selected_physical_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "validation": "初始4线程与每档团队的实际CPU顺序、前后每TID单CPU允许集合；不更改系统设置"
+  },
+  "supersedes_incomplete": {
+    "run": {
+      "path": "artifacts/skylake-pack32-linux-perf-v1/run.json",
+      "sha256": "c662d28cdf136071b189b160f5f86f4438370a7a76c22611ea558886d714e33e"
+    },
+    "reason": "worker3团队未覆盖不同物理核；只有worker0—2回执，没有完整results，不参与新汇总"
+  },
+  "reproduction_fix_for": {
+    "policy": {
+      "path": "experiments/skylake-pack32-linux-perf-v2.json",
+      "sha256": "c96fef39f8b0dbc16d2ba550b559335a1e24e55e7af5d03d9730d54c5de09c64"
+    },
+    "bug": "父汇总引用未定义cpus；四个已测worker不受影响，旧v2回执离线复算而不重测"
+  }
+}

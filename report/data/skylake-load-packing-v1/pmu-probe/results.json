@@ -1,0 +1,30 @@
+{
+  "available": true,
+  "purpose": "只探测本进程用户态硬件计数器是否可读，不修改perf权限或系统设置，不执行候选映射。",
+  "failure": null,
+  "values": {
+    "time_enabled_ns": 292667,
+    "time_running_ns": 292667,
+    "python_probe_counts": {
+      "cycles": 847523,
+      "instructions": 2661287,
+      "cache_references": 2138,
+      "cache_misses": 1232
+    },
+    "check_value": 199990000
+  },
+  "perf_event_paranoid": "2",
+  "event_sources": [
+    "breakpoint",
+    "cpu",
+    "kprobe",
+    "msr",
+    "software",
+    "tracepoint",
+    "uprobe"
+  ],
+  "script_sha256": "e7f66b884005483a35d25c700ca164c9c5fb487d27c6b30c217828da3080808d",
+  "candidate_pixel_calls": 0,
+  "candidate_timing_calls": 0,
+  "changes": "只打开本进程exclude_kernel/exclude_hv计数器并关闭，没有更改权限、缓解或设置"
+}
