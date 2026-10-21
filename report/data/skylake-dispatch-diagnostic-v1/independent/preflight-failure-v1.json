@@ -1,0 +1,50 @@
+{
+  "pass": false,
+  "purpose": "独立离线复算78发射诊断；不导入原诊断模块、不加载动态库、不执行像素或计数。",
+  "audit_environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "reproduction": "python artifacts/skylake-dispatch-diagnostic-independent-v1/audit.py",
+  "new_candidate_calls": 0,
+  "new_counter_calls": 0,
+  "new_builds": 0,
+  "failure": {
+    "type": "AssertionError",
+    "message": "库身份"
+  },
+  "inputs": {
+    "artifacts/skylake-dispatch-diagnostic-independent-v1/audit.py": {
+      "sha256": "dfad8e4ce4eb21a86b582cec41f0a5a186a41e11a74c9c3afc535669873b59b6",
+      "bytes": 18879
+    },
+    "experiments/skylake-dispatch-diagnostic-v2.json": {
+      "sha256": "7549c82eae9dc5821352dd9043977c6b886931c57538789072da0b034c842865",
+      "bytes": 10447
+    },
+    "artifacts/skylake-dispatch-diagnostic-v1/results.json": {
+      "sha256": "e68ec3f0ffa05cdfb9d4e3930d65058d7b0ae4cfc7234e100351938b57acdec9",
+      "bytes": 120346
+    },
+    "artifacts/skylake-dispatch-diagnostic-v1/run.json": {
+      "sha256": "0b2004a8461dba3cc6a131c5aa174a94afe6e84dd4014890e43103564a82bab5",
+      "bytes": 34753
+    },
+    "experiments/skylake-andn-split-v1.json": {
+      "sha256": "c62d97a402705692977250f0e626c9587a7190e97cf9a9b44f4d6a22840532d8",
+      "bytes": 28112
+    },
+    "artifacts/skylake-andn-split-linux-build-v1/build.json": {
+      "sha256": "2f951a5c2daa035716c2715f6d2803282e8434a8b9d645d8c0ecb7170144cbe6",
+      "bytes": 24059
+    },
+    "artifacts/skylake-andn-split-linux-full-v1/results.json": {
+      "sha256": "d349abe0d6021c5c03bdde3fd8204c3b69344be4e93fc6d57d38b3bfe820733b",
+      "bytes": 8423
+    },
+    "experiments/skylake-andn-split-validation-v1.json": {
+      "sha256": "5b5a629e343e515942d82fa4437465f1db671ef2b97cebe3f969f2564b9885a4",
+      "bytes": 984
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "purpose": "仅探测两组Zen4原始事件能否同时调度；不加载候选库或执行候选像素。",
+  "available": true,
+  "records": [
+    {
+      "tid": 303,
+      "group": "dispatch",
+      "raw_group_read_hex": "060000000000000059021100000000005902110000000000196b53000000000062aa980100000000b9a6480000000000f9f61f00000000000f00000000000000e901000000000000",
+      "time_enabled_ns": 1114713,
+      "time_running_ns": 1114713,
+      "counts": {
+        "cycles": 5466905,
+        "instructions": 26782306,
+        "frontend_unused_slots": 4761273,
+        "backend_unused_slots": 2094841,
+        "load_queue_stall_cycles": 15,
+        "store_queue_stall_cycles": 489
+      },
+      "running_fraction": 1.0,
+      "per_nominal_pixel": null,
+      "instructions_per_cycle": 4.89898873311316,
+      "frontend_unused_slots_fraction": 0.14515443381584278,
+      "backend_unused_slots_fraction": 0.06386431932998043,
+      "load_queue_stall_cycles_fraction": 2.7437828167857317e-06,
+      "store_queue_stall_cycles_fraction": 8.944731982721485e-05
+    },
+    {
+      "tid": 303,
+      "group": "resources",
+      "raw_group_read_hex": "0600000000000000f1850f0000000000f1850f0000000000663c5000000000000000000000000000bd1c0000000000006404000000000000c82215000000000060fd0e0000000000",
+      "time_enabled_ns": 1017329,
+      "time_running_ns": 1017329,
+      "counts": {
+        "cycles": 5258342,
+        "integer_prf_stall_cycles": 0,
+        "integer_scheduler_any_stall_cycles": 7357,
+        "retire_token_stall_cycles": 1124,
+        "oldest_not_complete": 1385160,
+        "oldest_load_not_complete": 982368
+      },
+      "running_fraction": 1.0,
+      "per_nominal_pixel": null,
+      "integer_prf_stall_cycles_fraction": 0.0,
+      "integer_scheduler_any_stall_cycles_fraction": 0.0013991102138278567,
+      "retire_token_stall_cycles_fraction": 0.0002137555906405479,
+      "oldest_not_complete_fraction": 0.26342143588226097,
+      "oldest_load_not_complete_fraction": 0.18682086482773466
+    }
+  ],
+  "events": {
+    "dispatch": [
+      [
+        "cycles",
+        118
+      ],
+      [
+        "instructions",
+        192
+      ],
+      [
+        "frontend_unused_slots",
+        4294967712
+      ],
+      [
+        "backend_unused_slots",
+        4294975136
+      ],
+      [
+        "load_queue_stall_cycles",
+        686
+      ],
+      [
+        "store_queue_stall_cycles",
+        1198
+      ]
+    ],
+    "resources": [
+      [
+        "cycles",
+        118
+      ],
+      [
+        "integer_prf_stall_cycles",
+        430
+      ],
+      [
+        "integer_scheduler_any_stall_cycles",
+        16781231
+      ],
+      [
+        "retire_token_stall_cycles",
+        8367
+      ],
+      [
+        "oldest_not_complete",
+        726
+      ],
+      [
+        "oldest_load_not_complete",
+        41686
+      ]
+    ]
+  },
+  "cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 97\nmodel name\t: AMD Ryzen 9 8945HX with Radeon Graphics\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 2495.237\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 32\ncore id\t\t: 0\ncpu cores\t: 16\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 13\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa\nbogomips\t: 4990.47\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "candidate_pixel_calls": 0,
+  "candidate_timing_calls": 0,
+  "source_sha256": {
+    "probe_skylake_dispatch_pmu.py": "71ba550f0c22d8b7b484cfa10bd4a8933c845e7d918a53be82a7d7d3f4ead889",
+    "zen4_dispatch_pmu_support.py": "70939c2f01859dc0378975b66ea9c7e3355bd0f41aa76128ef50802974cf9df8",
+    "probe_skylake_pmu.py": "e7f66b884005483a35d25c700ca164c9c5fb487d27c6b30c217828da3080808d",
+    "skylake_server_support.py": "38c669fa506c1b324ffce196cc2c720092d6c235c55e8f2a1236266decaa6a00"
+  },
+  "limitation": "可调度和计数范围检查不等于宿主已校准全部虚拟PMU语义；零计数不自动表示没有瓶颈"
+}
