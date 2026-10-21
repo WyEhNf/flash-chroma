@@ -50,6 +50,8 @@
 
 [研究复核](../../report/data/skylake-input-path-v1/research-audit.json)核对冻结源、同一物理表、72组全域、12项单次画像及停止决定。[档案核验](../../report/data/skylake-input-path-v1/archive-check.json)通过72份原始文件（3,803,717字节）、9份测量源码ZIP的678项源成员及57项二进制成员。后补README、静态与操作前刷新不在原始清单内。40参考构建/全域复用既有同SHA档案；大流按冻结计划恢复，模型复用`report/data/skylake-palette-v1/fixed-models.zip`。
 
+交付静态检查曾拒绝PR51原文中的合法Markdown双空格换行，随后提交命令没有在失败后停止；该实现提交当时尚未推送。[失败及顺序记录](../../report/data/skylake-input-path-v1/static-preflight-first-failure.json)与原检查源保留。只为该原文档案设置行尾空格属性，保持原文和测量字节；最终改为相对阶段base核对全部Git blob，全部检查通过后才推送发布，没有重跑数值测试。
+
 仓库根目录的原冻结流程示例（先恢复同SHA输入，输出必须尚不存在）：
 
 ```sh
