@@ -1,0 +1,30 @@
+在保持当前固定输出精度的条件下，研究16MiB ID表的4×4×4颜色分块。**缓存未命中减少，但47和49均未通过先验周期筛查，没有新增墙钟提速成绩，整体300%目标仍未完成。**
+
+[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/ee529bedec7537da5843080c2f1f07bab4e8e7d6/docs/stages/2026-10-21-skylake-tiles.md) · [完整证据](https://github.com/WyEhNf/flash-chroma/tree/ee529bedec7537da5843080c2f1f07bab4e8e7d6/report/data/skylake-tiles-v1)。实现及原始证据提交681cac01f97c09d0222cb8918e22d0c3bd52f9e0，交付头ee529bedec7537da5843080c2f1f07bab4e8e7d6。依赖#50，base为codex/skylake-inplace-path-20261020。
+
+47以两个可选BMI2 PEXT重排索引，缺少能力或强制线性时保留原40 AVX2内核；48为通用AVX2掩码草案，只构建，首次像素前经符号检查被49替代；49以shuffle、整数PMADDWD/PMADDUBSW计算同一地址排列，避免逐像素PEXT。三版继续GPR查表、NTA、NT64写及65536工作块，表容量和句柄28,046,644字节不变，23为11,269,404字节。公共默认与模型不改。
+
+| 同场单次PMU，40→候选 | 1线程周期/像素 | 4线程周期/像素 | 1线程指令/像素 | 1线程generic miss/像素 |
+| --- | --- | --- | --- | --- |
+| 47 | 3.7042→4.8165 | 3.5004→4.7668 | 5.4010→9.9331 | 0.13448→0.06001 |
+| 49 | 3.3281→3.5643 | 3.8662→3.9000 | 5.4010→6.4081 | 0.11208→0.03649 |
+
+首次计数前固定门槛为相对同场40：1线程周期比≤0.88、4线程≤1.05。两版都因单线程失败而停止，不执行完整墙钟或重复画像择优。不同画像不能相除推导47→49提速，generic cache不标为L3或Skylake事件。最新完整墙钟仍为#50的40：独立配置纯映射2.6444/3.1200倍、真实输出3.3066/4.3069倍，整体未过门槛。
+
+验证范围：
+
+- 47/49同一二进制默认分块和强制线性分别完整验收，共96组完整RGB8 API配置逐字节一致；每次独立解码16M表颜色，默认表SHA和回退表SHA在两版间分别一致。每次2208有限原地、4416输出/别名、736保护页、1280全对齐和44拒绝检查通过。精度未下降，没有重新拟合。
+- 构造仅使用四个稀疏模型及逐级RGB8，不读照片、完整源LUT或gold；24个基向量核验地址双射，2MiB页分组不变。49低位整数乘加部分和≤15/48、最终≤63，高位不溢出，实际完整域另验。
+- Ryzen9 8945HX／Windows宿主WSL2 Ubuntu／Linux6.18.33.2／GCC15.2／Python3.14.4，Release。普通TU为-mavx2 -mtune=skylake -ffp-contract=off；47可选TU额外-mbmi2，经CPUID分派，49不需BMI2。没有native、AVX512、浮点FMA、fast-math或实际Skylake结果。强制回退不冒充无BMI2硬件实测。
+- 两组PMU共8项，每项一次预热一次计数；CPU0/2/4/6、主CPU0、实际团队/TID绑定、THP和完整100图输出SHA均核验，四事件running/enabled≥0.99。没有宿主独占、锁频控温保证，未改服务、安全缓解、perf或大页设置。
+- 静态核对原三个回退对象与参考同字节，线性主内核与旧40同字节；49无PEXT/PDEP/硬件gather，像素内核无外部调用。首次静态文本搜索误把vpextrd当PEXT，旧源/对象/失败完整保存，新fixed检查器按准确助记符通过后才首次全域和计数；没有改库或重测数值择优。48的像素、画像和性能入口始终未执行。
+- 71份原始文件约4.14MB、9份测量源码ZIP的678项源成员及60项二进制成员通过档案审计。16份新Python语法、90项冻结源与最终128项Git blob静态核验通过。归档Ubuntu/glibc2.43库仅为本机证据，服务器须重编译；照片已见，历史误差为RGB欧氏距离。
+
+创建前两次完整读取44个PR、2个独立issue、2个Discussion、134组REST意见、0审查线程，分页完整；与前阶段及本阶段首次快照逐项比较正文/状态/头/base/意见无变化，新增#50全文已读、没有新评论或reviews，两项常规CI成功。[操作前检查](https://github.com/WyEhNf/flash-chroma/blob/ee529bedec7537da5843080c2f1f07bab4e8e7d6/report/data/skylake-tiles-v1/pre-create-remote-check.json)保存范围和修复祖先。
+
+[#7](https://github.com/WyEhNf/flash-chroma/issues/7)/[#9](https://github.com/WyEhNf/flash-chroma/pull/9#issuecomment-6213519540)的337a3dd、[#27](https://github.com/WyEhNf/flash-chroma/pull/27#issuecomment-6229844096)的876e15b8及[#29](https://github.com/WyEhNf/flash-chroma/pull/29)的397cc367均包含；[#37](https://github.com/WyEhNf/flash-chroma/pull/37#issuecomment-6230455676)历史验证保留。[Discussion #4](https://github.com/WyEhNf/flash-chroma/discussions/4)模型/实现区分继续落实；[#8](https://github.com/WyEhNf/flash-chroma/issues/8)官方派生表许可/内存预算/Threshold及实板、GUI #40、实际Skylake与整体3倍仍未验收。main b19c5a0已包含。保持Draft，不合并、不关闭事项；停止本版分块，下一步研究原40线性布局的输入加载成本。
+
+Agent：Codex  
+Operator：WyEhNf  
+Task：精度不降，当前吞吐达到300%  
+Status：In Progress（分块研究筛查失败，整体目标未完成）
