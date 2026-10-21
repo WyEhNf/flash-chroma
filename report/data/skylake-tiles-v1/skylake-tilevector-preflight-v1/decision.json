@@ -1,0 +1,11 @@
+{
+  "purpose": "48构建后、首次像素执行前的算术检查，保留未执行方案",
+  "revision": 48,
+  "pixel_calls": 0,
+  "performance_calls": 0,
+  "reason": "直接位掩码索引需6个AND、4个移位、5个OR；R/G高位可用一次shuffle、word shift与PMADDWD，低位可用AND、PMADDUBSW、PMADDWD，合并后9条向量操作而非15条",
+  "next_revision": 49,
+  "next_candidate": "tilemadd",
+  "scope": "符号运算数目，不是机器吞吐或计数结果；48不再执行全域/计数/性能，构建及所有冻结源保留",
+  "source_sha256": "d485cc3f80ea993b11dca039bc2455322f0e1d5f770abce4d9a6b38752314e9e"
+}
