@@ -1,0 +1,69 @@
+{
+  "checked_at_utc": "2026-10-21 12:43:34 UTC",
+  "comparison": {
+    "before": 65,
+    "after": 66,
+    "new": [
+      72
+    ],
+    "changed": []
+  },
+  "pr72": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/72",
+      "number": 72,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Agent：Codex /root、/root/direct_tile_audit\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对23至少三倍吞吐\nStatus：诊断完成 / Draft；整体目标In Progress\n\n对PR71冻结修订78做一次发射资源诊断，新增两组各六项pinned Zen4事件和逐TID原始采集。运行时、模型和表布局未改；不是新的吞吐验收。\n\nRyzen9 8945HX、Windows11宿主WSL2 Ubuntu Linux6.18.33.2、Python3.14.4，既有GCC15.2 AVX2+可选BMI1库。照片/固定灰色各1/4线程，AB/BA/BA/AB组顺序，共8预热+8计数，输出SHA/源/边界/实际团队与CPU绑定/前后16MiB全THP均通过，全部参与组running/enabled=1。新增wallclock验收0次，不重复或择优。\n\n照片1/4线程LQ token受阻周期占71.1115%/72.9366%，FE空槽占同组6×cycles的0.8418%/2.4253%；B组最老load未完成占57.7912%/65.4601%。整数PRF、scheduler受阻较低，灰色4线程retire token达38.0615%。两组分别调用、阻塞原因可重叠，含barrier/调度/自旋；不能相加或用灰色相减归因，也不能把低SQ归为无所有权问题。vPMU可调度不等于宿主校准，事件不用于Skylake解释。仅支持下一步“多些拆位算术换更少输入load指令”的有限假设，不证明输入load是LQ主因或预告提速。\n\n独立解码32份72字节raw（20参与/12旁观），核对91个源码ZIP项、18份页状态、9份空闲回执及16调用，全部通过。保存56份原始清单，65份暂存实验/脚本/档案与磁盘字节一致、语法与空白检查通过。执行前失败留证缺口的旧代码/未执行v1，以及独立离线路径比较误报的源/回执均保留，修正均未重测原生。完整RGB8精度证明仍来自源码未改的PR71，本次只验照片和灰色输出。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-dispatch-diagnostic-20261021/docs/stages/2026-10-21-skylake-dispatch-diagnostic.md) · [原始档案与独立审计](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-dispatch-diagnostic-20261021/report/data/skylake-dispatch-diagnostic-v1)\n\n提交91b7c73；基于Draft #71头92d6b1a。操作前fetch GitHub并完整检查65份PR正文，与前阶段64份逐项比较仅新增71，其余一致；71正文/全部评论/review/行内线程再次刷新后三者均空，最终updated检索无新PR或issue。读取[issue7](https://github.com/WyEhNf/flash-chroma/issues/7)/[issue8](https://github.com/WyEhNf/flash-chroma/issues/8)正文及全部评论，7修复已入main，8双C99集成完成但接口/预算/实板继续跟踪；main b19c5a0及337a3dd/876e15b8/397cc367均包含。Discussion接口仍无法刷新，保留缺口；不合并或关闭事项。整体三倍、官方派生表许可/预算/Threshold及真实Skylake继续待验证。",
+      "title": "记录修订78发射槽与加载队列诊断及原始复算",
+      "base": "codex/skylake-andn-load-20261021",
+      "base_sha": "92d6b1ab54eb7d978f0c030d24a3142cad7a28a7",
+      "head": "codex/skylake-dispatch-diagnostic-20261021",
+      "head_sha": "91b7c7359f938876d22fc7fc12fa7b2b0e02ebe0",
+      "head_repo_id": 1420743436,
+      "head_repo_full_name": "WyEhNf/flash-chroma",
+      "merge_commit_sha": "0e87482d4fdc9e4a9d7211a203131ce61f922aeb",
+      "user": {
+        "login": "WyEhNf",
+        "name": "WyEhNf",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+        "id": 228311419
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-21T12:27:54Z",
+      "updated_at": "2026-10-21T12:27:54Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 67,
+      "additions": 24800,
+      "deletions": 0,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/72",
+      "display_title": "记录修订78发射槽与加载队列诊断及原始复算"
+    },
+    {
+      "comments": [],
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/72",
+      "title": "WyEhNf/flash-chroma PR #72 comments",
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/72",
+      "display_title": "WyEhNf/flash-chroma PR #72 comments"
+    },
+    {
+      "reviews": []
+    },
+    {
+      "review_threads": []
+    }
+  ],
+  "issue_search": {
+    "issues": []
+  },
+  "prior_bodies": "前65份正文与report/data/skylake-dispatch-diagnostic-v1及其PR71依赖原件完全相同；仅新增72；issue7/8最新正文/全部评论同在前阶段快照，updated检索无变更",
+  "discussion_limit": "当前连接器没有Discussion读取接口，不把未读取视为无新问题；不合并或关闭事项"
+}
