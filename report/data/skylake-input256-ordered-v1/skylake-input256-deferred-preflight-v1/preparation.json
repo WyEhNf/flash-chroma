@@ -1,0 +1,135 @@
+{
+  "purpose": "仅准备并冻结修订82源码和构建计划；不编译、加载候选或执行像素/性能。",
+  "frozen": true,
+  "base_commit": "e2752a80d981ca6901ded376364176f1ee1e40b5",
+  "plan": {
+    "path": "experiments/skylake-input256-deferred-v1.json",
+    "sha256": "20fedf0f1f0427ab7a9d078f5842fd24fe3943e7b8b8eeedc3846a1593f3009e"
+  },
+  "parent_plan": {
+    "path": "experiments/skylake-input256-v1.json",
+    "sha256": "84150d8fcd166e94efb6ffe570cdf6fd9d1702c71f82d3477077243a2e188778"
+  },
+  "generator": {
+    "path": "artifacts/skylake-input256-deferred-preflight-v1/prepare.py",
+    "sha256": "f6a40a684978c30ea9385f5fad7ef5328e528b6c707d407cd6b7264786426f43"
+  },
+  "new_tu_parent": {
+    "path": "experiments/skylake-input256-runtime/input256_inplace/channel_avx2.cpp",
+    "sha256": "6121a4146a49cc9e9007ad4ba378b2a07b39a984d436ed3544e9c47c9b8f48cc"
+  },
+  "candidate_files": [
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/CMakeLists.txt",
+      "sha256": "48e404ea0bac2c9124663a72120983725c77a9ca191283eeb3bb3b2d700af7a9",
+      "parent_path": "experiments/skylake-input256-runtime/CMakeLists.txt",
+      "same_bytes_as81": false
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/aligned_table.hpp",
+      "sha256": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+      "parent_path": "experiments/skylake-input256-runtime/aligned_table.hpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/andn_inplace/channel_avx2.cpp",
+      "sha256": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+      "parent_path": "experiments/skylake-input256-runtime/andn_inplace/channel_avx2.cpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/andn_outplace/channel_avx2.cpp",
+      "sha256": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+      "parent_path": "experiments/skylake-input256-runtime/andn_outplace/channel_avx2.cpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/channel_avx2.cpp",
+      "sha256": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+      "parent_path": "experiments/skylake-input256-runtime/channel_avx2.cpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/channel_runtime.cpp",
+      "sha256": "e13173b9dd9fdefc78082ade9f3b0f6f267b140843f3fa63bdf3b60195106e35",
+      "parent_path": "experiments/skylake-input256-runtime/channel_runtime.cpp",
+      "same_bytes_as81": false
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/channel_views.hpp",
+      "sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "parent_path": "experiments/skylake-input256-runtime/channel_views.hpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/deferred_inplace/channel_avx2.cpp",
+      "sha256": "3be317be7863dafada6bde7dd004519187a6e37cac7af9014ffd468b5cb4ab20",
+      "parent_path": "experiments/skylake-input256-runtime/input256_inplace/channel_avx2.cpp",
+      "same_bytes_as81": false
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/outplace_bench.cpp",
+      "sha256": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+      "parent_path": "experiments/skylake-input256-runtime/outplace_bench.cpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/reference_to.cpp",
+      "sha256": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+      "parent_path": "experiments/skylake-input256-runtime/reference_to.cpp",
+      "same_bytes_as81": true
+    },
+    {
+      "path": "experiments/skylake-input256-deferred-runtime/suffix_cache.hpp",
+      "sha256": "d4a9a5c99d02df84a44d4e17b367e76a60bad942f01983263ad2d6d8cd4abafd",
+      "parent_path": "experiments/skylake-input256-runtime/suffix_cache.hpp",
+      "same_bytes_as81": false
+    }
+  ],
+  "source_entries": 72,
+  "preserved_exact_pixel_sources": [
+    "channel_avx2.cpp",
+    "andn_inplace/channel_avx2.cpp",
+    "andn_outplace/channel_avx2.cpp"
+  ],
+  "new_tu_outside_64_body_equal81_after_entry_rename": true,
+  "unchanged_read_wide_and_exact_tail": true,
+  "runtime_header_changes": "仅input256身份改input256_deferred、revision82；分派/Handle/getter语义保持",
+  "source_diff": {
+    "path": "artifacts/skylake-input256-deferred-preflight-v1/source-diff.patch",
+    "sha256": "50c303f53e28606eb44b0eb3a87a60e6edad0584b748b3d540fa23ed1f58c1bd"
+  },
+  "input_diff": {
+    "path": "artifacts/skylake-input256-deferred-preflight-v1/deferred-vs81.patch",
+    "sha256": "8a8e25c2c8a7c8ec02e231f95e2e0e89f44143d1621885062d651f5b4e359004"
+  },
+  "preserved_plan_fields": [
+    "fixed_inputs",
+    "suffix_models",
+    "contract",
+    "hardware",
+    "screen"
+  ],
+  "acceptance_changed_only_confirmation_output_identity": true,
+  "correctness_changed_only_getter_identity": true,
+  "prior_evidence": {
+    "revision81_build": {
+      "path": "artifacts/skylake-input256-linux-build-v1/build.json",
+      "sha256": "ef6d8f23189c507142c746e2005adce18dbf9601ac10fc1539bfd491d9e355d8"
+    },
+    "revision81_static": {
+      "path": "artifacts/skylake-input256-static-v1/results-v2.json",
+      "sha256": "5b3d7c9a3b3688cbedd66e79baca69d29f21895834a0b3959b172ea06ab4c9b2"
+    },
+    "revision81_independent_static": {
+      "path": "artifacts/skylake-input256-static-v1/independent_results.json",
+      "sha256": "977cb954ff4133eaf8285d61182c9491203aa4c27b30a39995cefae061f36d08"
+    }
+  },
+  "source_lifetime_note": "pending+4是源级减压假设，实际编译活跃数未知，必须检查对象spill/常量重载",
+  "builds": 0,
+  "compiler_calls": 0,
+  "candidate_library_loads": 0,
+  "pixel_calls": 0,
+  "performance_calls": 0
+}
