@@ -1,0 +1,111 @@
+{
+  "purpose": "只读分析65536像素块的连续与固定交错分配，评估共享ID工作集与负载差的代理指标",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4"
+  },
+  "script_sha256": "783f8f5f6ec02231e6d68e7d3b361c3ff0c345c1d1e950db6e955cce5632f2be",
+  "photo_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb",
+  "photo_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "photo_bytes": 235929600,
+  "block_pixels": 65536,
+  "block_bytes": 196608,
+  "blocks": 1200,
+  "threads": 4,
+  "ID_layout": "R低/G中/B高，16MiB u8 ID表，64字节行",
+  "method": [
+    "每块记录其65536像素访问的ID表行集合，每行在该块只计一次。",
+    "连续static的第j组使用块[j,j+300,j+600,j+900]；static,1使用[4j,4j+1,4j+2,4j+3]，j为0至299。",
+    "统计每组四块的行并集、交集，以及各线程全部块的块内唯一行数之和。",
+    "每张1024×768图恰有12块；连续分配对应每线程连续25张，交错分配使每线程每张图取得3块。"
+  ],
+  "result": {
+    "contiguous_static": {
+      "mean_4block_union_ID_lines": 27923.296666666665,
+      "mean_sum_4block_individual_ID_lines": 38706.47,
+      "mean_4way_common_ID_lines": 457.4033333333333,
+      "total_individual_ID_lines_by_thread": [
+        2402164,
+        3110217,
+        2641806,
+        3457754
+      ],
+      "max_over_mean_thread_individual_lines": 1.1911028483523987,
+      "mean_union_bytes": 1787090.9866666666
+    },
+    "cyclic_static_1": {
+      "mean_4block_union_ID_lines": 18579.66,
+      "mean_sum_4block_individual_ID_lines": 38706.47,
+      "mean_4way_common_ID_lines": 3258.8233333333333,
+      "total_individual_ID_lines_by_thread": [
+        2784133,
+        2902683,
+        2986426,
+        2938699
+      ],
+      "max_over_mean_thread_individual_lines": 1.0287430843818446,
+      "mean_union_bytes": 1189098.24
+    },
+    "cyclic_over_contiguous_union_ratio": 0.6653820364333772
+  },
+  "existing_measurement_context": {
+    "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-chroma-batch4-io-quiet-perf-v1\\results.json",
+    "sha256": "41185d309a85f32b68bf8ac8b1217b054d1859ce512131a0bd195536428162ec",
+    "four_thread_summary": [
+      {
+        "variant": "reference",
+        "requested_threads": 4,
+        "median_apply_ms_per_image": 0.37521528,
+        "median_legacy_copy_apply_ms_per_image": 0.83845696,
+        "median_outplace_ms_per_image": 0.837886915,
+        "prepare_wall_seconds": [
+          0.0867856279999728,
+          0.10123449000002438,
+          0.1010200389999909,
+          0.12681058600003325
+        ],
+        "model_accounting_bytes": 11269404
+      },
+      {
+        "variant": "candidate",
+        "requested_threads": 4,
+        "median_apply_ms_per_image": 0.16076702999999998,
+        "median_legacy_copy_apply_ms_per_image": 0.664014315,
+        "median_outplace_ms_per_image": 0.18742894,
+        "prepare_wall_seconds": [
+          0.11751212500001884,
+          0.16129675700000234,
+          0.11375188600004549,
+          0.12605894399996487
+        ],
+        "model_accounting_bytes": 28046644
+      }
+    ],
+    "interpretation": "67候选绝对apply耗时低于outplace；两接口相对23倍数差不能解释成候选原地比输出慢。23真实输出在计时区间内执行整批memcpy，纯apply区间从复制完成后开始。",
+    "cache_state_limit": "计时外的memcpy仍会改变缓存状态；未采集足够证据将其归因为具体缓存瓶颈。两库apply均遵守原冻结流程。"
+  },
+  "read_source_sha256": {
+    "experiments/skylake-id-batch4-runtime/channel_runtime.cpp": "9b0b87b4ba486914d5cc1681514a1f194d3cbade9bcab712ef69dcabd0c228e6",
+    "experiments/skylake-id-batch4-runtime/channel_avx2.cpp": "93ef17653915ef75556d9d27bb6ec48003e0d2c25d6e95e42b9586ebaf19bf97",
+    "experiments/skylake-chroma-batch4-io-runtime/reference_to.cpp": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+    "experiments/skylake-chroma-batch4-io-runtime/outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+    "scripts/bench_skylake_quiet_pinned_linux.py": "a20370aab0d2a39a52b51b20b93cb53dc6cd399af11543469b9e7f362953bbab"
+  },
+  "single_candidate": "从65仅将原地apply的OpenMP schedule(static)改为schedule(static,1)，保持65536像素块、像素内核及分离输出路径；基准、模型和输出契约不变。",
+  "correctness_and_risk": [
+    "每块字节范围不变，旧输入读取/预取块界和原地先读后写规则继续适用；小输入、尾部及实际四线程需另行验证。",
+    "未对齐输入的跨线程块边界最多各共享一条缓存行；交错可能把跨线程边界从3处增加到1199处。",
+    "每块内部192KiB仍顺序访问，但线程跨块跳跃；真实缓存、预取和带宽收益未知。"
+  ],
+  "limits": [
+    "假定四线程同序块同时进行，仅用于集合比较；运行时不增加块间同步，也不保证严格同步。",
+    "唯一行数之和不是逐线程耗时或真实未命中数；没有模拟LRU、缓存组映射、缓存层级或时间顺序。",
+    "集合改善不能换算为33.46%提速，不能代替当前三倍目标验收。",
+    "仅覆盖已见固定100图及R低布局；不外推其他照片、通道差布局或真实Skylake速度。"
+  ],
+  "native_calls": 0,
+  "performance_calls": 0,
+  "existing_files_modified": 0,
+  "reproduce": "artifacts/error-study-py312/Scripts/python.exe artifacts/skylake-interleaved-readonly-v1/analyze.py --output <不存在的新JSON路径>"
+}
