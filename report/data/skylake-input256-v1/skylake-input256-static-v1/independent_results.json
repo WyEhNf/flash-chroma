@@ -1,0 +1,2519 @@
+{
+  "purpose": "81独立对象审计：逐节字节、输入字节标签、四ID与真实spill；不执行候选。",
+  "accepted": false,
+  "failure_reason": [
+    "64像素区段/no_stack"
+  ],
+  "decision": "静态门槛失败时停止本候选，禁止像素/性能；不调参重编",
+  "script_sha256": "4e405ef01d5d2a5dcb9368996f5e78347a53a54b4ccf88c844c18509b05eca49",
+  "parser_sha256": "82236a47f3fb99af01368babfe041aaad15350700bc3bd55c3f9cb0b6beddc81",
+  "plan_sha256": "84150d8fcd166e94efb6ffe570cdf6fd9d1702c71f82d3477077243a2e188778",
+  "build_sha256": "ef6d8f23189c507142c746e2005adce18dbf9601ac10fc1539bfd491d9e355d8",
+  "identity": {
+    "plan_build_match": true,
+    "source_build_match": true
+  },
+  "source_hash_mismatches": [],
+  "objects": [
+    {
+      "role": "linear",
+      "object_sha256": "7e09d42a9161aab476c3cd26d9646254dbcdc313b2105794e09c01147a47c4ab",
+      "asm_sha256": "d76ecfb2945149999b9ab935773b778736725820ec7d5016ab1965033b536733",
+      "instruction_bytes_match": true,
+      "complete_executable_byte_coverage": true,
+      "executable_sections": {
+        ".text": 8045
+      },
+      "forbidden": [],
+      "text_equal79": true
+    },
+    {
+      "role": "andn_inplace",
+      "object_sha256": "324f35b209c54974ce078f3a3e35e51204f212ad8779f827fadc466ab36a507a",
+      "asm_sha256": "dd08bbe662ba6163a57477db7c31ffb6bf7577ba21494dbaec4935b3a91797d4",
+      "instruction_bytes_match": true,
+      "complete_executable_byte_coverage": true,
+      "executable_sections": {
+        ".text": 3772
+      },
+      "forbidden": [],
+      "text_equal79": true
+    },
+    {
+      "role": "andn_outplace",
+      "object_sha256": "82d09e1ec19ef1c783d1fa540f0220fed428c22aa834f61d1e8c451fb88db8df",
+      "asm_sha256": "df985051604cf0ceacd2b27531eb3da700c3ceecbd44a3d86928a5ce05895a95",
+      "instruction_bytes_match": true,
+      "complete_executable_byte_coverage": true,
+      "executable_sections": {
+        ".text": 4583
+      },
+      "forbidden": [],
+      "text_equal79": true
+    },
+    {
+      "role": "input256",
+      "object_sha256": "157b182fc684df713b64be6429efc793f505254b9cbb0b65845f42e17eecc39b",
+      "asm_sha256": "882701a2371bf047feb32c7867be35026de890fe6b25dddb21af1a3ef42750d1",
+      "instruction_bytes_match": true,
+      "complete_executable_byte_coverage": true,
+      "executable_sections": {
+        ".text": 3597
+      },
+      "forbidden": [],
+      "text_equal79": null
+    },
+    {
+      "role": "dispatcher",
+      "object_sha256": "4de3c2cb8fa41e01693b5b49c5685c2c704d437c6ebcde71d01e0840b1b89962",
+      "asm_sha256": "cca7ff84d9588af7a0d8a769cbcc658ab420eb3bff0cedaf9bb022ee52f27ee3",
+      "instruction_bytes_match": true,
+      "complete_executable_byte_coverage": true,
+      "executable_sections": {
+        ".text": 28806,
+        ".text._ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv": 5,
+        ".text._ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv": 10,
+        ".text.unlikely": 4450,
+        ".text._ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE24_M_release_last_use_coldEv": 134,
+        ".text._ZN4jshc9SparseLutD2Ev": 480,
+        ".text._ZNSt6vectorIS_IjSaIjEESaIS1_EE17_M_default_appendEm": 814
+      },
+      "forbidden": [],
+      "text_equal79": null
+    }
+  ],
+  "regions": [
+    {
+      "width": 64,
+      "start": "0xe8",
+      "end": "0x727",
+      "instructions": 285,
+      "checks": {
+        "complete_body": true,
+        "one_input32_per8": true,
+        "exact_vector_masks": true,
+        "zero_extended_indices": true,
+        "exact_id_loads": true,
+        "exact_palette_loads": true,
+        "four_id_before_palette": true,
+        "all_reads_before_image_store": true,
+        "image_store_count": true,
+        "image_store_kind": true,
+        "no_stack": false,
+        "no_loop_constant_load": true
+      },
+      "input32": [
+        {
+          "address": "0x113",
+          "offset": 0,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x1bb",
+          "offset": 24,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x26e",
+          "offset": 48,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x321",
+          "offset": 72,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x3d4",
+          "offset": 96,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x483",
+          "offset": 120,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x544",
+          "offset": 144,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x5fc",
+          "offset": 168,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        }
+      ],
+      "constant_uses": [
+        {
+          "address": "0x113",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x118",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x1bb",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x1c6",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x26e",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x279",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x321",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x32c",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x3d4",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x3df",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x483",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x48f",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x544",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x552",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        },
+        {
+          "address": "0x5fc",
+          "register": "%ymm5",
+          "initializer": "0xa6",
+          "correct": true
+        },
+        {
+          "address": "0x60a",
+          "register": "%ymm4",
+          "initializer": "0xae",
+          "correct": true
+        }
+      ],
+      "extracts": [
+        {
+          "address": "0x11d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 0
+        },
+        {
+          "address": "0x122",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 6
+        },
+        {
+          "address": "0x132",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 3
+        },
+        {
+          "address": "0x138",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 9
+        },
+        {
+          "address": "0x15a",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 12
+        },
+        {
+          "address": "0x15f",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 18
+        },
+        {
+          "address": "0x17d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 15
+        },
+        {
+          "address": "0x183",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 21
+        },
+        {
+          "address": "0x1d0",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 24
+        },
+        {
+          "address": "0x1d5",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 30
+        },
+        {
+          "address": "0x1e5",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 27
+        },
+        {
+          "address": "0x1eb",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 33
+        },
+        {
+          "address": "0x20d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 36
+        },
+        {
+          "address": "0x212",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 42
+        },
+        {
+          "address": "0x230",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 39
+        },
+        {
+          "address": "0x236",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 45
+        },
+        {
+          "address": "0x283",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 48
+        },
+        {
+          "address": "0x288",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 54
+        },
+        {
+          "address": "0x298",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 51
+        },
+        {
+          "address": "0x29e",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 57
+        },
+        {
+          "address": "0x2c0",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 60
+        },
+        {
+          "address": "0x2c5",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 66
+        },
+        {
+          "address": "0x2e3",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 63
+        },
+        {
+          "address": "0x2e9",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 69
+        },
+        {
+          "address": "0x336",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 72
+        },
+        {
+          "address": "0x33b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 78
+        },
+        {
+          "address": "0x34b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 75
+        },
+        {
+          "address": "0x351",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 81
+        },
+        {
+          "address": "0x373",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 84
+        },
+        {
+          "address": "0x378",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 90
+        },
+        {
+          "address": "0x396",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 87
+        },
+        {
+          "address": "0x39c",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 93
+        },
+        {
+          "address": "0x3e9",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 96
+        },
+        {
+          "address": "0x3ee",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 102
+        },
+        {
+          "address": "0x3fe",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 99
+        },
+        {
+          "address": "0x404",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 105
+        },
+        {
+          "address": "0x426",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 108
+        },
+        {
+          "address": "0x42b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 114
+        },
+        {
+          "address": "0x449",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 111
+        },
+        {
+          "address": "0x44f",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 117
+        },
+        {
+          "address": "0x499",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 120
+        },
+        {
+          "address": "0x49e",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 126
+        },
+        {
+          "address": "0x4b3",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 123
+        },
+        {
+          "address": "0x4b9",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 129
+        },
+        {
+          "address": "0x4e1",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 132
+        },
+        {
+          "address": "0x4e6",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 138
+        },
+        {
+          "address": "0x504",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 135
+        },
+        {
+          "address": "0x50a",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 141
+        },
+        {
+          "address": "0x55c",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 144
+        },
+        {
+          "address": "0x561",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 150
+        },
+        {
+          "address": "0x571",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 147
+        },
+        {
+          "address": "0x577",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 153
+        },
+        {
+          "address": "0x599",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 156
+        },
+        {
+          "address": "0x59e",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 162
+        },
+        {
+          "address": "0x5bc",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 159
+        },
+        {
+          "address": "0x5c2",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 165
+        },
+        {
+          "address": "0x614",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 168
+        },
+        {
+          "address": "0x619",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 174
+        },
+        {
+          "address": "0x629",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 171
+        },
+        {
+          "address": "0x62f",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 177
+        },
+        {
+          "address": "0x64f",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 180
+        },
+        {
+          "address": "0x654",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 186
+        },
+        {
+          "address": "0x66b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 183
+        },
+        {
+          "address": "0x67d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 189
+        }
+      ],
+      "ids": [
+        {
+          "address": "0x128",
+          "correct": true,
+          "pixel_offset": 0
+        },
+        {
+          "address": "0x12d",
+          "correct": true,
+          "pixel_offset": 6
+        },
+        {
+          "address": "0x13e",
+          "correct": true,
+          "pixel_offset": 3
+        },
+        {
+          "address": "0x143",
+          "correct": true,
+          "pixel_offset": 9
+        },
+        {
+          "address": "0x173",
+          "correct": true,
+          "pixel_offset": 12
+        },
+        {
+          "address": "0x178",
+          "correct": true,
+          "pixel_offset": 18
+        },
+        {
+          "address": "0x189",
+          "correct": true,
+          "pixel_offset": 15
+        },
+        {
+          "address": "0x18e",
+          "correct": true,
+          "pixel_offset": 21
+        },
+        {
+          "address": "0x1db",
+          "correct": true,
+          "pixel_offset": 24
+        },
+        {
+          "address": "0x1e0",
+          "correct": true,
+          "pixel_offset": 30
+        },
+        {
+          "address": "0x1f1",
+          "correct": true,
+          "pixel_offset": 27
+        },
+        {
+          "address": "0x1f6",
+          "correct": true,
+          "pixel_offset": 33
+        },
+        {
+          "address": "0x226",
+          "correct": true,
+          "pixel_offset": 36
+        },
+        {
+          "address": "0x22b",
+          "correct": true,
+          "pixel_offset": 42
+        },
+        {
+          "address": "0x23c",
+          "correct": true,
+          "pixel_offset": 39
+        },
+        {
+          "address": "0x241",
+          "correct": true,
+          "pixel_offset": 45
+        },
+        {
+          "address": "0x28e",
+          "correct": true,
+          "pixel_offset": 48
+        },
+        {
+          "address": "0x293",
+          "correct": true,
+          "pixel_offset": 54
+        },
+        {
+          "address": "0x2a4",
+          "correct": true,
+          "pixel_offset": 51
+        },
+        {
+          "address": "0x2a9",
+          "correct": true,
+          "pixel_offset": 57
+        },
+        {
+          "address": "0x2d9",
+          "correct": true,
+          "pixel_offset": 60
+        },
+        {
+          "address": "0x2de",
+          "correct": true,
+          "pixel_offset": 66
+        },
+        {
+          "address": "0x2ef",
+          "correct": true,
+          "pixel_offset": 63
+        },
+        {
+          "address": "0x2f4",
+          "correct": true,
+          "pixel_offset": 69
+        },
+        {
+          "address": "0x341",
+          "correct": true,
+          "pixel_offset": 72
+        },
+        {
+          "address": "0x346",
+          "correct": true,
+          "pixel_offset": 78
+        },
+        {
+          "address": "0x357",
+          "correct": true,
+          "pixel_offset": 75
+        },
+        {
+          "address": "0x35c",
+          "correct": true,
+          "pixel_offset": 81
+        },
+        {
+          "address": "0x38c",
+          "correct": true,
+          "pixel_offset": 84
+        },
+        {
+          "address": "0x391",
+          "correct": true,
+          "pixel_offset": 90
+        },
+        {
+          "address": "0x3a2",
+          "correct": true,
+          "pixel_offset": 87
+        },
+        {
+          "address": "0x3a7",
+          "correct": true,
+          "pixel_offset": 93
+        },
+        {
+          "address": "0x3f4",
+          "correct": true,
+          "pixel_offset": 96
+        },
+        {
+          "address": "0x3f9",
+          "correct": true,
+          "pixel_offset": 102
+        },
+        {
+          "address": "0x40a",
+          "correct": true,
+          "pixel_offset": 99
+        },
+        {
+          "address": "0x40f",
+          "correct": true,
+          "pixel_offset": 105
+        },
+        {
+          "address": "0x43f",
+          "correct": true,
+          "pixel_offset": 108
+        },
+        {
+          "address": "0x444",
+          "correct": true,
+          "pixel_offset": 114
+        },
+        {
+          "address": "0x455",
+          "correct": true,
+          "pixel_offset": 111
+        },
+        {
+          "address": "0x45a",
+          "correct": true,
+          "pixel_offset": 117
+        },
+        {
+          "address": "0x4a9",
+          "correct": true,
+          "pixel_offset": 120
+        },
+        {
+          "address": "0x4ae",
+          "correct": true,
+          "pixel_offset": 126
+        },
+        {
+          "address": "0x4bf",
+          "correct": true,
+          "pixel_offset": 123
+        },
+        {
+          "address": "0x4c4",
+          "correct": true,
+          "pixel_offset": 129
+        },
+        {
+          "address": "0x4fa",
+          "correct": true,
+          "pixel_offset": 132
+        },
+        {
+          "address": "0x4ff",
+          "correct": true,
+          "pixel_offset": 138
+        },
+        {
+          "address": "0x510",
+          "correct": true,
+          "pixel_offset": 135
+        },
+        {
+          "address": "0x515",
+          "correct": true,
+          "pixel_offset": 141
+        },
+        {
+          "address": "0x567",
+          "correct": true,
+          "pixel_offset": 144
+        },
+        {
+          "address": "0x56c",
+          "correct": true,
+          "pixel_offset": 150
+        },
+        {
+          "address": "0x57d",
+          "correct": true,
+          "pixel_offset": 147
+        },
+        {
+          "address": "0x582",
+          "correct": true,
+          "pixel_offset": 153
+        },
+        {
+          "address": "0x5b2",
+          "correct": true,
+          "pixel_offset": 156
+        },
+        {
+          "address": "0x5b7",
+          "correct": true,
+          "pixel_offset": 162
+        },
+        {
+          "address": "0x5c8",
+          "correct": true,
+          "pixel_offset": 159
+        },
+        {
+          "address": "0x5cd",
+          "correct": true,
+          "pixel_offset": 165
+        },
+        {
+          "address": "0x61f",
+          "correct": true,
+          "pixel_offset": 168
+        },
+        {
+          "address": "0x624",
+          "correct": true,
+          "pixel_offset": 174
+        },
+        {
+          "address": "0x635",
+          "correct": true,
+          "pixel_offset": 171
+        },
+        {
+          "address": "0x63a",
+          "correct": true,
+          "pixel_offset": 177
+        },
+        {
+          "address": "0x666",
+          "correct": true,
+          "pixel_offset": 180
+        },
+        {
+          "address": "0x678",
+          "correct": true,
+          "pixel_offset": 186
+        },
+        {
+          "address": "0x683",
+          "correct": true,
+          "pixel_offset": 183
+        },
+        {
+          "address": "0x688",
+          "correct": true,
+          "pixel_offset": 189
+        }
+      ],
+      "palette": [
+        {
+          "address": "0x148",
+          "pixel_offset": 6,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x14e",
+          "pixel_offset": 0,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x165",
+          "pixel_offset": 9,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x16c",
+          "pixel_offset": 3,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x197",
+          "pixel_offset": 18,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x19d",
+          "pixel_offset": 12,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x1a3",
+          "pixel_offset": 21,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x1aa",
+          "pixel_offset": 15,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x1fb",
+          "pixel_offset": 30,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x201",
+          "pixel_offset": 24,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x218",
+          "pixel_offset": 33,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x21f",
+          "pixel_offset": 27,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x24a",
+          "pixel_offset": 42,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x250",
+          "pixel_offset": 36,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x256",
+          "pixel_offset": 45,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x25d",
+          "pixel_offset": 39,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x2ae",
+          "pixel_offset": 54,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x2b4",
+          "pixel_offset": 48,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x2cb",
+          "pixel_offset": 57,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x2d2",
+          "pixel_offset": 51,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x2fd",
+          "pixel_offset": 66,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x303",
+          "pixel_offset": 60,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x309",
+          "pixel_offset": 69,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x310",
+          "pixel_offset": 63,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x361",
+          "pixel_offset": 78,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x367",
+          "pixel_offset": 72,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x37e",
+          "pixel_offset": 81,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x385",
+          "pixel_offset": 75,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x3b0",
+          "pixel_offset": 90,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x3b6",
+          "pixel_offset": 84,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x3bc",
+          "pixel_offset": 93,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x3c3",
+          "pixel_offset": 87,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x414",
+          "pixel_offset": 102,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x41a",
+          "pixel_offset": 96,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x431",
+          "pixel_offset": 105,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x438",
+          "pixel_offset": 99,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x464",
+          "pixel_offset": 114,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x46a",
+          "pixel_offset": 108,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x470",
+          "pixel_offset": 117,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x477",
+          "pixel_offset": 111,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x4cf",
+          "pixel_offset": 126,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x4d5",
+          "pixel_offset": 120,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x4ec",
+          "pixel_offset": 129,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x4f3",
+          "pixel_offset": 123,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x51f",
+          "pixel_offset": 138,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x525",
+          "pixel_offset": 132,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x52b",
+          "pixel_offset": 141,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x532",
+          "pixel_offset": 135,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x587",
+          "pixel_offset": 150,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x58d",
+          "pixel_offset": 144,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5a4",
+          "pixel_offset": 153,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5ab",
+          "pixel_offset": 147,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5d7",
+          "pixel_offset": 162,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5dd",
+          "pixel_offset": 156,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5e3",
+          "pixel_offset": 165,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x5ea",
+          "pixel_offset": 159,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x63f",
+          "pixel_offset": 168,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x643",
+          "pixel_offset": 174,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x65f",
+          "pixel_offset": 177,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x671",
+          "pixel_offset": 171,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x697",
+          "pixel_offset": 186,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x6c0",
+          "pixel_offset": 189,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x6c7",
+          "pixel_offset": 180,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x6cd",
+          "pixel_offset": 183,
+          "four_ids_ready": true
+        }
+      ],
+      "stack_references": [
+        {
+          "address": "0x4c9",
+          "instruction": "vmovdqa %ymm1,-0x20(%rsp)"
+        },
+        {
+          "address": "0x6e9",
+          "instruction": "vmovdqa -0x20(%rsp),%ymm7"
+        }
+      ],
+      "image_stores": [
+        {
+          "address": "0x6d4",
+          "instruction": "vmovntdq %ymm8,-0xc0(%rax)"
+        },
+        {
+          "address": "0x6dc",
+          "instruction": "vmovntdq %ymm2,-0xa0(%rax)"
+        },
+        {
+          "address": "0x6e4",
+          "instruction": "vmovntdq %ymm7,-0x80(%rax)"
+        },
+        {
+          "address": "0x70a",
+          "instruction": "vmovntdq %ymm1,-0x60(%rax)"
+        },
+        {
+          "address": "0x70f",
+          "instruction": "vmovntdq %ymm0,-0x40(%rax)"
+        },
+        {
+          "address": "0x71f",
+          "instruction": "vmovntdq %ymm13,-0x20(%rax)"
+        }
+      ],
+      "maximum_input_bytes": 200,
+      "instruction_counts": {
+        "vpermd": 16,
+        "vpshufb": 16,
+        "vextracti128": 8,
+        "vpextrd": 48,
+        "vmovd": 48,
+        "vmovntdq": 6,
+        "vmovdqa": 3,
+        "vmovdqu": 0
+      }
+    },
+    {
+      "width": 32,
+      "start": "0x768",
+      "end": "0xaa5",
+      "instructions": 151,
+      "checks": {
+        "complete_body": true,
+        "one_input32_per8": true,
+        "exact_vector_masks": true,
+        "zero_extended_indices": true,
+        "exact_id_loads": true,
+        "exact_palette_loads": true,
+        "four_id_before_palette": true,
+        "all_reads_before_image_store": true,
+        "image_store_count": true,
+        "image_store_kind": true,
+        "no_stack": true,
+        "no_loop_constant_load": true
+      },
+      "input32": [
+        {
+          "address": "0x768",
+          "offset": 0,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x810",
+          "offset": 24,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x8b3",
+          "offset": 48,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        },
+        {
+          "address": "0x95e",
+          "offset": 72,
+          "bytes": 32,
+          "memory_base_valid": true,
+          "permd_mask_correct": true
+        }
+      ],
+      "constant_uses": [
+        {
+          "address": "0x768",
+          "register": "%ymm5",
+          "initializer": "0x741",
+          "correct": true
+        },
+        {
+          "address": "0x76d",
+          "register": "%ymm4",
+          "initializer": "0x749",
+          "correct": true
+        },
+        {
+          "address": "0x810",
+          "register": "%ymm5",
+          "initializer": "0x741",
+          "correct": true
+        },
+        {
+          "address": "0x816",
+          "register": "%ymm4",
+          "initializer": "0x749",
+          "correct": true
+        },
+        {
+          "address": "0x8b3",
+          "register": "%ymm5",
+          "initializer": "0x741",
+          "correct": true
+        },
+        {
+          "address": "0x8bf",
+          "register": "%ymm4",
+          "initializer": "0x749",
+          "correct": true
+        },
+        {
+          "address": "0x95e",
+          "register": "%ymm5",
+          "initializer": "0x741",
+          "correct": true
+        },
+        {
+          "address": "0x96a",
+          "register": "%ymm4",
+          "initializer": "0x749",
+          "correct": true
+        }
+      ],
+      "extracts": [
+        {
+          "address": "0x772",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 0
+        },
+        {
+          "address": "0x777",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 6
+        },
+        {
+          "address": "0x787",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 3
+        },
+        {
+          "address": "0x78d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 9
+        },
+        {
+          "address": "0x7af",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 12
+        },
+        {
+          "address": "0x7b4",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 18
+        },
+        {
+          "address": "0x7d2",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 15
+        },
+        {
+          "address": "0x7d8",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 21
+        },
+        {
+          "address": "0x81b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 24
+        },
+        {
+          "address": "0x820",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 30
+        },
+        {
+          "address": "0x830",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 27
+        },
+        {
+          "address": "0x836",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 33
+        },
+        {
+          "address": "0x858",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 36
+        },
+        {
+          "address": "0x85d",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 42
+        },
+        {
+          "address": "0x87b",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 39
+        },
+        {
+          "address": "0x881",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 45
+        },
+        {
+          "address": "0x8c4",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 48
+        },
+        {
+          "address": "0x8c9",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 54
+        },
+        {
+          "address": "0x8d9",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 51
+        },
+        {
+          "address": "0x8df",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 57
+        },
+        {
+          "address": "0x901",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 60
+        },
+        {
+          "address": "0x906",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 66
+        },
+        {
+          "address": "0x924",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 63
+        },
+        {
+          "address": "0x92a",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 69
+        },
+        {
+          "address": "0x96f",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 72
+        },
+        {
+          "address": "0x974",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 78
+        },
+        {
+          "address": "0x984",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 75
+        },
+        {
+          "address": "0x98a",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 81
+        },
+        {
+          "address": "0x9ac",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 84
+        },
+        {
+          "address": "0x9b1",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 90
+        },
+        {
+          "address": "0x9cf",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 87
+        },
+        {
+          "address": "0x9d5",
+          "zero_extended_rgb24": true,
+          "pixel_offset": 93
+        }
+      ],
+      "ids": [
+        {
+          "address": "0x77d",
+          "correct": true,
+          "pixel_offset": 0
+        },
+        {
+          "address": "0x782",
+          "correct": true,
+          "pixel_offset": 6
+        },
+        {
+          "address": "0x793",
+          "correct": true,
+          "pixel_offset": 3
+        },
+        {
+          "address": "0x798",
+          "correct": true,
+          "pixel_offset": 9
+        },
+        {
+          "address": "0x7c8",
+          "correct": true,
+          "pixel_offset": 12
+        },
+        {
+          "address": "0x7cd",
+          "correct": true,
+          "pixel_offset": 18
+        },
+        {
+          "address": "0x7de",
+          "correct": true,
+          "pixel_offset": 15
+        },
+        {
+          "address": "0x7e3",
+          "correct": true,
+          "pixel_offset": 21
+        },
+        {
+          "address": "0x826",
+          "correct": true,
+          "pixel_offset": 24
+        },
+        {
+          "address": "0x82b",
+          "correct": true,
+          "pixel_offset": 30
+        },
+        {
+          "address": "0x83c",
+          "correct": true,
+          "pixel_offset": 27
+        },
+        {
+          "address": "0x841",
+          "correct": true,
+          "pixel_offset": 33
+        },
+        {
+          "address": "0x871",
+          "correct": true,
+          "pixel_offset": 36
+        },
+        {
+          "address": "0x876",
+          "correct": true,
+          "pixel_offset": 42
+        },
+        {
+          "address": "0x887",
+          "correct": true,
+          "pixel_offset": 39
+        },
+        {
+          "address": "0x88c",
+          "correct": true,
+          "pixel_offset": 45
+        },
+        {
+          "address": "0x8cf",
+          "correct": true,
+          "pixel_offset": 48
+        },
+        {
+          "address": "0x8d4",
+          "correct": true,
+          "pixel_offset": 54
+        },
+        {
+          "address": "0x8e5",
+          "correct": true,
+          "pixel_offset": 51
+        },
+        {
+          "address": "0x8ea",
+          "correct": true,
+          "pixel_offset": 57
+        },
+        {
+          "address": "0x91a",
+          "correct": true,
+          "pixel_offset": 60
+        },
+        {
+          "address": "0x91f",
+          "correct": true,
+          "pixel_offset": 66
+        },
+        {
+          "address": "0x930",
+          "correct": true,
+          "pixel_offset": 63
+        },
+        {
+          "address": "0x935",
+          "correct": true,
+          "pixel_offset": 69
+        },
+        {
+          "address": "0x97a",
+          "correct": true,
+          "pixel_offset": 72
+        },
+        {
+          "address": "0x97f",
+          "correct": true,
+          "pixel_offset": 78
+        },
+        {
+          "address": "0x990",
+          "correct": true,
+          "pixel_offset": 75
+        },
+        {
+          "address": "0x995",
+          "correct": true,
+          "pixel_offset": 81
+        },
+        {
+          "address": "0x9c5",
+          "correct": true,
+          "pixel_offset": 84
+        },
+        {
+          "address": "0x9ca",
+          "correct": true,
+          "pixel_offset": 90
+        },
+        {
+          "address": "0x9db",
+          "correct": true,
+          "pixel_offset": 87
+        },
+        {
+          "address": "0x9e0",
+          "correct": true,
+          "pixel_offset": 93
+        }
+      ],
+      "palette": [
+        {
+          "address": "0x79d",
+          "pixel_offset": 6,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7a3",
+          "pixel_offset": 0,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7ba",
+          "pixel_offset": 9,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7c1",
+          "pixel_offset": 3,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7ec",
+          "pixel_offset": 18,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7f2",
+          "pixel_offset": 12,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7f8",
+          "pixel_offset": 21,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x7ff",
+          "pixel_offset": 15,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x846",
+          "pixel_offset": 30,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x84c",
+          "pixel_offset": 24,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x863",
+          "pixel_offset": 33,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x86a",
+          "pixel_offset": 27,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x895",
+          "pixel_offset": 42,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x89b",
+          "pixel_offset": 36,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x8a1",
+          "pixel_offset": 45,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x8a8",
+          "pixel_offset": 39,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x8ef",
+          "pixel_offset": 54,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x8f5",
+          "pixel_offset": 48,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x90c",
+          "pixel_offset": 57,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x913",
+          "pixel_offset": 51,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x93f",
+          "pixel_offset": 66,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x945",
+          "pixel_offset": 60,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x94b",
+          "pixel_offset": 69,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x952",
+          "pixel_offset": 63,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x99a",
+          "pixel_offset": 78,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x9a0",
+          "pixel_offset": 72,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x9b7",
+          "pixel_offset": 81,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x9be",
+          "pixel_offset": 75,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x9ea",
+          "pixel_offset": 90,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0x9f0",
+          "pixel_offset": 84,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0xa13",
+          "pixel_offset": 93,
+          "four_ids_ready": true
+        },
+        {
+          "address": "0xa1a",
+          "pixel_offset": 87,
+          "four_ids_ready": true
+        }
+      ],
+      "stack_references": [],
+      "image_stores": [
+        {
+          "address": "0xa72",
+          "instruction": "vmovdqu %ymm1,-0x40(%rax)"
+        },
+        {
+          "address": "0xa92",
+          "instruction": "vmovdqu %ymm7,-0x60(%rax)"
+        },
+        {
+          "address": "0xa9d",
+          "instruction": "vmovdqu %ymm0,-0x20(%rax)"
+        }
+      ],
+      "maximum_input_bytes": 104,
+      "instruction_counts": {
+        "vpermd": 8,
+        "vpshufb": 8,
+        "vextracti128": 8,
+        "vpextrd": 24,
+        "vmovd": 24,
+        "vmovntdq": 0,
+        "vmovdqa": 4,
+        "vmovdqu": 3
+      }
+    }
+  ],
+  "resolved_rodata_constants": {
+    "0xa6": {
+      "symbol": ".LC0",
+      "bytes": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 0
+    },
+    "0xae": {
+      "symbol": ".LC1",
+      "bytes": [
+        0,
+        1,
+        2,
+        255,
+        3,
+        4,
+        5,
+        255,
+        6,
+        7,
+        8,
+        255,
+        9,
+        10,
+        11,
+        255,
+        0,
+        1,
+        2,
+        255,
+        3,
+        4,
+        5,
+        255,
+        6,
+        7,
+        8,
+        255,
+        9,
+        10,
+        11,
+        255
+      ],
+      "section": ".rodata.cst32",
+      "offset": 32
+    },
+    "0xb6": {
+      "symbol": ".LC2",
+      "bytes": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255
+      ],
+      "section": ".rodata.cst32",
+      "offset": 64
+    },
+    "0xbe": {
+      "symbol": ".LC3",
+      "bytes": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 96
+    },
+    "0xc9": {
+      "symbol": ".LC4",
+      "bytes": [
+        2,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 128
+    },
+    "0xd1": {
+      "symbol": ".LC5",
+      "bytes": [
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 160
+    },
+    "0xd9": {
+      "symbol": ".LC6",
+      "bytes": [
+        3,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 192
+    },
+    "0x741": {
+      "symbol": ".LC0",
+      "bytes": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 0
+    },
+    "0x749": {
+      "symbol": ".LC1",
+      "bytes": [
+        0,
+        1,
+        2,
+        255,
+        3,
+        4,
+        5,
+        255,
+        6,
+        7,
+        8,
+        255,
+        9,
+        10,
+        11,
+        255,
+        0,
+        1,
+        2,
+        255,
+        3,
+        4,
+        5,
+        255,
+        6,
+        7,
+        8,
+        255,
+        9,
+        10,
+        11,
+        255
+      ],
+      "section": ".rodata.cst32",
+      "offset": 32
+    },
+    "0x751": {
+      "symbol": ".LC2",
+      "bytes": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255
+      ],
+      "section": ".rodata.cst32",
+      "offset": 64
+    },
+    "0x759": {
+      "symbol": ".LC3",
+      "bytes": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0,
+        0,
+        6,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        0
+      ],
+      "section": ".rodata.cst32",
+      "offset": 96
+    },
+    "0xabc": {
+      "symbol": ".LC2",
+      "bytes": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255,
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        255,
+        255,
+        255,
+        255
+      ],
+      "section": ".rodata.cst32",
+      "offset": 64
+    }
+  },
+  "hints": {
+    "prefetchnta": 5,
+    "prefetcht0": 0,
+    "prefetchw": 0,
+    "sfence": 1
+  },
+  "compile_flags": [
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/reference_to.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/outplace_bench.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_runtime.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/channel_runtime.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/outplace_bench.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/andn_inplace/channel_avx2.cpp",
+      "bmi": true,
+      "expected_bmi": true,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/andn_outplace/channel_avx2.cpp",
+      "bmi": true,
+      "expected_bmi": true,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-input256-runtime/input256_inplace/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-exception-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/cpp/src/lut.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/cpp/src/fit_r14.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/cpp/src/portable_bridge.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/portable/src/jshc_portable.c",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/cpp/src/lut_simd_avx2.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    },
+    {
+      "file": "/mnt/f/Hackathon/projects/16-lut-color/cpp/src/main.cpp",
+      "bmi": false,
+      "expected_bmi": false,
+      "pass": true
+    }
+  ],
+  "unchanged_sources": {
+    "channel_avx2.cpp": true,
+    "andn_inplace/channel_avx2.cpp": true,
+    "andn_outplace/channel_avx2.cpp": true,
+    "handle": true,
+    "true_outplace": true
+  },
+  "dispatch_source_checks": {
+    "effective_workers": true,
+    "non_openmp_one": true,
+    "no_bmi_requirement_mt": true,
+    "pair48_single": true,
+    "new_getter_capability_only": true,
+    "old_getter_preserved": true
+  },
+  "bounds_review": "输入200/104B受216/120B宽窗口保护；24B精确尾和run除入口名外沿78；完整验证未运行。",
+  "spill_classification": "rsp/frame内存操作单列；图像store只计非栈目标，不能把中间YMM保存当作输出提前写。",
+  "limitations": [
+    "只审计对象与源，不执行完整RGB8；静态字节标签只追踪输入到ID/palette，不模拟最终RGB打包所有指令。",
+    "旧pair与linear对象.text逐字节等79，沿用其已验语义；本次未重跑旧性能。",
+    "无BMI/嵌套/非OMP路径只做源级核对，未伪造运行覆盖。"
+  ],
+  "root_results_used_as_conclusion": false,
+  "compiler_calls": 0,
+  "candidate_library_loads": 0,
+  "pixel_calls": 0,
+  "performance_calls": 0
+}
