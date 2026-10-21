@@ -1,0 +1,19 @@
+"""完整域通过后冻结40/56的单次增量计数筛查；不改变整体3倍验收。"""
+from pathlib import Path
+import json,hashlib
+ROOT=Path(__file__).resolve().parents[1]
+def read(p):return json.loads((ROOT/p).read_text(encoding='utf-8'))
+def spec(p):return {'path':p,'sha256':hashlib.sha256((ROOT/p).read_bytes()).hexdigest()}
+full=read('artifacts/skylake-sparsehint-linux-full-v1/results.json');assert full['pass']
+assert full['direct_table_sha256']==read('artifacts/skylake-batchspan-linux-full-v1/results.json')['direct_table_sha256']
+p=read('experiments/skylake-sourcehint-pmu-v1.json');p['cases']={}
+for label,name,revision in [('reference40','batchspan',40),('sparsehint56','sparsehint',56)]:
+    build=f'artifacts/skylake-{name}-linux-build-v1/build.json';full=f'artifacts/skylake-{name}-linux-full-v1/results.json'
+    p['cases'][label]={'revision':revision,'plan':spec(f'experiments/skylake-{name}-v1.json'),'build':spec(build),'full':spec(full),'build_role':'candidate','library':read(build)['libraries']['candidate']}
+p['models_plan']=spec('experiments/skylake-sparsehint-v2.json');new='scripts/profile_skylake_sparsehint_pmu.py';p['script']=spec(new)
+p['python_sources']=[new if x=='scripts/profile_skylake_sourcehint_pmu.py' else x for x in p['python_sources']]
+p['orders']=[{'threads':1,'variants':['reference40','sparsehint56']},{'threads':4,'variants':['sparsehint56','reference40']}]
+p['purpose']='40对56仅增加四点稀疏表预取的单次用户态计数；增量筛查1线程≤0.95、4线程≤1.05，整体墙钟3倍门槛不变'
+p['screen']=read('experiments/skylake-sparsehint-v2.json')['sparsehint_policy']['pmu_screen']
+dest=ROOT/'experiments/skylake-sparsehint-pmu-v1.json';assert not dest.exists();dest.write_text(json.dumps(p,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print('56全域与相同物理表已核验，单次计数政策冻结，尚未计数')

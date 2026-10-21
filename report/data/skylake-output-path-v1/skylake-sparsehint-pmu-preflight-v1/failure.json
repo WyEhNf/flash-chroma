@@ -1,0 +1,13 @@
+{
+  "purpose": "保留首次计数前身份检查失败，已有完整域通过，不重建或重测",
+  "command": "python3 scripts/profile_skylake_sparsehint_pmu.py --policy experiments/skylake-sparsehint-pmu-v1.json --output artifacts/skylake-sparsehint-pmu-v1",
+  "exit_code": 1,
+  "failure": "profile_skylake_sparsehint_pmu.py:47 assert build[plan_sha256]==spec[plan][sha256]",
+  "reason": "prepare的models_plan已改v2，但cases循环用动态f-string仍生成候选v1计划；真实build来自v2",
+  "policy_sha256": "b85951934286b58436bed24b106d3282098f8e0d6174c31ef9e454ebfde4b6a3",
+  "prepare_sha256": "9f163d54538409a153e3611b2e2b8c0709f5fbcdde69dd0a137db2b956130a46",
+  "candidate_pixel_calls": 0,
+  "counted_calls": 0,
+  "output_directory_created": false,
+  "metadata_probe_note": "先检查reference40库元数据；失败发生在创建任何计数句柄之前"
+}

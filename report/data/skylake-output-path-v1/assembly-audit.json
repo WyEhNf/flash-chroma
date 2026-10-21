@@ -1,0 +1,38 @@
+{
+  "purpose": "独立agent只读核对57源码与40/55/57实际生成代码；主流程手工复核关键合并",
+  "variant": 57,
+  "inplace_addresses": [
+    "0xd8",
+    "0x7ff"
+  ],
+  "outplace_addresses": [
+    "0x1030",
+    "0x17e3"
+  ],
+  "instructions_per_main64": {
+    "revision40": [
+      345,
+      346
+    ],
+    "revision57": [
+      321,
+      322
+    ]
+  },
+  "revision57_extracts": 0,
+  "revision57_alignr": 0,
+  "revision57_register_copies": 0,
+  "revision57_nt_stores": 6,
+  "revision57_palette_vmovd": 32,
+  "revision57_palette_vpinsrd": 32,
+  "revision57_blends": {
+    "vpblendd": 4,
+    "vblendps": 2
+  },
+  "constants_loaded_before_loop": 5,
+  "rip_loads_in_main": 0,
+  "stack_accesses_in_main": 0,
+  "explanation": "permute2x128(B,C,0x30)选择B低半与C高半，等价vblendps 0xf0；位选择不做浮点运算",
+  "native_calls": 0,
+  "performance_calls": 0
+}

@@ -1,0 +1,30 @@
+本阶段研究53—55的直接RGB32分块、低成本二维ID分块和同源编译器。72组完整RGB8 API配置全部逐字节一致，但三个候选均未通过事前冻结的单线程周期筛查，没有新增整轮墙钟成绩。整体300%吞吐目标仍未完成：最新独立配置协议中40相对23的单线程纯映射为2.6444倍，三倍缺口保留。
+
+依赖 #52，base为 `7f3a4790907ee64c25155c1683c24e743762c296`。阶段实现提交 `e617a8777dca94fb17ada1d44af48afddbf48ad0`，交付提交 `6753b12ff84f8b6d6e01f7c632847db9163ff0da`。保持Draft，按依赖差异审阅。
+
+| 修订 | 单独研究的变化 | 同场40→候选，1线程周期/像素 | 4线程周期/像素 |
+| --- | --- | --- | --- |
+| 53 | 64MiB直接RGB32表，4×2×2颜色共享缓存行，9操作AVX2整数索引 | 3.3907→6.4507 | 4.2253→7.4884 |
+| 54 | 16MiB ID表，六操作自逆位交换，8×8×1颜色共享缓存行 | 3.2474→4.0368 | 4.7030→4.4699 |
+| 55 | 40像素TU源码逐字节相同，只该TU由Clang22.1.2编译 | 3.6033→3.6625 | 5.4906→4.3482 |
+
+53扩大表后周期和generic miss增加。54单线程generic miss约减半，但索引路径整体仍慢。55动态指令从5.4010降至4.9161/像素，单线程周期没有改善。每版事前固定一次筛查，要求1线程周期比≤0.95且4线程≤1.05；54/55只有四线程通过，全部停止，不择优重跑。不同画像的参考数值有波动，不能跨行相除或把周期比当墙钟吞吐；整体3倍验收没有改变。
+
+实际环境为Ryzen9 8945HX、Windows11/WSL2 Ubuntu、Linux6.18.33.2、GCC15.2、Python3.14.4标准库，Release通用AVX2，`-mtune=skylake -ffp-contract=off`。55仅像素TU使用已安装Clang22.1.2，显式GCC15头目录；dispatcher、OpenMP、核心及原回退仍为GCC，参考23库和三个回退对象同SHA。没有Skylake实测、锁频或宿主独占；来宾CPU绑定不保证宿主固定物理核。原23、模型、公共默认和AGENTS.md未改。
+
+每版独立解码完整16,777,216颜色，另完成12组in-place＋12组真实输出完整域，以及2208个有限in-place、4416个输出/别名、736个保护页、1280个目标对齐、44条新API拒绝检查。构造只使用四个稀疏模型与逐级RGB8，gold只用于独立核验；当前固定输出完全相同，不表示相对官方LUT零误差。三版无外部调用、PEXT、硬件gather、AVX512或浮点FMA。12项PMU记录的输出、源、哨兵、团队、前后绑定、实际THP及running/enabled检查通过，generic cache没有冒充L3事件。
+
+原始归档72份文件、9份源ZIP（681项源成员）、57项二进制/对象；所有停止决定保留。首次交付静态检查发现PR52原文末尾空行后已停止，尚未提交；保留失败记录与原文，只对该档案设置格式属性，再通过全阶段核对。最终13份Python AST、86份冻结源、7个本地链接通过，提交后127个新增Git blob与工作区逐字节一致，没有补跑数值或计时。
+
+- [阶段报告、原始指标与复现](https://github.com/WyEhNf/flash-chroma/blob/6753b12ff84f8b6d6e01f7c632847db9163ff0da/docs/stages/2026-10-21-skylake-direct-tiles.md)
+- [原始档案与独立审计](https://github.com/WyEhNf/flash-chroma/tree/6753b12ff84f8b6d6e01f7c632847db9163ff0da/report/data/skylake-direct-tiles-v1)
+- [操作前完整协作刷新](https://github.com/WyEhNf/flash-chroma/blob/6753b12ff84f8b6d6e01f7c632847db9163ff0da/report/data/skylake-direct-tiles-v1/pre-create-remote-check.json)
+
+创建前完整检查46个PR、2个独立issue、2个Discussion、140组REST意见和0个审查线程，分页完整。操作前第二次全量刷新与首次比较无变化，包含新增#52的全部正文、状态、head/base与意见；#52正文与原发送文本逐字核对，两项常规CI成功。推送前重新fetch，main b19c5a0和依赖7f3a479均包含。#7/#9的337a3dd、#27的876e15b8、#29的397cc367实际在祖先中；沿用相应验证，不以CI代替缺陷证据。#37历史整合和Discussion #4的模型/实现区分继续遵守。
+
+待办仍包括整体3倍、实际Skylake、#8的官方派生表许可/预算/Threshold及实板、独立GUI #40。下一步依据机器代码研究指令依赖或减少访存等待，本PR没有该后续成绩；不合并、不关闭事项。
+
+Agent: Codex
+Operator: WyEhNf
+Task: 16题，相对当前基线达到300%吞吐且精度不下降
+Status: In Progress
