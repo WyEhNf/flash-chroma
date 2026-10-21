@@ -1,0 +1,147 @@
+{
+  "pass": true,
+  "files": 42,
+  "raw_thread_groups": 24,
+  "cases": [
+    {
+      "case": "photo_inplace",
+      "threads": 1,
+      "participating_tids": [
+        302
+      ],
+      "per_nominal_pixel": {
+        "cycles": 3.048125139872233,
+        "instructions": 5.378355712890625,
+        "l2_request_misses": 0.106666259765625,
+        "oldest_not_complete": 2.150154711405436,
+        "oldest_load_not_complete": 1.6611826960245768,
+        "load_dispatch": 3.08235284169515
+      },
+      "oldest_load_wait_cycle_fraction": 0.5449850710834687,
+      "individual_cycle_range": {
+        "min": 239714315,
+        "max": 239714315,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    },
+    {
+      "case": "photo_inplace",
+      "threads": 4,
+      "participating_tids": [
+        302,
+        707,
+        708,
+        709
+      ],
+      "per_nominal_pixel": {
+        "cycles": 3.977355791727702,
+        "instructions": 5.4296306737263995,
+        "l2_request_misses": 0.11975790659586588,
+        "oldest_not_complete": 2.9302978642781574,
+        "oldest_load_not_complete": 2.418158760070801,
+        "load_dispatch": 3.202722727457682
+      },
+      "oldest_load_wait_cycle_fraction": 0.6079815049737831,
+      "individual_cycle_range": {
+        "min": 77482621,
+        "max": 78705700,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 4,
+      "participating_tids": [
+        302,
+        707,
+        708,
+        709
+      ],
+      "per_nominal_pixel": {
+        "cycles": 2.7688611857096355,
+        "instructions": 5.399073613484701,
+        "l2_request_misses": 0.00047443389892578127,
+        "oldest_not_complete": 1.9689817682902018,
+        "oldest_load_not_complete": 0.3951201883951823,
+        "load_dispatch": 3.111466344197591
+      },
+      "oldest_load_wait_cycle_fraction": 0.14270133527619094,
+      "individual_cycle_range": {
+        "min": 52450575,
+        "max": 55457972,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 1,
+      "participating_tids": [
+        302
+      ],
+      "per_nominal_pixel": {
+        "cycles": 1.3012823486328124,
+        "instructions": 5.378327878316243,
+        "l2_request_misses": 0.00017903645833333332,
+        "oldest_not_complete": 0.4830567169189453,
+        "oldest_load_not_complete": 0.055124702453613283,
+        "load_dispatch": 3.0630604934692385
+      },
+      "oldest_load_wait_cycle_fraction": 0.042361830629248025,
+      "individual_cycle_range": {
+        "min": 102337008,
+        "max": 102337008,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    },
+    {
+      "case": "photo_outplace",
+      "threads": 1,
+      "participating_tids": [
+        302
+      ],
+      "per_nominal_pixel": {
+        "cycles": 3.465883280436198,
+        "instructions": 5.394281183878581,
+        "l2_request_misses": 0.12248658498128255,
+        "oldest_not_complete": 2.549978205362956,
+        "oldest_load_not_complete": 2.08199888865153,
+        "load_dispatch": 3.1446581013997394
+      },
+      "oldest_load_wait_cycle_fraction": 0.6007123495484534,
+      "individual_cycle_range": {
+        "min": 272568152,
+        "max": 272568152,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    },
+    {
+      "case": "photo_outplace",
+      "threads": 4,
+      "participating_tids": [
+        302,
+        707,
+        708,
+        709
+      ],
+      "per_nominal_pixel": {
+        "cycles": 4.993917287190755,
+        "instructions": 5.4540898259480795,
+        "l2_request_misses": 0.13969406127929687,
+        "oldest_not_complete": 3.8846906153361003,
+        "oldest_load_not_complete": 3.382053642272949,
+        "load_dispatch": 3.2840498733520507
+      },
+      "oldest_load_wait_cycle_fraction": 0.6772346131858878,
+      "individual_cycle_range": {
+        "min": 95961402,
+        "max": 99871284,
+        "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+      }
+    }
+  ],
+  "warmup_calls": 6,
+  "counted_calls": 6,
+  "new_wallclock_calls": 0,
+  "threefold_goal_completed": false,
+  "scope": "独立解码24组六事件原始字节并核对参与线程求和、名义像素、输出和THP；含barrier/收尾，不证明缓存级或具体停顿根因。"
+}
