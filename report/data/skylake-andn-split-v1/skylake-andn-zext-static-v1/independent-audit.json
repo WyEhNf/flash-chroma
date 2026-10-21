@@ -1,0 +1,110 @@
+{
+  "purpose": "76静态门槛独立审计与实际rsp变量定位；未运行像素或性能",
+  "method": "独立PowerShell按明确地址逐行计数，源文本还原对照75，逐条追踪入口参数与循环比较；不调用原inspect解析器",
+  "accepted": false,
+  "results_sha256": "20228db55f4ff0135771f963221f5ad2847a906dcea653da1bbcbed63c34e279",
+  "loops": [
+    {
+      "mode": "inplace",
+      "pixels": 64,
+      "start": "f0",
+      "end": "6dd",
+      "instructions": 257,
+      "reference_instructions": 321,
+      "andn": 64,
+      "self_mov": 0,
+      "stack": []
+    },
+    {
+      "mode": "inplace",
+      "pixels": 32,
+      "start": "718",
+      "end": "a10",
+      "instructions": 138,
+      "reference_instructions": 170,
+      "andn": 32,
+      "self_mov": 0,
+      "stack": []
+    },
+    {
+      "mode": "outplace",
+      "pixels": 64,
+      "start": "e78",
+      "end": "146d",
+      "instructions": 258,
+      "reference_instructions": 322,
+      "andn": 64,
+      "self_mov": 0,
+      "stack": [
+        "     e82:\t4c 39 4c 24 f8                               \tcmp    %r9,-0x8(%rsp)",
+        "    1468:\t4c 39 54 24 f8                               \tcmp    %r10,-0x8(%rsp)"
+      ]
+    },
+    {
+      "mode": "outplace",
+      "pixels": 32,
+      "start": "14c0",
+      "end": "17be",
+      "instructions": 139,
+      "reference_instructions": 171,
+      "andn": 32,
+      "self_mov": 0,
+      "stack": [
+        "    17b9:\t4c 39 44 24 f8                               \tcmp    %r8,-0x8(%rsp)"
+      ]
+    }
+  ],
+  "primary_object_unchanged": true,
+  "primary_object_sha256": "7e09d42a9161aab476c3cd26d9646254dbcdc313b2105794e09c01147a47c4ab",
+  "only_declared_output_width_change": true,
+  "rsp_slot": {
+    "store": "0xd85 mov %r8,-0x8(%rsp)",
+    "source_variable": "avx2_chain_andn_zext_to第五参数pixels，SysV x86-64位于r8",
+    "uses": [
+      {
+        "address": "0xe82",
+        "instruction": "cmp %r9,-0x8(%rsp)",
+        "meaning": "pixels与p+406比较，决定预取",
+        "predecessor": "0xe7b lea 0x196(%r8),%r9，r8此时为p"
+      },
+      {
+        "address": "0x1468",
+        "instruction": "cmp %r10,-0x8(%rsp)",
+        "meaning": "pixels与p+136比较，决定下个64像素迭代是否满足新p+72",
+        "predecessor": "0x141b lea 0x88(%r8),%r10"
+      },
+      {
+        "address": "0x17b9",
+        "instruction": "cmp %r8,-0x8(%rsp)",
+        "meaning": "pixels与p+72比较，决定下个32像素迭代是否满足新p+40",
+        "predecessor": "0x177b lea 0x48(%r9),%r8"
+      }
+    ],
+    "not_false_rbp_detection": true
+  },
+  "register_pressure": {
+    "id_base": "rdi",
+    "palette_base": "rsi",
+    "input_cursor": "rax",
+    "output_cursor": "rcx",
+    "mask": "edx",
+    "four_ids": "r12d/r13d/r14d/r15d",
+    "input_codes": "r9/r11，32尾为r8/r11",
+    "counter": "64环r8为p、r9为下一p；32环r9为p",
+    "original_bases": "r12/r13在宽循环前保存到-0x10/-0x18(%rsp)，循环后恢复供原p尾部寻址",
+    "inference": "增加长期掩码GPR后，原p/总pixels与双基址/双游标的活跃状态产生压力；实际spill是已证事实，具体分配器决策为据汇编推断"
+  },
+  "checks": [
+    "四环ANDN数各64/32，均mem32/base+disp/VEX.W0，mask外提且组内四ID先行",
+    "所有逐像素同寄存器MOV消失，四环分别减少64/32条指令",
+    "原地64/32无栈；分离64两次和32一次真正rsp上界读取，按预先门槛失败",
+    "无call/gather/BMI2/AVX512/EVEX；完整源哈希及编译ISA范围已核对",
+    "精确24字节尾部、输出组织、NTA/NT/SFENCE及循环边界源保持；原线性对象逐字节不变"
+  ],
+  "minimal_proposal": "另修订用source/destination游标与remaining递减，prefix+3/-1；64 remaining>=72且预取>=406，+192/-64；32>=40、+96/-32；8>=8、+24/-8；scalar处理余数；不改变四ID、ANDN、输出或fence，仍须无栈静态门槛",
+  "decision": "76保持静态失败，保存原件，不执行精度或性能；77另目录评估计数生存期",
+  "compiler_calls": 0,
+  "pixel_calls": 0,
+  "candidate_library_loads": 0,
+  "performance_calls": 0
+}

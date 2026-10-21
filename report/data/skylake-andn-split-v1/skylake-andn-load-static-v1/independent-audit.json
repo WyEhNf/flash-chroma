@@ -1,0 +1,74 @@
+{
+  "purpose": "独立按冻结汇编地址复核75停止门槛，另以源文本还原证明尾部与输出保持",
+  "method": "PowerShell独立正则逐行计数；源码read_wide以原函数还原并恢复include/入口名后逐字符相等；对象SHA与74线性参考比较",
+  "accepted": false,
+  "results_sha256": "7a2be892a1f4c1568739d76bb36f52d50423d4c0486be312f77035690273764a",
+  "loops": [
+    {
+      "mode": "inplace",
+      "pixels": 64,
+      "start": "f0",
+      "end": "79d",
+      "instructions": 321,
+      "reference_instructions": 321,
+      "andn": 64,
+      "self_mov": 64,
+      "stack": []
+    },
+    {
+      "mode": "inplace",
+      "pixels": 32,
+      "start": "7d8",
+      "end": "b20",
+      "instructions": 170,
+      "reference_instructions": 170,
+      "andn": 32,
+      "self_mov": 32,
+      "stack": []
+    },
+    {
+      "mode": "outplace",
+      "pixels": 64,
+      "start": "f88",
+      "end": "163d",
+      "instructions": 322,
+      "reference_instructions": 322,
+      "andn": 64,
+      "self_mov": 64,
+      "stack": [
+        "     f92:\t4c 39 4c 24 f8                               \tcmp    %r9,-0x8(%rsp)",
+        "    1638:\t4c 39 54 24 f8                               \tcmp    %r10,-0x8(%rsp)"
+      ]
+    },
+    {
+      "mode": "outplace",
+      "pixels": 32,
+      "start": "1690",
+      "end": "19ee",
+      "instructions": 171,
+      "reference_instructions": 171,
+      "andn": 32,
+      "self_mov": 32,
+      "stack": [
+        "    19e9:\t4c 39 44 24 f8                               \tcmp    %r8,-0x8(%rsp)"
+      ]
+    }
+  ],
+  "primary_object_unchanged": true,
+  "primary_object_sha256": "7e09d42a9161aab476c3cd26d9646254dbcdc313b2105794e09c01147a47c4ab",
+  "source_only_authorized_difference": true,
+  "exact24_tail_output_boundaries_unchanged": true,
+  "runtime_capability": "构造一次bmi检测，分派TU无-mbmi；API无句柄/无表返回0，全部AVX2原地/分离有表时按BMI选择",
+  "observations": [
+    "原地64/32指令321/170，等于参考；分离64/32指令322/171，等于参考",
+    "每64/32循环分别64/32条mem32 ANDN和64/32条同寄存器MOV；四组循环都未减少指令",
+    "分离64循环0xf92、0x1638及32循环0x19e9读取-0x8(%rsp)上界；该栈引用违反冻结无spill条件",
+    "掩码%edx在各宽循环外赋0xff000000；内存均base+disp，VEX.W0，无调用/BMI2/AVX512/EVEX",
+    "新增ANDN本身语义正确；GCC不透明uint32输出的零扩展描述是自MOV的原因假设，不把静态失败当精度失败"
+  ],
+  "decision": "停止75，保留冻结源/构建/静态原件，不运行原生精度或性能；76单独描述完整uintptr_t输出",
+  "compiler_calls": 0,
+  "pixel_calls": 0,
+  "candidate_library_loads": 0,
+  "performance_calls": 0
+}

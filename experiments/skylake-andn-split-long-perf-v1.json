@@ -1,0 +1,175 @@
+{
+  "purpose": "78支持BMI1时宽循环采用ANDN，原地保留76计数、分离采用77游标，直接对23受控长批次；原三倍/A/A/唯一条件确认不变",
+  "plan": {
+    "path": "experiments/skylake-andn-split-v1.json",
+    "sha256": "c62d97a402705692977250f0e626c9587a7190e97cf9a9b44f4d6a22840532d8"
+  },
+  "build": {
+    "path": "artifacts/skylake-andn-split-linux-build-v1/build.json",
+    "sha256": "2f951a5c2daa035716c2715f6d2803282e8434a8b9d645d8c0ecb7170144cbe6"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-andn-split-linux-full-v1/results.json",
+    "sha256": "d349abe0d6021c5c03bdde3fd8204c3b69344be4e93fc6d57d38b3bfe820733b"
+  },
+  "validation": {
+    "path": "experiments/skylake-andn-split-validation-v1.json",
+    "sha256": "5b5a629e343e515942d82fa4437465f1db671ef2b97cebe3f969f2564b9885a4"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_andn_split_long_linux.py",
+    "sha256": "fc0748a80ae2846f89740000f4a1441f0a5b78d2ee38a2fcb77cecfef787beb5"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_prepare_plus_100_ratio_max": 1,
+    "median_outplace_ratio_max": 0.3333333333333333
+  },
+  "limits": [
+    "仅新78 ANDN分入口编译，不重评旧候选判定",
+    "16MiB线性表；全部AVX2宽循环采用ANDN；前后实际ANDN启用及精确VMA/全THP验证",
+    "原16/64内轮、ABBA、批内均值及四配对中位；每批末SHA非每内轮SHA",
+    "原三倍门槛和同库控制不放宽；首次通过后才有唯一确认",
+    "CPU不支持BMI1时精确回退线性；本机未执行真实缺BMI1硬件；不外推Skylake性能"
+  ],
+  "mode_order": "每worker每线程先同句柄A/A两批；直接两角色各legacy/outplace一批，模式顺序按worker+线程序号交错",
+  "pinning_support": {
+    "path": "scripts/pinned_openmp_support.py",
+    "sha256": "15dee1c6e6464976002ab1ea7c911411be27bab9dc8e9a131e8447dee24900e8"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "affinity_protocol": {
+    "OMP_PROC_BIND": "TRUE",
+    "OMP_PLACES": "{0},{2},{4},{6}",
+    "main_cpu": 0,
+    "selected_physical_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "validation": "初始4线程与每档团队的实际CPU顺序、前后每TID单CPU允许集合；不更改系统设置"
+  },
+  "binding_motivation": {
+    "run": {
+      "path": "artifacts/skylake-pack32-linux-perf-v1/run.json",
+      "sha256": "c662d28cdf136071b189b160f5f86f4438370a7a76c22611ea558886d714e33e"
+    },
+    "reason": "worker3团队未覆盖不同物理核；只有worker0—2回执，没有完整results，不参与新汇总"
+  },
+  "quiet_support": {
+    "path": "scripts/quiet_host_support.py",
+    "sha256": "2579ea511ca3786a49ec83a662c60b58a4b9a462598dd69c939f4c6f732c9653"
+  },
+  "quiet_protocol": {
+    "minimum_parent_settle_seconds": 120,
+    "minimum_pid1_age_seconds": 180,
+    "sample_interval_seconds": 5,
+    "consecutive_good_intervals": 2,
+    "busy_percent_max": 10,
+    "timeout_seconds": 600,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "global_cpu_mean_also_required": true,
+    "iowait_is_nonidle": true,
+    "between_workers": "每个worker前再检查两个连续5秒空闲间隔，父进程保持WSL存活",
+    "on_failure": "保留部分数据并停止，不自动重跑择优",
+    "environment_change": "不调服务/频率/大页/安全策略，不改变模型或运行时代码"
+  },
+  "protocol_revision": "long-native-aa-v1",
+  "inner_repeats": {
+    "1": 16,
+    "4": 64
+  },
+  "control_orders": [
+    [
+      "A",
+      "B"
+    ],
+    [
+      "B",
+      "A"
+    ],
+    [
+      "B",
+      "A"
+    ],
+    [
+      "A",
+      "B"
+    ]
+  ],
+  "control_gate": {
+    "any_max": 1.25,
+    "any_min": 0.8,
+    "median_max": 1.1,
+    "median_min": 0.9090909090909091
+  },
+  "confirmation": {
+    "condition": "首次4进程accepted_on_this_host=true且measurement_control_valid=true",
+    "acceptance": "首次、确认均过全部原门槛和同库控制；合并8对各接口1/4线程中位比仍≤1/3；无失败后补测",
+    "on_initial_failure": "跳过确认，完整保留首次数据",
+    "maximum_additional_series": 1,
+    "reuse_exact_policy": true,
+    "output": "artifacts/skylake-andn-split-long-confirm-v1"
+  }
+}
