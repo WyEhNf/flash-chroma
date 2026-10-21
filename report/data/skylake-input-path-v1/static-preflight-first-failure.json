@@ -1,0 +1,11 @@
+{
+  "purpose": "保存交付静态失败及未推送提交的顺序问题，不涉及数值或性能复测",
+  "exit_code": 1,
+  "reason": "expected-pr51-body.txt第27—29行保留Markdown双空格换行，git diff --check报告trailing whitespace",
+  "first_script_sha256": "5e562afd6c2ab841e6ed36f1b24fe1202da0bf314a293e4fc3c28a4164bf8cfa",
+  "implementation_commit": "215a16bf7e25d09f56e75e93e158ad928241f945",
+  "sequence_note": "PowerShell在添加不存在的静态回执失败后继续提交；原始实现提交尚未推送，最终发布前改为全阶段检查并要求成功",
+  "resolution": "仅对原文档案关闭blank-at-eol检查，保留真实原文；不修剪原文或测量源；对ee529be以来全部Git blob重新核验",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}
