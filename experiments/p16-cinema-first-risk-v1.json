@@ -1,0 +1,19 @@
+{
+  "schema": "p16_cinema_first_risk_v1",
+  "agent": "/root/tail",
+  "operator": "本任务用户",
+  "status": "静态预注册，待95性能释放后另grant",
+  "purpose": "对全部70571完整正支撑作86节点分量±2盒的鲁棒安全筛查；不执行新CP搜索",
+  "baseline": "原max_first 0ea0/904e/95cb/5b8、143e全域流，全部固定86节点及原坐标，禁止从失败CP/组/八色模型取起点",
+  "box": "真实四面体Q16正权、完整fixed acc和每节点RGB clip边界；原节点分量各自独立整数区间±2，计算各点首级RGB精确AABB端点；独立u64全低/全高模型核全部端点",
+  "screen": "对70571点每个AABB的全部整数RGB查固定suffix与真实gold。box中最大平方误差<=49作为整个节点盒恒安全的充分证书；否则标可能危险，不等于当前或所有节点方案必坏",
+  "passes": "第一遍全部AABB统计max/min/安全RGB计数；只在资源门通过时，第二遍仅危险点保存全部suffix d²<=49安全RGB三元组及CSR索引；两遍均固定，无拟合/择优",
+  "outside": "原完整域直方图扣除70571支撑内原始计数，单独断言支撑外最大平方误差<=49；全部原116热点必须包含在危险集合",
+  "gates": {"dangerous_points_max": 8192, "safe_triples_max": 1000000, "zero_allowed_points_required": 0, "int64_audit_required": true},
+  "over_gate": "任何超限仅报告与保留完整第一遍计数，不建立CP、不调门槛、不抽样删点；0安全三元组可作为该单点节点盒达不到49的证书，不自动扩大节点/步长",
+  "resources": "单点AABB最多125，全部最多8821375查询；第一遍只保留每点int32 min/max和uint8 safe_count；门内第二遍最多1M×3 uint8三元组和CSR offsets，原始Q16acc端点/NumPy实际nbytes/暂态上界单列；独立重枚举按512源点分块，禁止一次制造9M×3的Python元组或int64全临时",
+  "contract": "有限17/33实际四面体、多节点共享角/固定角、0/255 clip与内部节点小域完整穷举；比较危险标签、全AABB统计和实际节点赋值结果；可检验单点可达集=AABB，但跨源共享节点耦合不被放松成可行",
+  "independent": "第一枚举以0..4三轴offset逐组向量化；独立审计用每源点箱大小和repeat/局部线性下标在512点块展开，重算所有RGB值、max/min/safe_count、危险集合及全部安全CSR三元组；不调用新CP",
+  "future": "筛查门内也不自动求解。后续另立一次minL1节点delta CP协议及一次完整支撑/原八预算验解；mean不满足仍拒绝",
+  "scope": "只证明/筛查整节点盒的逐点鲁棒安全，非CP可行性、平均预算、百图或速度证明；原正式模型不变"
+}
