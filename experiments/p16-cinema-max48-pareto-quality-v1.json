@@ -1,0 +1,47 @@
+{
+  "阶段": "已冻结max48见证的独立三分母质量资格",
+  "状态": "仅静态协议，实际质量执行等待明确调度授权",
+  "边界": "不改变minL1相对max_first六预算失败/STOP，不补跑solver或调模型；当前综合best仍保留，速度50%底线尚未证明",
+  "候选": {
+    "directory": "artifacts/cinema-first-safe-cpsat-accept-v2/candidate",
+    "model_npz_sha256": "741e55f55c674384543511dc20b98ecd7d6a1ed4c1b9bb17406cabd7cc86bea0",
+    "first_slut_sha256": "59c333adb5480244ea0e22808f625259a94a21d3b7e53c28656f7362990627f4",
+    "sidecar_sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff",
+    "stage2_sha256": "904e30a1c0f805175b0b9518949e4e96c9ff2a7e7980978ed8e90fd1282bd924",
+    "stage3_sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "stage4_sha256": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386"
+  },
+  "三个固定分母": {
+    "a399": {
+      "root": "F:/Hackathon/projects/16-lut-color",
+      "identity": "artifacts/cinema-current-anchor-accept-v1/run.json",
+      "results": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "cube": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "cube_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "chain": "原8136首级及原selected-stage2/3/4，不使用新904e或5b8后缀替换"
+    },
+    "综合best": {
+      "identity": "artifacts/cinema-arrival-last-budget-v1/run.json",
+      "directory": "artifacts/cinema-arrival-last-budget-v1/candidate",
+      "cube": "artifacts/cinema-arrival-budget-accept-v1/candidate.rgb",
+      "cube_sha256": "373a2fcbe4fafb73a6daebfd5c71b3308cdb43baf289e37fc564e75dc9033aed",
+      "chain": "0ea0首级、原933a第二级、95cb第三级、5b8末级"
+    },
+    "max_first": {
+      "identity": "artifacts/cinema-first-hotspot-v1/run.json",
+      "directory": "artifacts/cinema-second-nodes-v1/max_first/candidate",
+      "cube": "artifacts/cinema-second-accept-max_first-v1/candidate.rgb",
+      "cube_sha256": "143e5cc05f4f2635608cd7720b4013a10998d3f7acc8cf35275b38dcfba0792e",
+      "chain": "0ea0/904e/95cb/5b8，保留其mean/RMS/CVaR优点，不藏六项局部退化"
+    }
+  },
+  "固定数据": "完整RGB8域16777216；原100图manifest10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c；原gold ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690。100图只验证，不参与任何选择或拟合，不声称盲测。",
+  "独立链": "候选四级逐级RGB8独立uint64 oracle、Numba顺序执行及冻结87原生链，完整域逐字节一致；三个分母保留已认证原完整流并核模型身份，使用同87重放作运行时对照",
+  "首级独立源观察": "完整域另列四模型首级对原table1的独立mean/RMS/p99/max/CVaR，明确整链联合目标可能牺牲首级单表忠实度；不把整链改善称为四张表各自改善，此观察不回调候选或旧门槛",
+  "原生矩阵": "每模型scalar1/AVX2-1/AVX2-4，inplace与真正outplace，共24完整域配置；100图候选与三个分母实际AVX2-4逐图输出再与各完整oracle索引比。此为正确性，不进行吞吐计时。",
+  "报告": "完整域、100图合并、原60图及每一张照片，分别相对三个分母列mean/RMS/p99/max/CVaR好平差与误差保留率100/90/80/70/60/50档；若原误差0而候选正则保留率0；不会只汇总有利分母",
+  "实验硬门槛": "沿用非官方T=4,5,6,7,7.5,7.7,8,8.2，分别报告四模型每图严格max<T通过数，不称官方阈值",
+  "资格口径": "相对a399及已完整验收综合best的全域与合并平均精度不降，完整披露p99/max和逐图代价；不要求把max_first局部mean最小值伪装成用户唯一共同分母。该资格独立于旧L1单调门，不会回写旧失败。",
+  "运行时资格": "同87构造四模型，实际记录cache/domain/palette/direct资格与capacity；不从旧模型资格推断新首级。只有质量合格才另排同场性能，任一有效最劣速度<50%仍拒绝综合升级。",
+  "表示": "节点/轴/SLUT与分输出sidecar格式不变，但侧表官方许可仍未知；本阶段不新增免费查表、补丁或运行时缓存"
+}
