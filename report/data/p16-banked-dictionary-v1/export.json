@@ -1,0 +1,50 @@
+{
+  "purpose": "只导出已选4bank：2MiB LE16局部索引、四个base及按bank重复的原16B块。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "efb7074f38da3c354df64394177a450cedcbb46ef02e2ce26c50aa430d6f6ea2",
+  "script_sha256": "ed0a0f38ee4f6f4bd31c69c7ebc3b7c95223c6e59e2590d3bfaeb5c6b5651ac8",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "rom_sha256": "8492d8b7376d86d9442ef53023574aa8345333a16cc7dd8dceba34998e659cfd",
+  "rom_bytes": 4247584,
+  "bank_unique": [
+    31453,
+    48504,
+    46303,
+    8075
+  ],
+  "bases": [
+    2097168,
+    2600416,
+    3376480,
+    4117328
+  ],
+  "model_bytes": 1072,
+  "resident_bytes": 4248656,
+  "profile_assumed_model_bytes": 1056,
+  "extra_native_model_bytes": 16,
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "before": {
+    "PeakWorkingSetSize": 35553280,
+    "WorkingSetSize": 35553280,
+    "PrivateUsage": 22192128,
+    "PeakPagefileUsage": 22192128
+  },
+  "after": {
+    "PeakWorkingSetSize": 70914048,
+    "WorkingSetSize": 69914624,
+    "PrivateUsage": 50962432,
+    "PeakPagefileUsage": 54517760
+  },
+  "scope": "仅选定4bank，没有扫描native其它bank。ROM原palette保留256合法项；独立bases[4]使model比离线排序假设多16B，原profile不回写。"
+}
