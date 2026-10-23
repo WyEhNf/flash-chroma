@@ -1,0 +1,26 @@
+{
+  "purpose": "独立第三阶段：唯一标准C99八像素全部ID先读、全部调色板值后读、RGB最后批写；保留零堆借用ROM和精确尾部，不扫描批宽/参数/编译旗标。",
+  "base_commit": "d2b6177",
+  "source_sha256": {
+    "experiments/memory-rom/memory_rom_ilp.c": "2f89e5fc85f8e7ea08e389fea0f1994edc96f64dde42544d98b275de3341d77c",
+    "experiments/memory-rom/memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "experiments/memory-rom/memory_rom.h": "1568e6019824ef3f15e71e91274a20640a79beef0a4ad013bab5034503207b2d",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666",
+    "scripts/build_memory_rom_ilp.py": "f8d38cfa1f582dfa94949be1bebfb867a44192343fc4702e111dd04e95382d42",
+    "scripts/verify_memory_rom_ilp.py": "b8d3bcc96e52d23786e9820380d96c62b7c4541642eb4ae8e7968ec26728439d",
+    "scripts/bench_memory_rom_ilp.py": "d65702ea83929c5e97d3af272076ad8a60c5396ad6bd450cfc9d33b449a59d91",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c",
+    "experiments/memory-rom/memory_rom_ilp.h": "e5455fe93c1b069fc4a3bddbe7d3eb26035e73685fa798a737c2d76c063fe37c"
+  },
+  "speed_roles": [
+    "ref78",
+    "ref80",
+    "c99_0",
+    "c99_4",
+    "c99_6"
+  ],
+  "protocol": "四新进程，角色轮转/反序；1/4线程，原地/输出，预热1+计时5；80 A/A尾部控制，单对0.8..1.25且中位1/1.1..1.1；保留所有轮次。",
+  "gate": "输出全域及逐图完全相同；最劣worker速度保留至少50%，按100/90/80/70/60/50划档；控制失败只观察。"
+}
