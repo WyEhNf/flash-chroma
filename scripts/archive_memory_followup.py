@@ -12,6 +12,8 @@ def main():
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     specs={'build.json':a.build/'build.json','full.json':a.full/'results.json','contract.json':a.contract/'results.json','performance.json':a.perf/'summary.json'}
     for name,path in specs.items():(out/name).write_bytes(path.read_bytes())
+    driver=a.full.parent/'driver.json'
+    if driver.is_file():(out/'verification-driver.json').write_bytes(driver.read_bytes())
     sources={Path(n).resolve() for n in read(specs['build.json'])['sources']}
     sources.update(ROOT/n for n in read(a.plan)['source_sha256']);sources.add(a.plan.resolve())
     sources.update(ROOT/'scripts'/n for n in ('study_memory_rom.py','verify_memory_rom_contract.py','archive_memory_followup.py'))

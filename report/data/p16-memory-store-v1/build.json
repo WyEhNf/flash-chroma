@@ -1,0 +1,123 @@
+{
+  "purpose": "固定8像素C99组内重叠写候选；不改ANDN或字典AVX2像素对象。",
+  "plan_sha256": "5516dddd7567d96001ee17eb933609287445d1d36d903c15cb80d18c3683683d",
+  "base_build_sha256": "eb997ee1572b2d365dd5c1777f568a9f962b8247ceb07b157494902a7a353677",
+  "sources": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom_store.c": "e9a116e3a0b03242d01a90ebc8eee905947120e48cad030aede65cc71c772a10",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666"
+  },
+  "reused_objects": {
+    "memory_avx2_0.o": "7b996da28d85ce28d80902d1d862de8ef921d8550406bf24bf13c8f0bebde061",
+    "memory_avx2_10.o": "2b6f5329fbaca9137cc8c2957ec4678493bd6a3c820a1b6327a07242567bec9f",
+    "memory_avx2_4.o": "abbceff32bec4c81d4ce65d6adacc664bf6342dbe59db52837871c5c6983f62d",
+    "memory_avx2_6.o": "c9838142e25a336d6ba23404ea95bcf7ce6b681088ad514a976b8219f0251ed8",
+    "memory_avx2_8.o": "e61308b9ac0d982ccb5c3166acecc6898be5b10b9e1c716cc785e37e1d84fba5",
+    "andn_inplace.o": "31c94a94ccee79acaeaa3836854ea6b53176edfceaea8682ab9b15a4e0e6de59",
+    "andn_outplace.o": "459d9d89e808f178af452af4a872922ee1668190846fc6dc87805e13bec74a10"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:\\mingw64\\bin\\gcc.exe",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-fstack-usage",
+        "-Wall",
+        "-Wextra",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c",
+        "-o",
+        "artifacts\\p16-memory-store-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:\\mingw64\\bin\\gcc.exe",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-fstack-usage",
+        "-Wall",
+        "-Wextra",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom_store.c",
+        "-o",
+        "artifacts\\p16-memory-store-build-v1\\memory_store.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:\\mingw64\\bin\\gcc.exe",
+        "-shared",
+        "artifacts\\p16-memory-store-build-v1\\memory_c.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_store.o",
+        "-o",
+        "artifacts\\p16-memory-store-build-v1\\jshc_memory_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-DJSHC_MEM_ANDN=1",
+        "-Djshc_mem_apply=jshc_mem_apply_store",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp",
+        "-o",
+        "artifacts\\p16-memory-store-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "artifacts\\p16-memory-store-build-v1\\memory_c.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_store.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_parallel.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_avx2_0.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_avx2_10.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_avx2_4.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_avx2_6.o",
+        "artifacts\\p16-memory-store-build-v1\\memory_avx2_8.o",
+        "artifacts\\p16-memory-store-build-v1\\andn_inplace.o",
+        "artifacts\\p16-memory-store-build-v1\\andn_outplace.o",
+        "-o",
+        "artifacts\\p16-memory-store-build-v1\\jshc_memory_rom.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "libraries": {
+    "jshc_memory_c99.dll": "95c68cbe2c4ca1b08a05fec6bd28e34cb65c735d9e9e5c7b3d2803413f23f721",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_rom.dll": "8dc0fb199080f1ff6b6128b3fa3010dfc549335c2de5ba585d4424207ff3cc1e",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  }
+}
