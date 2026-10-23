@@ -1,0 +1,85 @@
+{
+  "input_sha256": {
+    "model": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "reference": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "baseline": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0",
+    "training_frequency": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "photo_manifest": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "input_paths": {
+    "model": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\velvia-channel-coordinates-v1\\channel-coordinates.npz",
+    "reference": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\chain-error-cache\\source-2ff0a4e385f9f9e49ca02f63\\table.lut256",
+    "baseline": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\velvia-channel-coordinates-accept-v1\\cube.rgb",
+    "training_frequency": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\photo-arrival-frequency.npy",
+    "photo_manifest": "F:\\Hackathon\\projects\\16-lut-color\\assets\\photos\\manifest.json"
+  },
+  "source_sha256": {
+    "scripts/accept_velvia_bubble.py": "96a099624d1c9416409be36bba8b5b5fb2582f4dbf64f949729ed491775d37d1",
+    "python/lutlab/bubble_tetra.py": "aed213d061ff59b09b7ac8cd541d571e2824e4f97334f1d946b9f66d72a83054",
+    "experiments/velvia-bubble-accept-v1.json": "443dd4bdf6ee64bc41b4e769c98c5b2eb0c34cc8aa474622bfea235581918dd8",
+    "scripts/probe_velvia_bubble.py": "7c2d19e79c4d2ddadf5e6099e6d3ad257d6b98bd2405abe95c7737e82dd06b91",
+    "scripts/verify_channel_coordinates.py": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "plan": {
+    "agent": "/root/tail",
+    "operator": "当前会话用户",
+    "status": "冻结待验收",
+    "model_sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "cells": [
+      31725,
+      31726
+    ],
+    "masks": [
+      1,
+      1
+    ],
+    "kappa": 3,
+    "formula": "每输出独立t=min三轴(f,65536-f)，w=min(65536,3t)；两种未舍入Q16累加器按Q16权重混成Q32，一次half-up到RGB8；其他cell保持原模型",
+    "selection": "解析两原max训练点推得κ3，此次不再改cell、方向、斜率、节点或轴；历史100图只验收",
+    "quality_gate": [
+      "全域mean不升",
+      "原60图频率加权mean不升",
+      "全域p99不升",
+      "全域max严格下降",
+      "所有真实分输出Q16共享面输出相同"
+    ],
+    "coverage": [
+      "16,777,216 RGB8逐色Numba/独立uint64混合oracle一致",
+      "全部612修改支撑逐色Python任意精度整数/Q32一致",
+      "历史100图新鲜前向与完整流一致",
+      "3轴全部6,094,848共享面真实坐标截面",
+      "全部50,135,040实际RGB8相邻对及跨shared-idx子集"
+    ],
+    "scope": "新插值表示，现有ChannelLut及87原生库不支持，题面许可未知；不测性能、不切默认、不扩大选型"
+  },
+  "performance_calls": 0,
+  "native_calls": 0
+}

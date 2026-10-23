@@ -1,0 +1,14 @@
+{
+  "agent": "/root/tail",
+  "operator": "当前会话用户",
+  "status": "冻结待验收",
+  "model_sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+  "cells": [31725, 31726],
+  "masks": [1, 1],
+  "kappa": 3,
+  "formula": "每输出独立t=min三轴(f,65536-f)，w=min(65536,3t)；两种未舍入Q16累加器按Q16权重混成Q32，一次half-up到RGB8；其他cell保持原模型",
+  "selection": "解析两原max训练点推得κ3，此次不再改cell、方向、斜率、节点或轴；历史100图只验收",
+  "quality_gate": ["全域mean不升", "原60图频率加权mean不升", "全域p99不升", "全域max严格下降", "所有真实分输出Q16共享面输出相同"],
+  "coverage": ["16,777,216 RGB8逐色Numba/独立uint64混合oracle一致", "全部612修改支撑逐色Python任意精度整数/Q32一致", "历史100图新鲜前向与完整流一致", "3轴全部6,094,848共享面真实坐标截面", "全部50,135,040实际RGB8相邻对及跨shared-idx子集"],
+  "scope": "新插值表示，现有ChannelLut及87原生库不支持，题面许可未知；不测性能、不切默认、不扩大选型"
+}
