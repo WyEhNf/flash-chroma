@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "purpose": "验证M16C全域、C99/AVX边界、拒绝契约及最后map/最后RGB32块保护页。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "cc6f9b27988e580776e36895c9cdca19468948872610c8861f302cc9c7d19ba2",
+  "script_sha256": "ace1032590cf5763493aeea9c3200c0a98ea4d6ef39baed9b571104391caf83d",
+  "libraries": {
+    "artifacts\\p16-color-dictionary-build-v1\\jshc_memory_color_dict.dll": "0d65c5d7239c7af4c1cb1102740390d8b796fade356597473b19e11e3f1a7b77",
+    "artifacts\\p16-color-dictionary-build-v1\\jshc_color_dict_c99.dll": "e1c16bbfd3cb60443aa10832a3193a6c4695dcafcfdde01c8df9764516bc3b8c"
+  },
+  "rom_sha256": "aa0267aab4c7137d4cdccf7d087b559a7bec0ba5b33da5ea65fa3ce0db27ec30",
+  "rom_bytes": 10039008,
+  "model_size": 32,
+  "resident": 10039040,
+  "finite": 367,
+  "refusals": 26,
+  "image_guards": 90,
+  "rom_guards": 12,
+  "forced_last_offset": 10038912,
+  "hashes": {
+    "c99": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "scope": "Windows x64/GCC15.2；纯C99及桌面scalar/AVX2单四线程完整256^3；含C99八像素读先行与4B重叠写尾部、非对齐ROM、图像/ROM末端保护页、最后map强制最后pool和完整RGB24合法颜色。未执行ARM实板或性能。"
+}

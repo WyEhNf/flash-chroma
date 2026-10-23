@@ -1,0 +1,122 @@
+{
+  "purpose": "构建唯一M16C C99核心及AVX2桌面适配器；不重编译旧控制。",
+  "source_sha256": {
+    "experiments/color-dictionary-runtime/channel_avx2_color.cpp": "6a4e12460778a8778d28c858f83e36e0ae8c655b452d6fde3e11faa84403a36c",
+    "experiments/color-dictionary-runtime/generation.json": "b611d1869b0f336b47b0af9c49b39dbde0960221e89711122af4b683333c3502",
+    "experiments/color-dictionary-runtime/memory_parallel.cpp": "7fd07032753ff52c77f3c33fc7acc99e643334ed5e948a42c2ba43c4ef6282f0",
+    "experiments/color-dictionary-runtime/memory_rom.c": "13914c57ee53b25d7e6d80d2abd6cc4452d5ea66e85ae25c27d58c1a3b8ce28f",
+    "experiments/color-dictionary-runtime/memory_rom.h": "646d174cb9a6501ceb69753fef068d33c8f1087b49185a16501e454bc896235e",
+    "scripts/generate_color_dictionary.py": "357a87141968ab626faede02b81fba2cbef2678a02bd71126e3669f3c271b69c",
+    "scripts/color_dictionary_support.py": "c4eebdc84cc94ff575f48a9abec0fa68a51c5510c1784240a569af8784918926",
+    "scripts/export_color_dictionary.py": "b75e03bb59d0adf7ecf4c819e9df0e088853e52b738b9529622f7d58eea3bb0f",
+    "scripts/build_color_dictionary.py": "180a728659d05bb416d8963dea8f36b72a535b2a55c3b0003bcac9974c06e6ff",
+    "scripts/verify_color_dictionary.py": "ace1032590cf5763493aeea9c3200c0a98ea4d6ef39baed9b571104391caf83d",
+    "scripts/bench_color_dictionary.py": "0a13395b055c0807f41fc36aac6fe084aa49ef683751d1128e6a29ac5eadad53",
+    "scripts/freeze_color_dictionary.py": "7e1e90b107d351bc2f248f63c53ad7aa2d5e84697f36f172be0b1ab230ab8320",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd"
+  },
+  "plan_sha256": "cc6f9b27988e580776e36895c9cdca19468948872610c8861f302cc9c7d19ba2",
+  "compiler_sha256": {
+    "E:/mingw64/bin/gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:/mingw64/bin/g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-O3",
+        "-std=c99",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\color-dictionary-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\jshc_color_dict_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\color-dictionary-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\color-dictionary-runtime\\channel_avx2_color.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\channel_avx2_color.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\channel_avx2_color.o",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-color-dictionary-build-v1\\jshc_memory_color_dict.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_color_dict_c99.dll": "e1c16bbfd3cb60443aa10832a3193a6c4695dcafcfdde01c8df9764516bc3b8c",
+    "jshc_memory_color_dict.dll": "0d65c5d7239c7af4c1cb1102740390d8b796fade356597473b19e11e3f1a7b77",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "scope": "严格C99无堆核心；桌面像素TU启用AVX2且适配器OpenMP，无AVX512/native。旧3B与78/80直接载入冻结原DLL。"
+}
