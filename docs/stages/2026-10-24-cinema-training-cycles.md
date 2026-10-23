@@ -28,3 +28,5 @@ python scripts/archive_cinema_training_cycles.py --output report/data/p16-cinema
 ```
 
 输出拒绝覆盖。执行前身份、全部源码/计划/逐批及逐扫次结果、小候选和SHA封存于[`p16-cinema-training-cycles-v1`](../../report/data/p16-cinema-training-cycles-v1/README.md)，继承大输入与原合同按路径/SHA绑定。保持旧CRLF/LF双身份，ZIP CRC/成员SHA与Git index/HEAD逐blob另核。工作仍在精度Draft PR90，不合并、不替换默认或原综合best。
+
+实际与288八角色性能阶段共同进入`849085dfa451988e93880dc13451152e19d54b08`；共享index交接竞态、未改原件及13项HEAD复核见[提交边界说明](2026-10-24-precision-stage-commit-boundary.md)，未重写历史。

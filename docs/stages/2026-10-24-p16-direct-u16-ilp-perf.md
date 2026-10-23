@@ -72,3 +72,7 @@ Agent：`/root/tail`；任务：精度方向运行时底线；状态：正式试
 构造/冷首的32个样本及模型容量、实际地址mod64均保留在worker原件；无构造AA，不据此宣称冷首加速。正式八角色同时驻留进程峰值未采样，不能把先前单模型RSS峰冒充本次峰；开跑主机可用物理内存原件另存。单模型真实内存与表/prepare/栈详见质量阶段。没有ARM、官方服务器、AVX512或官方成绩结论。
 
 证据为`report/data/p16-direct-u16-ilp-perf-20261024/`，10原件、12源码成员、全部4worker raw/console、22条AA与11pair阻断映射。原始目录`artifacts/p16-direct-u16-ilp-perf-v1`。复现需先获取独占性能窗口，执行`python scripts/run_direct_u16_ilp_perf.py --cache-root F:/Hackathon/projects/16-lut-color --output <新目录>`；环境为UTF8输出、`OMP_NUM_THREADS=OPENBLAS_NUM_THREADS=MKL_NUM_THREADS=1`、`OMP_DYNAMIC=FALSE`、`OMP_WAIT_POLICY=PASSIVE`，API显式1/4线程。独立checker与archive脚本仅复算/归档JSON，不重跑性能。后续暂不设计重跑或新实现，先保留完整控制证据与旧综合best。
+
+## 联合提交记录
+
+本阶段实际与四轮训练尾部阶段共同进入`849085dfa451988e93880dc13451152e19d54b08`；两阶段均保持各自预注册及原件。共享index交接竞态与随后原字节核对见[提交边界说明](2026-10-24-precision-stage-commit-boundary.md)，没有重写历史或改数值。
