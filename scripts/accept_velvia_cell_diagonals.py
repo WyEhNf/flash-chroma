@@ -7,11 +7,12 @@ from pathlib import Path
 import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'python'))
+import numba
 import numpy as np
 from PIL import Image
 from lutlab import io, study_provenance
 from run_channel_tail_nodes import load_model, digest, save
-from study_velvia_body_diagonals import physical_oracle
+from study_velvia_body_diagonals import physical_oracle, reparameterize, raw_predict
 from accept_channel_tail_nodes import histogram
 from accept_channel_coordinates import hist_metrics, changes
 
@@ -101,30 +102,39 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--model', type=Path)
+    parser.add_argument('--expected-model-sha256')
+    parser.add_argument('--choices', type=Path)
+    parser.add_argument('--expected-choices-sha256')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖冻结cell终验')
     args.output.mkdir(parents=True)
+    numba.set_num_threads(4)
     cache = args.cache_root.resolve()
-    choice_path = ROOT/'artifacts/velvia-cell-feasibility-v1/cap1522-min-training_frequency_mean-choices.npy'
-    choices = np.load(choice_path)
+    choice_path = args.choices or ROOT/'artifacts/velvia-cell-feasibility-v1/cap1522-min-training_frequency_mean-choices.npy'
+    if args.choices is not None and (args.expected_choices_sha256 is None or digest(choice_path) != args.expected_choices_sha256):
+        raise ValueError('新方向场必须冻结SHA')
+    choices = np.load(choice_path) if choice_path.suffix == '.npy' else np.fromfile(choice_path, np.uint8)
     if choices.shape != (32768,) or choices.dtype != np.uint8 or not np.all(np.isin(choices, [0, 1, 2, 4])):
-        raise ValueError('只接受冻结的cap1522训练mean最优单项')
+        raise ValueError('只接受32768个冻结0/1/2/4方向')
     choices.tofile(args.output/'cell-orientation.bin')
-    model_path = cache/'artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz'
-    if digest(model_path) != '3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0':
-        raise ValueError('必须保持3e5f节点与Q16轴')
+    model_path = args.model or cache/'artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz'
+    expected_model = args.expected_model_sha256 if args.model else '3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0'
+    if expected_model is None or digest(model_path) != expected_model:
+        raise ValueError('必须保持冻结模型SHA；默认保持3e5f节点与Q16轴')
     model = load_model(model_path)
     table_path = cache/'artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256'
     reference = io.load_full(table_path, mmap=True).reshape(-1, 3)
     source = ROOT/'artifacts/velvia-body-diagonals-v1'
     streams = {k: np.memmap(source/f'mask{k}.rgb', np.uint8, 'r', shape=reference.shape) for k in (0, 1, 2, 4)}
+    prepared = {k: reparameterize(model, k) for k in (0, 1, 2, 4)} if args.model else None
     old = streams[0]
     save(args.output/'run.json', {'model_sha256': digest(model_path), 'reference_sha256': digest(table_path),
         'choice_source_sha256': digest(choice_path), 'cell_orientation_sha256': digest(args.output/'cell-orientation.bin'),
         'source_sha256': {Path(__file__).relative_to(ROOT).as_posix(): digest(Path(__file__))},
-        'environment': study_provenance.environment_fingerprint(),
-        'policy': '唯一cap1522训练mean最优单项，不根据100图在mean/RMS两项中选择或继续调参。byte/cell实际32768B；原节点/坐标保持。',
+        'environment': study_provenance.environment_fingerprint(), 'numba_threads': 4,
+        'policy': '默认唯一cap1522训练mean最优单项；显式新模型/方向须配套SHA冻结。均不根据100图改选或继续调参。byte/cell实际32768B；基线始终原3e5f。',
         'scope': '新插值表示，既有ChannelLut/native不支持；全域下界限于当前四固定方向与固定模型。'})
     output = np.memmap(args.output/'candidate.rgb', np.uint8, 'w+', shape=reference.shape)
     hist, old_hist = np.zeros(3*255**2+1, np.int64), np.zeros(3*255**2+1, np.int64)
@@ -137,7 +147,8 @@ def main():
         for mask in (0, 1, 2, 4):
             select = choices[cells] == mask
             value[select] = physical_oracle(model, rgb[select], mask)
-            np.testing.assert_array_equal(value[select], streams[mask][start:start+len(keys)][select])
+            expected = raw_predict(prepared[mask], rgb[select]) if prepared is not None else streams[mask][start:start+len(keys)][select]
+            np.testing.assert_array_equal(value[select], expected)
         output[start:start+len(keys)] = value
         hist += histogram(value, reference[start:start+len(keys)])
         old_hist += histogram(old[start:start+len(keys)], reference[start:start+len(keys)])
