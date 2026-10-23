@@ -70,7 +70,7 @@ ARRI 整帧执行一次；BRAW/RED 用 262,144 像素 tile 全覆盖，分别每
 
 本地每家输出 SDR/HDR × reference16/runtime8 四个 FFV1 MKV。ARRI、RED及BRAW SDR用v3；BRAW HDR因本机v3内存分配失败，改用**实验FFV1 v4**完成像素导出验证，不能当作已验收的生产容器兼容性。存储格式为全范围 `gbrp16le`、RGB identity matrix；参考有效16bit，原生有效8bit，装入16bit容器不会恢复损失的精度。SDR信令为BT709 primaries/TRC，显示输出变换采用Rec.1886；HDR信令为BT2020/PQ。没有额外的HDR母版显示器/MaxCLL元数据或校准显示器验收，不把这些验证文件当作广播交付母版。
 
-ARRI 在 `video-arri-v2/`（Linux FFmpeg7.0.2）；RED 在 `video-red-v2/`（Windows FFmpeg7.1）；BRAW 在 `video-blackmagic-v1/`（首份复用Linux已完成编码，Windows完整回读，后续Windows编码；SDR编码/回读1线程，HDR 2线程）。回执中 `reused_existing_encode=true` 的 `command` 是未执行的备选命令，实际旧编码参数看同目录原始 encode.log 与冻结脚本。已完成检查点续跑时复核当前原RGB串联SHA和视频SHA，保留原完整回读回执及其来源SHA，不反复解码已验证视频。每个最终视频均曾解码回原输入 RGB 格式，验证所有帧、长度与串联 SHA 完全一致，再核对色彩标记；每份输出的文件 SHA 与执行日志均单列。
+ARRI 在 `video-arri-v2/`（Linux FFmpeg7.0.2，编码4线程，回读输出4线程，解码输入线程未限制）；RED 在 `video-red-v2/`（Windows FFmpeg7.1，编码及回读1线程）；BRAW 在 `video-blackmagic-v1/`（首份复用Linux已完成编码，原编码8线程，Windows完整回读1线程；后续Windows SDR编码/回读1线程，HDR 2线程）。回执中 `reused_existing_encode=true` 的 `command` 是未执行的备选命令，实际旧编码参数看同目录原始 encode.log 与冻结脚本。已完成检查点续跑时复核当前原RGB串联SHA和视频SHA，保留原完整回读回执及其来源SHA，不反复解码已验证视频。每个最终视频均曾解码回原输入 RGB 格式，验证所有帧、长度与串联 SHA 完全一致，再核对色彩标记；每份输出的文件 SHA 与执行日志均单列。
 
 此前 TIFF/EXR 不支持、OCIO CDL 构造API误用、Linux包403、BRAW整帧大数组进程异常结束、FFmpeg原色矩阵选项名称及Windows色彩标记丢失均保留失败证据。WSL重负载编码/回读曾异常结束，没有可证明的OOM诊断，不声称已确认根因。之后采用串行Windows进程并限制线程，BRAW HDR v3仍分别在24帧和队列限额后的2帧报`Cannot allocate memory`，不是完整输出，原文件/日志保留。[FFV1源码](https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/libavcodec/ffv1enc.c)的v3最坏包预分配为宽×高×37×4，6K时截至约2GiB；v4使用宽×高×3×4，BRAW约255MB。后续HDR使用v4及输入/输出队列限额1，仍做完整像素验证，不声称已隔离Windows全部内存分配机制。Windows7.1需用 [setparams](https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/filters.texi)同步帧色彩属性，本地小探针和完整实际输出验证通过；它不改变像素值。失败输出不算入最终12份。
 
