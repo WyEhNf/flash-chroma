@@ -20,7 +20,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     folders = ['channel-tail-nodes-20261023', 'channel-tail-extensions-20261024', 'cinema-last-stage-20261024',
-               'protected-tail-cases-20261024', 'velvia-body-diagonals-20261024']
+               'protected-tail-cases-20261024', 'velvia-body-diagonals-20261024', 'velvia-cell-diagonals-20261024',
+               'velvia-stripe-diagonals-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -30,6 +31,14 @@ def main():
             blob = subprocess.check_output(['git', 'show', args.git_ref+':'+path], cwd=ROOT)
             result = {'kind': 'git_blob', 'path': path, 'expected_sha256': expected, 'actual_sha256': digest(blob)}
             result['pass'] = result['expected_sha256'] == result['actual_sha256']
+            checks.append(result)
+            if not result['pass']:
+                failures.append(result)
+        reused = manifest.get('reused_cell_statistics')
+        if reused:
+            blob = subprocess.check_output(['git', 'show', args.git_ref+':'+reused['path']], cwd=ROOT)
+            result = {'kind': 'reused_git_blob', 'path': reused['path'], 'expected_sha256': reused['sha256'],
+                      'actual_sha256': digest(blob), 'pass': digest(blob) == reused['sha256']}
             checks.append(result)
             if not result['pass']:
                 failures.append(result)
