@@ -542,3 +542,12 @@ scripts/report_quantile_tail_study.py -text
 /scripts/prepare_velvia_bubble_native.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /scripts/check_velvia_bubble_native.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /scripts/archive_velvia_bubble_native.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+# 局部整数规划和精确前缀下界保留实际执行源及证据原字节。
+/python/lutlab/integer_last_milp.py -text
+/scripts/check_integer_last_milp.py -text
+/scripts/run_cinema_last_milp.py -text
+/scripts/certify_cinema_arrival_pair.py -text
+/scripts/archive_cinema_prefix_bound_followup.py -text
+/experiments/p16-last-milp-v1.json -text
+/experiments/p16-arrival-pair-bound-v1.json -text
+/report/data/p16-cinema-prefix-bound-followup-v1/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof

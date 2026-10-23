@@ -1,0 +1,191 @@
+{
+  "plan": {
+    "schema": "p16_exact_arrival_pair_lower_bound_v1",
+    "current_max_squared": 57,
+    "target_squared": 56,
+    "policy": "仅检查当前max57联合组的全部gold球交；若同一前三级到达RGB内有两个gold相距d²>4*56，使用精确整数不等式给下界，不依赖MILP状态。对见证原色以独立Python整数重放前1/2/3级，找最早不可区分前缀。",
+    "identity": "完整861行联合支撑来自9850ab阶段，匹配已验收末级5b8be3d4与完整流373a2fcb，gold ec79ca61。",
+    "limits": "只固定见证所示前缀；改变该前缀可突破，不能称全模型族max全局最优。若无见证则明确无下界，不扩大搜索。"
+  },
+  "hot_joint_groups": [
+    {
+      "arrived_rgb": [
+        48,
+        45,
+        36
+      ],
+      "reference_rgb": [
+        [
+          50,
+          46,
+          47
+        ],
+        [
+          53,
+          49,
+          50
+        ],
+        [
+          54,
+          50,
+          51
+        ],
+        [
+          55,
+          51,
+          52
+        ],
+        [
+          57,
+          52,
+          53
+        ],
+        [
+          57,
+          53,
+          54
+        ],
+        [
+          59,
+          54,
+          56
+        ]
+      ],
+      "source_rgb_codes": [
+        2436910,
+        23685,
+        15419,
+        15676,
+        15677,
+        2631720,
+        2697256
+      ],
+      "target_ball": {
+        "feasible": false,
+        "witness": null,
+        "lo": [
+          52,
+          47,
+          49
+        ],
+        "hi": [
+          57,
+          53,
+          54
+        ],
+        "box_size": 252,
+        "tested": 252
+      }
+    }
+  ],
+  "pair_certificates": [
+    {
+      "source_rgb_codes": [
+        2436910,
+        2697256
+      ],
+      "source_rgb": [
+        [
+          37,
+          47,
+          46
+        ],
+        [
+          41,
+          40,
+          40
+        ]
+      ],
+      "reference_rgb": [
+        [
+          50,
+          46,
+          47
+        ],
+        [
+          59,
+          54,
+          56
+        ]
+      ],
+      "reference_pair_squared_distance": 226,
+      "four_times_target": 224,
+      "earliest_equal_prefix": 2,
+      "prefix_trace": [
+        {
+          "stages": 1,
+          "outputs": [
+            [
+              53,
+              48,
+              41
+            ],
+            [
+              54,
+              50,
+              41
+            ]
+          ],
+          "equal": false
+        },
+        {
+          "stages": 2,
+          "outputs": [
+            [
+              46,
+              46,
+              46
+            ],
+            [
+              46,
+              46,
+              46
+            ]
+          ],
+          "equal": true
+        },
+        {
+          "stages": 3,
+          "outputs": [
+            [
+              48,
+              45,
+              36
+            ],
+            [
+              48,
+              45,
+              36
+            ]
+          ],
+          "equal": true
+        }
+      ],
+      "max_squared_integer_lower_bound": 57,
+      "current_output": [
+        55,
+        50,
+        51
+      ]
+    }
+  ],
+  "earliest_fixed_prefix_with_proven_lower_bound": 2,
+  "fixed_prefix_max_squared_lower_bound": 57,
+  "proof": "对任意输出y，||a−b||²≤2(||a−y||²+||b−y||²)≤4 max(d²)。同前缀必同输出；当pair d²>224时不能两者都≤56。RGB8平方误差是整数，因此max²≥57。",
+  "source_sha256": {
+    "scripts/certify_cinema_arrival_pair.py": "91ec0f856d3c14bc4d9d5b2fd32f75192b66b1b25423ea397501a484ea97c433",
+    "experiments/p16-arrival-pair-bound-v1.json": "62dfee90e0fac0a2d0266331af1cab6e6c74da24e6d1886bad79a25f8ef27b3c",
+    "scripts/check_cinema_prefix_certificate.py": "818dbf8dabbc30afdce4add8263ee5b27f0868657abd1bef6935d5f37bb4ab9b",
+    "python/lutlab/integer_rgb_ball.py": "12541bbd5e68bbc167dafbf83661b8583cfbe30e46bf7d364c8970d669d102af"
+  },
+  "input_sha256": {
+    "joint_support": "e4041e2f43efbc214539fff97e16192e510ae82b0563a7e5bce6de064c391d69",
+    "previous_budget_run": "0c09abb37def84d9aaabcdd774975cd900a459902d969d049dca4f0f96cffc79",
+    "stage4": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+    "first": "0ea0a380b83e3581668654f45a7aa5682515b2dfb6ef7c8aeb96f82f60afa030",
+    "stage2": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+    "stage3": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "reference": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690"
+  },
+  "scope": "少量精确见证足以给固定前缀下界，完整max57上界引用此前独立全域验收。未新跑全部RGB/native/照片；不能扩展为可改变首级的模型族全局最优。"
+}
