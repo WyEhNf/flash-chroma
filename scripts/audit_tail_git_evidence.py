@@ -25,7 +25,7 @@ def main():
                'velvia-bubble-probe-20261024', 'velvia-bubble-slope-20261024', 'velvia-bubble-accept-20261024',
                'velvia-bubble-native-20261024', 'velvia-bubble-perf-20261024', 'p16-direct-u16-native-20261024-v2',
                'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024', 'p16-direct-u16-ilp-perf-20261024',
-               'p16-cinema-first-hotspot-20261024']
+               'p16-cinema-first-hotspot-20261024', 'p16-cinema-first-joint-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -42,6 +42,14 @@ def main():
         if reused:
             blob = subprocess.check_output(['git', 'show', args.git_ref+':'+reused['path']], cwd=ROOT)
             result = {'kind': 'reused_git_blob', 'path': reused['path'], 'expected_sha256': reused['sha256'],
+                      'actual_sha256': digest(blob), 'pass': digest(blob) == reused['sha256']}
+            checks.append(result)
+            if not result['pass']:
+                failures.append(result)
+        reused = manifest.get('reused_full_support_manifest')
+        if reused:
+            blob = subprocess.check_output(['git', 'show', args.git_ref+':'+reused['path']], cwd=ROOT)
+            result = {'kind': 'reused_full_support_manifest', 'path': reused['path'], 'expected_sha256': reused['sha256'],
                       'actual_sha256': digest(blob), 'pass': digest(blob) == reused['sha256']}
             checks.append(result)
             if not result['pass']:
