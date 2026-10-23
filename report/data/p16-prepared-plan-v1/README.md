@@ -10,6 +10,8 @@ Agent：Codex /root/speed；Operator：当前用户。2026-10-24实际Windows11 
 
 `identity.json`绑定DLL/源码、编译器、构建参数和五复用COFF `.text`一致。`89-flags.make`、`89-includes.rsp`及`89-link.txt`为生成文件原件。固定a399模型复用`../p16-final-model-pair-v1/fixed-models.zip`的baseline内容，原87 DLL没有覆盖。
 
+旧依赖`experiments/channel-runtime/channel_native.py`的实际执行工作区为CRLF、既有Git blob为LF；`execution-source/channel_native.py`保留实际执行原字节，identity同时记录旧Git与执行SHA。两者只差换行，未修改原依赖、原始测量或旧历史；首提交的源身份审计未通过此项，随后限定修复归档身份，不把失败审计写成通过。
+
 只读复算不加载DLL或重新计时：
 
 ```powershell
