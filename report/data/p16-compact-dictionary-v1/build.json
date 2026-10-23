@@ -1,0 +1,143 @@
+{
+  "purpose": "单编译进程构建M16P零堆C99及两个固定索引宽度AVX2桌面后端。",
+  "source_sha256": {
+    "experiments/compact-dictionary-runtime/memory_rom.h": "8c79929d4753c8c9a469d128e340a5ab50a4e06eb078de3c8551bce632ecb246",
+    "experiments/compact-dictionary-runtime/memory_rom.c": "4c753f5045ca3ce79bb273b5233319f741199f531abaeb4908041510f7bc1636",
+    "experiments/compact-dictionary-runtime/memory_parallel.cpp": "57c5eb02b2660b6a8125c4ba01253e96331042391d7c580dbf50dd39ebfd7dc2",
+    "experiments/compact-dictionary-runtime/channel_avx2_17.cpp": "a378a9308ee755cbf6f5f5fb62ca8e420a6f9ba85dc0d21dbd47638790991d53",
+    "experiments/compact-dictionary-runtime/channel_avx2_24.cpp": "9b088cb7029f5f855fbbc314580bc83f96c0a870fb40669b8d5f271f5c06819a",
+    "scripts/generate_compact_dictionary.py": "74257cc0fa692cd79b4fc9aead9704e8daddc330d53ca974dcd946de66cac2c7",
+    "scripts/freeze_compact_dictionary.py": "a125c65edfb5827afb7357e4331d58f828b7eb89a4f7ecfe249ffe6d5ef9a588",
+    "scripts/export_compact_dictionary.py": "e2a0e947b6c0f5cf3055bd13763dfa1418f54604dd731782d2d76ca3ed69d727",
+    "scripts/build_compact_dictionary.py": "3ac0b9eb5de54f757574278a3348b610427f327affca14916ae93b947419b9bd",
+    "scripts/verify_compact_dictionary.py": "92d6cc8ab7694a74def0d07ef46738ab2f5e71419282b718de2c237f2b85b45f",
+    "scripts/verify_compact_dictionary_contract.py": "7ed16c4379f6cca1b7392c5736220685f5fbbd23f8d82fe3792fab14fbf666f8",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c",
+    "experiments/skylake-andn-split-runtime/channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666"
+  },
+  "plan_sha256": "9ff2b633c1217760432e38983c8c26e7e8453049a19e627a34e5092de0759173",
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "c_compiler_sha256": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-O3",
+        "-std=c99",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-dictionary-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_dict_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-dictionary-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-dictionary-runtime\\channel_avx2_17.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\channel_avx2_17.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-dictionary-runtime\\channel_avx2_24.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\channel_avx2_24.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\channel_avx2_17.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\channel_avx2_24.o",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_dict_c99.dll": "9e896b65571c5aa35946a2ed1c0e27e48c2b899e02b14a6f3fb8effcc95df91b",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "scope": "C99库无C++/OpenMP/AVX2依赖；桌面后端仅两个像素TU启用AVX2。旧ROM/快基线不重编译。"
+}
