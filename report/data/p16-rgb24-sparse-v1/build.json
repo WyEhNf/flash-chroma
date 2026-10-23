@@ -1,0 +1,135 @@
+{
+  "purpose": "编译独立RGB24稀疏句柄及仅供保护页探针使用的AVX2库。",
+  "plan_sha256": "e0f030f2b7cc51ea9324eabebac7268fdb4a590adc2712cb681ceb2d7b889ea0",
+  "source_sha256": {
+    "scripts/verify_compact_sparse.py": "917d27c8a4e30af1f18d914b8df15df6ed1952323fc1b3da9cab85665fbdaf64",
+    "experiments/channel-runtime/channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+    "experiments/channel-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "scripts/verify_channel_coordinates.py": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab",
+    "python/lutlab/channel_coordinates.py": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "experiments/rgb24-sparse-runtime/channel_runtime.cpp": "2a9994a60ebd0643c39d7e830791c05b96b25e2ffe6b52f56849feaad773b148",
+    "experiments/rgb24-sparse-runtime/channel_avx2.cpp": "aa1e03f22e953a6e34fbf4f0ba438342450cbfc138977725d8ca683a24505bae",
+    "scripts/generate_rgb24_sparse.py": "7374fc8f08e0840fc091db9ff43e5defb9a374e898049df1491aadeb9168535a",
+    "scripts/build_rgb24_sparse.py": "18bc0646c384dbc5c12baa2d5a449ed2099d7e98bd3dfd64a49b511f68a230a5",
+    "scripts/bench_rgb24_sparse.py": "df01968c476cd79bc515f893324c45ed45588220728d361730f36dd95d79ec4b",
+    "scripts/verify_rgb24_sparse.py": "755983866d593146ddff3a39b09a634f98cc78de7102ff789ed82bad9586055a",
+    "scripts/verify_rgb24_probe.py": "e4ab6f2e0828472f4543ebc071bccf9bc63eb4f8347f75347d85391433909c29",
+    "scripts/check_compact_three_stage.py": "ff938cdb6d1a44b698936c2ea479724ccb981d7407474475542e65e27e6e9e4f",
+    "scripts/freeze_rgb24_sparse.py": "e87fd02011dcf2a0383839e1752e7454b0b5da4b10c141d65f6c019bb4d6152e"
+  },
+  "inputs": {
+    "core": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+      "sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6"
+    },
+    "avx2_object": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+      "sha256": "2edcc3ae0792294ebd59614c9634719869830cb839a8838c551987443afac3e4"
+    },
+    "specialized": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    }
+  },
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-DJSHC_CC_HAVE_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb24-sparse-runtime\\channel_runtime.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\runtime.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb24-sparse-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\avx2.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-fopenmp",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\runtime.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\avx2.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\jshc_compact_sparse.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-ffp-contract=off",
+        "-DJSHC_RGB24_PROBE=1",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb24-sparse-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb24-sparse-build-v1\\rgb24_probe.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_channel_specialized.dll": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+    "jshc_compact_sparse.dll": "5c63a735f188b6d32406912763fe321de50ef47539221c4d25e82de67db4a3ec",
+    "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+    "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+    "rgb24_probe.dll": "698fc47cab124e2a5c17a91ca523c92a562ba5597abfb3347497fbda226365bc"
+  },
+  "abi": 1,
+  "revisions": {
+    "specialized": 2,
+    "compact": 1002
+  },
+  "scope": "RGB24 AVX2只编译像素TU；dispatcher baseline ISA，节点owned storage含guardword；probe库不用于性能。"
+}

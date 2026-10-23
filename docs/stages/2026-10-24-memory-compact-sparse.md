@@ -64,3 +64,5 @@ capacity按真实vector.capacity和句柄/表/View对象尺寸求和，未用siz
 `scripts/build_compact_sparse.py`绑定原静态core、原AVX2对象和旧specialized的SHA，`verify_compact_sparse.py`生成一般模型并执行有限/完整域合同，`check_compact_three_stage.py`保存三级补验；`bench_compact_sparse.py`执行冻结四进程协议。测量前源码哈希由计划校验，阶段结束没有修改已测运行源。
 
 精简包在`report/data/p16-compact-sparse-v1`：原始build/finite/full/three-stage/performance JSON、全部worker与12个RSS原件、所测源码/栈记录、候选库及原AVX2对象、一般模型输入和SHA清单。大照片/完整RGB域不入库，参考库与四MinGW依赖沿用首阶段发布件，原SHA在本轮JSON中重复绑定。发布路径预先设置`-text`，入库前逐项核对Git blob/工作树/manifest的原字节。
+
+后补定位说明：78/80与四依赖具体在`report/data/p16-memory-rom-v1/measured-libraries.zip`，specialized另在更早的`report/data/channel-runtime-specialized-v1/binaries-and-core.zip`，不是首个ROM包重复收录了specialized。只补清引用位置，保留原manifest和所有测量原件不改。

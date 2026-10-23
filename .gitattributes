@@ -487,3 +487,11 @@ scripts/report_quantile_tail_study.py -text
 /scripts/*compact_sparse*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /scripts/check_compact_three_stage.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /report/data/p16-compact-sparse-v1/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+# RGB24独立阶段的执行源和性能证据保持原始字节。
+/experiments/rgb24-sparse-runtime/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/experiments/rgb24-sparse-v*.json -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/scripts/*rgb24_sparse*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/scripts/verify_rgb24_probe.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/report/data/p16-rgb24-sparse-v1/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+# objdump原件的机器字节续行自带尾空格，保留其测量证据原格式。
+/report/data/p16-rgb24-sparse-v1/avx2-assembly.txt -text whitespace=space-before-tab,cr-at-eol,-blank-at-eof,-blank-at-eol
