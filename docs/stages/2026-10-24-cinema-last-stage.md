@@ -39,6 +39,8 @@ Agent：Codex `/root/tail`；Operator：WyEhNf；分支：`codex/p16-tail-202610
 
 首次v1在首批fresh后因日志缺`json` import退出，未得到完整模型；补import后v2使用完全相同冻结方案从正式severe_first完整重跑，失败run/progress保留。静态归档v1首次只识别了training/guard嵌套字段，审计组位于`audit_ids`；补齐读取分支后在新归档目录v2复算三组，没有重跑像素或改指标。
 
+发布前另用`audit_tail_git_evidence.py`逐Git HEAD blob核三个精度证据包，并核各源码ZIP内的测量SHA。首次61项检查中，末级包7个raw JSON/CSV被autocrlf归一，导致HEAD字节与原manifest不符；前两个包及源码ZIP检查通过。追加本轮限定`-text`后重新暂存原测量字节，保留原始提交、不改SHA或数值数据。该检查区分历史源码快照和后续已修改HEAD源码，不把二者混作同一版本；修复不重跑像素。
+
 环境：Windows11 26200 x64/Ryzen9 8945HX、Python3.12.14/NumPy1.26.4/Numba0.60.0/Pillow10.4；Numba4、BLAS/MKL/OMP环境1。87为同源GCC15.2 Release AVX2/OpenMP DLL，SHA `58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158`，不含AVX512。本地共享CPU的离线训练时长不作为运行速度优化证据。
 
 实现为`run_cinema_last_stage.py`，完整验收与逐图/阈值静态归档分别由`accept_channel_tail_nodes.py`、`archive_cinema_last_stage.py`执行。结果、模型、来源和复现见[精简证据](../../report/data/cinema-last-stage-20261024/README.md)。历史100图不是盲测，四张创意LUT未证明色彩域兼容，不称真实ISP。分输出首级侧表仍需官方格式许可；普通SLUT与Velvia难例另立阶段，不能据本例保证任意LUT的尾部。
