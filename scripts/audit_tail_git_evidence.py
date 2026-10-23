@@ -21,7 +21,7 @@ def main():
     args = parser.parse_args()
     folders = ['channel-tail-nodes-20261023', 'channel-tail-extensions-20261024', 'cinema-last-stage-20261024',
                'protected-tail-cases-20261024', 'velvia-body-diagonals-20261024', 'velvia-cell-diagonals-20261024',
-               'velvia-stripe-diagonals-20261024', 'velvia-stripe-nodes-20261024']
+               'velvia-stripe-diagonals-20261024', 'velvia-stripe-nodes-20261024', 'velvia-mean-first-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder

@@ -18,7 +18,7 @@ def chain_square(r, g, b, suffix, target):
 
 @njit(cache=True, parallel=True)
 def gains(indices, weights, acc, reference, suffix, mass, nodes, colours,
-          colour, caps, root, parts, p99_sq=14, severe_sq=36):
+          colour, caps, root, parts, p99_sq=14, severe_sq=36, step_unit=1):
     """八色各角互斥；每个方向统计完整支撑，不能只看高误差点。"""
     size = len(nodes)
     # mean、训练质量mean、RMS平方、训练质量RMS平方、p99超额、严重尾部、p99计数。
@@ -29,7 +29,7 @@ def gains(indices, weights, acc, reference, suffix, mass, nodes, colours,
     for n in prange(size):
         for d in range(26):
             for c in range(3):
-                if not 0 <= np.int64(nodes[n, c])+cj.DIRECTIONS[d, c] <= 255:
+                if not 0 <= np.int64(nodes[n, c])+step_unit*cj.DIRECTIONS[d, c] <= 255:
                     legal[d, n] = 0
     for part in prange(parts):
         value = np.empty((3, 3), np.int64)
@@ -48,7 +48,7 @@ def gains(indices, weights, acc, reference, suffix, mass, nodes, colours,
                         invalid[part] += 1
                     node = channel_node
                 for step in range(3):
-                    value[c, step] = (np.int64(acc[p, c])+(step-1)*selected_weight+io.ONE//2) >> io.Q
+                    value[c, step] = (np.int64(acc[p, c])+step_unit*(step-1)*selected_weight+io.ONE//2) >> io.Q
             if node < 0:
                 continue
             old = chain_square(value[0, 1], value[1, 1], value[2, 1], suffix, reference[p])

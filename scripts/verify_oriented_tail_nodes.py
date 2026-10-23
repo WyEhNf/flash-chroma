@@ -27,6 +27,7 @@ def independent(model, points, choices):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--steps', type=int, nargs='+', choices=(1, 2), default=[1])
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖有向支撑合同')
@@ -40,6 +41,8 @@ def main():
     for m in (17, 33):
         grid = np.tile(np.linspace(0, 255, m), (3, 1))
         model = cc.from_sparse(io.SparseLut(grid, rng.integers(116, 140, (m, m, m, 3), dtype=np.uint8)))
+        model.nodes[0, 0, 0] = 0
+        model.nodes[-1, -1, -1] = 255
         for c in range(3):
             model.channel_frac[c, :, 1:255] = np.clip(model.channel_frac[c, :, 1:255].astype(np.int64)+(c-1)*113, 0, io.ONE)
         choices = MASKS[dense(rng.integers(0, 2, (3, m-1), dtype=np.uint8))]
@@ -57,31 +60,38 @@ def main():
         caps = old_squared+rng.integers(0, 9, len(points), dtype=np.int32)
         colours = cj.parity(m)
         maximum_error, checked = 0., 0
-        for colour in range(8):
-            change, bad, invalid = tail.gains(indices, weights, acc, reference, identity, mass,
-                model.nodes.reshape(-1, 3), colours, colour, caps, root, 4, 40, 100)
-            if invalid:
-                raise AssertionError('有向geometry不满足8色共同支撑')
-            active = np.unique(indices[weights > 0])
-            active = active[colours[active] == colour][:3]
-            for node in active:
-                for direction in (0, 12, 25):
-                    nodes = model.nodes.reshape(-1, 3).copy()
-                    nodes[node] = nodes[node].astype(np.int32)+cj.DIRECTIONS[direction]
-                    trial = cc.ChannelLut(model.grid, nodes.reshape(model.nodes.shape), model.idx, model.channel_frac)
-                    value = independent(trial, points, choices)
-                    actual, sq = tail.measure(value, reference, identity, mass, 40, 100)
-                    error = float(np.max(np.abs(actual-initial-change[:, direction, node])))
-                    maximum_error = max(maximum_error, error)
-                    if error > 1e-9 or bad[direction, node] != np.count_nonzero(sq > caps):
-                        raise AssertionError('有向完整支撑gain或逐色cap不符')
-                    checked += 1
+        for step_unit in args.steps:
+            for colour in range(8):
+                change, bad, invalid = tail.gains(indices, weights, acc, reference, identity, mass,
+                    model.nodes.reshape(-1, 3), colours, colour, caps, root, 4, 40, 100, step_unit)
+                if invalid:
+                    raise AssertionError('有向geometry不满足8色共同支撑')
+                active = np.unique(indices[weights > 0])
+                active = active[colours[active] == colour]
+                active = np.unique(np.r_[active[:2], active[-1:]])
+                for node in active:
+                    for direction in (0, 12, 25):
+                        nodes = model.nodes.reshape(-1, 3).copy()
+                        proposed = nodes[node].astype(np.int32)+step_unit*cj.DIRECTIONS[direction]
+                        if np.any(proposed < 0) or np.any(proposed > 255):
+                            if not bad[direction, node]:
+                                raise AssertionError('扩大步长未阻止RGB8节点越界')
+                            continue
+                        nodes[node] = proposed
+                        trial = cc.ChannelLut(model.grid, nodes.reshape(model.nodes.shape), model.idx, model.channel_frac)
+                        value = independent(trial, points, choices)
+                        actual, sq = tail.measure(value, reference, identity, mass, 40, 100)
+                        error = float(np.max(np.abs(actual-initial-change[:, direction, node])))
+                        maximum_error = max(maximum_error, error)
+                        if error > 1e-9 or bad[direction, node] != np.count_nonzero(sq > caps):
+                            raise AssertionError('有向完整支撑gain或逐色cap不符')
+                        checked += 1
         records.append({'m': m, 'points': len(points), 'node_directions_checked': checked,
             'fresh_vs_design_vs_independent_byte_mismatches': 0, 'maximum_gain_error': maximum_error,
             'cap_mismatches': 0, 'eight_colour_shared_support_pass': True})
-    save(args.output, {'pass': True, 'records': records, 'seed': 2026102422, 'numba_threads': 4,
+    save(args.output, {'pass': True, 'records': records, 'steps': args.steps, 'seed': 2026102422, 'numba_threads': 4,
         'environment': study_provenance.environment_fingerprint(),
-        'source_sha256': {p.relative_to(ROOT).as_posix(): digest(p) for p in [Path(__file__), ROOT/'python/lutlab/oriented_tetra.py']},
+        'source_sha256': {p.relative_to(ROOT).as_posix(): digest(p) for p in [Path(__file__), ROOT/'python/lutlab/oriented_tetra.py', ROOT/'python/lutlab/channel_tail_nodes.py']},
         'scope': '17/33有限独立整数/方向合同，不证明真实拟合收益，不作原生或性能。'})
     print({'pass': True, 'records': records}, flush=True)
 
