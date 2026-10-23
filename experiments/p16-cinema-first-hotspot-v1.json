@@ -1,0 +1,23 @@
+{
+  "schema": "p16_cinema_first_hotspot_v1",
+  "agent": "/root/tail",
+  "operator": "本任务用户",
+  "status": "预注册",
+  "purpose": "当前max_first首级热点物理节点的完整正支撑、有限单节点整数可行性证书；不是联合拟合或性能测试",
+  "baseline": "0ea0首级分输出Q16坐标，904e第二级，95cb第三级，5b8末级；独立完整域143e流",
+  "target_max_squared": 49,
+  "baseline_max_squared": 50,
+  "expected_hotspot_inputs": 116,
+  "selection": "全部max平方误差50源输入，在三个输出基下有严格正权重的物理节点并集；不按照片或热点子集择优",
+  "directions": "每个物理节点单独尝试26个非零{-1,0,1} RGB方向，步长依次1、2，共52项；不联合应用，不追加扫数",
+  "support": "共享idx下节点两侧所有cell的RGB8编码盒，再按真实三个输出Q16正权重取并集；保留训练频数0的旁侧输入",
+  "independent_support": "完整16M域直接计算8个立方体角的解析Q16权重，逐节点正支撑计数及并集与局部枚举严格一致；未受影响直方图逐候选精确保留",
+  "suffix": "以当前904e/95cb/5b8构造完整RGB8后缀，冻结87原生AVX2与独立uint64整数重算逐字节一致，不复用旧后缀",
+  "training": "原60图、47185920像素；从冻结原始频率恢复逐RGB8整数频数，残差不超过1e-6且总数严格一致",
+  "protected": ["完整域mean", "完整域RMS", "完整域p99", "完整域CVaR最差1%", "原60图合并mean", "原60图合并RMS", "原60图合并p99", "原60图合并CVaR最差1%"],
+  "floating_absolute_tolerance": 1e-12,
+  "hard_cap": "任何候选完整域max平方误差不得超过50；只有严格降至49且全部保护预算通过才允许提出后续终验",
+  "resources": {"threads": 4, "cube_block": 65536, "maximum_selected_nodes": 928, "maximum_union_rows": 1048576, "maximum_single_box_rows": 1048576, "suffix_payload_bytes": 50331648, "single_node_streaming": true, "full_design_prohibited": true},
+  "stop": "固定52方向完成即结束；无单节点成功只证明本有限搜索未找到，不证明联合节点或其他坐标/表示无解；超过冻结资源界则如实停止，不扩大分配",
+  "scope": "只使用全域与原60训练频数；100图不参与选择；无新native、内存优化或速度结论；分输出坐标仍为许可未知研究表示"
+}

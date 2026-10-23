@@ -24,7 +24,8 @@ def main():
                'velvia-stripe-diagonals-20261024', 'velvia-stripe-nodes-20261024', 'velvia-mean-first-20261024',
                'velvia-bubble-probe-20261024', 'velvia-bubble-slope-20261024', 'velvia-bubble-accept-20261024',
                'velvia-bubble-native-20261024', 'velvia-bubble-perf-20261024', 'p16-direct-u16-native-20261024-v2',
-               'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024', 'p16-direct-u16-ilp-perf-20261024']
+               'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024', 'p16-direct-u16-ilp-perf-20261024',
+               'p16-cinema-first-hotspot-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -54,6 +55,18 @@ def main():
                 checks.append(result)
                 if not result['pass']:
                     failures.append(result)
+        for zip_name, field in (('support-evidence.zip', 'support_member_sha256'), ('models.zip', 'model_member_sha256')):
+            if field not in manifest:
+                continue
+            blob = subprocess.check_output(['git', 'show', args.git_ref+':'+relative+'/'+zip_name], cwd=ROOT)
+            with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+                for name, expected in manifest[field].items():
+                    actual = digest(archive.read(name))
+                    result = {'kind': field, 'path': relative+'/'+zip_name+'!/'+name,
+                              'expected_sha256': expected, 'actual_sha256': actual, 'pass': actual == expected}
+                    checks.append(result)
+                    if not result['pass']:
+                        failures.append(result)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     record = {'pass': not failures, 'git_ref': args.git_ref, 'checked_commit': subprocess.check_output(
         ['git', 'rev-parse', args.git_ref], cwd=ROOT, text=True).strip(), 'checks': checks, 'failures': failures,
