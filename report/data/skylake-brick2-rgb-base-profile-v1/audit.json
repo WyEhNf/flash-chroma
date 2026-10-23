@@ -1,0 +1,130 @@
+{
+  "purpose": "只读核验2³输入/RGB基值差分的ZIP证据；不执行原分析或重建主词与池。",
+  "audit_completed": true,
+  "audit_passed": true,
+  "completed_utc": "2026-10-23T05:05:32.038086+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "executable": "C:\\Users\\admin\\miniconda3\\python.exe",
+    "dependencies": "Python标准库"
+  },
+  "verifier_sha256": "92de6d23de4c8cbf7e03bd64fc9827ca550887c77a0d59d635fb18a42c13cf41",
+  "manifest_sha256": "1ee438ed184ba88c469cfe3c409cf3766745c67445764fa8ca584333b0537f85",
+  "archive_sha256": "4f3e4109969027f7871af90cb01ddbe043bce740b3c24aa4b9e113a8bba27b19",
+  "originals_sha256": {
+    "analyze.py": "ed26d8e8989aefcb3a3aa5a472374eba82ae7f825e607426c29809089a5d743d",
+    "protocol.json": "857ca0ab6adfee36da0e28ed9bd865e120fea62aadc2a90251bc5ddcd1954e15",
+    "execution-start.json": "9fcd100a480af3beae3a2a3ba2cb5030216b4612c91de5c3197fe31d72e24172",
+    "analysis.json": "9da1460d4836af7d4831b21ac73e8c14e46c15144e1dbd0ba39d312a4ea9b779",
+    "exit.json": "5e341f7e9e8cd7697e4ad3c2ff8b4e8847183b9b02d085f4aa3fb904234af660"
+  },
+  "originals_byte_compared": true,
+  "input_rehashes": [
+    {
+      "name": "cache_gold",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/cache-gold.u32",
+      "sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "bytes": 742400
+    },
+    {
+      "name": "cube",
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "bytes": 50331648
+    },
+    {
+      "name": "photos",
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+      "bytes": 235929600
+    },
+    {
+      "name": "manifest",
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "bytes": 101681
+    },
+    {
+      "name": "old_palette_crosscheck",
+      "path": "artifacts/skylake-palette-bank-readonly-v1/palette.u32",
+      "sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "bytes": 1024
+    },
+    {
+      "name": "cache_generation",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/generation.json",
+      "sha256": "c2afd9e81688e8609b52a4862917e0315b05692a0783a512e1bc73d4fd16be95",
+      "bytes": 2058
+    }
+  ],
+  "per_image_input_rehashes": 100,
+  "verified": {
+    "reason_histogram_entries": 128,
+    "reasons_recomputed": {
+      "base_R_outside_0_255": 0,
+      "base_G_outside_0_255": 0,
+      "base_B_outside_0_255": 0,
+      "base_RGB_equals_ffffff": 0,
+      "delta_R_outside_0_3": 124578,
+      "delta_G_minus_R_outside_0_3": 0,
+      "delta_B_minus_R_outside_0_1": 63542
+    },
+    "span_histograms": 3,
+    "span_entries_each": 511,
+    "span_ranges": {
+      "R": {
+        "minimum": 0,
+        "maximum": 10
+      },
+      "G_minus_R": {
+        "minimum": 0,
+        "maximum": 3
+      },
+      "B_minus_R": {
+        "minimum": 0,
+        "maximum": 4
+      }
+    },
+    "full_domain_colors": 16777216,
+    "full_domain_blocks": 2097152,
+    "image_histograms": 100,
+    "images_over_gate": 84,
+    "photo_packets8": 9830400,
+    "gate": {
+      "full_domain_exact": true,
+      "photos_exact": true,
+      "exception_pool_bytes": 5728896,
+      "exception_pool_pass": false,
+      "exception_packet8_fraction": 0.33826314290364584,
+      "exception_packets_pass": false,
+      "any_image_exception_packet8_fraction": 0.7278951009114584,
+      "per_image_pass": false,
+      "limits": {
+        "exception_pool_bytes_max": 2097152,
+        "exception_packet8_fraction_max": 0.05,
+        "any_image_exception_packet8_fraction_max": 0.2
+      },
+      "passed": false
+    }
+  },
+  "source_review": {
+    "scope": "人工审阅冻结160行原分析并AST解析；未导入或执行其函数",
+    "construction": "按Bcoarse分片，Rc/Rf/Gc/Gf/Bf转为Gc/Rc/Bf/Gf/Rf，fine为B低位/G低位/R低位",
+    "original_correctness": "按R=0..255完整G/B笛卡尔积解码全部16M，与cube逐字节及SHA比较；100图以cube直接RGB索引比较；两者每色正逆映射及RGB三项真实进位检查"
+  },
+  "limitations": [
+    "原分析完整色域/100图通过是冻结离线编码重建结果，不是候选原生完整域。",
+    "本审计只重哈希输入和复算已有统计，未独立重建colorword、pool或重新编码/解码完整色域/照片。",
+    "16MiB主表及异常池二进制没有归档；原件仅保存大小/SHA和连续序号布尔结果，不能独立重哈希不存在的二进制。",
+    "逐图输出SHA只核对格式及冻结完整输出SHA，未从照片重新产生输出。",
+    "没有缓存行门槛或吞吐结论，也未重评旧ID-3bit/R8失败。"
+  ],
+  "original_analysis_executions_added": 0,
+  "runtime_implementations_added": 0,
+  "native_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0,
+  "model_calls": 0,
+  "full_domain_calls": 0
+}
