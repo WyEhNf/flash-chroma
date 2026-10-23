@@ -1,0 +1,86 @@
+{
+  "purpose": "只读编码筛查；固定一个方案，事前冻结，不运行原生/构建/性能",
+  "frozen_utc": "2026-10-21T15:00:01.619054+00:00",
+  "script_sha256": "c88f0113f4c1d6e68b4185cdb55f2140f04aa5ecacaf8e2aa390dc45269516ef",
+  "history_sha256": "5ff8da38c49e8d4ec208177f901c1f8bbb5b3f68cf344ae27f56675762f78a72",
+  "freeze_script_sha256": "0f9d1f0d5c07e7aa15085ee436e93d537a32bd787e17a2d415a1ed2e85dba871",
+  "inputs": {
+    "cache_gold": {
+      "path": "artifacts/skylake-matrix-cache-gold-v1/cache-gold.u32",
+      "sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "bytes": 742400
+    },
+    "cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "bytes": 50331648
+    },
+    "photos": {
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+      "bytes": 235929600
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "bytes": 101681
+    },
+    "old_palette_crosscheck": {
+      "path": "artifacts/skylake-palette-bank-readonly-v1/palette.u32",
+      "sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "bytes": 1024
+    },
+    "cache_generation": {
+      "path": "artifacts/skylake-matrix-cache-gold-v1/generation.json",
+      "sha256": "c2afd9e81688e8609b52a4862917e0315b05692a0783a512e1bc73d4fd16be95",
+      "bytes": 2058
+    }
+  },
+  "previous_profile_identity": {
+    "path": "artifacts/skylake-r8-packed-profile-v1/analysis.json",
+    "sha256": "b73099cb170363ee50a266714363f4b74cecf1c86a3f4472dfb0cf87f05e0dc1"
+  },
+  "expected_photo_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "encoding": {
+    "input_code": "R | (G<<8) | (B<<16)",
+    "coarse": "code>>3",
+    "fine": "code&7",
+    "input_block_pixels": 8,
+    "delta_bits": [
+      2,
+      2,
+      1
+    ],
+    "base": "baseR=min(R), baseDG=min(G-R), baseDB=min(B-R); baseRGB=(baseR,baseR+baseDG,baseR+baseDB)",
+    "normal_eligibility": "baseRGB各通道0..255且非ffffff；dR,dDG在0..3，dDB在0..1；不近似",
+    "code5": "dR | (dDG<<2) | (dDB<<4)",
+    "word": "baseRGB24 | sum(code5[k] << (24+5*k))",
+    "normal_decode": "baseRGB24 + (code5&3)*0x010101 + ((code5&12)<<6) + ((code5&16)<<12)",
+    "exception_word": "低24位ffffff；高40位为按coarse升序的连续例外块序号",
+    "exception_pool": "每例外块8个精确little-endian RGB32，共32字节；全白基值也走例外",
+    "main_table_bytes": 16777216,
+    "main_table_cacheline": "((code>>3)*8)>>6 == code>>6，与原16MiB ID表相同",
+    "source_order": "已验cube[R,G,B,channel]转换为逻辑地址[B,G,R]；直接RGB，不使用221色ID重新编号"
+  },
+  "gate": {
+    "exception_packet8_fraction_max": 0.05,
+    "any_image_exception_packet8_fraction_max": 0.2,
+    "exception_pool_bytes_max": 2097152
+  },
+  "correctness": "全部16777216色和100图逐字节一致、完整输出SHA一致、索引逆映射与无进位检查均通过，才可通过离线门槛",
+  "attempt_policy": {
+    "maximum_analysis_executions": 1,
+    "overwrite": false,
+    "automatic_retry": false,
+    "scan_bits": false,
+    "scan_block_size": false,
+    "scan_channel_order": false,
+    "failure_action": "停止；保留原始失败与退出回执，不重新分配位数重扫"
+  },
+  "windows": "每图从像素0起连续8像素；不扫描偏移；任一图门槛同样按包含至少一个例外的8像素包",
+  "interpretation": "目标仅省去正常像素ID到palette的依赖；不减少主表行集合，不预测吞吐；原生代价未知",
+  "future_constructor": "任何将来候选必须由原模型构造，不读取gold或照片；本profile仅判断可行性",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0
+}
