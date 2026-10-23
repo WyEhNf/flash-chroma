@@ -1,0 +1,67 @@
+{
+  "purpose": "在M16S离线导出、构建和验证前冻结16+1bit布局及七角色协议。",
+  "source_sha256": {
+    "experiments/split-dictionary-runtime/memory_rom.h": "93eae508d8d6af3a9b0debe795c710cc07e1143675996238e4ae1f87dc818f3f",
+    "experiments/split-dictionary-runtime/memory_rom.c": "2d7c12f1bd9d7eee5c89ca5e7954f0cb6e6b9f842164f5738cc7189d523ce0f6",
+    "experiments/split-dictionary-runtime/memory_parallel.cpp": "32eee0b5be4d7dba19d916639d238391406ea74733cb1f61e7de6af002ffad5c",
+    "experiments/split-dictionary-runtime/channel_avx2_split.cpp": "5724422079a6144165ee9caaca6b4348a8f75a6731725e11216d05eae86ec798",
+    "scripts/generate_split_dictionary.py": "1cc723a9a7c152776885aabe65ecce75ac528f01443dd8b5b820700ef5882b67",
+    "scripts/export_split_dictionary.py": "2b39478b114b5fbb1b9cdacfe0fda10938dc958a367a752c8ca12e9c7024d7c0",
+    "scripts/build_split_dictionary.py": "07e4132c75624a34da4f6f2002e10e665b8fe29929e69e8bc3d1cd5348095483",
+    "scripts/verify_split_dictionary.py": "7b24b1354de6012bc509a769632bf4d7414d6a0140911424d6c52edcabae2ff6",
+    "scripts/freeze_split_dictionary.py": "47e3449afabf2583946408c82486e1d375638f65090a69c7f5ffadcf378ff67a",
+    "scripts/bench_split_dictionary.py": "4f65161cb7d0c2e2645a2ef8a41ea33670ddb49017c89611944c19ecad47cf24",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "experiments/compact-dictionary-split-design.md": "461d76d0fc8302931e7820e138b480a231dd9221f37104757cc853b9f26aa505",
+    "experiments/compact-dictionary-runtime/channel_avx2_17.cpp": "a378a9308ee755cbf6f5f5fb62ca8e420a6f9ba85dc0d21dbd47638790991d53"
+  },
+  "input_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-17.bin": "33dc6d0ba3a57d0b62f51ebef910eb4862811473420602e03c238c08cc4448da",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-24.bin": "e7845552f2cfb19dd60151413b15527d8386b2ed3b5375d46fd91f1bd89b2285",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "input_rom_path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin",
+  "input_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "reference78": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+    "sha256": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce"
+  },
+  "reference32": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll",
+    "sha256": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6"
+  },
+  "old_build": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1",
+  "old_roms": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1",
+  "roles": [
+    "ref78",
+    "ref80",
+    "dict32",
+    "avx2_24",
+    "avx2_17",
+    "avx2_split",
+    "c99_split"
+  ],
+  "format": {
+    "magic": "M16S",
+    "version": 1,
+    "low_bytes": 2097152,
+    "high_bytes": 131072,
+    "pool_offset": 2228224,
+    "block_bytes": 16
+  },
+  "protocol": "先完整16MiB逻辑ID重建、C99/desktopScalar/AVX2单四线程完整256^3、有限与拒绝及图像/ROM/平面末端保护页。全过后七角色四新worker轮转/反序，每次预热1+5完整百图，原地/分离及1/4线程，最后独立每角色RSS。",
+  "gate": "精度逐字节不变100%；同worker较快78/80耗时除候选耗时，全部四worker最劣按100/90/80/70/60/50档。80 A/A单对0.8..1.25且中位1/1.1..1.1，失败清空该情形资格。原同容量17bit及3B/32bit同时列出，不拼接跨场最好值。",
+  "scope": "只改变精确派生运行时布局，不改模型/ISA/AVX2循环其余token。ROM借用+C99零堆；四线程需要桌面OMP适配器，不是纯C99吞吐声明。离线峰值与实际常驻及fresh-process RSS分列。"
+}
