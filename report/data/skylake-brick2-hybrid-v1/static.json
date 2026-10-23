@@ -1,0 +1,218 @@
+{
+  "accepted": true,
+  "purpose": "修订84对象静态筛查，按实际normal控制流计数；不加载或执行候选。",
+  "checks": {
+    "normal_instructions_le128": true,
+    "normal_loads_le18": true,
+    "normal_no_stack": true,
+    "eight_main_qword_loads": true,
+    "exact_input24": true,
+    "exact_output24": true,
+    "all_reads_before_output": true,
+    "no_forbidden": true,
+    "retained_text": true,
+    "runtime_generic": true,
+    "baseline23_identity": true
+  },
+  "plan_sha256": "12ff96e745e743217442d9650f87db35845829e2bded47def80444a62d285ac2",
+  "build_sha256": "61a9008660a7f824aae91a095f66ceb1fe5e0ee26190ae96c249cd04fcd4c872",
+  "checker_sha256": "e7b0b971c83550f126a5790d770983d89db0ced1885f0f2c2da8cfcead092b50",
+  "helper": {
+    "path": "artifacts/skylake-input256-ordered-static-v1/single_support.py",
+    "sha256": "f6e5dba122ee394f519a6b461626ef9167dab2d3394e83ce59ed42977ea7364b"
+  },
+  "object_sha256": "e4377ff62d7f608431b326ec783ec661d7bc52b08e063ccf45cccef704d01e18",
+  "text_sha256": "340b4ad29d3bb086d01016daed7142f68b6fbb9e3efae299f8b37f1010026e94",
+  "normal_instructions": 97,
+  "normal_loads": 11,
+  "normal_rip_loads": [
+    {
+      "offset": 587,
+      "bytes": [
+        "c4",
+        "62",
+        "7d",
+        "58",
+        "35",
+        "00",
+        "00",
+        "00",
+        "00"
+      ],
+      "mnemonic": "vpbroadcastd",
+      "operands": "0x0(%rip),%ymm14",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    }
+  ],
+  "normal_stack_references": [],
+  "normal_main_loads": [
+    {
+      "offset": 469,
+      "bytes": [
+        "c4",
+        "21",
+        "7a",
+        "7e",
+        "34",
+        "df"
+      ],
+      "mnemonic": "vmovq",
+      "operands": "(%rdi,%r11,8),%xmm14",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 475,
+      "bytes": [
+        "c4",
+        "21",
+        "7a",
+        "7e",
+        "24",
+        "cf"
+      ],
+      "mnemonic": "vmovq",
+      "operands": "(%rdi,%r9,8),%xmm12",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 504,
+      "bytes": [
+        "c4",
+        "23",
+        "89",
+        "22",
+        "34",
+        "d7",
+        "01"
+      ],
+      "mnemonic": "vpinsrq",
+      "operands": "$0x1,(%rdi,%r10,8),%xmm14,%xmm14",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 511,
+      "bytes": [
+        "c4",
+        "23",
+        "99",
+        "22",
+        "24",
+        "c7",
+        "01"
+      ],
+      "mnemonic": "vpinsrq",
+      "operands": "$0x1,(%rdi,%r8,8),%xmm12,%xmm12",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 530,
+      "bytes": [
+        "c4",
+        "21",
+        "7a",
+        "7e",
+        "2c",
+        "cf"
+      ],
+      "mnemonic": "vmovq",
+      "operands": "(%rdi,%r9,8),%xmm13",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 542,
+      "bytes": [
+        "c4",
+        "21",
+        "7a",
+        "7e",
+        "34",
+        "df"
+      ],
+      "mnemonic": "vmovq",
+      "operands": "(%rdi,%r11,8),%xmm14",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 548,
+      "bytes": [
+        "c4",
+        "23",
+        "91",
+        "22",
+        "2c",
+        "c7",
+        "01"
+      ],
+      "mnemonic": "vpinsrq",
+      "operands": "$0x1,(%rdi,%r8,8),%xmm13,%xmm13",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 555,
+      "bytes": [
+        "c4",
+        "23",
+        "89",
+        "22",
+        "34",
+        "d7",
+        "01"
+      ],
+      "mnemonic": "vpinsrq",
+      "operands": "$0x1,(%rdi,%r10,8),%xmm14,%xmm14",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    }
+  ],
+  "normal_stores": [
+    {
+      "offset": 366,
+      "bytes": [
+        "c5",
+        "f9",
+        "d6",
+        "40",
+        "f8"
+      ],
+      "mnemonic": "vmovq",
+      "operands": "%xmm0,-0x8(%rax)",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    },
+    {
+      "offset": 371,
+      "bytes": [
+        "c5",
+        "7a",
+        "7f",
+        "60",
+        "e8"
+      ],
+      "mnemonic": "vmovdqu",
+      "operands": "%xmm12,-0x18(%rax)",
+      "function": "jshc_channel::avx2_chain_brick2_hybrid(unsigned long const*, unsigned int const*, unsigned int const*, int, int, unsigned char*, unsigned long)"
+    }
+  ],
+  "retained": [
+    {
+      "path": "channel_avx2.cpp.o",
+      "equal_to79": true,
+      "text_sha256": "e1afbe62df0cbb3fa4d8d9091176baee442536849e731fa850160df5983aa40f"
+    },
+    {
+      "path": "andn_inplace/channel_avx2.cpp.o",
+      "equal_to79": true,
+      "text_sha256": "037a319420cb89a629fd3e7a000ba234f0141b657433056c2551389e408cba20"
+    },
+    {
+      "path": "andn_outplace/channel_avx2.cpp.o",
+      "equal_to79": true,
+      "text_sha256": "14b1765d72ec4ef1eb65a808b9f5639758df9c6fd6bc15753713295f032caa77"
+    }
+  ],
+  "forbidden": [],
+  "runtime_forbidden": [],
+  "control_flow": "184..341正常分支→148..181公共写入/回边→184；245异常跳a8，17b退出350",
+  "io_proof": "rax为当前24B源。读取[rax,rax+16)和[rax+16,rax+24)；输出时rax先+24，先写[-8,0)再写[-24,-8)，并集恰24B。所有查表先于共享输出。",
+  "prologue_stack": "2f保存data指针至rsp-8，仅350循环退出后读取；保存寄存器push/pop在循环外，不作为normal热路径spill",
+  "pixel_calls": 0,
+  "performance_calls": 0
+}

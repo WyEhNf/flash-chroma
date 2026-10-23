@@ -1,0 +1,345 @@
+{
+  "pass": true,
+  "purpose": "仅用Python标准库核验84正常块RGB解码与异常包精确回退编译实际分派、线性精确表、ABI及完整RGB8；不作吞吐或Skylake结论。",
+  "build_sha256": "61a9008660a7f824aae91a095f66ceb1fe5e0ee26190ae96c249cd04fcd4c872",
+  "plan_sha256": "12ff96e745e743217442d9650f87db35845829e2bded47def80444a62d285ac2",
+  "libraries": {
+    "reference": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-brick2-hybrid-linux-build-v1/libjshc_skylake_reference.so",
+      "sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e"
+    },
+    "candidate": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-brick2-hybrid-linux-build-v1/libjshc_skylake_brick2_hybrid.so",
+      "sha256": "f37d116d32f2bcdd2595dc79d341d64419fc421b5b8fb95f8aeab47ebb48ea24"
+    }
+  },
+  "loaded_libraries": [
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-brick2-hybrid-linux-build-v1/libjshc_skylake_brick2_hybrid.so",
+      "sha256": "f37d116d32f2bcdd2595dc79d341d64419fc421b5b8fb95f8aeab47ebb48ea24"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-brick2-hybrid-linux-build-v1/libjshc_skylake_reference.so",
+      "sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "d763925433ff9b757390549e1b20c085f5e6de27ae700fe89194178d96a8a2b0"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0",
+      "sha256": "645478cbe100d1465b9d45f7047bca3965358f4d399937e544f55ac7a924d5a3"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "670fb59bd462ee2f833e2ed7c0a1814e0dcdbec0b8bfa048bec46e2e6fd66334"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+    }
+  ],
+  "full_input_chunk_pixels": 262144,
+  "finite_backend_offset_comparisons": 2208,
+  "full_domain_pixels_per_configuration": {
+    "reference_single_0_1": 16777216,
+    "reference_single_1_1": 16777216,
+    "reference_single_1_4": 16777216,
+    "reference_chain_0_1": 16777216,
+    "reference_chain_1_1": 16777216,
+    "reference_chain_1_4": 16777216,
+    "candidate_single_0_1": 16777216,
+    "candidate_single_1_1": 16777216,
+    "candidate_single_1_4": 16777216,
+    "candidate_chain_0_1": 16777216,
+    "candidate_chain_1_1": 16777216,
+    "candidate_chain_1_4": 16777216
+  },
+  "output_sha256": {
+    "reference_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "reference_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "reference_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "byte_mismatches": 0,
+  "sentinel_mismatches": 0,
+  "model_accounting_bytes": {
+    "reference": {
+      "single": 272835,
+      "chain": 11269404
+    },
+    "candidate": {
+      "single": 272939,
+      "chain": 44823940
+    }
+  },
+  "hybrid_validation": {
+    "info": {
+      "version": 1,
+      "enabled": 1,
+      "format": 22,
+      "reserved": 0,
+      "entries": 2097152,
+      "table_capacity_bytes": 16777216,
+      "dg_min": -11,
+      "db_min": -6,
+      "normal_blocks": 2033554,
+      "bad_blocks": 63598
+    },
+    "pages": {
+      "version": 1,
+      "advised": 1,
+      "reserved0": 0,
+      "reserved1": 0,
+      "base": 137620625555456,
+      "bytes": 16777216,
+      "smaps": {
+        "header": "7d2a4c800000-7d2a4d800000 rw-p 00000000 00:00 0 ",
+        "properties": {
+          "Size": "16384 kB",
+          "KernelPageSize": "4 kB",
+          "MMUPageSize": "4 kB",
+          "Rss": "16384 kB",
+          "Pss": "16384 kB",
+          "Pss_Dirty": "16384 kB",
+          "Shared_Clean": "0 kB",
+          "Shared_Dirty": "0 kB",
+          "Private_Clean": "0 kB",
+          "Private_Dirty": "16384 kB",
+          "Referenced": "16384 kB",
+          "Anonymous": "16384 kB",
+          "KSM": "0 kB",
+          "LazyFree": "0 kB",
+          "AnonHugePages": "16384 kB",
+          "ShmemPmdMapped": "0 kB",
+          "FilePmdMapped": "0 kB",
+          "Shared_Hugetlb": "0 kB",
+          "Private_Hugetlb": "0 kB",
+          "Swap": "0 kB",
+          "SwapPss": "0 kB",
+          "Locked": "0 kB",
+          "THPeligible": "1",
+          "VmFlags": "rd wr mr mw me ac sd hg"
+        },
+        "mapping_bytes": 16777216
+      },
+      "anon_huge_bytes": 16777216,
+      "fully_huge": true,
+      "aligned_2m": true
+    },
+    "table_sha256": "8c86a1e798a4bfe849036996c713766daf28511a4071879bf939066bea6a0d9e",
+    "independently_decoded_normal_colors": 16268432,
+    "independently_checked_tag_blocks": 63598,
+    "independently_checked_blocks": 2097152,
+    "negative_checks": 9,
+    "byte_mismatches": 0,
+    "fallback_proof": "所有tag词仅bit63；实际异常输入由完整RGB8运行时矩阵对比独立cube验证"
+  },
+  "compiled_palette": {
+    "single": {
+      "version": 1,
+      "enabled": 0,
+      "palette_size": 0,
+      "reason": 1,
+      "blocks": 0,
+      "fast_blocks": 0,
+      "table_capacity_bytes": 0,
+      "temporary_peak_bytes": 0,
+      "prepare_seconds": 0.0
+    },
+    "chain": {
+      "version": 1,
+      "enabled": 1,
+      "palette_size": 230,
+      "reason": 0,
+      "blocks": 2097152,
+      "fast_blocks": 1962299,
+      "table_capacity_bytes": 8388608,
+      "temporary_peak_bytes": 127650352,
+      "prepare_seconds": 0.131803004
+    }
+  },
+  "compiled_exceptions": {
+    "version": 1,
+    "enabled": 1,
+    "entries": 269708,
+    "table_capacity_bytes": 1078832
+  },
+  "stream_alignment_comparisons": 1280,
+  "guarded_page_comparisons": 736,
+  "outplace_full_pixels": {
+    "reference_single_0_1": 16777216,
+    "reference_single_1_1": 16777216,
+    "reference_single_1_4": 16777216,
+    "reference_chain_0_1": 16777216,
+    "reference_chain_1_1": 16777216,
+    "reference_chain_1_4": 16777216,
+    "candidate_single_0_1": 16777216,
+    "candidate_single_1_1": 16777216,
+    "candidate_single_1_4": 16777216,
+    "candidate_chain_0_1": 16777216,
+    "candidate_chain_1_1": 16777216,
+    "candidate_chain_1_4": 16777216
+  },
+  "outplace_output_sha256": {
+    "reference_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "reference_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "reference_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "reference_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_single_0_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_single_1_1": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_single_1_4": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146",
+    "candidate_chain_0_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_chain_1_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "candidate_chain_1_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "outplace_finite_comparisons": 4416,
+  "outplace_negative_checks": 44,
+  "direct_info": {
+    "version": 1,
+    "enabled": 1,
+    "format": 9,
+    "reserved": 0,
+    "entries": 4194304,
+    "table_capacity_bytes": 16777216,
+    "dg_min": 0,
+    "db_min": 0
+  },
+  "paged_info": {
+    "version": 1,
+    "advised": 1,
+    "reserved0": 0,
+    "reserved1": 0,
+    "base": 137620644429824,
+    "bytes": 16777216,
+    "smaps": {
+      "header": "7d2a4da00000-7d2a4ea00000 rw-p 00000000 00:00 0 ",
+      "properties": {
+        "Size": "16384 kB",
+        "KernelPageSize": "4 kB",
+        "MMUPageSize": "4 kB",
+        "Rss": "16384 kB",
+        "Pss": "16384 kB",
+        "Pss_Dirty": "16384 kB",
+        "Shared_Clean": "0 kB",
+        "Shared_Dirty": "0 kB",
+        "Private_Clean": "0 kB",
+        "Private_Dirty": "16384 kB",
+        "Referenced": "16384 kB",
+        "Anonymous": "16384 kB",
+        "KSM": "0 kB",
+        "LazyFree": "0 kB",
+        "AnonHugePages": "16384 kB",
+        "ShmemPmdMapped": "0 kB",
+        "FilePmdMapped": "0 kB",
+        "Shared_Hugetlb": "0 kB",
+        "Private_Hugetlb": "0 kB",
+        "Swap": "0 kB",
+        "SwapPss": "0 kB",
+        "Locked": "0 kB",
+        "THPeligible": "1",
+        "VmFlags": "rd wr mr mw me ac sd hg"
+      },
+      "mapping_bytes": 16777216
+    },
+    "anon_huge_bytes": 16777216,
+    "fully_huge": true,
+    "aligned_2m": true
+  },
+  "direct_table_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "independent_table_colors": 16777216,
+  "direct_negative_checks": 9,
+  "brick2_hybrid_enabled": {
+    "single": 0,
+    "chain": 1
+  },
+  "brick2_hybrid_null_checks": 1,
+  "performance_calls": 0,
+  "photo_calls": 0,
+  "new_fits": 0,
+  "brick2_hybrid_inplace_alignment_comparisons": 64,
+  "brick2_hybrid_inplace_actual_offsets": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63
+  ],
+  "brick2_hybrid_inplace_alignment_pixels": 65793,
+  "brick2_hybrid_inplace_alignment_source_sha256": "cff612c3468a231638dbcde9918a5e2708596ab4e8ff9ee39e96a6a245210740",
+  "brick2_hybrid_inplace_dispatch_coverage": "按冻结runtime有效workers=min(2块,4请求)=2进入混合解码路径；完整域4块进入workers4；源审计证明分派，不是内核内计数",
+  "scope": "Linux实际主机见run.json；两库单级/四级的标量1与AVX2请求1/4完整字节比较。预期来自Windows已验独立u64/完整流；本脚本不重算独立oracle，不代表Skylake实机。"
+}

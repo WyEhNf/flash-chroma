@@ -1,0 +1,114 @@
+{
+  "purpose": "阶段交付前刷新，正文/意见及新增记录检查；非新数值或性能测试",
+  "main": "b19c5a0c8f67c3b4822692682698fb06462b7ed7",
+  "comparison": {
+    "prior_pr_bodies": 74,
+    "current_pr_bodies": 75,
+    "added": [
+      81
+    ],
+    "changed_existing_bodies": []
+  },
+  "refresh": {
+    "parent": {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/81",
+      "number": 81,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Agent：Codex /root、/root/base_delta_delivery\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对修订23至少三倍吞吐\nStatus：Failed（两格式离线筛查）/ Draft；整体In Progress\n\n本阶段研究2×2×2相邻输入颜色的直接RGB编码。每格式各冻结一次协议并唯一执行，固定16MiB主表；两者完整16M色和100图离线编码重建逐字节零差，但未满足全部资源/照片门槛，没有进入原生或性能测试。\n\n| 固定门槛 | RGB24基值+八5bit残差 | 新header15+八6bit+tag63 |\n| --- | ---: | ---: |\n| 例外池≤2MiB | 5,728,896B，失败 | 2,035,136B，通过 |\n| 总例外8包≤5% | 33.826314%，失败 | 14.782206%，失败 |\n| 任一图≤20% | 72.789510%，失败 | 46.474202%，失败 |\n| 总体 | 失败停止 | 失败停止 |\n\n新格式由230项palette实际推导DG[-11,0]/DB[-6,0]，把baseRGB无损存为baseR8+DGoffset4+DBoffset3，八个3+2+1残差占bit15..62，bit63独立标记例外。不是在旧结果上改门槛；旧5bit源码/协议/结果/归档保持。事前仅从旧跨度得到池界2,033,344～2,036,608B，实际在界内；数学容量界不能替代照片率。两格式都按固定规则停止，不扫描位宽/几何。\n\n原分析为Windows11 / Ryzen9 8945HX / Anaconda Python3.13.12 / NumPy2.4.6，小端。全域按独立RGB公式寻址，对照已验cube及完整SHA；100图直接RGB索引对照、输入总/分片SHA、正逆映射及真实有符号通道范围通过。它是离线重建，不是候选原生完整域；没有拟合、编译、C ABI、性能或实际Skylake验证，默认路径不变。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-brick2-rgb-base-20261023/docs/stages/2026-10-23-skylake-brick2-rgb-base.md) · [旧5bit五原件](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-brick2-rgb-base-20261023/report/data/skylake-brick2-rgb-base-profile-v1) · [新header15五原件](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-brick2-rgb-base-20261023/report/data/skylake-brick2-header15-profile-v1)\n\n提交2de21f8bce4a7e4b5ed3ec4aaa1750698f076769，依赖Draft #80头472a9a1。两个ZIP与各五原件逐字节一致，标准库独立重哈希六输入/100片、复算原因/跨度/包统计/最差图与门槛；新审计还核对prior3D、全palette min/span及数学界。未独立重建colorword/pool，二进制未保存，只保大小/SHA。新核验器首次变量冲突失败原件留存，仅局部变量改名后审计通过，不重跑原profile。12份初始归档暂存blob、AST/JSON/ZIP CRC/SHA及空白通过；交付结果和终刷记录排除自引用。\n\n操作前fetch，74份完整PR正文对前73份仅新增80、旧正文无变化；80全文及全部comment/review/行内刷新为空，最终updated PR/issue无新。main b19c5a0与337a3dd/876e15b8/397cc367祖先修复保留；issue7历史绑定修复及issue8接口/预算/实板按前阶段完整快照继续跟踪。Discussion当前无法刷新，保留缺口，不合并或关闭。\n\n同版单/四线程纯apply均≥3×、官方派生表许可/预算/Threshold及实际Skylake仍未完成，没有新增提速成绩，不默认采用。",
+      "title": "验证三维RGB差分与压缩基值头并保留照片门槛失败",
+      "base": "codex/skylake-recent-rgb1024-20261023",
+      "base_sha": "472a9a18fbfb69ae01d879b331fd384e071b91a5",
+      "head": "codex/skylake-brick2-rgb-base-20261023",
+      "head_sha": "2de21f8bce4a7e4b5ed3ec4aaa1750698f076769",
+      "head_repo_id": 1420743436,
+      "head_repo_full_name": "WyEhNf/flash-chroma",
+      "merge_commit_sha": "515225db282303f5bb289f7677a3c0eb58965b83",
+      "user": {
+        "login": "WyEhNf",
+        "name": "WyEhNf",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+        "id": 228311419
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-23T05:21:31Z",
+      "updated_at": "2026-10-23T05:21:31Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 17,
+      "additions": 1048,
+      "deletions": 0,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/81",
+      "display_title": "验证三维RGB差分与压缩基值头并保留照片门槛失败"
+    },
+    "comments": {
+      "comments": [],
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/81",
+      "title": "WyEhNf/flash-chroma PR #81 comments",
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/81",
+      "display_title": "WyEhNf/flash-chroma PR #81 comments"
+    },
+    "reviews": {
+      "reviews": []
+    },
+    "threads": {
+      "review_threads": []
+    },
+    "prs": {
+      "issues": []
+    },
+    "issues": {
+      "issues": []
+    }
+  },
+  "issue7_comments": {
+    "comments": [],
+    "url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+    "title": "WyEhNf/flash-chroma Issue #7 comments",
+    "display_url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+    "display_title": "WyEhNf/flash-chroma Issue #7 comments"
+  },
+  "issue8_comments": {
+    "comments": [
+      {
+        "url": "https://github.com/WyEhNf/flash-chroma/issues/8#issuecomment-6213698494",
+        "body": "Agent：Codex  \nOperator：Mooooonkrui（mo5nk，本会话用户）  \nTask：更新 #8 的合并状态、集成基线与 CI/QEMU 协调事项  \nStatus：In Progress（状态核对与议题更新完成，协调事项继续跟踪）\n\n已更新议题正文，纠正此前“保留 PR #6 为 WIP”的历史描述：\n\n- **PR #6 已合并**：维护者 `WyEhNf` 于北京时间 2026-10-16 18:00:22 合入 `main`，提交 `4d716f8e715d9e72d23d1db82ea0c18f519e2915`；main 与 dev/mo5nk 当前一致。[默认三项检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313191)和[三个系统级 QEMU 检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313291)全部成功。\n- **portable 尚未合并**：`codex/zig-default-pixi` 仍为 `3a79f5a29436e159b62acc90b19991369d6d02b2`，未进入 main，且没有对应 PR/Actions 运行记录。本次只读合并探测仍发现 `CMakeLists.txt`、`README.md` 冲突。\n- 现有 QEMU workflow 仅构建 `embedded/`。后续应以 main 为基线提交 portable 集成草稿 PR，保留 embedded 回归，为选定 portable 路径补齐 QEMU 覆盖，并继续完成接口契约、RAM/栈预算和跨实现差分验证。\n\n因此 #8 继续保持打开。此次更新记录已完成的 embedded 合并及验证，未将其视为两套实现已经统一；#7 的独立证据校验 bug 继续分开跟踪。\n",
+        "user": {
+          "login": "Mooooonkrui",
+          "name": "Mooooonkrui",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/153734027?v=4",
+          "id": 153734027
+        },
+        "id": 6213698494,
+        "pull_request_review_id": null,
+        "in_reply_to_id": null,
+        "created_at": null,
+        "updated_at": null,
+        "review": null,
+        "side": null,
+        "line": null,
+        "start_line": null,
+        "path": null,
+        "body_html": "<p dir=\"auto\">Agent：Codex<br>\nOperator：Mooooonkrui（mo5nk，本会话用户）<br>\nTask：更新 <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880154751\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/8\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/8/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/8\">#8</a> 的合并状态、集成基线与 CI/QEMU 协调事项<br>\nStatus：In Progress（状态核对与议题更新完成，协调事项继续跟踪）</p>\n<p dir=\"auto\">已更新议题正文，纠正此前“保留 PR <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5879810734\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/6\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/WyEhNf/flash-chroma/pull/6/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/pull/6\">#6</a> 为 WIP”的历史描述：</p>\n<ul dir=\"auto\">\n<li><strong>PR <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5879810734\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/6\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/WyEhNf/flash-chroma/pull/6/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/pull/6\">#6</a> 已合并</strong>：维护者 <code class=\"notranslate\">WyEhNf</code> 于北京时间 2026-10-16 18:00:22 合入 <code class=\"notranslate\">main</code>，提交 <code class=\"notranslate\">4d716f8e715d9e72d23d1db82ea0c18f519e2915</code>；main 与 dev/mo5nk 当前一致。<a href=\"https://github.com/WyEhNf/flash-chroma/actions/runs/38884313191\">默认三项检查</a>和<a href=\"https://github.com/WyEhNf/flash-chroma/actions/runs/38884313291\">三个系统级 QEMU 检查</a>全部成功。</li>\n<li><strong>portable 尚未合并</strong>：<code class=\"notranslate\">codex/zig-default-pixi</code> 仍为 <code class=\"notranslate\">3a79f5a29436e159b62acc90b19991369d6d02b2</code>，未进入 main，且没有对应 PR/Actions 运行记录。本次只读合并探测仍发现 <code class=\"notranslate\">CMakeLists.txt</code>、<code class=\"notranslate\">README.md</code> 冲突。</li>\n<li>现有 QEMU workflow 仅构建 <code class=\"notranslate\">embedded/</code>。后续应以 main 为基线提交 portable 集成草稿 PR，保留 embedded 回归，为选定 portable 路径补齐 QEMU 覆盖，并继续完成接口契约、RAM/栈预算和跨实现差分验证。</li>\n</ul>\n<p dir=\"auto\">因此 <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880154751\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/8\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/8/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/8\">#8</a> 继续保持打开。此次更新记录已完成的 embedded 合并及验证，未将其视为两套实现已经统一；<a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880148345\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/7\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/7/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/7\">#7</a> 的独立证据校验 bug 继续分开跟踪。</p>"
+      }
+    ],
+    "url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+    "title": "WyEhNf/flash-chroma Issue #8 comments",
+    "display_url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+    "display_title": "WyEhNf/flash-chroma Issue #8 comments"
+  },
+  "ancestry": {
+    "337a3dd": true,
+    "876e15b8": true,
+    "397cc367": true
+  },
+  "discussion_gap": "连接器未提供Discussion读取接口，未把无法刷新视为无意见，不合并或关闭事项。"
+}
