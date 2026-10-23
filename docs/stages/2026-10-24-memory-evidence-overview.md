@@ -48,6 +48,7 @@ Ward7bit同场精度68.0745%高于maximin，但全情形最劣速度52.8558%较�
 | 1024B块/LE16局部ID | 10768448 | [0x55受控场](2026-10-24-memory-le16-block1024.md)有效原地4/分离1/分离4为70.2074/60.2215/69.8418%；原地1控制失效，无整体50资格；省32KiB且三有效模式都比旧块慢 |
 | 16B块/常量直接RGB tag | 5916192 | [四A/A有效，AVX四模式仅38.86/40.99/41.52/45.44%](2026-10-24-memory-tagged-block16.md)，全部拒绝50；C99亦全失败。37.41%全域引用可省两次逻辑读取，却不等于实际加速；较3B多21.45%容量 |
 | 512个输入三维bank/精确7bit直表 | 14943300 | [真实ROM、ABI和八完整域/百图通过](2026-10-24-memory-rgb3d-palette7.md)，四AA有效；AVX四模式最劣22.129451/37.878636/30.891738/28.888791%，C99亦全部低50，联合36格均拒绝；不扩WASM或变体 |
+| 原线性ROM/Windows真正只读loader | 16779328 | [ROM/旧DLL不变](2026-10-24-memory-readonly-loader.md)，只少约16.78MB进程提交，WS和capacity不减少；原地1T AA失效，AVX其余三模式80/80/90档、C9960/50/60档；四模式整体50未证，不当有效低50反例 |
 
 3B的旧八worker通过不被删掉，也不能覆盖有效反例。[无干预诊断](2026-10-24-memory-dictionary-drift.md)512次调用发现A本身有变动、H1/H2未满足支持条件；187次端点CPU变化不是因果证明。下一亲和性干预仍仅静态预案，当前不靠补跑或选核恢复资格。
 
@@ -70,6 +71,8 @@ Clang相同C99 store源码仅换编译器就使本机四情形过50，是实际�
 ROM容量计真实文件长度加实际借用对象，所有头、palette、副本、guard和bank metadata都计入；通用句柄按`vector.capacity`而非`size`。ZIP仅是传输压缩，不能当常驻RAM。C99逐图片堆scratch为0，GCC/Clang `.su`是各函数静态帧，不是调用链/OMP线程总栈峰值。
 
 离线Python导出峰值、native prepare可见容量账本、loader载荷界及fresh进程RSS分别列。RSS含Python/NumPy/导入/CRT/DLL且各阶段import群不同，只在同场相同群比较；例如不能将Clang阶段约52MB和palette阶段约84MB的绝对峰直接相减成算法收益。SHA预检早已用流式`file_digest`；分平面旧报告的235MB整文件分配解释已单独纠正，原两份RSS都保留为观察，不伪称一次污染修复。
+
+[只读loader阶段](2026-10-24-memory-readonly-loader.md)区分了另一个真实开销：原ACCESS_COPY为取得可写buffer地址，Windows会为整个COW视图保留提交额度。三fresh原/新COW/RO实验中RO保守少16781312B提交；完整域/百图输出及生命周期通过。唯一848调用正式场的RO AVX/C99 fresh仍少16777216/16781312B提交，但WS约53.55MB相近、模型capacity仍16779328B。原地1T控制失效，不能按其raw50.2%授档或与历史COW拼成全四模式合格；三个有效模式的限定速度与辅助配对另见原表。这是Windows部署收益，不是新压缩或跨平台运行验证。
 
 有损节点7/6/5bit与输入近邻派生表也保留负例：首级6/5bit在全域达50但最劣单图仅3%左右；坐标6bit最劣单图6.67%，输入7bit近邻43.38%总体均拒绝。坐标12/8bit和首级7bit仅有逻辑bitstream质量研究，没有真实压缩decoder/吞吐，不能列成部署节省。详细原误差与逐图证据见[节点研究](2026-10-24-node-precision-portability.md)和[palette/输入研究](2026-10-24-palette-input-precision.md)。
 

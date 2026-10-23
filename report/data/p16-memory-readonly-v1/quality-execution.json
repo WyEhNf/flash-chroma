@@ -1,0 +1,77 @@
+{
+  "purpose": "固定三fresh提交观察先行；有真实收益才执行唯一RO完整质量，不计性能。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "95b289d4f0a40baa1974fd902a6ceb59f7986c5bc67216f8ae8714468d1cc855",
+  "commands": [
+    {
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\scripts\\measure_readonly_rom.py",
+        "--mode",
+        "original_cow",
+        "--output",
+        "artifacts\\p16-readonly-rom-quality-v1\\original_cow"
+      ],
+      "returncode": 0,
+      "stdout": "original_cow\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\scripts\\measure_readonly_rom.py",
+        "--mode",
+        "cow",
+        "--output",
+        "artifacts\\p16-readonly-rom-quality-v1\\cow"
+      ],
+      "returncode": 0,
+      "stdout": "cow\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\scripts\\measure_readonly_rom.py",
+        "--mode",
+        "readonly",
+        "--output",
+        "artifacts\\p16-readonly-rom-quality-v1\\readonly"
+      ],
+      "returncode": 0,
+      "stdout": "readonly\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-X",
+        "utf8",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\scripts\\verify_readonly_rom.py",
+        "--output",
+        "artifacts\\p16-readonly-rom-quality-v1\\quality"
+      ],
+      "returncode": 0,
+      "stdout": "{'passed': True, 'finite': 580, 'rejections': 39, 'image_guards': 144, 'rom_guards': 24}\n",
+      "stderr": ""
+    }
+  ],
+  "status": "quality-passed-performance-not-run"
+}
