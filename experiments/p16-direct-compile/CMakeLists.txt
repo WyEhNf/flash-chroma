@@ -22,6 +22,12 @@ target_include_directories(jshc_direct_prepare_simd PRIVATE "${BASE}" "${JSHC_RO
 target_link_libraries(jshc_direct_prepare_simd PRIVATE jshc_core OpenMP::OpenMP_CXX)
 target_compile_definitions(jshc_direct_prepare_simd PRIVATE JSHC_CC_HAVE_AVX2=1 P16_PREPARE_SIMD=1)
 target_compile_options(jshc_direct_prepare_simd PRIVATE -Wall -Wextra -fvisibility=hidden)
+# 88新增显式准备策略；原create仍完整直接表，避免隐式改变旧调用者。
+add_library(jshc_prepare_policy SHARED ${P16_DIRECT_SOURCES})
+target_include_directories(jshc_prepare_policy PRIVATE "${BASE}" "${JSHC_ROOT}/experiments/channel-runtime")
+target_link_libraries(jshc_prepare_policy PRIVATE jshc_core OpenMP::OpenMP_CXX)
+target_compile_definitions(jshc_prepare_policy PRIVATE JSHC_CC_HAVE_AVX2=1 P16_PREPARE_SIMD=1 P16_PREPARE_POLICY=1)
+target_compile_options(jshc_prepare_policy PRIVATE -Wall -Wextra -fvisibility=hidden)
 set_source_files_properties(compile_avx2.cpp "${BASE}/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-exception-runtime/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp"

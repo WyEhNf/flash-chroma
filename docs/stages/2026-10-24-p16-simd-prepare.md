@@ -6,7 +6,7 @@ Agent：Codex /root/speed；Operator：当前用户；分支：`codex/p16-speed-
 
 ## 完整整数与资源验证
 
-实际环境与前阶段一致：Windows11 26200 x64、Ryzen9 8945HX、GCC15.2 Release `-O3 -DNDEBUG`，仅像素TU启用AVX2、原80三个pair/normal TU另加BMI1，无AVX512/FMA/fast-math；Python3.12.14、NumPy1.26.4，进程CPU0/2/4/6，原生请求1/4线程。
+实际环境与前阶段一致：Windows11 26200 x64、Ryzen9 8945HX、GCC15.2 Release `-O3 -DNDEBUG`，仅像素TU启用AVX2、原80三个pair/normal TU另加BMI1，无AVX512/FMA/fast-math；Python3.12.14、NumPy1.26.4，Windows进程CPU允许集合0/2/4/6，原生请求1/4线程，未核验逐OpenMP TID单核落点。
 
 87与85全部4,194,304个直接表词及256项palette相同，直表SHA仍为`a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0`。完整16,777,216色以原四级标量为oracle，87 AVX2原地/真分离1/4均零字节差，五个输出SHA均为`3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22`。另通过504组边界/偏移/哨兵/同址/真分离、11项拒绝和单级回退。固定模型mean、p99与max均保持原输出。
 

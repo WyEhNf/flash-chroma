@@ -367,7 +367,9 @@ void prepare_palette(Handle& h) {
 extern "C" {
 uint32_t jshc_cc_abi_version(void) {return 1;}
 uint32_t jshc_cc_revision(void) {
-#if defined(P16_PREPARE_SIMD)
+#if defined(P16_PREPARE_POLICY)
+  return 88;
+#elif defined(P16_PREPARE_SIMD)
   return 87;
 #else
   return 85;
@@ -383,10 +385,17 @@ uint32_t jshc_cc_capabilities(void) {
 #endif
   return mask;
 }
+#if defined(P16_PREPARE_POLICY)
+static int create_policy_impl(const char* const* paths,const char* const* sidecars,size_t stages,uint32_t policy,void** output,char* error,size_t size) {
+#else
 int jshc_cc_create(const char* const* paths,const char* const* sidecars,size_t stages,void** output,char* error,size_t size) {
+#endif
   if (output) *output=nullptr;
   try {
     if (!paths || !output || stages<1 || stages>4) throw std::runtime_error("研究链要求1..4个模型");
+#if defined(P16_PREPARE_POLICY)
+    if(policy>1)throw std::runtime_error("准备策略必须是0完整直接表或1仅精确后缀");
+#endif
     auto h=std::make_unique<Handle>();h->models.reserve(stages);h->fractions.resize(stages);h->views.reserve(stages);h->original.reserve(stages);
     // 检测留在通用TU；BMI1使用GCC特征名bmi。普通API调用晚于GCC能力初始化构造器。
     h->andn_normal_supported=__builtin_cpu_supports("bmi")!=0;
@@ -418,6 +427,12 @@ int jshc_cc_create(const char* const* paths,const char* const* sidecars,size_t s
       h->original.push_back(&m);
     }
     prepare_cache(*h);
+#if defined(P16_PREPARE_POLICY)
+    if(policy==1) {
+      h->palette_info.version=1;h->palette_info.reason=4; // 显式省略直接表，不表示构造失败。
+      *output=h.release();message(error,size,"");return 0;
+    }
+#endif
     // 从已证明的首级输出域直接编译ID，不建立全域RGB中间数组。
     if(domain_fast_enabled(*h) && (jshc_cc_capabilities()&2)) {
       const auto started=std::chrono::steady_clock::now();
@@ -452,6 +467,14 @@ int jshc_cc_create(const char* const* paths,const char* const* sidecars,size_t s
     *output=h.release();message(error,size,"");return 0;
   } catch (const std::exception& e) {message(error,size,e.what());return 1;}
 }
+#if defined(P16_PREPARE_POLICY)
+int jshc_cc_create(const char* const* paths,const char* const* sidecars,size_t stages,void** output,char* error,size_t size) {
+  return create_policy_impl(paths,sidecars,stages,0,output,error,size);
+}
+JSHC_CC_API int jshc_cc_create_policy(const char* const* paths,const char* const* sidecars,size_t stages,uint32_t policy,void** output,char* error,size_t size) {
+  return create_policy_impl(paths,sidecars,stages,policy,output,error,size);
+}
+#endif
 void jshc_cc_destroy(void* handle) {delete static_cast<Handle*>(handle);}
 size_t jshc_cc_model_bytes(const void* handle) {
   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);

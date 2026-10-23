@@ -56,7 +56,7 @@ v2每进程各五次create，四个候选/80中位比为`[0.463137, 0.453455, 0.
 
 ## 实际环境、依据与复现
 
-实际环境为Windows11 26200 x64、AMD Family25 Model97（Ryzen9 8945HX宿主）、GCC15.2 Release `-O3 -DNDEBUG`、Python3.12.14、NumPy1.26.4、Pillow10.4。进程限定CPU0/2/4/6，原生请求1/4线程，OpenMP动态线程关闭；没有锁频控温或证明宿主完全独占，不作为Intel i7-14700、Skylake、Linux或官方分数的实测。准备和纯映射不含图片解码与文件输出，完整100图为1024×768 RGB8，235,929,600输入字节；结果是整组摊销，不是逐图尾延迟。
+实际环境为Windows11 26200 x64、AMD Family25 Model97（Ryzen9 8945HX宿主）、GCC15.2 Release `-O3 -DNDEBUG`、Python3.12.14、NumPy1.26.4、Pillow10.4。Windows进程CPU允许集合限定为0/2/4/6，原生请求1/4线程，OpenMP动态线程关闭；未核验逐OpenMP TID单核落点，没有锁频控温或证明宿主完全独占，不作为Intel i7-14700、Skylake、Linux或官方分数的实测。准备和纯映射不含图片解码与文件输出，完整100图为1024×768 RGB8，235,929,600输入字节；结果是整组摊销，不是逐图尾延迟。
 
 80原像素TU使用`-mavx2 -mtune=skylake -ffp-contract=off`，三个pair/normal TU另加`-mbmi`；新编译TU只用AVX2。80使用显式`-std=c++17`，85使用GCC15.2默认gnu++17，没有使用GNU语言扩展。86两库显式C++17。generic dispatcher保持基线ISA，未使用AVX512/FMA/fast-math。
 
