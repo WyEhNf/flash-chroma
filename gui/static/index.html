@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Flash Chroma · RAW 调色工作台</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script>window.APP_TOKEN = "__APP_TOKEN__";</script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="wordmark" href="/" aria-label="Flash Chroma 工作台"><span class="brand-icon">f<span>c</span></span><strong>flash chroma<span>RAW 调色工作台</span></strong></a>
+    <div class="header-center"><span class="status-dot" id="connection-dot"></span><span id="connection-label">正在连接本地服务</span><span class="header-divider"></span><span>本地处理 · 素材不上传</span></div>
+    <button class="icon-button" id="refresh-button" title="刷新素材与任务" aria-label="刷新素材与任务">↻</button>
+  </header>
+
+  <main class="workspace">
+    <aside class="library panel">
+      <div class="section-heading"><div><span class="eyebrow">素材管理</span><h2>真实素材</h2></div><span class="count-badge" id="sample-count">—</span></div>
+      <button class="button import-button" id="import-button"><span>＋</span> 导入 RAW 素材</button>
+      <p class="library-hint">ARRIRAW / REDCODE / Blackmagic RAW</p>
+      <div id="sample-list" class="sample-list" aria-label="素材列表"><div class="quiet-state">正在读取素材库…</div></div>
+      <div class="library-bottom"><span class="tiny-square"></span><div><strong>从 RAW 到最终画面</strong><p>官方 CPU 解码 · 四级 LUT<br>SDR 与 HDR 双路输出</p></div></div>
+    </aside>
+
+    <section class="viewer-panel">
+      <div class="viewer-title"><div><span class="eyebrow" id="camera-brand">RAW 工作流</span><h1 id="sample-title">选择一份素材</h1><p id="sample-subtitle">浏览真实工作流的参考与原生处理结果</p></div><span class="source-badge" id="source-badge" hidden>既有验证结果</span></div>
+      <div class="viewer-toolbar">
+        <div class="segmented mode-switch" role="group" aria-label="画面模式">
+          <button data-mode="compare" class="active" aria-pressed="true">分割比较</button><button data-mode="reference" aria-pressed="false">参考</button><button data-mode="runtime" aria-pressed="false">原生</button><button data-mode="difference" aria-pressed="false">误差</button>
+        </div>
+        <div class="segmented target-switch" role="group" aria-label="输出目标"><button data-target="sdr" class="active" aria-pressed="true">SDR</button><button data-target="hdr" aria-pressed="false">HDR</button></div>
+      </div>
+
+      <div class="viewer-stage" id="viewer-stage" data-mode="compare" tabindex="0" aria-label="画面预览；左右方向键逐帧查看">
+        <div class="image-area" id="image-area">
+          <img id="image-runtime" class="frame-image" alt="原生 RGB8 四级 LUT 处理结果" draggable="false" hidden>
+          <img id="image-reference" class="frame-image reference-layer" alt="高精度浮点参考结果" draggable="false" hidden>
+          <img id="image-difference" class="frame-image difference-layer" alt="原生与参考的真实误差图" draggable="false" hidden>
+          <div class="split-handle" id="split-handle" role="slider" tabindex="0" aria-label="参考与原生画面分割位置" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>‹<i></i>›</span></div>
+        </div>
+        <div class="stage-empty" id="stage-empty"><span class="empty-mark">◈</span><strong>画面从这里开始</strong><p>选择已有结果，或处理素材生成预览</p></div>
+        <div class="stage-loading" id="stage-loading" hidden><span class="spinner"></span><span>正在读取真实帧…</span></div>
+        <div class="image-labels" id="image-labels" hidden><span id="left-label">参考 · float32 → 16bit</span><span id="right-label">原生 · RGB8</span></div>
+        <span class="preview-label" id="preview-label" hidden>SDR · Rec.709</span>
+      </div>
+      <div class="viewer-footnote"><span id="preview-description">拖动画面中的分割线，对比同一帧。</span><span id="frame-size">—</span></div>
+
+      <div class="transport">
+        <div class="transport-buttons"><button class="icon-button" id="previous-frame" aria-label="上一帧" title="上一帧">❮</button><button class="play-button" id="play-button" aria-label="播放预览" title="播放预览">▶</button><button class="icon-button" id="next-frame" aria-label="下一帧" title="下一帧">❯</button></div>
+        <input type="range" id="frame-slider" min="0" max="0" value="0" aria-label="预览帧">
+        <span class="frame-counter" id="frame-counter">— / —</span>
+      </div>
+      <div class="action-bar"><div class="result-select-wrap"><label for="result-select">查看结果</label><select id="result-select" disabled><option>暂无结果</option></select></div><div class="main-actions"><button class="button" id="process-first" disabled>处理首帧</button><button class="button button-primary" id="process-all" disabled>处理完整素材 <span>↗</span></button></div></div>
+      <p class="process-note" id="process-note">处理会重新执行 CPU 解码、Log 与四级 LUT。首帧模式仅验证子集。</p>
+    </section>
+
+    <aside class="inspector panel">
+      <div class="section-heading"><div><span class="eyebrow">色彩处理</span><h2>四级 LUT 链</h2></div><span class="chain-badge">四级处理</span></div>
+      <p class="pipeline-lead">RAW 解码与 Log 生成后，每个输出分支依次经过四级处理。</p>
+      <ol class="lut-chain">
+        <li><span class="stage-number">01</span><div><strong>输入变换</strong><p id="input-space-label">摄影机 Log → ACEScct</p></div><span class="chain-dot"></span></li>
+        <li><span class="stage-number">02</span><div><strong>基础平衡</strong><p>曝光 +0.25 档 · RGB 增益</p></div><span class="chain-dot"></span></li>
+        <li><span class="stage-number">03</span><div><strong>画面风格</strong><p>对比度 1.08 · 饱和度 0.92</p></div><span class="chain-dot"></span></li>
+        <li class="output-stage"><span class="stage-number">04</span><div><strong id="output-stage-title">SDR 显示变换</strong><p id="output-stage-detail">ACES 2.0 · Rec.709 · 100 nits</p></div><span class="chain-dot"></span></li>
+      </ol>
+      <div class="inspector-section"><div class="inline-heading"><h3>精度对照</h3><span class="subtle-tag">当前结果统计</span></div><p class="metric-caption">原生 RGB8 相对未裁剪 float32 参考<br>单位：8bit 等效代码值</p><div class="metric-grid"><div><span>平均绝对误差</span><strong id="metric-mae">—</strong><small>MAE</small></div><div><span>最大绝对误差</span><strong id="metric-max">—</strong><small>MAX</small></div></div><div class="validation-status" id="validation-status"><span>○</span> 等待结果</div><p class="precision-note">同模型字节一致不代表保持浮点精度。原生路径使用 RGB8；参考导出为 16bit。</p></div>
+      <div class="inspector-section runtime-section"><div class="inline-heading"><h3>运行状态</h3><span id="job-status-tag" class="subtle-tag">就绪</span></div><p id="job-stage">选择素材后即可处理</p><div class="progress-track"><span id="job-progress-bar"></span></div><div class="job-progress-row"><span id="job-progress-text">—</span><button class="text-button danger" id="cancel-button" hidden>取消任务</button></div><div class="runtime-info" id="runtime-info">CPU 本地工作流</div></div>
+      <div class="export-controls"><button class="button button-export" id="export-button" disabled><span>↓</span> 导出 SDR / HDR</button><div><button class="text-button" id="open-folder" disabled>打开结果目录 ↗</button><button class="text-button" id="open-report" disabled>查看报告 ↗</button></div><p>无损 FFV1 · 保留有效位深与色彩标记</p></div>
+    </aside>
+
+    <section class="log-panel"><div class="log-heading"><div><span class="log-symbol">⌘</span><h2>任务日志</h2><span id="log-count">本地会话</span></div><select id="job-select" aria-label="选择任务日志"><option value="">暂无任务</option></select></div><div id="log-content" class="log-content" role="log" aria-live="polite"><p class="log-muted">正在连接本地工作台…</p></div></section>
+  </main>
+
+  <dialog id="import-dialog"><form id="import-form"><div class="dialog-header"><div><span class="eyebrow">导入素材</span><h2>导入真实 RAW 素材</h2></div><button type="button" class="icon-button" id="close-import" aria-label="关闭">×</button></div><p class="dialog-description">选择工程中的素材，或粘贴本机文件的完整路径。文件留在本地。</p><label class="field-label" for="import-brand">摄影机品牌</label><select id="import-brand"><option value="arri">ARRI · ARRIRAW (.ari)</option><option value="red">RED · REDCODE (.R3D)</option><option value="blackmagic">Blackmagic · Blackmagic RAW (.braw)</option></select><label class="field-label" for="import-path">文件路径</label><div class="path-entry"><input id="import-path" required placeholder="粘贴 .ari / .R3D / .braw 文件路径" autocomplete="off"><button type="button" class="button" id="browse-button">浏览</button></div><div class="file-browser" id="file-browser" hidden><div class="browser-heading"><button type="button" class="icon-button" id="browser-up" aria-label="上一级目录">↑</button><span id="browser-path">工程目录</span></div><div id="browser-items" class="browser-items"></div></div><p class="form-error" id="import-error" hidden></p><div class="dialog-footer"><span>支持 .ari / .R3D / .braw</span><button type="submit" class="button button-primary" id="import-submit">添加到素材库</button></div></form></dialog>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+</body>
+</html>
