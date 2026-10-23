@@ -1,0 +1,22 @@
+{
+  "original_stage_audit_passed": false,
+  "commit_still_executed": "bb92631",
+  "original_head_audit_passed": false,
+  "failures": [
+    {
+      "phase": "stage",
+      "error": "AssertionError: .gitattributes",
+      "reason": "误按worktree混合CRLF/LF原字节比较text文件，PowerShell未if LASTEXITCODE终止导致随后commit仍执行。"
+    },
+    {
+      "phase": "HEAD",
+      "error": "AssertionError: docs/stages/2026-10-24-p16-omp-policy.md",
+      "actual_git_sha256": "b53b9355a37750f90af006be4ad6348a8790b92314c9ffad5a7dbfb69ea163e7",
+      "worktree_sha256": "1b176ad65dc7255f82e5153c40141ed9fac350c28dfa95879e0b0b5399dec1b1",
+      "reason": "第一次修正仅归一.gitattributes，遗漏阶段正文同为text规则CRLF转LF。"
+    }
+  ],
+  "correction": "新增独立check_p16_omp_policy_git.py，对.gitattributes/阶段正文两项按既有text规则归一LF，其他执行源/原始数据/ZIP均精确SHA。最终stage非0必须先exit，禁止接着commit；不改写bb92631，不重采。",
+  "source_scope": "两次审计为inline stdin，未当时另存文件；完整原工具调用保留在会话记录，下列JSON复制算法正文作可读留档，不伪称当时独立脚本文件原字节身份。",
+  "failed_algorithm": "expected={p:sha256(worktree_bytes) for p in staged_paths}; 叠加identity中speed来源依赖，git cat-file --batch逐blob核SHA。stage版没有text归一；HEAD版只将.gitattributes CRLF转LF，没有阶段正文。"
+}
