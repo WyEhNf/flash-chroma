@@ -18,7 +18,7 @@ def chain_square(r, g, b, suffix, target):
 
 @njit(cache=True, parallel=True)
 def gains(indices, weights, acc, reference, suffix, mass, nodes, colours,
-          colour, caps, root, parts):
+          colour, caps, root, parts, p99_sq=14, severe_sq=36):
     """八色各角互斥；每个方向统计完整支撑，不能只看高误差点。"""
     size = len(nodes)
     # mean、训练质量mean、RMS平方、训练质量RMS平方、p99超额、严重尾部、p99计数。
@@ -65,9 +65,9 @@ def gains(indices, weights, acc, reference, suffix, mass, nodes, colours,
                 private[part, 1, d, node] += mass[p]*distance
                 private[part, 2, d, node] += square
                 private[part, 3, d, node] += mass[p]*square
-                private[part, 4, d, node] += max(new-14, 0)-max(old-14, 0)
-                private[part, 5, d, node] += max(new-36, 0)-max(old-36, 0)
-                private[part, 6, d, node] += int(new > 14)-int(old > 14)
+                private[part, 4, d, node] += max(new-p99_sq, 0)-max(old-p99_sq, 0)
+                private[part, 5, d, node] += max(new-severe_sq, 0)-max(old-severe_sq, 0)
+                private[part, 6, d, node] += int(new > p99_sq)-int(old > p99_sq)
                 bad[part, d, node] += int(new > caps[p])
     result = private.sum(axis=0)
     forbidden = bad.sum(axis=0)
@@ -99,7 +99,7 @@ def select(change, forbidden, colours, colour, mode):
     return moves, predicted, accepted
 
 
-def measure(output, reference, suffix, mass):
+def measure(output, reference, suffix, mass, p99_sq=14, severe_sq=36):
     values = np.zeros(7, np.float64)
     squared = np.empty(len(output), np.int32)
     for start in range(0, len(output), 1 << 18):
@@ -111,7 +111,7 @@ def measure(output, reference, suffix, mass):
         distance = np.sqrt(s.astype(np.float64))
         w = mass[start:stop]
         values += [distance.sum(), w@distance, s.sum(), w@s,
-                   np.maximum(s-14, 0).sum(), np.maximum(s-36, 0).sum(), np.count_nonzero(s > 14)]
+                   np.maximum(s-p99_sq, 0).sum(), np.maximum(s-severe_sq, 0).sum(), np.count_nonzero(s > p99_sq)]
     return values, squared
 
 
