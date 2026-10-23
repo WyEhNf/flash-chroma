@@ -14,6 +14,9 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#if defined(P16_SEGMENT_BATCH)
+#include "segment_batch.h"
+#endif
 #if defined(P16_PREPARED_PLAN)
 #include "prepared_plan.h"
 #include <atomic>
@@ -386,7 +389,9 @@ void prepare_palette(Handle& h) {
 extern "C" {
 uint32_t jshc_cc_abi_version(void) {return 1;}
 uint32_t jshc_cc_revision(void) {
-#if defined(P16_PREPARED_PLAN)
+#if defined(P16_SEGMENT_BATCH)
+  return 90;
+#elif defined(P16_PREPARED_PLAN)
   return 89;
 #elif defined(P16_PREPARE_POLICY)
   return 88;
@@ -594,6 +599,73 @@ int jshc_cc_apply_to(void* handle,const uint8_t* source,uint8_t* destination,siz
   try {if(!handle)throw std::runtime_error("空研究句柄");apply_to(*static_cast<Handle*>(handle),source,destination,bytes,kernel,threads);message(error,size,"");return 0;}
   catch(const std::exception& e) {message(error,size,e.what());return 1;}
 }
+#if defined(P16_SEGMENT_BATCH)
+int jshc_cc_apply_to_segments(void* handle,const uint8_t* const* sources,uint8_t* const* destinations,
+    const size_t* bytes,size_t count,int kernel,int threads,char* error,size_t size) {
+  try {
+    if(!handle || count>100)throw std::runtime_error("分段调用要求句柄及0..100段");
+    auto& h=*static_cast<Handle*>(handle);
+    apply(h,nullptr,0,kernel,threads); // 所有参数与后端先验证，不写目标。
+    if(!count){message(error,size,"");return 0;}
+    if(!sources || !destinations || !bytes)throw std::runtime_error("非空分段调用要求三个有效数组");
+    struct Segment {const uint8_t* source;uint8_t* destination;size_t bytes;};
+    struct Task {const uint8_t* source;uint8_t* destination;size_t pixels;};
+    std::array<Segment,100> segments{};
+    size_t blocks=0;
+    for(size_t i=0;i<count;++i) {
+      const size_t length=bytes[i];const uint8_t* source=sources[i];uint8_t* destination=destinations[i];
+      if(length%3 || (length && (!source || !destination)))throw std::runtime_error("分段要求紧密RGB8及有效非空指针");
+      const uintptr_t src=reinterpret_cast<uintptr_t>(source),dst=reinterpret_cast<uintptr_t>(destination);
+      if(length>std::numeric_limits<uintptr_t>::max()-src || length>std::numeric_limits<uintptr_t>::max()-dst)
+        throw std::runtime_error("分段RGB范围溢出");
+      segments[i]={source,destination,length};
+      const size_t pixels=length/3,n=pixels/65536+(pixels%65536!=0);
+      if(n>static_cast<size_t>(std::numeric_limits<long long>::max())-blocks)throw std::runtime_error("分段块计数溢出");
+      blocks+=n;
+    }
+    const auto overlap=[](const void* a,size_t na,const void* b,size_t nb) {
+      const uintptr_t x=reinterpret_cast<uintptr_t>(a),y=reinterpret_cast<uintptr_t>(b);
+      return na && nb && x<y+nb && y<x+na;
+    };
+    for(size_t i=0;i<count;++i)for(size_t j=0;j<count;++j) {
+      if(overlap(segments[i].destination,segments[i].bytes,segments[j].source,segments[j].bytes) ||
+          (j<i && overlap(segments[i].destination,segments[i].bytes,segments[j].destination,segments[j].bytes)))
+        throw std::runtime_error("分段目标不得与任何源或其它目标重叠");
+    }
+    if(!blocks){message(error,size,"");return 0;}
+    std::vector<Task> tasks;tasks.reserve(blocks);
+    for(size_t i=0;i<count;++i) {
+      const auto& segment=segments[i];const size_t pixels=segment.bytes/3;
+      for(size_t start=0;start<pixels;) {
+        const size_t n=std::min(size_t{65536},pixels-start);
+        tasks.push_back({segment.source+3*start,segment.destination+3*start,n});start+=n;
+      }
+    }
+#if defined(_OPENMP)
+    const int workers=omp_in_parallel()?1:static_cast<int>(std::min(blocks,size_t(threads)));
+#pragma omp parallel for schedule(static) num_threads(workers)
+#endif
+    for(long long block=0;block<static_cast<long long>(blocks);++block) {
+      const auto task=tasks[size_t(block)];
+      if(kernel==1 && !h.direct_index.empty()) {
+#if defined(JSHC_CC_HAVE_AVX2)
+        const size_t vectorized=task.pixels&~size_t{7};
+        if(h.andn_normal_supported)jshc_channel::avx2_chain_pair48_to(h.direct_index.data(),h.output_palette.data(),task.source,task.destination,vectorized);
+        else jshc_channel::avx2_chain_adaptive_linear_to(h.direct_index.data(),h.output_palette.data(),task.source,task.destination,vectorized);
+        if(task.pixels!=vectorized) {
+          std::memcpy(task.destination+3*vectorized,task.source+3*vectorized,3*(task.pixels-vectorized));
+          scalar(h.views.data(),h.views.size(),task.destination+3*vectorized,task.pixels-vectorized);
+        }
+#endif
+      }else {
+        std::memcpy(task.destination,task.source,task.pixels*3);
+        apply(h,task.destination,task.pixels*3,kernel,1);
+      }
+    }
+    message(error,size,"");return 0;
+  }catch(const std::exception& e){message(error,size,e.what());return 1;}
+}
+#endif
 uint32_t jshc_cc_domain_fast_enabled(const void* handle) {
   return handle && domain_fast_enabled(*static_cast<const Handle*>(handle))?1:0;
 }
