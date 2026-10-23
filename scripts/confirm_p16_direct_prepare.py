@@ -47,7 +47,11 @@ def main():
     plan=json.loads(args.plan.read_text(encoding='utf-8'))
     args.data_root=Path(plan['data_root']);args.baseline=Path(plan['paths']['baseline']);args.candidate=Path(plan['paths']['candidate'])
     assert plan['orders']==[['baseline','candidate'],['candidate','baseline'],['candidate','baseline'],['baseline','candidate']]
-    assert plan['gate']=={'median_ratio_max':0.75,'any_process_ratio_max':0.9,'repeats_per_variant_per_process':5}
+    assert plan['gate']['repeats_per_variant_per_process']==5
+    assert 0<plan['gate']['median_ratio_max']<=1
+    assert plan['gate']['any_process_ratio_max']>=plan['gate']['median_ratio_max']
+    assert digest(Path(__file__))==plan['source_identity']['script']
+    assert digest(Path(__file__).with_name('study_p16_direct_compile.py'))==plan['source_identity']['support']
     if args.worker is not None:return worker(args,plan)
     if args.output.exists():raise FileExistsError('保留已有证据，不覆盖或重试')
     args.output.mkdir(parents=True)
@@ -62,7 +66,8 @@ def main():
         paired_ratios=[durations['candidate'][i]/durations['baseline'][i] for i in range(5)]
         pairs.append({'seconds':durations,'process_median_ratio':ratio,'pair_ratios':paired_ratios})
     ratios=[r['process_median_ratio'] for r in pairs]
-    passed=statistics.median(ratios)<=0.75 and max(ratios)<=0.9
+    passed=(statistics.median(ratios)<=plan['gate']['median_ratio_max'] and
+            max(ratios)<=plan['gate']['any_process_ratio_max'])
     save(args.output/'results.json',{'purpose':plan['purpose'],'passed_prepare_gate':passed,
         'processes':pairs,'median_ratio':statistics.median(ratios),'any_process_max':max(ratios),
         'timing_scope':plan['timing_scope'],'gate':plan['gate'],

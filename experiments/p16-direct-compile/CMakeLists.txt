@@ -15,6 +15,13 @@ target_include_directories(jshc_direct_compile PRIVATE "${BASE}" "${JSHC_ROOT}/e
 target_link_libraries(jshc_direct_compile PRIVATE jshc_core OpenMP::OpenMP_CXX)
 target_compile_definitions(jshc_direct_compile PRIVATE JSHC_CC_HAVE_AVX2=1)
 target_compile_options(jshc_direct_compile PRIVATE -Wall -Wextra -fvisibility=hidden)
+# 独立87只将后缀缓存准备改用原精确AVX2，不重编85冻结DLL。
+get_target_property(P16_DIRECT_SOURCES jshc_direct_compile SOURCES)
+add_library(jshc_direct_prepare_simd SHARED ${P16_DIRECT_SOURCES})
+target_include_directories(jshc_direct_prepare_simd PRIVATE "${BASE}" "${JSHC_ROOT}/experiments/channel-runtime")
+target_link_libraries(jshc_direct_prepare_simd PRIVATE jshc_core OpenMP::OpenMP_CXX)
+target_compile_definitions(jshc_direct_prepare_simd PRIVATE JSHC_CC_HAVE_AVX2=1 P16_PREPARE_SIMD=1)
+target_compile_options(jshc_direct_prepare_simd PRIVATE -Wall -Wextra -fvisibility=hidden)
 set_source_files_properties(compile_avx2.cpp "${BASE}/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-exception-runtime/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp"

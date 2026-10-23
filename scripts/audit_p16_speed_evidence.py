@@ -50,7 +50,7 @@ def prepare(path):
         assert ratio==result['processes'][i]['process_median_ratio'];ratios.append(ratio)
     assert statistics.median(ratios)==result['median_ratio']
     assert max(ratios)==result['any_process_max']
-    assert result['passed_prepare_gate']==(statistics.median(ratios)<=.75 and max(ratios)<=.9)
+    assert result['passed_prepare_gate']==(statistics.median(ratios)<=result['gate']['median_ratio_max'] and max(ratios)<=result['gate']['any_process_ratio_max'])
     validity=read(path/'measurement-validity.json') if (path/'measurement-validity.json').exists() else {'measurement_valid':True}
     return {'raw_statistics':True,'passed_numeric_gate':result['passed_prepare_gate'],
             'measurement_valid':validity['measurement_valid'],

@@ -174,7 +174,15 @@ void prepare_cache(Handle& h) {
         if(info.valid_entries) {
           h.cache.assign(entries,0);
           // 复用当前稀疏后三个模型，逐级RGB8 half-up，绝不从完整源LUT生成。
-          scalar(h.views.data()+1,3,colours.data(),colours.size()/3);
+          size_t vectorized=0;
+#if defined(P16_PREPARE_SIMD)
+          // 准备阶段复用原通用AVX2，仍按每级RGB8输出，再处理不足八像素的尾部。
+          if(jshc_cc_capabilities()&2) {
+            vectorized=(colours.size()/3)&~size_t{7};
+            jshc_channel::avx2_chain(h.views.data()+1,3,colours.data(),vectorized);
+          }
+#endif
+          scalar(h.views.data()+1,3,colours.data()+3*vectorized,colours.size()/3-vectorized);
           size_t next=0,index=0;
           for(int r=rmin;r<=rmax;++r)for(int dg=gmin;dg<=gmax;++dg)for(int db=bmin;db<=bmax;++db,++index)
             if(r+dg>=0 && r+dg<=255 && r+db>=0 && r+db<=255) {
@@ -358,7 +366,13 @@ void prepare_palette(Handle& h) {
 
 extern "C" {
 uint32_t jshc_cc_abi_version(void) {return 1;}
-uint32_t jshc_cc_revision(void) {return 85;}
+uint32_t jshc_cc_revision(void) {
+#if defined(P16_PREPARE_SIMD)
+  return 87;
+#else
+  return 85;
+#endif
+}
 uint32_t jshc_cc_capabilities(void) {
   uint32_t mask=1;
 #if defined(JSHC_CC_HAVE_AVX2)
