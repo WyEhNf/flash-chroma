@@ -1,0 +1,95 @@
+{
+  "purpose": "从ZIP只读复核固定1024项备忘筛查；不执行analyze.py、不重新扫描命中。",
+  "audit_completed": true,
+  "audit_passed": true,
+  "completed_utc": "2026-10-23T04:52:37.597419+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "executable": "C:\\Users\\admin\\miniconda3\\python.exe",
+    "dependencies": "Python标准库"
+  },
+  "verifier_sha256": "84a099a6aecccc664f041200864b75a3622a14d80406999ad60582f4526e97f5",
+  "manifest_sha256": "bea7d500ca438a81d9a91b859e59644b0052949151b7a9f9f6be6c3da15151b7",
+  "archive_sha256": "484cbf68a722e8216727eda26c32d98395637ff158f5f5f220c7533f6cc50d98",
+  "originals_sha256": {
+    "analyze.py": "59acc137701d53b8de0fb36efe2740386a6f8bcb4fbdc8300250d868796bdd1e",
+    "protocol.json": "e359d4e137cb1519d6ffc550ca34c26e5e1a71af2863b181aef2559e9619bc9d",
+    "execution-start.json": "5d0298cc25d2474c292edc271cc096d3ffab5d464864d0c1da68ad7cd1aa5dee",
+    "analysis.json": "e03d142a6a0c3bb71a3a060df9c3e0875d4252aa628842d00cc94baffa06b84e",
+    "exit.json": "a99d8f980a12828daa94a05c90c343765bcc556916968a5cebcd8384121c2126"
+  },
+  "originals_byte_comparison": true,
+  "input_rehashes": [
+    {
+      "name": "photos",
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "bytes": 235929600,
+      "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+    },
+    {
+      "name": "manifest",
+      "path": "assets/photos/manifest.json",
+      "bytes": 101681,
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    }
+  ],
+  "per_image_input_rehashes": 100,
+  "verified": {
+    "images": 100,
+    "blocks": 1200,
+    "classification_counts": {
+      "hits": 19632405,
+      "misses": 59010795,
+      "cold": 1210787,
+      "collision": 57800008,
+      "repeat_collision": 21960647,
+      "first_seen_collision": 35839361
+    },
+    "transitions": 12972523,
+    "transition_edges": 78642000,
+    "exact_per_image_run_histograms": 200,
+    "aggregate_run_histograms_equal": true,
+    "per_block_run_counts_and_maxima_equal": true,
+    "small_reference_cases": 6,
+    "saved_numpy_self_test_passed": true,
+    "fresh_numpy_self_test_execution": false,
+    "images_below_hit_gate": 77,
+    "gate": {
+      "total_hit_fraction": 0.2496389389038086,
+      "total_hit_fraction_min": 0.65,
+      "total_hit_pass": false,
+      "any_image_hit_fraction": 0.029630025227864582,
+      "any_image_hit_fraction_min": 0.35,
+      "per_image_pass": false,
+      "block_internal_transition_fraction": 0.16495667709366496,
+      "block_internal_transition_fraction_max": 0.02,
+      "transition_pass": false,
+      "passed": false
+    },
+    "hit_run_quantiles": {
+      "p50": 1,
+      "p90": 5,
+      "p99": 24
+    },
+    "miss_run_quantiles": {
+      "p50": 3,
+      "p90": 21,
+      "p99": 104
+    }
+  },
+  "limitations": [
+    "仅复核原件和已有统计，没有重跑全照片命中模拟或原始analyze.py。",
+    "逐图精确run长度直方图重新加总为全局；原件逐块只有run数/最长值，不能独立重建逐块精确长度分布。",
+    "小合成标准库分类重新计算并核对已存自测结果；没有再次执行原始NumPy排序自测。",
+    "没有候选RGB缓存值、原生性能、完整RGB8或实际Skylake验证。",
+    "同目录回执证明已存唯一执行链，不证明其他未记录路径没有执行。"
+  ],
+  "original_analysis_executions_added": 0,
+  "runtime_implementations_added": 0,
+  "native_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0,
+  "model_calls": 0,
+  "full_domain_calls": 0
+}
