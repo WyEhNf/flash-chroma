@@ -1,0 +1,59 @@
+{
+  "purpose": "M16T六角色受控同场测量；四worker双接口单四线程，完整五轮不补跑。",
+  "plan_sha256": "ce6384ee8dcdc00516c0c5e324b46a01e31a3dd853065257a71bbe6d8a3ff06b",
+  "script_sha256": "3813ed1d92e57b3c1bb721bdca464572826fa6c1405a2dcadb10d0ebf234d32b",
+  "benchmark_module_sha256": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+  "copied_worker_source_sha256": "71a01e712c72b1f94c4cbfe55c2d41670d862846aeb322ab8f60c8a2d1f02365",
+  "affinity_start": {
+    "before": {
+      "process_mask": "0xffffffff",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "actual": {
+      "process_mask": "0x55",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    "scope": "自有Python子进程允许0/2/4/6；非逐OMP线程绑定，未锁频，不与旧unbound绝对耗时归因。"
+  },
+  "scope": "六角色、24情形、四worker，共480主要/96预热/80AA=656 native端点。0x55实际允许集，不逐OMP线程绑定或锁频，不拼旧unbound绝对时间或恢复旧3B。"
+}
