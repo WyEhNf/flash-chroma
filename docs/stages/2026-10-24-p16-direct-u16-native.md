@@ -2,6 +2,8 @@
 
 Agent：`/root/tail`；任务：精度方向；状态：正确性完成、速度与真实内存峰值未完成。保持Draft，不切换默认。
 
+后续正式[六角色性能阶段](2026-10-24-p16-direct-u16-perf.md)已完成：两新模型有效最劣31%–34%，严格低于50%拒绝本实现。以下保留质量阶段当时的范围；质量通过不等于综合升级。
+
 第二级两只固定候选已在[模型阶段](2026-10-24-cinema-second-nodes.md)验证mean/p99/max，但整个cache有603/703种颜色，冻结87不能建立旧8bit直接表。本阶段保留模型节点、轴、sidecar和逐级RGB8语义，从87另建revision287。旧8bit成功时完全优先；否则整个cache palette≤65536且原完整域证明成立时，一次首级AVX编译生成uint16 ID与动态RGB32 palette。超过阈值保留精确fallback。没有实际可达集合第二遍，没有读取gold或历史输出构造运行时。
 
 主要源为`experiments/p16-direct-u16-runtime/`，预注册为`experiments/p16-direct-u16-plan-v1.md`，冻结与验收为`scripts/check_direct_u16_native.py`。format16与新增96B Info明确区分旧format9；通用快照接口的entries是原始u32词数8,388,609，实际输入项数仍16,777,216。真正uint16数组另有4B owned guard；末地址scale2 gather多读2B在guard内。标量读取合法u16对象；AVX2仅声称已验x86小端，不声称ARM可移植。新vector保证2B对齐，本场两个实际地址mod64均0；独立guard测试特意使用mod64=60。旧87的对齐分配器不同，未来速度差不能只归因位宽。
