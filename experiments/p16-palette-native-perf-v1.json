@@ -1,0 +1,27 @@
+{
+  "purpose": "同场六角色/完整百图的7bit容量、精度与吞吐六档；新进程A/A与RSS分列。",
+  "source_sha256": {
+    "scripts\\bench_palette_bitpack.py": "213b78cc78c700293bac925cfd54a54efabab1d56fbcc8192773c3307f8e4af1",
+    "scripts\\study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts\\bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts\\profile_palette_bitpack.py": "83a3300d19ad2b246bd005b335fad73563df498da0f2db4dc5e61688f8d25681",
+    "scripts\\export_palette_bitpack.py": "f85e9fd17420dc4af43a14159cd4670aa6fb859dc75d7b3c5987da314ff82011",
+    "scripts\\build_palette_bitpack.py": "3ad372fb55d991f67dd6f15f417146659f48dd6445b9dac8c5e661050df453b2",
+    "scripts\\verify_palette_bitpack.py": "6fc51a59283a5cc6d82a18974b59bcbb7d6a3cdc709b9c3e8205107023dea241",
+    "experiments\\palette-bitpack\\memory_bitpack.c": "9976ce272097ec1450abf3cb9b891c9fb006e2e9ab96595ce13271db4570937c",
+    "experiments\\palette-bitpack\\parallel.cpp": "7a39d1eeebc96cf89782cfbd4e5fcb1420cea4fbe6044ef6e7921a616811af6e"
+  },
+  "artifacts_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-native-build-v1\\jshc_memory_rom.dll": "0c83ad47608bee9f674508f717c21a42419eb6e5e3531c02397140bcfdcc65ad",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-native-build-v1\\jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-andn-build-v1\\jshc_memory_rom.dll": "ec40e1db7faed9a8ce47a01ead6991e2cb306f5833367aae9130a533b46a46bd",
+    "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-bitpack-v1\\results.json": "a06515133ddb7481d488d8d28bd63e4c05c8be7a583d92fce5fdbd6e47dd0707",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-native-verify-v1\\results.json": "6be97b3acb8c1c3f4d6245b4c1b7f2abfc07ae5858bda2a458fa5da91e9ffcfe",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-native-rom-v1\\maximin_original_color7.bin": "5b6865dbba37584a6724534b90bff474e5eb54b12537fe6422361d3e54d151d7",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-palette-native-rom-v1\\weighted_ward_centroid7.bin": "e7c053b23cd55329a1ed3d23a3f37af4c907748a8361440208adb250d10664ec"
+  },
+  "protocol": "六角色，四串行新进程，轮转/反序、1/4线程互换、原地/真分离，每项预热1+完整百图5次；ref80尾部A/A5次；六fresh RSS进程",
+  "gate": "每接口/线程A/A单对0.8..1.25且四worker中位1/1.1..1.1；最劣worker吞吐=min(同场78,80时间)/候选时间，精度=min全域/照片合并/最劣单图mean,p99,max旧新比。六档100/90/80/70/60/50，不拼历史轮次，不重测择优。"
+}
