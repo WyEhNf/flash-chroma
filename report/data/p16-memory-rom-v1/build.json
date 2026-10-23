@@ -1,0 +1,412 @@
+{
+  "purpose": "构建C99借用ROM、固定块字典AVX2及原修订78对照；一次只使用一个编译进程。",
+  "sources": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\channel_runtime.cpp": "1a36bbe0f4cc8ba5fe68ae5560309a90375028a04a5ce3124b7bd91b8613f80a",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_inplace\\channel_avx2.cpp": "dbb416074abf56734a2e894507c572b25e6a10bb30ee9409cbc359bb93fa336d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_outplace\\channel_avx2.cpp": "42422ecd00f044d4bd79e0636d1cb3755588c5a7b59ec31ef95c88460048fc1a",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-exception-runtime\\channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp": "82a68ce75ca019510b70c9a5f0544bf8308a6e15d92f08a00bc57fd4241f5751",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp": "a704401d06e0a8af4f89b18e4609d686086c893275fdb1c950d28f082aa61e32",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_0.cpp": "1b1d575e2f39200741a90f7dabce1eb93882c47b71722e133ed4869eb07122a6",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_4.cpp": "0fff326ae0532f9f9cacaf82cc38f37acad56692d0dcdb9959b1a0179cef3b8e",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_6.cpp": "e8cbe45efbe755ba9d3a96558fffb21fcadcf0837a364e168c39e73f4db60319",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_8.cpp": "3e2fe6128c08367431d92c3612a4b1c2300f73af16833777f17f835e7deafb69",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_10.cpp": "dcccff464e7957e05cf92f094ebbb17f19cf70cf1858cfaa632e38147c62c829",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.h": "5b4ee39aa92ef86800f52e8be40b85e3a53a76107510aa552ab3615d05d6dca8"
+  },
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "c_compiler_sha256": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+  "static_core_sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6",
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-DJSHC_CC_HAVE_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\channel_runtime.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_runtime.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\outplace_bench.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_outplace.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_linear.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mbmi",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_inplace\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_andn_in.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mbmi",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_outplace\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_andn_out.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-exception-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_exception.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_domain.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_suffix.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_runtime.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_outplace.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_linear.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_andn_in.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_andn_out.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_exception.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_domain.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\ref_suffix.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-fstack-usage",
+        "-Wall",
+        "-Wextra",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_0.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_0.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_4.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_4.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_6.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_6.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_8.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_8.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_10.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_10.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_0.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_4.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_6.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_8.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\memory_avx2_10.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_memory_c99.dll": "67041963f1acfa8edc0fdc00995e32eb21524678148d0cac30ad36543d575727",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_rom.dll": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+}

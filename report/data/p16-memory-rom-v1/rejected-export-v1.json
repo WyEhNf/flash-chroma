@@ -1,0 +1,63 @@
+{
+  "purpose": "从现有稀疏模型运行库导出精确ROM，集中核验全域和边界，独立比较内存/可移植性。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": null,
+      "OPENBLAS_NUM_THREADS": null
+    }
+  },
+  "baseline_library": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+  "baseline_sha256": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+  "baseline_runtime_capacity": 28046644,
+  "logical_table_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "palette_size": 223,
+  "model_source": "仅调用冻结a399四级稀疏模型；不读取照片、完整原LUT或gold构建",
+  "models": {
+    "0": {
+      "block_bytes": null,
+      "unique_blocks": 16777216,
+      "file_bytes": 16778272,
+      "payload_bytes": 16777216,
+      "sha256": "4dfec5a22f828eb090f3e5869ad6a858f8dbc7f88900c4d46adb4a5414001802",
+      "export_seconds": 0.03177170001436025
+    },
+    "4": {
+      "block_bytes": 16,
+      "unique_blocks": 107707,
+      "file_bytes": 5918672,
+      "payload_bytes": 5917616,
+      "sha256": "9bdd46589f631637c60ad14b92c61c7dfb93f40a182c96fde50abc9f3e53ff2e",
+      "export_seconds": 0.611046600039117
+    },
+    "6": {
+      "block_bytes": 64,
+      "unique_blocks": 88387,
+      "file_bytes": 6706400,
+      "payload_bytes": 6705344,
+      "sha256": "c136ef6164db8651086a21c1e67bae5fe6ff5b51e241edcb6d0e888f0a68571a",
+      "export_seconds": 0.20085489994380623
+    },
+    "8": {
+      "block_bytes": 256,
+      "unique_blocks": 31270,
+      "file_bytes": 8268320,
+      "payload_bytes": 8267264,
+      "sha256": "6a7ec2371d1f71b4076f33ef390813fc9c44005128887f02ea2327ded9eb4500",
+      "export_seconds": 0.0897289999993518
+    },
+    "10": {
+      "block_bytes": 1024,
+      "unique_blocks": 10482,
+      "file_bytes": 10800160,
+      "payload_bytes": 10799104,
+      "sha256": "5d47b6fb19eb706034223dfdd039c886c0ed66a79bb8d7b6d315039ad685cd30",
+      "export_seconds": 0.08001419994980097
+    }
+  }
+}
