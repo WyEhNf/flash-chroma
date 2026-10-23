@@ -4,8 +4,10 @@
 #include <stdint.h>
 #if defined(_WIN32)
 #define JSHC_MEM_API __declspec(dllexport)
-#else
+#elif defined(__GNUC__) || defined(__clang__)
 #define JSHC_MEM_API __attribute__((visibility("default")))
+#else
+#define JSHC_MEM_API
 #endif
 #ifdef __cplusplus
 extern "C" {
