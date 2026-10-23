@@ -38,6 +38,7 @@ def main():
     parser.add_argument('--libraries', type=Path, nargs='+', required=True)
     parser.add_argument('--candidate', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--suffix-stage4', type=Path)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖资格诊断')
@@ -50,7 +51,10 @@ def main():
         dll_dirs.append(os.add_dll_directory(str(path.resolve().parent)))
         lib = Library(path, digest(path))
         for name, folder in variants.items():
-            with lib.chain([folder/'candidate-base.slut', *suffix], [folder/'channel-frac.bin', None, None, None]) as chain:
+            active_suffix = suffix.copy()
+            if name == 'candidate' and args.suffix_stage4 is not None:
+                active_suffix[2] = args.suffix_stage4.resolve()
+            with lib.chain([folder/'candidate-base.slut', *active_suffix], [folder/'channel-frac.bin', None, None, None]) as chain:
                 row = {'variant': name, 'library_path': str(path.resolve()), 'library_sha256': lib.sha256,
                        'revision': lib.revision, 'model_bytes': chain.model_bytes, 'input_sha256': chain.inputs_sha256}
                 for label, cls in [('cache', CacheInfo), ('domain', DomainInfo), ('palette', PaletteInfo), ('direct', DirectInfo)]:
