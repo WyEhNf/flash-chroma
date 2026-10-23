@@ -1,0 +1,37 @@
+{
+  "purpose": "第五独立阶段：逐级加载/校验后只保留owned packed RGB32节点和768/2304轴词，原specialized AVX2对象原字节复用，无窄域/230色限制。",
+  "source_sha256": {
+    "experiments/compact-sparse-runtime/channel_runtime.cpp": "16032485c4bb1a4baa09b4a3d872cce9f5c8713540813d296b10cdc4f9c44dab",
+    "scripts/build_compact_sparse.py": "acce4ceeb1d543f5ad7f9005bf5c05e3b34854e9458c4820ace5f88f135dd9e1",
+    "scripts/verify_compact_sparse.py": "917d27c8a4e30af1f18d914b8df15df6ed1952323fc1b3da9cab85665fbdaf64",
+    "scripts/bench_compact_sparse.py": "d3eb8d20e1869857c74e006ac7c6fa5f008ea342aeb0c5c2186fbacc774e43fa",
+    "experiments/channel-runtime/channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+    "experiments/channel-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "scripts/verify_channel_coordinates.py": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab",
+    "python/lutlab/channel_coordinates.py": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3"
+  },
+  "inputs": {
+    "core": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+      "sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6"
+    },
+    "avx2_object": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+      "sha256": "2edcc3ae0792294ebd59614c9634719869830cb839a8838c551987443afac3e4"
+    },
+    "specialized": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    }
+  },
+  "cases": [
+    "cinema_a399_33cube",
+    "general_seed_2026102405_m17_18_25_33_first_extended"
+  ],
+  "protocol": "先有限混合尺寸1..4级/u64合同，再a399单级/四级6配置全域与一般四级完整域；同场compact/specialized/78/80四worker5百图，1/4线程，80 A/A单对0.8..1.25、中位1/1.1..1.1。",
+  "gate": "完整及逐图输出精确不变；速度以同场三个参考端点最快者为分母，最劣worker按100/90/80/70/60/50分档；一般模型需证明直表未启用；失败控制不升级。",
+  "metrics": "真实capacity，独立1/32句柄RSS/峰；known freeze/loader payload只是已知对象/向量/文件载荷界，不是分配器/CRT/RSS总峰。"
+}
