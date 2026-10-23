@@ -508,3 +508,8 @@ scripts/report_quantile_tail_study.py -text
 /report/data/p16-call-boundary-v1/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 # CMake空CXX_INCLUDES保留生成文件原始行尾空格，不重写证据。
 /report/data/p16-call-boundary-v1/probe-flags.make -text whitespace=space-before-tab,cr-at-eol,-blank-at-eof,-blank-at-eol
+# 三模型冻结配对：执行脚本、计划及原始证据字节保持不变。
+/experiments/p16-arrival-model-triple-v1.json -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/scripts/bench_p16_model_triple.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/scripts/audit_p16_model_triple.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/report/data/p16-arrival-model-triple-v1/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
