@@ -1,0 +1,60 @@
+{
+  "base_commit": "16ae431",
+  "platform": "Windows11 26200 x64",
+  "compiler": "E:/mingw64/bin/g++.exe GCC15.2",
+  "build": "Release -O3 -DNDEBUG",
+  "libraries": {
+    "libjshc_direct_compile.dll": "3778f0b46c161134837c54e4b19edc35cc38281a7776a2e7cea3aab2b8ecf018",
+    "baseline\\libjshc_skylake_andn_normal.dll": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "libjshc_channel_copy.dll": "5af0bff84d5408c15aff75855a6999dae16ace76a6768106e9bbb383f042e752",
+    "libjshc_channel_to.dll": "128c1b615bcc87afd7e813609fcd6b92278d267189614ed2857bdb7644a00b26"
+  },
+  "unchanged_pixel_objects": [
+    {
+      "part": "channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "516b8015f17bfbf3fc3fa273af6f2e1a8c63c20b0e5b2df953c55b86f448acb8",
+      "candidate_obj_sha256": "516b8015f17bfbf3fc3fa273af6f2e1a8c63c20b0e5b2df953c55b86f448acb8",
+      "text_sha256": "b4916bf5f2675fc1e6ab37746e4aa9339dcf4357a9277b33885c28e1e7462074",
+      "text_identical": true
+    },
+    {
+      "part": "andn_inplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "4bc3fbe57e013918221ba8aa25a00b4d924e70fee8ec766a247c82011181ffe5",
+      "candidate_obj_sha256": "4bc3fbe57e013918221ba8aa25a00b4d924e70fee8ec766a247c82011181ffe5",
+      "text_sha256": "7d202fefe320a7cee1d1fe4f0746415b21c3f284827c96a998aafbb023d3c2ee",
+      "text_identical": true
+    },
+    {
+      "part": "andn_outplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "ea1c4afb3955235bf2187b2ee55efcbdc06853e038c7f915860bef7b84f1c480",
+      "candidate_obj_sha256": "ea1c4afb3955235bf2187b2ee55efcbdc06853e038c7f915860bef7b84f1c480",
+      "text_sha256": "c41cca2cf0e54faede5b0acb951892f9c736254050807f6dd1e88a2b157128cc",
+      "text_identical": true
+    },
+    {
+      "part": "normal_inplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "e78e6457f6f8492ecbce0aea2fbe58eed16681527c00d7a8d09ca6b5dc5b49e7",
+      "candidate_obj_sha256": "e78e6457f6f8492ecbce0aea2fbe58eed16681527c00d7a8d09ca6b5dc5b49e7",
+      "text_sha256": "d2e3434461669ce509349f7eca015a05ec82e2f7e5aabecd3d511d837746cc20",
+      "text_identical": true
+    },
+    {
+      "part": "outplace_bench.cpp.obj",
+      "baseline_obj_sha256": "410c7275b57c9d51fcc4bf6052f09d4d885d34a9e09c31557c2b02c76e06e7e1",
+      "candidate_obj_sha256": "410c7275b57c9d51fcc4bf6052f09d4d885d34a9e09c31557c2b02c76e06e7e1",
+      "text_sha256": "3966e19f4ef66966be55a7c756127e51b88119fd2588e4176fcd26f6049a79ce",
+      "text_identical": true
+    }
+  ],
+  "sources": {
+    "experiments\\p16-direct-compile\\channel_runtime.cpp": "51af0897ef9fd29828598c5bd291596255c39a9aa0deb832815a32e361bdbdb7",
+    "experiments\\p16-direct-compile\\channel_to_avx2.cpp": "b50c0e4fa2695972ecd7c18d79adc41e4044cca1ae1abd2107eeb74de550815f",
+    "experiments\\p16-direct-compile\\channel_to_runtime.cpp": "4969918e70e6fe38f958cb5895f13206c21df9642400aec15305bd3ded03ab19",
+    "experiments\\p16-direct-compile\\CMakeLists.txt": "96e4fdc23228e26d082f6b301a54f331a1eccc9f2ab2d85dabd4aa10a7eded06",
+    "experiments\\p16-direct-compile\\compile_avx2.cpp": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+    "scripts\\study_p16_direct_compile.py": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e",
+    "scripts\\confirm_p16_direct_prepare.py": "755710882c6d53dc52ef88d67e75ad6dacf59945180af2f823b6d7dc3d43ef0b",
+    "scripts\\audit_p16_speed_evidence.py": "245e0390e98e75b8e5d75c300300d46572927270d2e62074b9f3ad2cd7b4fb89"
+  },
+  "reproduction_note": "85首轮二进制身份固定，后加86与确认脚本，85像素对象与80逐节相同；PE时间戳不作为可重复构建承诺"
+}

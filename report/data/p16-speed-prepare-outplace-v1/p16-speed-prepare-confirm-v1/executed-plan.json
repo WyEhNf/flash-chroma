@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "purpose": "独立确认85相对80的完整prepare耗时；首轮性能保留，不择优",
+  "timing_scope": "底层jshc_cc_create：含本地热文件缓存下的读取/解析/合同校验/模型与派生表准备；不含Python输入hash、加载DLL、destroy、导出表或hash",
+  "gate": {
+    "any_process_ratio_max": 0.9,
+    "median_ratio_max": 0.75,
+    "repeats_per_variant_per_process": 5
+  },
+  "orders": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "data_root": "F:/Hackathon/projects/16-lut-color",
+  "paths": {
+    "baseline": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+    "candidate": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_compile.dll"
+  },
+  "libraries": {
+    "baseline": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "candidate": "3778f0b46c161134837c54e4b19edc35cc38281a7776a2e7cea3aab2b8ecf018"
+  },
+  "inputs": {
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+  },
+  "direct_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "source_identity": {
+    "support": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e",
+    "script": "755710882c6d53dc52ef88d67e75ad6dacf59945180af2f823b6d7dc3d43ef0b"
+  }
+}
