@@ -2,6 +2,8 @@
 
 Agent：`/root/tail`；任务：精度方向速度底线；状态：正确性完成、正式吞吐待测，保持Draft。前阶段287两候选有效最劣31%–34%，仍按[正式负例](2026-10-24-p16-direct-u16-perf.md)拒绝；本阶段尚未以新内核救线。
 
+后续[八角色正式阶段](2026-10-24-p16-direct-u16-ilp-perf.md)已完成：有效子集吞吐改善，但22项AA失败使整体仍未证50%，不升级综合best。以下保留质量阶段本身的范围。
+
 固定两只第二级候选及旧best，保持287的完整cache≤65536资格、32MiB uint16表+4B guard、动态palette、prepare、vector分配器、Handle结构和format16。288仅复制87实际四种apply核，将byte索引读取换为合法uint16读取：无BMI使用linear、单线程原地pair48、多线程原地normal_mt、真分离pair48_to。保留既有四包ILP、目标对齐、prefetch、NT/普通写及发布屏障，CPU有BMI才进入相应核。后续若有收益，只能说明整体apply调度有效，不能狭义归因ILP，亦不能归因为allocator或位宽变动。旧87/287源和DLL未改。
 
 静态核对旧read/read_wide/scalar_one与287 gather解包的输入地址均为`R | G<<8 | B<<16`，跨64位输入字的第三/第六像素组合相同。新独立guard程序覆盖0xff/0x100/0xffff/0x10000/0xffffff及65535 ID，高位65536编译ID拒绝。四调度mode×11长度×原地/分离共88组guard均过，包含32/64包边界、4096全块和4097尾部，恰好源/目标后接不可访问页；当前CPU BMI可用，未跳过模式。新实现保留guard容量，即使合法u16标量读取不需要287 gather的额外2B。

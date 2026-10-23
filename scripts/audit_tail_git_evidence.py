@@ -24,7 +24,7 @@ def main():
                'velvia-stripe-diagonals-20261024', 'velvia-stripe-nodes-20261024', 'velvia-mean-first-20261024',
                'velvia-bubble-probe-20261024', 'velvia-bubble-slope-20261024', 'velvia-bubble-accept-20261024',
                'velvia-bubble-native-20261024', 'velvia-bubble-perf-20261024', 'p16-direct-u16-native-20261024-v2',
-               'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024']
+               'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024', 'p16-direct-u16-ilp-perf-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
