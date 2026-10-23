@@ -20,7 +20,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     folders = ['channel-tail-nodes-20261023', 'channel-tail-extensions-20261024', 'cinema-last-stage-20261024',
-               'protected-tail-cases-20261024']
+               'protected-tail-cases-20261024', 'velvia-body-diagonals-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder

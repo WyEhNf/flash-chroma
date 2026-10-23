@@ -60,6 +60,13 @@ def main():
                     path = args.cache_root/'artifacts/cinema-envelope-v1/stage4_sweep004'/f'selected-stage{k}.slut'
                     archive.write(path, path.name)
         paths[case] = fit
+    qualification = ROOT/'artifacts/protected-tail-cinema-shared-qualification-v1.json'
+    if qualification.exists():
+        shutil.copyfile(qualification, args.output/'cinema_shared/runtime-eligibility.json')
+        records = read(qualification)['records']
+        summary['cinema_shared']['qualification'] = {'baseline_accounting_bytes': records[0]['model_bytes'],
+            'candidate_accounting_bytes': records[1]['model_bytes'],
+            'scope': '两者均cache/domain有资格、palette/direct未启用；构造时间不是受控性能。'}
     with (args.output/'regressions.csv').open('w', encoding='utf-8-sig', newline='') as stream:
         writer = csv.writer(stream); writer.writerow(['案例', '图像', '指标', '旧值', '新值', '差值']); writer.writerows(regressions)
     with zipfile.ZipFile(args.output/'fit-evidence.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
@@ -67,7 +74,7 @@ def main():
             archive.write(path/'progress.json', case+'/progress.json')
     (args.output/'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     sources = ['scripts/'+n for n in ('run_protected_tail_case.py', 'accept_channel_tail_nodes.py', 'archive_protected_tail_cases.py',
-        'verify_channel_coordinates.py', 'accept_channel_coordinates.py')]+['python/lutlab/'+n for n in
+        'verify_channel_coordinates.py', 'accept_channel_coordinates.py', 'inspect_tail_runtime_eligibility.py')]+['python/lutlab/'+n for n in
         ('channel_tail_nodes.py', 'channel_coordinates.py', 'channel_joint_nodes.py', 'channel_global_nodes.py', 'io.py', 'interp.py')]
     with zipfile.ZipFile(args.output/'source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for name in sources:

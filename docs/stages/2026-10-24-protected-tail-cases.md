@@ -32,7 +32,7 @@
 
 每案完整 16,777,216 色的独立 NumPy uint64 排序与加权 oracle、原生 scalar 和 AVX2 输出逐字节相等，百图 78,643,200 像素也与同一完整流逐字节一致。最终流 SHA 分别为普通链 `8b20e0dad8cf4763b97d756470818a75624dc1684f74b0ff47c59b1daf9c6696`、Velvia `27ab6d9d3f0d1757cad7b4a37eed52aa8ec0e357c43ece13079f922f20e6332a`。完整原始表组合也按每级 RGB8 语义重算确认。正确性测试不代替精度或性能门禁。
 
-候选原生账户容量分别为普通链 2,005,672 B、Velvia 单级 272,859 B；这里只是候选的实际构造值，没有把 a399 的 16 MiB 直表资格推给普通 af974 起点。后续需对 af974 与新模型在同一 87 库逐项比较 cache/domain/palette/direct 资格、容量，并配对实测速度。两案目前没有受控吞吐结果，不能声称通过速度 50% 底线，也不能声称内存相对改善。普通链不加侧表仅指输入表示，运行时账户容量可能因缓存资格变化而改变。
+普通 af974/新模型在同一 87 库资格诊断均为 cache enabled、domain 32768 个可到达 cell 全部证明；两者 palette disabled reason1、direct disabled，双方本来就没有 a399 的 16 MiB 直表快路。账户容量 **1,852,824→2,005,672 B（+8.25%）**，其中 cache 容量 802,452→955,300 B。单次 prepare 约 4 ms 只作构造诊断，不能作为受控性能。Velvia 单级候选账户容量为 272,859 B。两案仍需配对实测速度，不能声称通过速度 50% 底线，也不能声称内存相对改善。普通链不加侧表仅指输入表示，运行时账户容量仍因缓存范围改变而增加。
 
 ## 文件与复现
 
@@ -48,7 +48,8 @@ $sha = '58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158'
 & $py scripts/run_protected_tail_case.py --cache-root $cache --case velvia --output artifacts/protected-tail-velvia-v1
 & $py scripts/accept_channel_tail_nodes.py --cache-root $cache --case cinema_shared --models artifacts/protected-tail-cinema-shared-v1 --modes candidate --baseline-cube "$cache/artifacts/cinema-axis-calibration-v1/stage1_sweep012/cube.rgb" --library $dll --library-sha256 $sha --output artifacts/protected-tail-cinema-shared-accept-v1
 & $py scripts/accept_channel_tail_nodes.py --cache-root $cache --case velvia --models artifacts/protected-tail-velvia-v1 --modes candidate --baseline-cube "$cache/artifacts/velvia-channel-coordinates-accept-v1/cube.rgb" --library $dll --library-sha256 $sha --output artifacts/protected-tail-velvia-accept-v1
-& $py scripts/archive_protected_tail_cases.py --cache-root $cache --output artifacts/protected-tail-cases-archive-v1
+& $py scripts/inspect_tail_runtime_eligibility.py --cache-root $cache --libraries $dll --candidate artifacts/protected-tail-cinema-shared-v1/candidate --baseline-base "$cache/artifacts/cinema-axis-calibration-v1/stage1_sweep012/stage1.slut" --baseline-label af974 --output artifacts/protected-tail-cinema-shared-qualification-v1.json
+& $py scripts/archive_protected_tail_cases.py --cache-root $cache --output artifacts/protected-tail-cases-archive-v2
 ```
 
 下一步在固定 Velvia 起点上检验四种全局一致 body diagonal，以探索节点微调以外的机制。该探针将单列表示与运行时兼容性，不能把反向坐标重参数化悄然称作普通合法 SLUT。
