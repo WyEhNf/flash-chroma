@@ -1,4 +1,4 @@
-"""只构造a399和精度候选，检查当前最快后端是否仍有缓存/域/调色板资格。"""
+"""只构造明确基线和精度候选，检查当前最快后端的缓存/域/调色板资格。"""
 from __future__ import annotations
 import argparse
 import ctypes as ct
@@ -39,13 +39,16 @@ def main():
     parser.add_argument('--candidate', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--suffix-stage4', type=Path)
+    parser.add_argument('--baseline-base', type=Path)
+    parser.add_argument('--baseline-sidecar', type=Path)
+    parser.add_argument('--baseline-label', default='a399')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖资格诊断')
     dll_dirs = [os.add_dll_directory('E:/mingw64/bin')]
     cache = args.cache_root.resolve()
     suffix = [cache/'artifacts/cinema-envelope-v1/stage4_sweep004'/f'selected-stage{k}.slut' for k in (2, 3, 4)]
-    variants = {'a399': cache/'artifacts/cinema-current-anchor-accept-v1', 'candidate': args.candidate}
+    variants = {args.baseline_label: cache/'artifacts/cinema-current-anchor-accept-v1', 'candidate': args.candidate}
     records = []
     for path in args.libraries:
         dll_dirs.append(os.add_dll_directory(str(path.resolve().parent)))
@@ -54,7 +57,11 @@ def main():
             active_suffix = suffix.copy()
             if name == 'candidate' and args.suffix_stage4 is not None:
                 active_suffix[2] = args.suffix_stage4.resolve()
-            with lib.chain([folder/'candidate-base.slut', *active_suffix], [folder/'channel-frac.bin', None, None, None]) as chain:
+            base, sidecar = folder/'candidate-base.slut', folder/'channel-frac.bin'
+            sidecar = sidecar if sidecar.exists() else None
+            if name == args.baseline_label and args.baseline_base is not None:
+                base, sidecar = args.baseline_base.resolve(), args.baseline_sidecar
+            with lib.chain([base, *active_suffix], [sidecar, None, None, None]) as chain:
                 row = {'variant': name, 'library_path': str(path.resolve()), 'library_sha256': lib.sha256,
                        'revision': lib.revision, 'model_bytes': chain.model_bytes, 'input_sha256': chain.inputs_sha256}
                 for label, cls in [('cache', CacheInfo), ('domain', DomainInfo), ('palette', PaletteInfo), ('direct', DirectInfo)]:
