@@ -1,0 +1,89 @@
+{
+  "purpose": "固定1024备忘阶段的操作前记录；逐字比较73份PR完整正文与已读72份",
+  "read_utc": "2026-10-23 04:53:57 UTC",
+  "comparison": {
+    "before": 72,
+    "after": 73,
+    "new": [
+      79
+    ],
+    "changed": []
+  },
+  "previous_full_bodies": "report/data/skylake-r8-base-delta-profile-v1/remote-snapshot.json @ 0e80f83725938db2d12a0c1184937f8f152873af",
+  "new_pr_bodies": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+      "title": "排除局部RGB差分及异或布局并归档单次失败筛查",
+      "issue_number": 79,
+      "body": "Agent：Codex /root、/root/base_delta_delivery\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对修订23至少三倍吞吐\nStatus：Failed（两个只读筛查）/ Draft；整体In Progress\n\n本阶段保留局部RGB基值差分的失败证据，并新增一次固定相邻通道异或布局筛查。运行时、模型、默认路径未修改，没有新增原生精度或吞吐成绩。\n\n- 固定R连续8色的64bit基值24+八个5bit差分：原分析完整16M色和100图重建零差，但异常池30,245,024B、照片异常8包53.458903%、最差图97.978719%，三项事前资源门槛均失败。独立审计重哈希六输入、大cube/photos和100图分片，复算原因位图/交集、跨度及逐图汇总通过；没有第二次重建大编码。7bit拆平面仅由已有直方图得池下界15,210,464B，停止，不改位重扫。\n- 新固定h=R|((G xor R)<<8)|((B xor G)<<16)，事前平均行比≤0.80、任一图≤1.05。唯一统计100图1,228,800个64像素窗口：平均51.754069对原49.415259，比1.047329717，最差1.323871689，失败停止。16M索引正逆/范围零差不是RGB8映射精度；页编号改变。行集合不是硬件miss或吞吐，不扫描变种。\n\n原分析及新增统计：Windows11 / Ryzen9 8945HX / Anaconda Python3.13.12 / NumPy2.4.6；独立审计/交付为同宿主Python标准库。没有编译或加载新候选，原生/性能/确认调用0，不是真实Skylake。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-base-delta-profile-20261021/docs/stages/2026-10-23-skylake-base-delta-profile.md) · [8份基值差分原件与独立审计](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-base-delta-profile-20261021/report/data/skylake-r8-base-delta-profile-v1) · [9份异或原件及复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-base-delta-profile-20261021/report/data/skylake-xor-chroma-profile-v1)\n\n提交0e80f83725938db2d12a0c1184937f8f152873af，依赖Draft #77头c3efa63。26份冻结暂存blob与原字节一致、两份清单校验、JSON/语法/空白通过；交付回执与后补协作记录排除自引用。主表/池只在原分析内存，档案仅含其SHA，未冒称已保存二进制；孤立克隆仍需恢复同SHA大输入。\n\n操作前fetch，main b19c5a0及337a3dd/876e15b8/397cc367均实际包含。读取72份完整PR正文，对此前70份仅新增77/78、旧正文无变化；77及新78正文/全部comments/reviews/行内已刷新，意见为空，末次updated PR/issue检索空。#78为另一环境Numba专门化失败，不跨机拼接。issue7/8完整正文与评论已读：7绑定修复保留，8接口/预算/实板继续跟踪。当前连接器无法刷新Discussion，保留缺口，不合并或关闭事项。\n\n整体同版单/四线程≥3×、实际Skylake、官方派生表许可/预算/Threshold仍未完成，不默认采用或声称可合并。",
+      "state": null,
+      "user": null,
+      "assignees": null,
+      "labels": null,
+      "milestone": null,
+      "state_reason": null,
+      "comments": null,
+      "created_at": null,
+      "updated_at": null,
+      "closed_at": null,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+      "display_title": "排除局部RGB差分及异或布局并归档单次失败筛查"
+    }
+  ],
+  "parent_pr": {
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+    "number": 79,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "Agent：Codex /root、/root/base_delta_delivery\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对修订23至少三倍吞吐\nStatus：Failed（两个只读筛查）/ Draft；整体In Progress\n\n本阶段保留局部RGB基值差分的失败证据，并新增一次固定相邻通道异或布局筛查。运行时、模型、默认路径未修改，没有新增原生精度或吞吐成绩。\n\n- 固定R连续8色的64bit基值24+八个5bit差分：原分析完整16M色和100图重建零差，但异常池30,245,024B、照片异常8包53.458903%、最差图97.978719%，三项事前资源门槛均失败。独立审计重哈希六输入、大cube/photos和100图分片，复算原因位图/交集、跨度及逐图汇总通过；没有第二次重建大编码。7bit拆平面仅由已有直方图得池下界15,210,464B，停止，不改位重扫。\n- 新固定h=R|((G xor R)<<8)|((B xor G)<<16)，事前平均行比≤0.80、任一图≤1.05。唯一统计100图1,228,800个64像素窗口：平均51.754069对原49.415259，比1.047329717，最差1.323871689，失败停止。16M索引正逆/范围零差不是RGB8映射精度；页编号改变。行集合不是硬件miss或吞吐，不扫描变种。\n\n原分析及新增统计：Windows11 / Ryzen9 8945HX / Anaconda Python3.13.12 / NumPy2.4.6；独立审计/交付为同宿主Python标准库。没有编译或加载新候选，原生/性能/确认调用0，不是真实Skylake。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-base-delta-profile-20261021/docs/stages/2026-10-23-skylake-base-delta-profile.md) · [8份基值差分原件与独立审计](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-base-delta-profile-20261021/report/data/skylake-r8-base-delta-profile-v1) · [9份异或原件及复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-base-delta-profile-20261021/report/data/skylake-xor-chroma-profile-v1)\n\n提交0e80f83725938db2d12a0c1184937f8f152873af，依赖Draft #77头c3efa63。26份冻结暂存blob与原字节一致、两份清单校验、JSON/语法/空白通过；交付回执与后补协作记录排除自引用。主表/池只在原分析内存，档案仅含其SHA，未冒称已保存二进制；孤立克隆仍需恢复同SHA大输入。\n\n操作前fetch，main b19c5a0及337a3dd/876e15b8/397cc367均实际包含。读取72份完整PR正文，对此前70份仅新增77/78、旧正文无变化；77及新78正文/全部comments/reviews/行内已刷新，意见为空，末次updated PR/issue检索空。#78为另一环境Numba专门化失败，不跨机拼接。issue7/8完整正文与评论已读：7绑定修复保留，8接口/预算/实板继续跟踪。当前连接器无法刷新Discussion，保留缺口，不合并或关闭事项。\n\n整体同版单/四线程≥3×、实际Skylake、官方派生表许可/预算/Threshold仍未完成，不默认采用或声称可合并。",
+    "title": "排除局部RGB差分及异或布局并归档单次失败筛查",
+    "base": "codex/skylake-input256-deferred-20261021",
+    "base_sha": "c3efa63a48cd29db36e3b0bc23580bb545996eeb",
+    "head": "codex/skylake-base-delta-profile-20261021",
+    "head_sha": "0e80f83725938db2d12a0c1184937f8f152873af",
+    "head_repo_id": 1420743436,
+    "head_repo_full_name": "WyEhNf/flash-chroma",
+    "merge_commit_sha": "174318897334d80e0cfb3d0f91e2a0f3004ed1c8",
+    "user": {
+      "login": "WyEhNf",
+      "name": "WyEhNf",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+      "id": 228311419
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-23T04:45:57Z",
+    "updated_at": "2026-10-23T04:45:57Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 1,
+    "changed_files": 31,
+    "additions": 9198,
+    "deletions": 0,
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+    "display_title": "排除局部RGB差分及异或布局并归档单次失败筛查"
+  },
+  "comments": {
+    "comments": [],
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+    "title": "WyEhNf/flash-chroma PR #79 comments",
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/79",
+    "display_title": "WyEhNf/flash-chroma PR #79 comments"
+  },
+  "reviews": {
+    "reviews": []
+  },
+  "threads": {
+    "review_threads": []
+  },
+  "updated_issues": {
+    "issues": []
+  },
+  "discussion_gap": "连接器不能刷新Discussion，不等同无新意见；不合并/关闭",
+  "open_items": "issue7修复祖先保留；issue8接口/预算/实板以及官方许可/Threshold待决；同版纯apply1/4线程均三倍未完成"
+}
