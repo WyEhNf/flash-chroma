@@ -1,6 +1,6 @@
 # 末级联合节点把全域max从√66降到√59
 
-Agent：Codex `/root/tail`；Operator：WyEhNf；分支：`codex/p16-tail-20261023`。冻结末级候选已通过87后端完整色域与历史100图验收；同87配对吞吐由速度分支另验，未切换公共默认。首阶段为`0f7d652`，平台负结果与最快后端资格为`559ebcb`；本阶段保留它们并继续改进。
+Agent：Codex `/root/tail`；Operator：WyEhNf；分支：`codex/p16-tail-20261023`。冻结末级候选已通过87后端完整色域与历史100图验收；同87配对吞吐通过50%底线，保守最劣口径只过80%档，未切换公共默认。首阶段为`0f7d652`，平台负结果与最快后端资格为`559ebcb`，末级精度为`e3ea9fd`；本阶段保留它们并继续改进。
 
 正式severe_first的116个全域max颜色全部到达末级(3,3,1)。这次固定首级severe_first及第2/3级，只改变第4级共享33³ RGB8节点，以实际第3级完整到达点和四原表逐级整数真值作联合目标。一次8色、52个±2/±4方向扫描，23个节点共46个分量改变，网格、轴表、各级整数边界及四次独立映射保留。训练保护整批双mean/双RMS、p99 d²12的计数与超额、严重尾部、原max计数；cap预先定义为max(65,severe_first逐色d²)，禁止其他颜色新建d²66。没有看100图后调权、重跑或增补颜色。
 
@@ -35,11 +35,13 @@ Agent：Codex `/root/tail`；Operator：WyEhNf；分支：`codex/p16-tail-202610
 
 新四级链完整256³以独立uint64四面体逐级执行，并从四个独立原表逐级RGB8重算真值。87实际标量1线程及AVX2请求4线程均逐字节一致，100图实际AVX2输出与完整oracle流逐字节一致，SHA为`150bd55ede2419b3ede748705adad388562137e3144de7aaebb929ee4f066c6a`；参考SHA仍`493c9084a90186a15ec42cd4553e02ee6b915f9ee4511d77cb2b40adcb82f0a9`。新stage4 SLUT SHA为`fcc15bc8147bc865e534644460ccda3e51f21e8979e21db2fa5bd7e574ffdb67`。
 
-87构造资格仍为32768个可到达cell全部证明、palette235≤255、direct format9启用、16MiB直接表。runtime记账18,715,680B，与severe_first相同，对a39918,579,204B增加0.735%；序列化四级输入457,468B保持。资格诊断不代替≥50%吞吐底线；受控配对结果到齐前只声称精度通过。
+87构造资格仍为32768个可到达cell全部证明、palette235≤255、direct format9启用、16MiB直接表。runtime记账18,715,680B，与severe_first相同，对a39918,579,204B增加0.735%；序列化四级输入457,468B保持。
+
+速度分支在[`aae2ee2`](https://github.com/WyEhNf/flash-chroma/commit/aae2ee2f00ca1e02223ece3dcf259a875dc7ea81)完成同87库、新模型与a399的四进程AB/BA/BA/AB受控比较，1/4线程纯apply中位耗时比分别0.974963/0.973198，真正分离输出中位为1.023708/0.998536。按全部进程、纯apply与真正分离输出的最劣吞吐保留87.3558%，过80/70/60/50%档，未过90/100%档；“任意进程耗时比≤1.10”的无明显退化门禁未通过，保留单线程worker0的1.144743，不挑除它抬升档位。A/A比0.867158..1.147844符合事前±15%但显示漂移，不能把最坏一次14.47%说成稳定模型退化。所有中位在5%内，边界与原件见本包`performance-results/manifest.json`及速度阶段报告。该交叉验收未合并三研究分支、未重复全域或重新调精度模型。
 
 首次v1在首批fresh后因日志缺`json` import退出，未得到完整模型；补import后v2使用完全相同冻结方案从正式severe_first完整重跑，失败run/progress保留。静态归档v1首次只识别了training/guard嵌套字段，审计组位于`audit_ids`；补齐读取分支后在新归档目录v2复算三组，没有重跑像素或改指标。
 
-发布前另用`audit_tail_git_evidence.py`逐Git HEAD blob核三个精度证据包，并核各源码ZIP内的测量SHA。首次61项检查中，末级包7个raw JSON/CSV被autocrlf归一，导致HEAD字节与原manifest不符；前两个包及源码ZIP检查通过。追加本轮限定`-text`后重新暂存原测量字节，保留原始提交、不改SHA或数值数据。该检查区分历史源码快照和后续已修改HEAD源码，不把二者混作同一版本；修复不重跑像素。
+发布前另用`audit_tail_git_evidence.py`逐Git HEAD blob核三个精度证据包，并核各源码ZIP内的测量SHA。首次61项检查中，末级包7个raw JSON/CSV被autocrlf归一，导致HEAD字节与原manifest不符；前两个包及源码ZIP检查通过。追加本轮限定`-text`后重新暂存原测量字节，保留原始提交、不改SHA或数值数据，修复提交`98e6e62`后61项全通过。该检查区分历史源码快照和后续已修改HEAD源码，不把二者混作同一版本；修复不重跑像素。
 
 环境：Windows11 26200 x64/Ryzen9 8945HX、Python3.12.14/NumPy1.26.4/Numba0.60.0/Pillow10.4；Numba4、BLAS/MKL/OMP环境1。87为同源GCC15.2 Release AVX2/OpenMP DLL，SHA `58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158`，不含AVX512。本地共享CPU的离线训练时长不作为运行速度优化证据。
 

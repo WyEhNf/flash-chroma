@@ -1,8 +1,10 @@
 # 末级联合优化与严格图级阈值复算
 
-[阶段报告](../../../docs/stages/2026-10-24-cinema-last-stage.md)给出相对a399和severe_first的结果、逐图代价、末级独立源退化与未完成性能门禁。`accuracy-results.json`为87完整域/100图及uint64独立四级验收；`fit-run/summary.json`冻结目标与完整源质量；`comparisons.json`为两套逐图直接比较、60/20/20组和非官方严格max<T通过数；全部退化及阈值各存CSV。
+[阶段报告](../../../docs/stages/2026-10-24-cinema-last-stage.md)给出相对a399和severe_first的结果、逐图代价、末级独立源退化与性能50%底线。`accuracy-results.json`为87完整域/100图及uint64独立四级验收；`fit-run/summary.json`冻结目标与完整源质量；`comparisons.json`为两套逐图直接比较、60/20/20组和非官方严格max<T通过数；全部退化及阈值各存CSV。
 
 `models.zip`含冻结完整四级模型、首级必须配套侧表、NPZ源表示；`fit-evidence.zip`含唯一八批及日志缺import的v1失败记录；`runtime-eligibility.json`含真实87构造回执，不能替代吞吐测试；`source.zip`及manifest保存源SHA。87 DLL与依赖由速度分支保存，本目录不重复。
+
+`performance-results.json`和`performance-manifest.json`只读复制自速度分支`aae2ee2`的`report/data/p16-final-model-pair-v1`，结果SHA已按其manifest核对；完整worker、七份模型、计时脚本和DLL由该阶段提供。本分支不声称这些性能调用发生在精度脚本内。最劣吞吐87.3558%，通过80档和50底线，无明显退化门禁未过。
 
 在原冻结数据缓存及Python3.12环境下，设置Numba4与BLAS/MKL/OMP环境1，输出须另选不存在的目录：
 

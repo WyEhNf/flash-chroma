@@ -29,6 +29,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cache-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--performance-root', type=Path)
+    parser.add_argument('--performance-commit')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('不覆盖终验归档')
@@ -108,8 +110,23 @@ def main():
     with zipfile.ZipFile(args.output/'source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for name in sources:
             archive.write(ROOT/name, name)
+    performance = None
+    if args.performance_root is not None:
+        if not args.performance_commit:
+            raise ValueError('速度证据必须绑定提交')
+        speed_manifest = read(args.performance_root/'manifest.json')
+        expected = next(r['sha256'] for r in speed_manifest['files'] if r['path'] == 'results.json')
+        if digest(args.performance_root/'results.json') != expected:
+            raise ValueError('速度原件SHA与其manifest不同')
+        performance = read(args.performance_root/'results.json')
+        for old, new in [('results.json', 'performance-results.json'), ('manifest.json', 'performance-manifest.json')]:
+            shutil.copyfile(args.performance_root/old, args.output/new)
     save(args.output/'manifest.json', {'baseline_a399_results_sha256': digest(prior_path), 'source_sha256': {n: digest(ROOT/n) for n in sources},
-        'files': {p.name: digest(p) for p in args.output.iterdir()}, 'accuracy_accepted': True, 'speed_gate_pending': True,
+        'files': {p.name: digest(p) for p in args.output.iterdir()}, 'accuracy_accepted': True, 'speed_gate_pending': performance is None,
+        'performance_source_commit': args.performance_commit, 'performance_source_manifest': 'performance-manifest.json' if performance else None,
+        'meets_50_percent_speed_floor': performance['meets_50_percent_speed_floor'] if performance else None,
+        'worst_throughput_retained': performance['worst_throughput_retained'] if performance else None,
+        'no_obvious_slowdown': performance['no_obvious_slowdown'] if performance else None,
         'failed_v1': 'run_cinema_last_stage v1首批fresh后print缺json import退出；补import后v2原策略从正式severe_first完整重跑。',
         'new_default': False, 'full_stream_sha256': candidate['sha256']['oracle'],
         'scope': '87全域/历史100图与独立四级uint64一致；逐图代价和末级独立源退化单列。未生成官方成绩或盲测结论。'})
