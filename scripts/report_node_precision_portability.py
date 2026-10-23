@@ -52,6 +52,9 @@ def main():
     fig.text(.5,.015,'精度定义为mean/p99/max误差比的最小值；仅为质量研究，未实现压缩运行时。',ha='center',fontproperties=font,fontsize=10)
     fig.tight_layout(rect=(0,.075,1,.94))
     fig.savefig(out/'accuracy-retention.png',dpi=170);fig.savefig(out/'accuracy-retention.svg');plt.close(fig)
+    # Matplotlib的SVG路径默认带行尾空格；仅规整发布文本，不更改图形坐标。
+    svg=out/'accuracy-retention.svg'
+    svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
     members=[]
     def append(path,name):members.append((Path(path),name))
     for label,directory in [('screen',a.screen),('full',a.full),('wasm',a.wasm),('cross',a.cross)]:
