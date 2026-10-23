@@ -12,17 +12,18 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 def read(path):return json.loads(path.read_text(encoding='utf-8'))
-def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def save(path,value):path.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args();plan_path=ROOT/'experiments/compact-dictionary-confirm-v1.json';plan=read(plan_path)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);p.add_argument('--plan',type=Path,default=ROOT/'experiments/compact-dictionary-confirm-v1.json');p.add_argument('--preflight-only',action='store_true');a=p.parse_args();plan_path=a.plan.resolve();plan=read(plan_path)
     for name,value in plan['files_sha256'].items():
         if sha(Path(name))!=value:raise AssertionError('冻结输入变化：'+name)
     for name,value in plan['source_sha256'].items():
         if sha(ROOT/name)!=value:raise AssertionError('冻结源变化：'+name)
-    a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=False);measurement=a.output/'measurement';bench=ROOT/'scripts/bench_compact_dictionary.py';argv=[str(bench),*plan['benchmark_arguments'],'--output',str(measurement)]
-    save(a.output/'preflight.json',dict(plan_sha256=sha(plan_path),driver_sha256=sha(__file__),original_argv=argv,purpose=__doc__))
+    a.output=a.output.resolve();measurement=a.output/'measurement';bench=ROOT/'scripts/bench_compact_dictionary.py';argv=[str(bench),*plan['benchmark_arguments'],'--output',str(measurement)];receipt=dict(plan_sha256=sha(plan_path),driver_sha256=sha(__file__),original_argv=argv,purpose=__doc__)
+    if a.preflight_only:print('静态preflight通过：',receipt['plan_sha256']);return
+    a.output.mkdir(parents=True,exist_ok=False);save(a.output/'preflight.json',receipt)
     previous=sys.argv;os.environ.update(plan['environment']);sys.argv=argv;capture=io.StringIO()
     try:
         with contextlib.redirect_stdout(capture):runpy.run_path(str(bench),run_name='__main__')

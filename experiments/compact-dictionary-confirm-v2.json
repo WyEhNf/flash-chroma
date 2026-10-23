@@ -1,0 +1,77 @@
+{
+  "purpose": "为已封存字典首轮的跨场稳定性疑点预先冻结一次独立确认，不执行性能。",
+  "trigger": "同一旧32bit DLL跨场4线程原地33..35ms变20..22ms，原因未解释，3B首轮全局最低50.4771%距底线仅0.4771pp；确认用于排除稳定性疑点，不择优。",
+  "original_plan_sha256": "9ff2b633c1217760432e38983c8c26e7e8453049a19e627a34e5092de0759173",
+  "first_directory": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-perf-v1",
+  "files_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-dictionary-v1.json": "9ff2b633c1217760432e38983c8c26e7e8453049a19e627a34e5092de0759173",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\build.json": "859b98bbeda6f214316e57d625c97336b41bcbcb2c6a6f76d91e86bc25e7f429",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_dict_c99.dll": "9e896b65571c5aa35946a2ed1c0e27e48c2b899e02b14a6f3fb8effcc95df91b",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-17.bin": "33dc6d0ba3a57d0b62f51ebef910eb4862811473420602e03c238c08cc4448da",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-24.bin": "e7845552f2cfb19dd60151413b15527d8386b2ed3b5375d46fd91f1bd89b2285",
+    "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-perf-v1\\summary.json": "3a3b37be1a55b7335390e4e8c6cbe763faacaac01019ba1311a89733a112e1f4",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-static-v1\\results.json": "88a6ffbfcca31c6a9352c5f68b1b1081602a7e10e7319b9e9b51714b9a8e7719"
+  },
+  "source_sha256": {
+    "experiments/compact-dictionary-runtime/memory_rom.h": "8c79929d4753c8c9a469d128e340a5ab50a4e06eb078de3c8551bce632ecb246",
+    "experiments/compact-dictionary-runtime/memory_rom.c": "4c753f5045ca3ce79bb273b5233319f741199f531abaeb4908041510f7bc1636",
+    "experiments/compact-dictionary-runtime/memory_parallel.cpp": "57c5eb02b2660b6a8125c4ba01253e96331042391d7c580dbf50dd39ebfd7dc2",
+    "experiments/compact-dictionary-runtime/channel_avx2_17.cpp": "a378a9308ee755cbf6f5f5fb62ca8e420a6f9ba85dc0d21dbd47638790991d53",
+    "experiments/compact-dictionary-runtime/channel_avx2_24.cpp": "9b088cb7029f5f855fbbc314580bc83f96c0a870fb40669b8d5f271f5c06819a",
+    "scripts/generate_compact_dictionary.py": "74257cc0fa692cd79b4fc9aead9704e8daddc330d53ca974dcd946de66cac2c7",
+    "scripts/freeze_compact_dictionary.py": "a125c65edfb5827afb7357e4331d58f828b7eb89a4f7ecfe249ffe6d5ef9a588",
+    "scripts/export_compact_dictionary.py": "e2a0e947b6c0f5cf3055bd13763dfa1418f54604dd731782d2d76ca3ed69d727",
+    "scripts/build_compact_dictionary.py": "3ac0b9eb5de54f757574278a3348b610427f327affca14916ae93b947419b9bd",
+    "scripts/verify_compact_dictionary.py": "92d6cc8ab7694a74def0d07ef46738ab2f5e71419282b718de2c237f2b85b45f",
+    "scripts/verify_compact_dictionary_contract.py": "7ed16c4379f6cca1b7392c5736220685f5fbbd23f8d82fe3792fab14fbf666f8",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c",
+    "experiments/skylake-andn-split-runtime/channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666",
+    "scripts/confirm_compact_dictionary.py": "bf7544235d6af7b82cd7b4752ba97301f2ac50bbbd3615e320e634822284bf57",
+    "scripts/freeze_compact_dictionary_confirmation.py": "d5f3261a8b95b26629e7c07bfcf282df6a283a7d7a92ba36ba253f635ea81bb7"
+  },
+  "benchmark_arguments": [
+    "--build",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1",
+    "--roms",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1",
+    "--ref80",
+    "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+    "--data-root",
+    "F:\\Hackathon\\projects\\16-lut-color",
+    "--repeats",
+    "5"
+  ],
+  "environment": {
+    "OMP_NUM_THREADS": "1",
+    "OMP_DYNAMIC": "FALSE",
+    "OMP_WAIT_POLICY": "PASSIVE",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1"
+  },
+  "protocol": "原7角色、同二进制、同源、同100图、相同4新进程轮换反序、相同单/四线程原地/分离与预热1+5完整轮，只有新输出目录；原bench脚本在同一父进程runpy执行，不增加idle包装进程。",
+  "decision": "首轮和本轮全部8worker取最劣；两轮A/A全部有效且最劣满足门槛才给稳健资格。任何A/A有效worker越50则撤销稳健全局50推荐。无效原样保留且不反复重跑，不挑轮次、不替换首轮结果。",
+  "roles": [
+    "ref78",
+    "ref80",
+    "dict32",
+    "avx2_24",
+    "avx2_17",
+    "c99_24",
+    "c99_17"
+  ],
+  "iterations": 1,
+  "previous_preflight_failure": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-confirm-v1\\failed-preflight.json",
+    "sha256": "3eb5713464d20793e62de5822980a862ef66571284c399bd178a99c263c488ed",
+    "scope": "没有worker或计时/A/A数据；只修静态driver类型与preflight参数，不更改基准算法/二进制/测量协议。"
+  }
+}
