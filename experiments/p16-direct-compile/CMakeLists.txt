@@ -28,6 +28,12 @@ target_include_directories(jshc_prepare_policy PRIVATE "${BASE}" "${JSHC_ROOT}/e
 target_link_libraries(jshc_prepare_policy PRIVATE jshc_core OpenMP::OpenMP_CXX)
 target_compile_definitions(jshc_prepare_policy PRIVATE JSHC_CC_HAVE_AVX2=1 P16_PREPARE_SIMD=1 P16_PREPARE_POLICY=1)
 target_compile_options(jshc_prepare_policy PRIVATE -Wall -Wextra -fvisibility=hidden)
+# 89只增加显式不可变准备对象的所有权，不更改像素TU或默认完整准备。
+add_library(jshc_prepared_plan SHARED ${P16_DIRECT_SOURCES})
+target_include_directories(jshc_prepared_plan PRIVATE "${BASE}" "${JSHC_ROOT}/experiments/channel-runtime")
+target_link_libraries(jshc_prepared_plan PRIVATE jshc_core OpenMP::OpenMP_CXX)
+target_compile_definitions(jshc_prepared_plan PRIVATE JSHC_CC_HAVE_AVX2=1 P16_PREPARE_SIMD=1 P16_PREPARED_PLAN=1)
+target_compile_options(jshc_prepared_plan PRIVATE -Wall -Wextra -fvisibility=hidden)
 set_source_files_properties(compile_avx2.cpp "${BASE}/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-exception-runtime/channel_avx2.cpp"
   "${JSHC_ROOT}/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp"

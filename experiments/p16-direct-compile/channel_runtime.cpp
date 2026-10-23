@@ -14,6 +14,10 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#if defined(P16_PREPARED_PLAN)
+#include "prepared_plan.h"
+#include <atomic>
+#endif
 #if defined(_OPENMP)
 #include <omp.h>
 #endif
@@ -23,7 +27,22 @@ void avx2_compile_direct(const View*,const SuffixCacheView&,const uint32_t*,uint
 }
 
 namespace {
+#if defined(P16_PREPARED_PLAN)
+std::atomic<uint64_t> next_generation{1};
+static_assert(sizeof(jshc_cc_plan_info)==24,"准备对象诊断ABI固定为24字节");
+uint64_t allocate_generation() {
+  auto value=next_generation.load(std::memory_order_relaxed);
+  while(value!=std::numeric_limits<uint64_t>::max()) {
+    if(next_generation.compare_exchange_weak(value,value+1,std::memory_order_relaxed))return value;
+  }
+  throw std::runtime_error("准备对象实例编号耗尽");
+}
+#endif
 struct Handle {
+#if defined(P16_PREPARED_PLAN)
+  std::atomic<uint64_t> owners{1};
+  const uint64_t generation=allocate_generation();
+#endif
   std::vector<jshc::SparseLut> models;
   std::vector<std::vector<uint32_t>> fractions;
   std::vector<jshc_channel::View> views;
@@ -367,7 +386,9 @@ void prepare_palette(Handle& h) {
 extern "C" {
 uint32_t jshc_cc_abi_version(void) {return 1;}
 uint32_t jshc_cc_revision(void) {
-#if defined(P16_PREPARE_POLICY)
+#if defined(P16_PREPARED_PLAN)
+  return 89;
+#elif defined(P16_PREPARE_POLICY)
   return 88;
 #elif defined(P16_PREPARE_SIMD)
   return 87;
@@ -475,7 +496,34 @@ JSHC_CC_API int jshc_cc_create_policy(const char* const* paths,const char* const
   return create_policy_impl(paths,sidecars,stages,policy,output,error,size);
 }
 #endif
+#if defined(P16_PREPARED_PLAN)
+int jshc_cc_get_plan_info(const void* handle,jshc_cc_plan_info* output,size_t bytes) {
+  if(!handle || !output || bytes!=sizeof(jshc_cc_plan_info))return 1;
+  const auto& h=*static_cast<const Handle*>(handle);
+  *output={1,0,h.generation,h.owners.load(std::memory_order_acquire)};return 0;
+}
+int jshc_cc_acquire_plan(void* handle,uint64_t expected_generation,void** output,char* error,size_t size) {
+  if(output)*output=nullptr;
+  try {
+    if(!handle || !output)throw std::runtime_error("获取准备对象要求存活owner与有效输出");
+    auto& h=*static_cast<Handle*>(handle);
+    if(expected_generation!=h.generation)throw std::runtime_error("准备对象实例编号不匹配");
+    auto value=h.owners.load(std::memory_order_relaxed);
+    for(;;) {
+      if(!value || value==std::numeric_limits<uint64_t>::max())throw std::runtime_error("准备对象owner数量非法或溢出");
+      if(h.owners.compare_exchange_weak(value,value+1,std::memory_order_relaxed))break;
+    }
+    *output=handle;message(error,size,"");return 0;
+  }catch(const std::exception& e){message(error,size,e.what());return 1;}
+}
+void jshc_cc_destroy(void* handle) {
+  if(!handle)return;
+  auto* h=static_cast<Handle*>(handle);
+  if(h->owners.fetch_sub(1,std::memory_order_acq_rel)==1)delete h;
+}
+#else
 void jshc_cc_destroy(void* handle) {delete static_cast<Handle*>(handle);}
+#endif
 size_t jshc_cc_model_bytes(const void* handle) {
   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);
   size_t bytes=sizeof(Handle)+h.models.capacity()*sizeof(jshc::SparseLut)+h.fractions.capacity()*sizeof(std::vector<uint32_t>)+h.views.capacity()*sizeof(jshc_channel::View)+h.original.capacity()*sizeof(void*);
