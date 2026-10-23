@@ -76,6 +76,8 @@ pixi run --locked select --scenario isp-0 --m 18 --profiles tetra \
 
 本地GUI可浏览三家摄影机的真实结果，拖动比较参考/原生画面，查看逐帧SDR/HDR预览、误差和任务日志，并创建独立处理/导出任务。Windows在仓库根目录执行 `.\start-gui.ps1`。依赖、运行范围和当前WSL限制见 [GUI说明](gui/README.md)及[阶段验证](docs/stages/2026-10-23-camera-workflow-gui.md)。这不改变现有RGB8精度合同或代表高精度HDR/三倍性能已验收。
 
+本机现有[WSL低内存配置与验证](docs/stages/2026-10-23-wsl-memory-budget.md)：1GB、4核、F盘交换，三家首帧的12路输出与原结果SHA一致，空闲后虚拟机自动释放；完整52帧仍需额外空间与单独验收。
+
 ## Docker
 
 ```bash
