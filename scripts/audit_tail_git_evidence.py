@@ -27,7 +27,8 @@ def main():
                'p16-direct-u16-perf-20261024', 'p16-direct-u16-ilp-native-20261024', 'p16-direct-u16-ilp-perf-20261024',
                'p16-cinema-first-hotspot-20261024', 'p16-cinema-first-joint-20261024', 'p16-cinema-first-box-20261024',
                'p16-cinema-first-group-20261024', 'p16-cinema-first-cpsat-20261024',
-               'p16-cinema-first-risk-20261024', 'p16-cinema-first-safe-cpsat-20261024']
+               'p16-cinema-first-risk-20261024', 'p16-cinema-first-safe-cpsat-20261024',
+               'p16-cinema-first-error-cost-census-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
