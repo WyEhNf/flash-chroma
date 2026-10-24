@@ -68,3 +68,5 @@ oracle是已验证原M16D的独立u64索引/字节映射，**不是本轮重跑�
 已执行的freeze/build/finite/full入口依次为：`freeze_page_id16_native_pages_build.py`、`build_page_id16_native_pages.py`（原gate STOP）、`freeze/finalize_page_id16_native_pages_observer_v2.py`、`freeze/run_page_id16_native_pages_finite.py`（原fixture STOP）、`freeze/run_page_id16_native_pages_finite_v2.py`、`audit_page_id16_native_pages_finite_v3.py`、`freeze/run_page_id16_native_pages_full.py`、`audit_page_id16_native_pages_full.py`。解释器固定`F:/Hackathon/projects/16-lut-color/artifacts/error-study-py312/Scripts/python.exe`，workdir为本工作树；完整命令、参数、版本和stdout/stderr见[发布manifest](../../report/data/p16-page-native-pages-quality-v1/manifest.json)的原件ZIP。
 
 本阶段只交付质量和实际容量，六乘六速度矩阵不升级。六角色近邻配对性能是独立未冻结静态稿，必须另review/grant；当前无正式速度、WASM或实板成绩。PR91由root在下一检查点统一刷新，仍Draft、未合并。
+
+交付补记：6434cc8提交前的额外泛化字节检查在未冻结`.gitattributes`正常CRLF→LF处停止，但后续命令未检查退出码，提交仍继续，属于交付门流程错误，历史保留。另授HEAD针对性核验实际6434cc829611891cc838d748b605221c6342698f的65路径、46冻结源、5计划和92 ZIP成员全部通过，未冻结attrs/docs规范化单列，没有冻结SHA被Git改写，无需改源/renormalize。证据见发布包`head-source-audit.json`；之后stage/audit/commit逐步确认code0再进行依赖操作，没有借此重采native或改变质量结论。
