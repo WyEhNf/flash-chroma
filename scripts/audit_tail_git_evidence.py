@@ -33,7 +33,8 @@ def main():
                'p16-cinema-max48-first-box-20261024', 'p16-cinema-max48-risk-upper-20261024',
                'p16-cinema-max48-training-bridge-20261024',
                'p16-cinema-current-safe-cpsat-20261024', 'p16-cinema-current-feasible-cpsat-20261024',
-               'p16-cinema-current-full-quality-20261024', 'p16-cinema-current-outside-max-scale-20261024']
+               'p16-cinema-current-full-quality-20261024', 'p16-cinema-current-outside-max-scale-20261024',
+               'p16-cinema-current-all-max-unit-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -89,7 +90,7 @@ def main():
         for field in ('reused_environment_manifest', 'reused_narrow_census_manifest',
                       'reused_box_contract_manifest', 'reused_quality_manifest', 'reused_max48_box_manifest',
                       'reused_max48_risk_manifest', 'reused_current_minl1_manifest', 'reused_current_feasible_manifest',
-                      'reused_current_full_quality_manifest'):
+                      'reused_current_full_quality_manifest', 'reused_expanded_support_manifest'):
             reused = manifest.get(field)
             if not reused:
                 continue
