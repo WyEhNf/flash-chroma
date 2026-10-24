@@ -1,0 +1,545 @@
+{
+  "schema": "p16_direct_sentinel_pairwise_perf_v1",
+  "purpose": "固定100图AVX2稳态四模式、九角色同场；冷创建/首Out4及fresh RSS单列，不给冷首AA或跨环境资格",
+  "quality_frozen_sha256": "fe93e6b95ce78e444723f13b326250a864a7b7d505b5c041549cc7090f9b5c94",
+  "quality_results_sha256": "75aa7a4ed4cda4bcf471ab5d843f12773a06524f5e6b756d9e17741c0f930c10",
+  "full_mt_results_sha256": "2375ac518eb5bec1c188a93264f9304ae283906eaa5303ee07c191bef0cee239",
+  "sources_sha256": {
+    "AGENTS.md": "cd4b71e3b6303a779ba0197164615850f7c47f1185416567751026fffcce4bf6",
+    "CMakeLists.txt": "761c2f711d4939103090af92b8bf8ebb38c25fde5fab89c8dd7f143688161b5d",
+    "cpp/include/jshc/full_normals.h": "aec0fdfe4b1c6f2e7bbfc29533c44f3572c58b03334f767c02d584817bfe1483",
+    "cpp/include/jshc/image_contract.hpp": "117c11d9b5da5a23d9b84d99102e7a35656adc6d47adb7f9177c9857e166980b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "28848e3e1ca42198a3654abc7e96c54c498e1eb6c9e8c2340fc0c211f9c4579d",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "7f9caf001b8d66e724e4b415a61be74e1c6b83182e0a75a8506a0d8c6bd140e7",
+    "cpp/src/lut_simd_avx2.hpp": "374e7858822a4c38ccf3b4cfa92ed876862620a3cb88493afe1657da843ccc89",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "2f45baf1b80b3189b6a6f2ea6f65775cb73b9ad811b5ef957e5de7a6ec5d97ea",
+    "cpp/src/portable_bridge.hpp": "81fb78e265a4855b9fb9b6b7641c44827906d106f490376d6caf8654f4349730",
+    "cpp/tests/test_embedded.cpp": "4add5943f30d3a03f3f77f4da89b5e44aa4c7a61cb617733194f719a9df7776a",
+    "cpp/tests/test_kernels.cpp": "947ec8ef7907e33de6a8196e3189e89b1e9a8184ffe37e984ef4e49374e156ce",
+    "cpp/third_party/stb_image.h": "1f8c1b6b408f26e3b20cbfbbd4758afb3dc9b837ff1e17c258928f406148a87c",
+    "cpp/third_party/stb_image_write.h": "17f339e7582ff4d4d56e40b0e87d77eda8d8f8e62806278ddf8fcf0b8b3d9a84",
+    "experiments/channel-runtime/channel_avx2.cpp": "a7a7b063e894b3d684f1266a62246ebd3310173663fd2730e4f13db50d39d50e",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+    "experiments/channel-runtime/channel_runtime.cpp": "76c5e8d76fa72e6435d4dd0bf43780ba9522ab623ba5e4148e6e72f020342435",
+    "experiments/channel-runtime/channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+    "experiments/channel-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/p16-direct-sentinel-plan-v1.md": "7e944edddb4d93c068afc816809f123092c6dac27da3dbe9ee05fcbb7d704674",
+    "experiments/p16-direct-sentinel-runtime-v2/andn_inplace.cpp": "a7a4dfde98c423fd19c50fd585706a3d8c375c51c4c4cac66406dab5690a0962",
+    "experiments/p16-direct-sentinel-runtime-v2/andn_outplace.cpp": "f2386e1fac3cc2759ada507ed8b592d7f1583d657c1b1d5af5ce49b634301ef4",
+    "experiments/p16-direct-sentinel-runtime-v2/channel_runtime.cpp": "5f51b73971ebf1fb2b001ebb6dafd76320f8da9f9d9df4bfc149ad3dae654b9b",
+    "experiments/p16-direct-sentinel-runtime-v2/CMakeLists.txt": "0996a04f7145e6720073a97bd7540f6c393697a7957f7522a16575ecef363601",
+    "experiments/p16-direct-sentinel-runtime-v2/compile_avx2.cpp": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+    "experiments/p16-direct-sentinel-runtime-v2/contracts.cpp": "3aa815ef4873deae00a6ae92988e7966967451a01722ed31ee52ddeedd4e6b9e",
+    "experiments/p16-direct-sentinel-runtime-v2/direct_sentinel.hpp": "39cb2d679ac40378bb09f0dcbdfa5ef98160957ffaa3962d0f50da6d3f7b427e",
+    "experiments/p16-direct-sentinel-runtime-v2/direct_sentinel_avx2.cpp": "0b83bfc1c7c80fe149bd15561ee96c9df7814a8ebc5942f443884f40fa5bdb32",
+    "experiments/p16-direct-sentinel-runtime-v2/linear.cpp": "094a2df75cbf6612f5d1e09d3d1df394c4d35c59753b9fc9adef1fabec68a3f6",
+    "experiments/p16-direct-sentinel-runtime-v2/normal_inplace.cpp": "be532f92b5fc51bff5e2a012d3bcdef612f1669ad335b90de9cc7e7581346a77",
+    "experiments/p16-direct-sentinel-runtime-v2/sentinel_prepare.hpp": "8605bba6cb276877053171046005e16fff7b81f43a12b1e012411202fe002354",
+    "experiments/p16-direct-sentinel-runtime-v2/sentinel_read_avx2.hpp": "be798d737527e246927cf544affde160defb8b5393b6847c798dfae2d7fe8c34",
+    "experiments/skylake-andn-normal-runtime/aligned_table.hpp": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+    "experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+    "experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+    "experiments/skylake-andn-normal-runtime/channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "experiments/skylake-andn-normal-runtime/channel_runtime.cpp": "762080ef58273d425d3c9049f6518f1324c5696bd9f80b0c2bf4711de005aa5d",
+    "experiments/skylake-andn-normal-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-andn-normal-runtime/CMakeLists.txt": "4c8877f398e3daeb0afe6bf3aedaf43e167f1df74b4229f269a1c29a1a9073c3",
+    "experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp": "b0c3f432259035dd028105764b2277e5dc025685db3655c28516f7634698fbe7",
+    "experiments/skylake-andn-normal-runtime/outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+    "experiments/skylake-andn-normal-runtime/reference_to.cpp": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+    "experiments/skylake-andn-normal-runtime/suffix_cache.hpp": "c1024c72928c145d58fa5578f5896f210b2a53ee11de064790b50734b9c6f780",
+    "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+    "experiments/skylake-domain-isolated-runtime/channel_runtime.cpp": "ee1e91bcd4b2d8ee9bbdbfc49cf12a37cad5f7790d664d6c0817ee42b84a9fd7",
+    "experiments/skylake-domain-isolated-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/skylake-domain-isolated-runtime/CMakeLists.txt": "bca28de36adab593624707521dd9ee4b8053e2f84e5452b040239b7457e5119f",
+    "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp": "c77dbb77d076d4dd1b3c897af27d176ebf1e6ba1a484437ac38ba68803343cfa",
+    "experiments/skylake-exception-runtime/channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+    "experiments/skylake-exception-runtime/channel_runtime.cpp": "ba539a1c585ddbebb1635bfda6eae49786592a88a4c044d479a42ff272edde3c",
+    "experiments/skylake-exception-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-exception-runtime/CMakeLists.txt": "42afb008406ea1f9e49597b8517593da10f2fb492526a31e6977fe89a172656c",
+    "experiments/skylake-exception-runtime/suffix_cache.hpp": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c",
+    "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp": "82a68ce75ca019510b70c9a5f0544bf8308a6e15d92f08a00bc57fd4241f5751",
+    "experiments/skylake-suffix-cache-runtime/channel_runtime.cpp": "cd429100d928dd33f5341adecc8dfea204e4a232fa6f208db54da33b9f318963",
+    "experiments/skylake-suffix-cache-runtime/CMakeLists.txt": "2e8ce457914c920104f2e8563738908f5226512a255dd8e2e0f5abfdfd498db8",
+    "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp": "969dbc4274c8f72cf4e02702d5a490d813202d2b50f0e28cc46f85e0cef1e6dc",
+    "portable/CMakeLists.txt": "fc35db8f98afadbcc3d89f53f84fc2d470265ffbe3e8c96540ac010e793b8d2f",
+    "portable/include/jshc_portable.h": "9c887ea694c8f88479bc61d0c30f413de239f4a25ba8977d479292b9eddc0abb",
+    "portable/src/jshc_portable.c": "dec96a2fc97d5087da2f21220cd01124f4399b01eabbf137d4ba1508811ec40a",
+    "portable/tools/verify_exported_rom.c": "2dbbf25ab3b60514090f1dc0529e17fb0b8c8a9387951768611d05c4722f59e5",
+    "portable/verify_aarch64.c": "d1047d670ae0f4ddbede9fde1120d349a68628ad1f1b018c149e903672cdc790",
+    "python/lutlab/__init__.py": "dbd2daa19105ed5638dcafdfa9ccd6cf0e04dc46eadc8a6fbca724b2c49dab07",
+    "python/lutlab/__main__.py": "5d7f53a81d9b3793f3e1c82d135a5dafb9b1565863b8cdcb5f3ab61ab69bb03e",
+    "python/lutlab/automatic_compensation.py": "156a2e75c77d29c00e6bad52c8a63ac7fe625f6a0a170d8086a2146e4748f3e0",
+    "python/lutlab/axis_calibration.py": "262e6cdfa80ba93d2b2294bc7f1cb23baa1ae224cd2648a7be9311f1913483ab",
+    "python/lutlab/axis_grid.py": "3cbc090714f8f4c7320f9e76986c18044ca8d2fffcebf4bc5f26b649065802be",
+    "python/lutlab/axisbins.py": "531d4df5ed95fc59235d23e9e3143ac19b21ca6fb3a0989a0721326c78d17be9",
+    "python/lutlab/box.py": "8b3c6205be688495e7c9ab768d85805a4dac4c0fe56326760526976f95e1d0f4",
+    "python/lutlab/bubble_tetra.py": "aed213d061ff59b09b7ac8cd541d571e2824e4f97334f1d946b9f66d72a83054",
+    "python/lutlab/cache.py": "ab1537eac943e77019409dd64e478e1ff1727da00311447523dcab933f526fc1",
+    "python/lutlab/cascade.py": "b4aeacd9f97171cecb0282ed4db658eb18028808839bd9a8528d2b096cfdf78c",
+    "python/lutlab/casebook.py": "5ac1302951dfef21977f6f586e7b824582760317bbd8afcaa9046d98976539be",
+    "python/lutlab/chain_envelope.py": "fa0ddec038eb172c0c1effb04c90c04bfb47b76a19702b5817efd96a1f406e43",
+    "python/lutlab/channel_arrival_budget_nodes.py": "cb9c8dde1e462f37a388d5eaa2ca5111427343bc2a4ea7e407f2fe222ac791be",
+    "python/lutlab/channel_arrival_nodes.py": "5aaadec7e1911eff9aa26d87a17809133d01b855c90dc0a16d45351c83ada40c",
+    "python/lutlab/channel_arrival_priority.py": "dee7ef4a5535f4ed07bdd7b7551ee260d57c3c2acf91af336f13b45fb7000895",
+    "python/lutlab/channel_blocks.py": "9db5c1d3e03f10c610a2e1743422ded594b7cbbdb24dcf6e1a187f869a32b0cd",
+    "python/lutlab/channel_component_box.py": "584798e088922e400ab2012ca145295dc55bb70c1fa0b183e8aef508ec394b97",
+    "python/lutlab/channel_coordinates.py": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+    "python/lutlab/channel_first_joint.py": "27c5a0b8b74de03a7dce90c7bb9ec4514567eec387666cc2c77374722e9d2081",
+    "python/lutlab/channel_first_risk.py": "76334e72eefe3c911533ca272d149472c3509ce79b155fe07881de61ac5365cd",
+    "python/lutlab/channel_global_nodes.py": "ec314be203379721d08848c85458e44c9c495bbc79cbecad97ef5ba4f49d8b94",
+    "python/lutlab/channel_hotspot_support.py": "6d4933ab852d658e4cab19d0bb640c46c430f08bc050cb4407c1e1bdc5826449",
+    "python/lutlab/channel_joint_nodes.py": "c0a08d1d72b28410df1a8a0dd0d6c0ac6452c605d34d989da1c4ff479a9d0dc1",
+    "python/lutlab/channel_max_nodes.py": "91453be84210c6d512f140b8353ff14c9c92e02044f9824cab435d2377786530",
+    "python/lutlab/channel_nodes.py": "05e910a2f07e1c09df0232ace0824b02ed9a56e30f3ae4f6b4cf784eb5929f6d",
+    "python/lutlab/channel_suffix_coordinates.py": "57274c5be41d94337f5741ec4eeb8bc73a5a538846a2a6bfd10ce68c927559c5",
+    "python/lutlab/channel_suffix_joint_nodes.py": "c8b360b8f062532c8431eee8a1fc10a6d48316c2adce842efd42c11372d10add",
+    "python/lutlab/channel_tail_nodes.py": "a5cf75b75a7ad2d9ef6f99b589f9233d82e90b84735515bb5bd937a181bdb893",
+    "python/lutlab/channel_training_tail.py": "9ceafdb7bc5a20e885e2d662814fa5d2551dc13d0eb51778724c3563eef13bf9",
+    "python/lutlab/cli.py": "228d9e584c9ef7109bbea6cec110ce89cf28a759ae7973b95010e529110fabc2",
+    "python/lutlab/compatibility.py": "4be9f6259a64e01cd62668f5f55b50126eb265be232d99798a2a6f55bef918fe",
+    "python/lutlab/corpus.py": "1687541c50cbab4a0f799a9d2325038dc708296d451aff9d731b7badf334d06a",
+    "python/lutlab/curve.py": "79006f7818a359d53e5cdb035e33330287a7089c575b3196697a66b1af99e335",
+    "python/lutlab/curve_search.py": "8d10f48dea12d2a33c6b607ea49c464f4be460865dae7c1ffa521af2fbc1e117",
+    "python/lutlab/cvar_guard.py": "a6de5cf4c7ecf8d5c9e599a82ab289d970036e066c23c5141ba0d7d0e94395d9",
+    "python/lutlab/data.py": "63e1f8ec604949844488b29fc6eb615075f9425ffb55a10e2d524bad59a75471",
+    "python/lutlab/dataset.py": "0a1d21c0dc18ebe09bf697d876bf370b2dafe866cba5b73d6ef239c1d26210c3",
+    "python/lutlab/entry.py": "9a280d12622d0785cff136804895a474ab4bbcc4fb9de5d8e3fa3d38fc407ab6",
+    "python/lutlab/error_analysis.py": "2f33f18f6affd56a3f7158db15e6076ee6de912f289d28d0c51789624a7a20f3",
+    "python/lutlab/error_certificate.py": "7d6a37c7447af3a69c1f77f6cdd4942775ff457e371587be4a587124e3dab98b",
+    "python/lutlab/exact_axis.py": "f4a88c8852db560581e5b53226fe57d715717fd4a74221985eb01c1484ed8f23",
+    "python/lutlab/execution_proof.py": "461a01ac9cb35ae3ca567fc466ec9200da8d9db8375a2d091ee31a50d62281e6",
+    "python/lutlab/fit.py": "5549c80062b7fb9e4bf38e693386e31193866dd03de57f616193bc00464659e6",
+    "python/lutlab/full_domain_guard.py": "628732a6f29fe7081e802db0879249c75db7339db3e6232744c78d23b3b328b5",
+    "python/lutlab/full_photo_fit.py": "97b3422d15958390d39770cd567652411bc824f1662774a8964ea13c22cdcde0",
+    "python/lutlab/fullfit.py": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+    "python/lutlab/hackextend.py": "610e3637c3a495439c6d0c61338a22e4e99240d5edca4f2630339658c90a54b3",
+    "python/lutlab/hackset.py": "c4290455bcff5746f26ef4d52d07cc66540fd1774f3277ab25f9a828ca6e9f03",
+    "python/lutlab/histogram_delta.py": "53bbafe14ad81a9d10f693f4c266ccd096db1f956b34e5af585c93c6b48da14a",
+    "python/lutlab/integer_error_cost.py": "1021b7afa356b995763eade4ab5c23f35e3c901ae7975cc1d56a112f6f186fdd",
+    "python/lutlab/integer_first_box.py": "d521dd76d626e5ba177a990df1e541ba9ce0e1e6ec2948e89ecf1d29acb708ee",
+    "python/lutlab/integer_last_milp.py": "a1fd5c6402d4fc31e995976cb625c2553c91b572a34c433e0b1f11602cc1aa04",
+    "python/lutlab/integer_rgb_ball.py": "12541bbd5e68bbc167dafbf83661b8583cfbe30e46bf7d364c8970d669d102af",
+    "python/lutlab/integer_target_last_milp.py": "75069072407fa734e9e7cce30167c90041e6aadc2aa638805398ccf43c111462",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/joint_fit.py": "3ec347172f2142f06bb85f5cf2c749d5ba69a8c72e2b8e7d1ddace571e3ee495",
+    "python/lutlab/joint_grid.py": "0a69507f65386f198060d6225e6e8fe4b71dc460e4e07b25bb64b0842e2bef54",
+    "python/lutlab/joint_interval.py": "17f8e2c2be86560399caa7fa22f27492ca7b7481945b77011663f28c3078b7eb",
+    "python/lutlab/joint_minimax.py": "1dc1d66d2064265b903d8e31c75a2611ee5844d605f8e2919b0fba0cffb5f671",
+    "python/lutlab/joint_tail_repair.py": "a7079d71c9efa3ea64af503311d8a04123bf38063f8d236d37d8f3321412bc7e",
+    "python/lutlab/local_compensation.py": "736d383d0e4577e211823c5ca2be215f0ee251aaf56f36a21c09dcf55e309ed9",
+    "python/lutlab/local_minimax.py": "ce3051a5a338e76cee645770abc2b2bfa658cb8576362d658b945bce0462574d",
+    "python/lutlab/luts.py": "7fe77315e5a8e6a8e2b19daa9f514ae0006b04a875374c0235b5465905c703db",
+    "python/lutlab/metrics.py": "b5f9ae5535a34ce1b6c254d44247cb6f0e61e0811fd170849f2150024ada79d9",
+    "python/lutlab/monotone_axis.py": "41d12ec131bb2acb4f64185290b9f72d1ce05953b35495b1b2060d9f6bacfaeb",
+    "python/lutlab/oriented_tetra.py": "256ff2db56df51fbd28cd0acad266eb48c8a09aa8e6b27c13dbd726aeee621c0",
+    "python/lutlab/paired_baselines.py": "84d207e1abb3b0eb5952ba8397be884fe696f0a739e2ca69cbe2f27bf176e814",
+    "python/lutlab/paired_grid.py": "880114f7c1f0c7e034ede6b325e306c897ca21f00fc9508f90200bb9e9aaaf6e",
+    "python/lutlab/perf.py": "9cfe8821a30bf25dd38676b348ddd4f3a8002e346839bac071191fa53b2e7849",
+    "python/lutlab/performance.py": "ec346db27a90023ab3ccd9fd73b2a438e03d4c6968228e002ece36566d4721de",
+    "python/lutlab/portable_export.py": "6fee0554fb0bb2ea5bfa3a8e49f3d23a3051f925c9378e6f08d331074e985f1d",
+    "python/lutlab/primary_batch.py": "3ff2acd4e551d0e094616b8dc3c35d4e72e59c38aaf5248e2ed001c1ca412fa7",
+    "python/lutlab/primary_budget.py": "5585d5712ae92ccf26841cf5b33cf217e23c2afaa03e6be37d49596cd750ac54",
+    "python/lutlab/qualification.py": "6b3179e11084aecdac91a061e8bbb8209de626f28c613ef1c5c34b614bdd2335",
+    "python/lutlab/quantile_compensation.py": "420d96526e130414e40d78eb2792f5ae505c35aa722ac88fd1bc52e0825f5179",
+    "python/lutlab/quantile_constraints.py": "b8f50aaadd25dce2366335de09d1f4e535544c17def73a2beeb6d6ed1668c06e",
+    "python/lutlab/quantile_global.py": "5175c3f605c6f25992cacf023d9889679f718b10613f254870246fa7b2e4c169",
+    "python/lutlab/quantile_repair.py": "55f9c9e2effa0e0699822f7e4528cab3f59784eee28fa55608e5c10a07c11c67",
+    "python/lutlab/reportio.py": "c93d821d0749aa16752caf0b1166b6aff49a682a988e4419f72591ef30f50acd",
+    "python/lutlab/rgb_joint_grid.py": "aa783be8f5882d33ebb292afe833bcc414df7850c3c88f2191c0ffc3195e2646",
+    "python/lutlab/robust_fit.py": "fa80d5b4d256c0eba5603c1e24b068dc5b85567f7be21407d62cf2b185438570",
+    "python/lutlab/robust_solver.py": "f6d6222c2acbf5c551c036209f17416375bdd3152817d29851345b3123927988",
+    "python/lutlab/rounded_blocks.py": "a32123acda8baab65beaba12edd1daec6f8f54c8d07f41a6496f4d0a8541b7d4",
+    "python/lutlab/rounded_budget.py": "18d2af5082180df26253467a94822f0955400e56a38a0950eb586c173888cc6e",
+    "python/lutlab/rounded_grid.py": "b19b4e5a8eac49ee84c4622b35792eba3299dd29e03758d476f43e36028474e3",
+    "python/lutlab/rounding_interval.py": "d2327ad853fb1c66c42fc410b94804972416f9e781ba1ab3f64919ed70bcb250",
+    "python/lutlab/routes.py": "38b188ad953bccdd8c21440d189a988ff0d3bcec1fc4baf42f4c213acabe8ca7",
+    "python/lutlab/runlog.py": "533c5c96c16fb3fede0146039b3239f80154033f66ba97843149474c64254b1a",
+    "python/lutlab/runtime.py": "6b07559a7aecae4e78017654d3d357be1947bb85ef7b39480c5e436804ad2d22",
+    "python/lutlab/selection.py": "80de637e84bec3f944c06c50998a14fe347c476c5fe2bef3df46c7f6658eee5a",
+    "python/lutlab/separable_calibration.py": "20e8a696e88f27e768cc39eb7df81724463881aa5fc7c14d334ea27b173040ac",
+    "python/lutlab/source_lut.py": "e84f2b416b071e6e0bed2624cb04cb21c31d36d117fd8b82f09300c0fb7932fd",
+    "python/lutlab/stability.py": "57593a8a2f001a82dda7aa74ce74daa932e0908bf3647ea8af7b3f097ef5bd01",
+    "python/lutlab/stage_bundle.py": "2639c78099fad600a892c9e755a1f64cf31faf80385824d8db7c7f69bcf4062f",
+    "python/lutlab/step.py": "8f245fd73939a9a368004607bffae0af2b6fd2b9e53258cbcdf854c5d0416144",
+    "python/lutlab/study_chains.py": "3a036b124a5cd3a2d529b8568d0e42137239a55b6880e2ab42d712e27c11218b",
+    "python/lutlab/study_kernels.py": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+    "python/lutlab/study_provenance.py": "0a9047e15df49dc96e4891f8c4eda56b4eabc729b562de386cfadb7342af02e8",
+    "python/lutlab/study_reporting.py": "394af2a459175cffc5bc5b506edf66481aa251353340da02d7a9f58c53cd4b74",
+    "python/lutlab/suffix_objective.py": "594a291fb81d2b5a626c2c10640719a34ce1a34d7bb37603b9f122058f6b32db",
+    "python/lutlab/support_certificate.py": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+    "python/lutlab/tail_repair.py": "7d0d74ef662b4c61a9bfdb9dbb3bdd6f82bc211085a97903bc5eeb240d072bbd",
+    "python/lutlab/timingbook.py": "b76d925ddc2dae53b926bc72cfb05e79d046851b241ea09ade424b6172c60e23",
+    "python/lutlab/validation.py": "8cbf0b6651a8a34ac9ded4b311c530e9720991612b79fafcc2981ae06a40eae0",
+    "python/lutlab/workflow.py": "e8451fdb58a0c54e179e039dfbaf73837bd867877ebe79a9fbf8194b4e2403ff",
+    "python/lutlab/working_set.py": "4847e648db57660e1bba503d1e374b329d7a2889a1737ca15206318b0db0b17b",
+    "scripts/build_direct_sentinel_v2.py": "3dde981728d1568b71307cca25cf38429a4d09e87607aec0c773dd2f668f5205",
+    "scripts/check_direct_sentinel_contracts_v2.py": "fc9f83495bcc3e2f6d47b6c1277e97fe88b7b53fe35cc526008336e901036743",
+    "scripts/check_direct_sentinel_native_v2.py": "5cf375b233e24bd08176ad4319053379d44ec13b940cb6224d4015a6765b24ed",
+    "scripts/direct16_support.py": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7",
+    "scripts/domain_cache_support.py": "ff78716454a6c41d0330b4b046234ac509f0ad183c8bb2b8598f52b527cb7781",
+    "scripts/generate_direct_sentinel.py": "276a5eb80138f3f24e9f9f5ecfde473db02f9d7c1e972f35c49db941403db96b",
+    "scripts/outplace_support.py": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/prepare_direct_sentinel_sources.py": "32a1b0065a2a9970a59da8062557c953abbd1e9482448f98f8b44848c5302031",
+    "scripts/suffix_cache_support.py": "2c66197a7200c7bf434a7bcabce08fbb2a41f4cfa8f1c64333028d701c673a6e",
+    "scripts/check_direct_sentinel_full_mt_v3.py": "45e2ca2cb8ea46cdb584b9e173cf5b59fc577c93e560eed8f3220b61208bea5a",
+    "scripts/check_omp_affinity_control_v2.py": "ac29668946c4f384bf913a82f08fc3803c0e8c739840fd6649677e306e82aca5",
+    "scripts/run_direct_sentinel_perf.py": "6be02140759b3bb589a26c44528e7b9a5d6ba059c9410e7c6fd2d02902fe6260",
+    "scripts/audit_direct_sentinel_perf.py": "7567f922d0ff05b40b8506cebd102d7e1aa50927df485adf0b3d6338233b183e",
+    "scripts/run_velvia_bubble_perf.py": "f4c90e71b2b8d8ed9ec812e86bf3df321e1c209eb6a92e34a7d9d10937e45561"
+  },
+  "libraries": {
+    "new": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-sentinel-v2-build-v1\\libjshc_direct_sentinel_v2.dll",
+      "sha256": "cbc670dbdb1b6bb39fe1b5994d909c1424308f8e4fad03f356b05740b3016154"
+    },
+    "old87": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+      "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+    },
+    "old288": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-u16-ilp-build-v1\\libjshc_direct_u16_ilp.dll",
+      "sha256": "d95332e9ac8b56a9d589bf176a5b020e2d60a176d1f360594a0300b5efae5b9f"
+    }
+  },
+  "models": {
+    "max_first": {
+      "models": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\candidate-base.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\stage2.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\stage4.slut"
+      ],
+      "sidecars": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\channel-frac.bin",
+        null,
+        null,
+        null
+      ],
+      "oracle": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-accept-max_first-v1\\candidate.rgb",
+      "oracle_sha256": "143e5cc05f4f2635608cd7720b4013a10998d3f7acc8cf35275b38dcfba0792e",
+      "input_sha256": {
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\candidate-base.slut": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\stage2.slut": "904e30a1c0f805175b0b9518949e4e96c9ff2a7e7980978ed8e90fd1282bd924",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\stage4.slut": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\max_first\\candidate\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+      }
+    },
+    "p99_first": {
+      "models": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\candidate-base.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\stage2.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\stage4.slut"
+      ],
+      "sidecars": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\channel-frac.bin",
+        null,
+        null,
+        null
+      ],
+      "oracle": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-accept-p99_first-v1\\candidate.rgb",
+      "oracle_sha256": "4f3bb1eb15cadc38eea189fdbdc11495c9541889c67315bbbc96e5c08f9cf12c",
+      "input_sha256": {
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\candidate-base.slut": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\stage2.slut": "e3dca914bc7256aeb04db8a80c08529d8752b7e518e44d39525e4d5ce2d614f2",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\stage4.slut": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-nodes-v1\\p99_first\\candidate\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+      }
+    },
+    "old_best": {
+      "models": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\candidate-base.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\stage4.slut"
+      ],
+      "sidecars": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\channel-frac.bin",
+        null,
+        null,
+        null
+      ],
+      "oracle": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-budget-accept-v1\\candidate.rgb",
+      "oracle_sha256": "373a2fcbe4fafb73a6daebfd5c71b3308cdb43baf289e37fc564e75dc9033aed",
+      "input_sha256": {
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\candidate-base.slut": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\stage4.slut": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-arrival-last-budget-v1\\candidate\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+      }
+    },
+    "max48": {
+      "models": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\candidate-base.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\stage2.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\stage4.slut"
+      ],
+      "sidecars": [
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\channel-frac.bin",
+        null,
+        null,
+        null
+      ],
+      "input_sha256": {
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\candidate-base.slut": "59c333adb5480244ea0e22808f625259a94a21d3b7e53c28656f7362990627f4",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\stage2.slut": "904e30a1c0f805175b0b9518949e4e96c9ff2a7e7980978ed8e90fd1282bd924",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\stage4.slut": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+        "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-safe-cpsat-accept-v2\\candidate\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+      },
+      "oracle": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-pareto-quality-v1\\candidate.rgb",
+      "oracle_sha256": "de4a98d5f3b3d430e349e83146d211296a4e6b3e2a9664a5806b321384a3c3f9"
+    },
+    "a399": {
+      "models": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut"
+      ],
+      "sidecars": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin",
+        null,
+        null,
+        null
+      ],
+      "input_sha256": {
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+      },
+      "oracle": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\cube.rgb",
+      "oracle_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    }
+  },
+  "roles": {
+    "87a399": {
+      "library": "old87",
+      "model": "a399"
+    },
+    "87old": {
+      "library": "old87",
+      "model": "old_best"
+    },
+    "291old": {
+      "library": "new",
+      "model": "old_best"
+    },
+    "291max": {
+      "library": "new",
+      "model": "max_first"
+    },
+    "288max": {
+      "library": "old288",
+      "model": "max_first"
+    },
+    "291p99": {
+      "library": "new",
+      "model": "p99_first"
+    },
+    "288p99": {
+      "library": "old288",
+      "model": "p99_first"
+    },
+    "291max48": {
+      "library": "new",
+      "model": "max48"
+    },
+    "288max48": {
+      "library": "old288",
+      "model": "max48"
+    }
+  },
+  "comparisons": [
+    [
+      "87a399",
+      "291max"
+    ],
+    [
+      "87old",
+      "291max"
+    ],
+    [
+      "291old",
+      "291max"
+    ],
+    [
+      "288max",
+      "291max"
+    ],
+    [
+      "87a399",
+      "291p99"
+    ],
+    [
+      "87old",
+      "291p99"
+    ],
+    [
+      "291old",
+      "291p99"
+    ],
+    [
+      "288p99",
+      "291p99"
+    ],
+    [
+      "87a399",
+      "291max48"
+    ],
+    [
+      "87old",
+      "291max48"
+    ],
+    [
+      "291old",
+      "291max48"
+    ],
+    [
+      "288max48",
+      "291max48"
+    ],
+    [
+      "87old",
+      "291old"
+    ]
+  ],
+  "expected_output_sha256": {
+    "max_first": "5564f7e184cbf00614a2f5f76c1e0e58550592af51e85a0ad2896c27bd3f7929",
+    "p99_first": "2491ecf5c88d735b5d36f5f5b698f64b9110f1a37c02003339f3b7921952a8f2",
+    "old_best": "00ef1bcdc0b483ec380c690659f3d6eeb3eca7f7d92b9e95e0f1c508cd1574f3",
+    "max48": "b61b35171a12b9e4cabf45f4f27c04e94489859161488b8543360c527d11bef8",
+    "a399": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+  },
+  "source": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb",
+  "source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "pixels": 78643200,
+  "workers": 4,
+  "scenes": [
+    {
+      "path": "inplace",
+      "threads": 1
+    },
+    {
+      "path": "inplace",
+      "threads": 4
+    },
+    {
+      "path": "to",
+      "threads": 1
+    },
+    {
+      "path": "to",
+      "threads": 4
+    }
+  ],
+  "warmup_per_role_per_pair": 2,
+  "repeats_per_timed_group": 3,
+  "pair_palindromes": [
+    [
+      "L1",
+      "R1",
+      "R2",
+      "L2"
+    ],
+    [
+      "R1",
+      "L1",
+      "L2",
+      "R2"
+    ],
+    [
+      "R1",
+      "L1",
+      "L2",
+      "R2"
+    ],
+    [
+      "L1",
+      "R1",
+      "R2",
+      "L2"
+    ]
+  ],
+  "AA_time_ratio_bounds": [
+    0.85,
+    1.15
+  ],
+  "no_obvious_time_ratio_cap": 1.1,
+  "tiers": [
+    100,
+    90,
+    80,
+    70,
+    60,
+    50
+  ],
+  "required_denominators": [
+    "87a399",
+    "87old",
+    "291old"
+  ],
+  "input_sha_scope": "每worker起点、每冷首及每pair末；每warmup/计时组末都核实际输出SHA",
+  "expected_native_output_sha_checks": 1284,
+  "expected_native_apply_calls": 3364,
+  "fresh_rss_roles": 9,
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "required_environment": {
+    "OMP_NUM_THREADS": "4",
+    "OMP_DYNAMIC": "FALSE",
+    "OMP_THREAD_LIMIT": "4",
+    "OMP_WAIT_POLICY": "PASSIVE",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONIOENCODING": "utf-8"
+  },
+  "allowed_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "per_tid_pin": false,
+  "single_execution": true,
+  "allocation_failure_injection": false,
+  "limitations": "100图已见；未知官方Threshold、派生表许可及指定Intel性能。AA失效不授档，任一有效必需模式<50拒绝。未测所有可能合成输入的最差速度。"
+}
