@@ -74,7 +74,9 @@ ROM容量计真实文件长度加实际借用对象，所有头、palette、副�
 
 [只读loader阶段](2026-10-24-memory-readonly-loader.md)区分了另一个真实开销：原ACCESS_COPY为取得可写buffer地址，Windows会为整个COW视图保留提交额度。三fresh原/新COW/RO实验中RO保守少16781312B提交；完整域/百图输出及生命周期通过。唯一848调用正式场的RO AVX/C99 fresh仍少16777216/16781312B提交，但WS约53.55MB相近、模型capacity仍16779328B。原地1T控制失效，不能按其raw50.2%授档或与历史COW拼成全四模式合格；三个有效模式的限定速度与辅助配对另见原表。这是Windows部署收益，不是新压缩或跨平台运行验证。
 
-[固定4KiB页别名普查](2026-10-24-memory-page-alias-census.md)仅消费同一原ID流：4096逻辑页有3082 unique，header/页ID metadata/48B必要owner原型/1056B原model均计入后，backing投影12645456B、净省4133872B，过预设1MiB门。16384+2边界、exact-byte Counter及全ID独立重放通过。尚无MapViewOfFile3部署、完整运行质量或速度，虚拟跨度不减，OS/PTE/VAD成本及物理RAM未知，因此不新增实际容量或六档前沿。
+[固定4KiB页别名普查](2026-10-24-memory-page-alias-census.md)仅消费同一原ID流：4096逻辑页有3082 unique，header/页ID metadata/48B必要owner原型/1056B原model均计入后，backing投影12645456B、净省4133872B，过预设1MiB门。16384+2边界、exact-byte Counter及全ID独立重放通过。
+
+随后[实际alias前置](2026-10-24-memory-page-alias-front.md)导出文件12644352B、加48B必要状态和1056B Model确为12645456B；三个fresh实际API映射/只读保护/全blob摘要与关闭通过，但完整合同在section注入后总句柄不回基线STOP。两次另授最小观察也按门禁停止：owned file CloseHandle成功、metadata reader已closed且文件HANDLE失效，额外+1身份仍未采到；CPython缓冲reader锁被traceback保留只是符合证据的静态推断。alias非分页quota明显增加、WS未减少，unique backing不等物理RAM，虚拟跨度不减。不再微调该机制，没有完整像素域/百图/性能或六档资格；三次STOP全部保留。
 
 有损节点7/6/5bit与输入近邻派生表也保留负例：首级6/5bit在全域达50但最劣单图仅3%左右；坐标6bit最劣单图6.67%，输入7bit近邻43.38%总体均拒绝。坐标12/8bit和首级7bit仅有逻辑bitstream质量研究，没有真实压缩decoder/吞吐，不能列成部署节省。详细原误差与逐图证据见[节点研究](2026-10-24-node-precision-portability.md)和[palette/输入研究](2026-10-24-palette-input-precision.md)。
 
