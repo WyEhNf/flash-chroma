@@ -1,0 +1,207 @@
+{
+  "passed": true,
+  "purpose": "独立V3纯日志审计；count0重放按多重集，其余原核验不变。",
+  "script_sha256": "4cab2b372ddf53a0f26b00a54146b0a1912b40db5fcbf374b3625e2dd765ddb7",
+  "counts": {
+    "finite": 534,
+    "io_rejections": 243,
+    "format_prepare_rejections": 42,
+    "other_prepare_rejections": 64,
+    "failure_state_replays": 53,
+    "lifecycle_scenarios": 4,
+    "clear_rejections": 8,
+    "image_guards": 108,
+    "rom_guards": 20,
+    "pointer_table_guards": 20,
+    "unaligned_rom": 40,
+    "fixture_pointer_equalities": 16384
+  },
+  "jsonl_records": 19871,
+  "model_native_attempts": 1175,
+  "repeated_short_label": {
+    "kind": "failure_state_replays",
+    "label": "count0",
+    "multiplicity": 2,
+    "reason": "格式count0与prepare参数count0是两次独立失败旧态重放，原53项不变；其余(kind,label)唯一。"
+  },
+  "return_distribution": [
+    {
+      "entry": "jshc_p4_pages_apply",
+      "returncode": 0,
+      "count": 285
+    },
+    {
+      "entry": "jshc_p4_pages_apply",
+      "returncode": 1,
+      "count": 80
+    },
+    {
+      "entry": "jshc_p4_pages_apply_parallel",
+      "returncode": 0,
+      "count": 492
+    },
+    {
+      "entry": "jshc_p4_pages_apply_parallel",
+      "returncode": 1,
+      "count": 163
+    },
+    {
+      "entry": "jshc_p4_pages_clear",
+      "returncode": 0,
+      "count": 22
+    },
+    {
+      "entry": "jshc_p4_pages_clear",
+      "returncode": 1,
+      "count": 8
+    },
+    {
+      "entry": "jshc_p4_pages_prepare",
+      "returncode": 0,
+      "count": 19
+    },
+    {
+      "entry": "jshc_p4_pages_prepare",
+      "returncode": 1,
+      "count": 106
+    }
+  ],
+  "per_library": {
+    "b326a9f3cc6dfa933964b65bf345bf15887d56c62904ad569554b42cf2e93ced": {
+      "prepare": 124,
+      "clear": 29,
+      "core": 0,
+      "omp_c99": 655
+    },
+    "11860791a48ea49e85c32e1e8277bf7b5ad98fbae3ffc58c5102bbf9da9a80bf": {
+      "prepare": 1,
+      "clear": 1,
+      "core": 365,
+      "omp_c99": 0
+    }
+  },
+  "prepare_overlap_address_checks": [
+    {
+      "label": "view-slots-full",
+      "view": 2336691121936,
+      "blob": 2336709017600,
+      "slots": 2336691121936
+    },
+    {
+      "label": "view-slots-full",
+      "view": 2336691121264,
+      "blob": 2336709017600,
+      "slots": 2336691121264
+    },
+    {
+      "label": "view-slots-partial",
+      "view": 2336691121936,
+      "blob": 2336709017600,
+      "slots": 2336691121976
+    },
+    {
+      "label": "view-slots-partial",
+      "view": 2336691121264,
+      "blob": 2336709017600,
+      "slots": 2336691121304
+    },
+    {
+      "label": "view-blob-full",
+      "view": 2336691121936,
+      "blob": 2336691121936,
+      "slots": 2336687116400
+    },
+    {
+      "label": "view-blob-full",
+      "view": 2336691121264,
+      "blob": 2336691121264,
+      "slots": 2336684253264
+    },
+    {
+      "label": "view-blob-partial",
+      "view": 2336691121936,
+      "blob": 2336691121976,
+      "slots": 2336687116400
+    },
+    {
+      "label": "view-blob-partial",
+      "view": 2336691121264,
+      "blob": 2336691121304,
+      "slots": 2336684253264
+    },
+    {
+      "label": "slots-blob-full",
+      "view": 2336691121936,
+      "blob": 2336687116400,
+      "slots": 2336687116400
+    },
+    {
+      "label": "slots-blob-full",
+      "view": 2336691121264,
+      "blob": 2336684253264,
+      "slots": 2336684253264
+    },
+    {
+      "label": "slots-blob-partial",
+      "view": 2336691121936,
+      "blob": 2336687149160,
+      "slots": 2336687116400
+    },
+    {
+      "label": "slots-blob-partial",
+      "view": 2336691121264,
+      "blob": 2336684286024,
+      "slots": 2336684253264
+    }
+  ],
+  "rom_tail_alignment_checks": [
+    "rom-guard-prepare/actual",
+    "rom-guard-prepare/count1",
+    "rom-guard-prepare/count256",
+    "rom-guard-prepare/max4096"
+  ],
+  "pointer_tail_alignment_checks": [
+    "pointer-guard-prepare/actual",
+    "pointer-guard-prepare/count1",
+    "pointer-guard-prepare/count256",
+    "pointer-guard-prepare/max4096"
+  ],
+  "actual_unaligned_residues": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "resources": {
+    "PeakWorkingSetSize": 157569024,
+    "WorkingSetSize": 56672256,
+    "PrivateUsage": 31645696,
+    "PeakPagefileUsage": 102223872,
+    "process_handles": 231,
+    "system_commit_bytes": 62935617536,
+    "system_page_size": 4096
+  },
+  "before": {
+    "PeakWorkingSetSize": 37158912,
+    "WorkingSetSize": 37158912,
+    "PrivateUsage": 24641536,
+    "PeakPagefileUsage": 24641536,
+    "process_handles": 157,
+    "system_commit_bytes": 62931496960,
+    "system_page_size": 4096
+  },
+  "inputs": {
+    "experiments\\page-id16-native-pages-finite-v2.json": "907c17b1bf079bf700fd6e7191bf03231ac8be89a86ae3a01b5792ee3215c8a9",
+    "artifacts\\p16-page-native-pages-finite-v2\\run.json": "5c73ca1a3670f9d801a22d25e28f5ff85e55bacc8c78671def83daf6d47f63f4",
+    "artifacts\\p16-page-native-pages-finite-v2\\stdout.txt": "577cc7bc6745425d5c24bfbc97dac80ca6dee0fa3191e1b3bdec06df22fb2e50",
+    "artifacts\\p16-page-native-pages-finite-v2\\stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\p16-page-native-pages-finite-v2\\finite\\results.json": "f07f7a5128dae728057f696c7bff8984bd0153cf2eaed198522c7e4da14820c3",
+    "artifacts\\p16-page-native-pages-finite-v2\\finite\\events.jsonl": "96aebde3fd1f6ba11e2567fcff770892a0397da31a572c32478d4e26e343d4a1",
+    "artifacts\\p16-page-native-pages-finite-v2\\finite\\observations.json": "c92fd182b996bcbae0b897fa87b404041172c16a655537240ee1a1cb1767643f"
+  },
+  "scope": "独立日志Counter/集合/返回配对和记录的prepare地址关系，不加载DLL/再调native；self-overlap runtime只记录view地址和拒绝返回，pages=self地址依据绑定的冻结V2赋值源，未独立dump每个view/pages字段。16384槽值未原样dump，日志证明原断言完成，不冒充再次读取指针内存。full/photos/perf/WASM均未执行，进程峰含Python/库/oracle/夹具/日志。"
+}

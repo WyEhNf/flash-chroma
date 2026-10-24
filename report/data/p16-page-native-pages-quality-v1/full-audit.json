@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "purpose": "只读完整质量日志，独立配对820调用和64块/100图身份；不加载native。",
+  "script_sha256": "9c1bccd6fb04411eb097656a2d40e784aac6670628cbfc98158b03fcc41b6159",
+  "full_modes": 5,
+  "full_blocks": 64,
+  "full_pixels_per_mode": 16777216,
+  "photos_per_mode": 100,
+  "apply_attempts": 820,
+  "model_native_calls_including_setup_clear": 824,
+  "per_mode": {
+    "core_out": 164,
+    "c991_out": 164,
+    "c991_in": 164,
+    "c994_out": 164,
+    "c994_in": 164
+  },
+  "full_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+  "photos_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "photos_input_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "actual_capacity": 12665940,
+  "resources": {
+    "PeakWorkingSetSize": 126791680,
+    "WorkingSetSize": 50647040,
+    "PrivateUsage": 24526848,
+    "PeakPagefileUsage": 71684096,
+    "process_handles": 240,
+    "system_commit_bytes": 62904537088,
+    "system_page_size": 4096
+  },
+  "before": {
+    "PeakWorkingSetSize": 36003840,
+    "WorkingSetSize": 36003840,
+    "PrivateUsage": 22441984,
+    "PeakPagefileUsage": 22441984,
+    "process_handles": 157,
+    "system_commit_bytes": 62910627840,
+    "system_page_size": 4096
+  },
+  "inputs": {
+    "experiments\\page-id16-native-pages-full-v1.json": "c345f5bbc3118bff60854bba07e7b96ff5a782209a96466641655c75e7b10dc1",
+    "artifacts\\p16-page-native-pages-full-v1\\run.json": "5e198f864b9bd0bf6e9c1bd9769944fb35c7766461d8e5bcc78355c1f6e71bcd",
+    "artifacts\\p16-page-native-pages-full-v1\\stdout.txt": "25dbd47f47f58cd30f3bece290c070067db0ec50904a27029063914bddbd0482",
+    "artifacts\\p16-page-native-pages-full-v1\\stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts\\p16-page-native-pages-full-v1\\quality\\results.json": "6d35094bb026871a69c57ff23c14f591060847266f32206da4deab46bd168882",
+    "artifacts\\p16-page-native-pages-full-v1\\quality\\apply-events.jsonl": "dda48d5833f09fe9a7bb4be141b695c464d1f81f68bde26cd5758c00a80f16e3",
+    "artifacts\\p16-page-native-pages-full-v1\\quality\\observations.json": "4b221226325a3cd2b738613c53625ac5975e052e6d24bc80a66741d74784de2f"
+  },
+  "scope": "只从冻结协议/输入SHA/运行时逐块逐图u64等值与SHA日志独立核配对/覆盖/入口/借用地址；不重读图像再生成输出或运行四级整数插值，不加载DLL/native重跑。完整汇总SHA由原质量过程保存，未从block digest反推原像素。精确输出不等于原模型误差为零，未性能/WASM。"
+}
