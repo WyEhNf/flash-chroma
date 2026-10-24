@@ -30,7 +30,8 @@ def main():
                'p16-cinema-first-risk-20261024', 'p16-cinema-first-safe-cpsat-20261024',
                'p16-cinema-first-error-cost-census-20261024', 'p16-cinema-max48-pareto-quality-20261024',
                'p16-cinema-first-narrow-cost-census-20261024', 'p16-cinema-first-direct-budget-20261024',
-               'p16-cinema-max48-first-box-20261024', 'p16-cinema-max48-risk-upper-20261024']
+               'p16-cinema-max48-first-box-20261024', 'p16-cinema-max48-risk-upper-20261024',
+               'p16-cinema-max48-training-bridge-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -84,7 +85,8 @@ def main():
             if not result['pass']:
                 failures.append(result)
         for field in ('reused_environment_manifest', 'reused_narrow_census_manifest',
-                      'reused_box_contract_manifest', 'reused_quality_manifest', 'reused_max48_box_manifest'):
+                      'reused_box_contract_manifest', 'reused_quality_manifest', 'reused_max48_box_manifest',
+                      'reused_max48_risk_manifest'):
             reused = manifest.get(field)
             if not reused:
                 continue
