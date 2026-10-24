@@ -29,7 +29,7 @@ def main():
                'p16-cinema-first-group-20261024', 'p16-cinema-first-cpsat-20261024',
                'p16-cinema-first-risk-20261024', 'p16-cinema-first-safe-cpsat-20261024',
                'p16-cinema-first-error-cost-census-20261024', 'p16-cinema-max48-pareto-quality-20261024',
-               'p16-cinema-first-narrow-cost-census-20261024']
+               'p16-cinema-first-narrow-cost-census-20261024', 'p16-cinema-first-direct-budget-20261024']
     checks, failures = [], []
     for folder in folders:
         relative = 'report/data/'+folder
@@ -78,6 +78,16 @@ def main():
         if reused:
             blob = subprocess.check_output(['git', 'show', args.git_ref+':'+reused['path']], cwd=ROOT)
             result = {'kind': 'reused_error_cost_manifest', 'path': reused['path'], 'expected_sha256': reused['sha256'],
+                      'actual_sha256': digest(blob), 'pass': digest(blob) == reused['sha256']}
+            checks.append(result)
+            if not result['pass']:
+                failures.append(result)
+        for field in ('reused_environment_manifest', 'reused_narrow_census_manifest'):
+            reused = manifest.get(field)
+            if not reused:
+                continue
+            blob = subprocess.check_output(['git', 'show', args.git_ref+':'+reused['path']], cwd=ROOT)
+            result = {'kind': field, 'path': reused['path'], 'expected_sha256': reused['sha256'],
                       'actual_sha256': digest(blob), 'pass': digest(blob) == reused['sha256']}
             checks.append(result)
             if not result['pass']:
