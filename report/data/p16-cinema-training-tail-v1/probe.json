@@ -1,0 +1,89 @@
+{
+  "source_sha256": "271c49238264012a9e34c2f48caf09812bb9067978b3a5596b0825cc357953bd",
+  "proposal_sha256": "8ccdf39d17f7a43676961cb13706b052aca1fbb7c552b9c9e0f25e36476aa406",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "test_type": "冻结起点的只读原60图频数统计；无拟合、无计时",
+  "inputs": {
+    "frequency": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\photo-arrival-frequency.npy",
+      "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+      "bytes": 67108992
+    },
+    "reference": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\envelope-reference.npy",
+      "sha256": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690",
+      "bytes": 50331776
+    },
+    "cube": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-second-accept-max_first-v1\\candidate.rgb",
+      "sha256": "143e5cc05f4f2635608cd7720b4013a10998d3f7acc8cf35275b38dcfba0792e",
+      "bytes": 50331648
+    },
+    "joint": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-post-second-last-v1\\joint-support.npz",
+      "sha256": "bf619c3ec007c469109066a649d317485dda2108a62c0e774e53ccff00af1360",
+      "bytes": 14286
+    }
+  },
+  "frequency_dtype": "uint32",
+  "training_pixels": 47185920,
+  "expected_60_images_1024x768": true,
+  "histogram_nonzero": {
+    "0": 26623530,
+    "1": 7843394,
+    "2": 5801906,
+    "3": 3086215,
+    "4": 28868,
+    "5": 427527,
+    "6": 1817220,
+    "8": 122086,
+    "9": 806898,
+    "11": 749,
+    "12": 273190,
+    "14": 30662,
+    "17": 125226,
+    "19": 28324,
+    "22": 72233,
+    "27": 73875,
+    "29": 153,
+    "34": 7516,
+    "36": 723,
+    "38": 12951,
+    "41": 2158,
+    "48": 514,
+    "50": 2
+  },
+  "generalized_cdf_p99_squared": 12,
+  "numpy_linear_equivalent_p99": 3.4641016151377544,
+  "squared_11_exceed_count": 627527,
+  "squared_11_exceed_fraction": 0.01329903072781033,
+  "joint_integer_residual_max": 9.313225746154785e-10,
+  "fixed_target_11_applicable": true,
+  "scope": "100图未参与本次诊断；广义加权CDF与完整像素线性分位数分别报告。阈值11不适用则停止原方案。"
+}

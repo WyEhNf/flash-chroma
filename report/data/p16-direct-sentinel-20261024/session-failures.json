@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "scope": "后补会话故障摘要，不伪装成原始stderr或未保存返回码",
+  "quality290": {
+    "phase": "synthetic_before_start_json",
+    "exit_code": 1,
+    "exception": "OSError: exception: access violation reading 0xFFFFFFFFFFFFFFFF",
+    "quality_frozen_sha256": "9ccb79fc9a2ffc798c0d6096cbf5d22fba07e77a22c9dcd61b3c630a1c5f75e9",
+    "dll_sha256": "f54a505f128e515e165c9a13676d2f186939db7fefb7ea040d1aee2d15edd45a",
+    "conclusions": {
+      "full_domain_passed": false,
+      "photos_passed": false,
+      "performance_calls": 0
+    },
+    "known_failed_expression": "chain.apply(sample.copy(),kernel=kernel,threads=threads) in synthetic; name/kernel/thread not logged in v1",
+    "record_kind": "会话内原错误信息的后补结构记录；不是原始stderr文件",
+    "original_stderr_file_existed": false,
+    "logging_gap": "V1先在synthetic失败，尚未创建start.json，也未将父工具stderr保存为本地文件；不得伪造该原件。"
+  },
+  "alignment291_v2": {
+    "status": "DLL文件名机械胶水错误，native前失败",
+    "raw_directory": "artifacts/p16-direct-sentinel-v2-alignment-diagnose-v1",
+    "superseded_by": "artifacts/p16-direct-sentinel-v2-alignment-diagnose-v2"
+  },
+  "whole_mt291_v1": {
+    "status": "未设置进程0x55允许集，首次只读OMP观察前置失败，先于10 whole calls",
+    "original_return_code_saved": false,
+    "original_return_code": null,
+    "raw_output_directory_empty": true,
+    "not_reconstructed": "不根据后续成功猜测失败返回码"
+  },
+  "performance": {
+    "single_execution": true,
+    "reruns": 0,
+    "discarded_workers": 0
+  }
+}

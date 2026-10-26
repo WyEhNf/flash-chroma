@@ -1,0 +1,11 @@
+{
+  "schema": "p16_cinema_second_nodes_v1",
+  "start": "当前已独立验收Cinema整链：first 0ea0a380、stage2 933a4311、stage3 95cb685e、stage4 5b8be3d4；完整流373a2fcb。两策略均从相同起点开始。",
+  "reason": "固定前两级时存在gold距离平方226的精确碰撞，max平方57已最优；改第二级有可能解除该碰撞，不能宣称必然可以。",
+  "compression": "完整RGB8按(固定第一级到达RGB,gold RGB)联合分组，保留int64全域频数及原60图质量；不删除低频或零训练质量支撑；不用100图拟合。",
+  "directions": "26个±1、26个±2、26个±4，共78方向；max_first及p99_first各一次八色扫描；固定第一级、第三/四级及全部轴，不增加轮数。",
+  "budgets": "以当前最佳整链为绝对九项上限；每批只能使用此前已取得的mean/RMS/hinge余额，>11及>56计数每批不增，逐输入cap=max(56,起点d²)。优先目标分别为>56与>11计数。",
+  "acceptance": "完整域max<sqrt(57)或p99<sqrt(12)，完整域mean/RMS/CVaR及原60图mean/RMS不退；不以计数变好冒充p99变好。完整新四级uint64、原生和百图另验；速度另测。",
+  "diagnostic": "对所有包含旧57误差的第一级到达组计算半径平方56整数球交；若不可行则记录固定第一级的下界，不据此改变试验方向/预算。",
+  "limits": "暂不改变runtime格式或内存；不是官方成绩，非照片盲测；官方阈值及sidecar许可仍待确认。"
+}

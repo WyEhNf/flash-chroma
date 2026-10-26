@@ -1,0 +1,45 @@
+{
+  "first_model_sha256": "0ea0a380b83e3581668654f45a7aa5682515b2dfb6ef7c8aeb96f82f60afa030",
+  "suffix_model_sha256": [
+    "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+    "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+  ],
+  "cube_sha256": "1fc01a27aa1737428d2a652a93cf9efcfd336e00b8dce81114563f9bd99c18ca",
+  "mass_sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+  "source_sha256": {
+    "scripts/run_cinema_last_stage.py": "21ea20083d715d428ce5b73c392fb7a9d2032b65e92bf9702d60064336d161fd",
+    "python/lutlab/channel_max_nodes.py": "91453be84210c6d512f140b8353ff14c9c92e02044f9824cab435d2377786530",
+    "python/lutlab/channel_tail_nodes.py": "32e9f1fe7e9604a5ac188f6166743d02cd4e6fe70aad603ede3dc1eea7609c69"
+  },
+  "policy": "一次8批，52个±2/±4方向，整批九项保护；cap=max(65,severe_first逐色d²)，禁止非原max颜色新建d²66；全域max必须严格降，双mean/RMS和p99/CVaR不退才另终验。只使用原60图训练质量，不中间读100图。",
+  "labels": "末级拟合整链真实reference，显式联合目标；原始第4 LUT独立源误差另列，不能宣称每级独立拟合质量都不变。",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4
+}

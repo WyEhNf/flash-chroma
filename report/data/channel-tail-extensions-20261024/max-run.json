@@ -1,0 +1,44 @@
+{
+  "initial_sha256": "0ea0a380b83e3581668654f45a7aa5682515b2dfb6ef7c8aeb96f82f60afa030",
+  "input_sha256": {
+    "reference": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690",
+    "suffix": "95bc0995c29f476c3a31d7f7a08ad782b582a852bc2f1876b1a9cf07b24c1cf7",
+    "points": "fac03692667ab8d5220a4a09035b420d96037094c101b91011de303209ccaaea",
+    "mass": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+  },
+  "source_sha256": {
+    "scripts/run_channel_max_nodes.py": "be6a139083a3a03111ce941a52216f746beb7b4afbb4318b66a608c63432f044",
+    "python/lutlab/channel_max_nodes.py": "91453be84210c6d512f140b8353ff14c9c92e02044f9824cab435d2377786530",
+    "python/lutlab/channel_tail_nodes.py": "32e9f1fe7e9604a5ac188f6166743d02cd4e6fe70aad603ede3dc1eea7609c69"
+  },
+  "policy": "±2/±4共52方向，两扫0..7共16批；初始局部严格均值收益作整批预算，按max d²>65计数/49超额/mean优先交换；每批9项统计全部非增；cap=max(49,incumbent逐色d²)。禁止中间照片选择或追加扫数。",
+  "gate": "完整cube及历史100图的mean/RMS/p99/max/CVaR相对incumbent均非增，且cube max严格降低；未通过则保留负结果和首阶段候选。",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4
+}

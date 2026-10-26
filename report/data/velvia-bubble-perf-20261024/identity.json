@@ -1,0 +1,91 @@
+{
+  "plan": {
+    "agent": "/root/tail",
+    "operator": "当前会话用户",
+    "status": "冻结待正式排他窗口",
+    "revision": 187,
+    "library_sha256": "65e929e44e4abf5cd3a848fa2bd2b08edc41cc27dd750e5a4d5da3553e98b211",
+    "control_87_sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158",
+    "models": [
+      "冻结87原3e5",
+      "187关闭的原3e5",
+      "同187开启的固定κ3两cell"
+    ],
+    "datasets": {
+      "photos": "manifest顺序全部100张evaluation RGB8，拼接为78,643,200像素；不抽取表现好的图",
+      "dense": "1,048,576像素，256个4096全满命中子块；全部固定为原max训练色RGB(239,252,113)，保证外层65536分块可用4线程"
+    },
+    "workers": 4,
+    "repeats_per_group": 5,
+    "warmup_per_group": 1,
+    "paths": [
+      "inplace",
+      "true_outplace"
+    ],
+    "threads": [
+      1,
+      4
+    ],
+    "kernel": "avx2",
+    "group_order": [
+      "87A",
+      "187offA",
+      "187onA",
+      "187onB",
+      "187offB",
+      "87B"
+    ],
+    "scope_order": "偶数worker顺序场景，奇数worker逆序场景，全部记录，不按结果改顺序",
+    "AA_gate": "每worker每场景，同87的A/B及同187off的A/B中位耗时比均须落[0.85,1.15]；无效场保留并单列不确定，不同一次试验追加救援重跑",
+    "comparisons": [
+      "187off/冻结87固定成本",
+      "187on/同187off模型代价",
+      "187on/冻结87总成本"
+    ],
+    "metrics": [
+      "原地C++纯apply及copy+apply分列",
+      "真分离仅完整apply_to API计时，包含该路径内部必要复制；不伪称分出纯映射",
+      "全部进程与相位中位及最劣吞吐保留",
+      "每组末work SHA及源只读",
+      "逻辑容量和每线程密集命中栈"
+    ],
+    "acceptance": "photos或dense任一有效关键配置最劣吞吐保留<50%即拒绝187；100/90/80/70/60/50各档均列；无明显退化另看<=1.10耗时；不删除坏worker或改库/线程",
+    "not_measured": [
+      "正式prepare冷首性能",
+      "跨平台性能",
+      "RSS与实际调用链峰栈"
+    ],
+    "next_if_rejected": "只在187被有效<50%负例拒绝后，另冻仅用原节点/轴/κ构造的612支撑精确prepare cache；当前不实现、不混写本试验",
+    "scope": "现仅冻结计划，尚未计时。原始basis、κ、两cell及模型不变；C0与RGB8局部跳变代价继续披露。"
+  },
+  "plan_sha256": "4c062a4e7c63311b52d6a6cae8f288801312f099633c80d5a3157d7bdefe2c37",
+  "driver_sha256": "f4c90e71b2b8d8ed9ec812e86bf3df321e1c209eb6a92e34a7d9d10937e45561",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "started_utc": "2026-10-23T19:26:09.635156+00:00"
+}

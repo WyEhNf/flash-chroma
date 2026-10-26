@@ -1,0 +1,74 @@
+{
+  "ast_pass": true,
+  "source_sha256": {
+    "scripts/census_direct_axis_banks.py": "93d08150b33d3a93e24c565fe56551c4aa27ba168a2b59c56a7c5cff7ba0832f",
+    "scripts/audit_direct_axis_banks.py": "7df687d03d4ccf74c27884d36d3e91e902e619be790b32ffb73504fc87132e63",
+    "experiments/p16-direct-axis-banks-proposal-v1.md": "e1e229e0aa384b2c6f20cd2b6e182a56f002981cfdd2751ecbddb7ea403aef23"
+  },
+  "inputs": {
+    "frozen.json": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\frozen.json",
+      "sha256": "ba77cb94813346b1906f696c30637933be7b62d738221331d725af34142268d4",
+      "bytes": 29493
+    },
+    "results.json": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\results.json",
+      "sha256": "728165235480fb336ef39ec4ce6ffb801c33d59a3c19676c62aa063ba249dc7e",
+      "bytes": 22026
+    },
+    "independent.json": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\independent.json",
+      "sha256": "4748d80be00f83f553ea7457df6d668054099bb7b10a91a4db57b7964e56ee80",
+      "bytes": 744
+    },
+    "physical-ids-u16-with-guard.bin": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\physical-ids-u16-with-guard.bin",
+      "sha256": "032e7596273b286eee22ab92384a24b7473358feba7f17291fbabeae0a83d6c6",
+      "bytes": 33554436
+    },
+    "whole-palette-u32.bin": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\whole-palette-u32.bin",
+      "sha256": "6deb63f9f9ace656316cfe39217b60c51a7407922e65685a89939fadad36df5b",
+      "bytes": 2452
+    },
+    "packed-ids-with-guard.bin": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\packed-ids-with-guard.bin",
+      "sha256": "285521f465e91739bc6ed68b9f3d3db2ea8adada6c51d5511e5e16a592070caa",
+      "bytes": 18874372
+    },
+    "active-palette-u32.bin": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\p16-direct-active-packed-v2\\active-palette-u32.bin",
+      "sha256": "e3a91175bf850756330c4a9d221dddb2ea05d315e50a61f1d323981360e0a224",
+      "bytes": 1376
+    }
+  },
+  "proposal": "# max41按输入坐标分bank的8位表示：完整域几何普查静态提案\n\n状态：尚未编写或执行普查；不可在293/294或native-pages正式窗口内运行。本提案不授native实现、质量或性能资格。\n\n## 从已知结果提出一个不同读取路径\n\n完整max41表实际344色，精确9位紧密表已通过离线可表示性。但旧固定10位native有有效低50%的负例，9位少一位不能推断足够快。本提案研究另一种精确表示：输入本身决定固定宽度bank，每个bank独立使用最多256种精确颜色；随机读取仍是一个8位ID加一个RGB32 palette读取，不从9位位流提取跨字节字段。额外的bank地址运算、palette重复及准备成本仍须实测。\n\n已有gbank8实验中的8表示8位ID，实际是G坐标256个bank；对旧三模型失败的原件保持。那些旧模型的G256已超256色，任何更粗G划分也必失败，不重新普查它们。max41原先因1MiB cache预算前置失败，没有有效G256完整色集结果；本次以已验证293导出的当前max41完整物理ID表为输入。新普查只研究这一模型、输入R/G/B三个固定轴和预先列出的2/4/8/16/32/64/128/256个等宽bank，不扩展到数据依赖切点、多轴树、频率、照片或gold。24个配置全部报告，不以事后性能选表示。\n\n## 预注册的普查与确定选择\n\n输入仅为既有V2冻结、results、independent及实际physical-ids-u16-with-guard.bin/whole-palette-u32.bin；原293不再prepare，不调用apply，不读取RGB oracle或照片。先逐项核原results.artifacts的bytes/SHA，核已有独立审计绑定。物理地址c的坐标为R=c&255、G=(c>>8)&255、B=(c>>16)&255。\n\n完整扫描16,777,216个ID，先按实际RGB32去重构造活动色映射，再构造每个轴的256×344颜色存在矩阵；不能把613个whole-cache ID直接当作不同实际颜色。局部颜色按原RGB32升序重编号，矩阵元素只表示完整域中是否出现，不用命中频率。均匀粗bank由连续坐标行的布尔并得到，逐bank报告颜色数，任何颜色数>256的配置拒绝。矩阵、全部计数、首个超界bank和其257种实际颜色/输入见证均保存，绝不截断。原始uint16表中的ID范围/guard/活动色及总输入数再次核对。\n\n若没有任何配置可表示，停止，不造新native或下一轮切点。若有，则以固定palette槽数最少（bank数最少）选择；相同bank数按R、G、B顺序取第一项，不根据照片、误差、频率或速度选择。每bank固定256个uint32 palette槽，unused槽全零，ID表N字节+4 owned zero guard。离线容量账单为N+4+bank_count×256×4，不计为实际模型容量。\n\n只为唯一确定配置导出完整8位ID表和固定palette，逐16M输入解码RGB，与原物理uint16表的palette输出完全一致。原输入c到bank的函数、palette槽下标bank*256+id及最后4B读边界完整定义；不做native C/C++位域，不从当前分配地址推断保证对齐。\n\n有限合同用小立方体/边界坐标/同RGB异旧ID/同bank重复颜色、恰256色与257色、末ID和空guard，验证均匀分组、固定优先选择、拒绝/零填充、完整逆映射。独立审核用Python整数位址与每坐标set，完整重放三个轴的每个256坐标色集和24配置；不导入生产分组/选择函数。选择成功时另完整核导出的16M RGB。两条完整路径访问量及暂态载荷分别记录，不称测得速度。\n\n## 后续的硬边界\n\n这项离线普查最多证明一种精确可表示性，不证明比9位或uint16更快。未来prepare如何形成bank palette与ID表必须先固定单版，包含扫描、临时uint16表或第二次编译的全部成本；不允许直接把离线二进制当免费运行时表。旧8位优先的best分支不可受新路径拖累。后续native仍须guard、全域与百图、三个主分母的冷热速度以及fresh无图RSS分别通过；任何有效低50%保持拒绝，P辅助不能恢复U主资格。\n\n## 参考资料范围\n\n已读Lemire与Boytsov论文的引言、§4位解包和§7随机访问讨论。其块式SIMD解码吞吐不能转成这里的逐像素随机查表速度；本文只借鉴显式位布局和访问粒度的取舍。作者2012年的位打包实验也属于特定编译器/CPU的顺序解包，不能作为9位优于10位的证据。论文HTML见[作者论文arXiv](https://arxiv.org/html/1209.2137)，补充见[作者位打包文章](https://lemire.me/blog/2012/03/06/how-fast-is-bit-packing/)。作者PDF镜像本次502，未声称读完该PDF。\n",
+  "upstream_lineage_sources": 223,
+  "upstream_lineage_inputs": 13,
+  "actual_inputs_this_stage": 7,
+  "axes": [
+    "R",
+    "G",
+    "B"
+  ],
+  "bank_counts": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256
+  ],
+  "configurations": 24,
+  "logical_entries": 16777216,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "1.26.4",
+  "psutil": "5.9.0",
+  "byteorder": "little",
+  "native_prepare_calls": 0,
+  "native_apply_calls": 0,
+  "performance_samples": 0,
+  "scope": "引用已冻结223源谱系；本次只读7项实际证据，不加载native/模型/gold/照片"
+}
