@@ -1,0 +1,35 @@
+{
+  "purpose": "保存两场基准实际工具调用的启动设置转录，不修改原始results或executed-plan。",
+  "source": "本会话functions.exec内tools.exec_command的已执行命令转录；并非事先落盘的shell日志或进程环境快照。",
+  "environment_set_in_command": {
+    "OMP_NUM_THREADS": "4",
+    "OMP_WAIT_POLICY": "PASSIVE",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONUTF8": "1"
+  },
+  "working_directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026",
+  "python": "F:/Hackathon/projects/16-lut-color/artifacts/error-study-py312/Scripts/python.exe",
+  "arguments_common": [
+    "-X", "utf8", "scripts/bench_p16_unified.py",
+    "--library", "artifacts/p16-unified-build/libjshc_unified.dll",
+    "--plan", "experiments/p16-unified-quality-v1.json"
+  ],
+  "runs": [
+    {
+      "version": 1,
+      "correctness": "artifacts/p16-unified-quality-v1/correctness.json",
+      "build_receipt": "artifacts/p16-unified-build/build-receipt.json",
+      "output": "artifacts/p16-unified-benchmark-v1",
+      "exit_code": 0
+    },
+    {
+      "version": 2,
+      "correctness": "artifacts/p16-unified-quality-v2/correctness.json",
+      "build_receipt": "artifacts/p16-unified-build/build-receipt-ilp64.json",
+      "output": "artifacts/p16-unified-benchmark-v2",
+      "exit_code": 0
+    }
+  ],
+  "limitation": "原环境回执没有读取这些变量，不能据此证明进程后续环境始终不变；不为缺口重测或改写旧原件。"
+}

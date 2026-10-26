@@ -1,0 +1,90 @@
+{
+  "models": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-quality-v1\\mixed-m-contract\\stage1-m17.slut",
+      "sha256": "8ef51de1e89fe9983192fbb1b938d2d170e0317e18ba029145ef449b30ad7a79"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-quality-v1\\mixed-m-contract\\stage2-m18.slut",
+      "sha256": "37f17dd3dce1ebe3405e2bea1fa8348313446a91641803a9674763b8bc90ad46"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-quality-v1\\mixed-m-contract\\stage3-m25.slut",
+      "sha256": "37a31ff3e1f2766f7653bbecc80bd1e827a568fd7f1c1c0df62f04cb85d8eb8a"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-quality-v1\\mixed-m-contract\\stage4-m33.slut",
+      "sha256": "7a4dec484767ad279e55f3e65cff757cdae09395a94ad49a2caa73c34e34cb79"
+    }
+  ],
+  "m": [
+    17,
+    18,
+    25,
+    33
+  ],
+  "seed": 202610260103,
+  "oracle": "独立uint64四凸权重，逐级RGB8 half-up；节点/坐标未按照片调整",
+  "pixels": 65537,
+  "source_sha256": "b0a4907e380d65791881402ebe2ecfd178898eb39667dd11e745a209d04b8430",
+  "expected_sha256": "fe262ba7b030984013f517e9d3623274bbeeb19fad58f2293205acd25843a5ba",
+  "backend_comparisons": 8,
+  "byte_mismatches": 0,
+  "state": {
+    "model_capacity_bytes": 479961,
+    "direct": {
+      "version": 1,
+      "enabled": 0,
+      "format": 9,
+      "reserved": 0,
+      "entries": 0,
+      "table_capacity_bytes": 0,
+      "dg_min": 0,
+      "db_min": 0
+    },
+    "suffix_cache": {
+      "version": 1,
+      "enabled": 0,
+      "reason": 2,
+      "reserved": 0,
+      "entries": 0,
+      "valid_entries": 0,
+      "table_capacity_bytes": 0,
+      "temporary_capacity_bytes": 0,
+      "prepare_seconds": 4e-06,
+      "r_min": 0,
+      "r_max": 255,
+      "dg_min": -248,
+      "dg_max": 254,
+      "db_min": -247,
+      "db_max": 255
+    },
+    "direct_u16": {
+      "version": 1,
+      "enabled": 0,
+      "format": 16,
+      "reason": 2,
+      "palette_size": 0,
+      "id_bytes": 2,
+      "guard_bytes": 4,
+      "reserved": 0,
+      "input_entries": 0,
+      "raw_words": 0,
+      "table_capacity_bytes": 0,
+      "palette_capacity_bytes": 0,
+      "temporary_peak_bytes": 0,
+      "guaranteed_alignment": 2,
+      "data_mod_64": 0,
+      "prepare_seconds": 0.0
+    }
+  },
+  "no_direct_rejection": {
+    "backend": "avx512",
+    "executed": false,
+    "rejection_calls": 2,
+    "inplace_error": "AVX512要求已生成精确direct表，请选AVX2或标量",
+    "outplace_error": "AVX512要求已生成精确direct表，请选AVX2或标量",
+    "reason": "固定混合m模型无direct资格；即使CPU支持亦拒绝",
+    "scope": "不满足后端条件时明确拒绝且缓冲区不变；不是AVX512像素执行正确性。"
+  }
+}

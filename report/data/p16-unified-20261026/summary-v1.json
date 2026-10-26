@@ -1,0 +1,466 @@
+{
+  "passed": true,
+  "benchmark": {
+    "path": "artifacts\\p16-unified-benchmark-v1\\results.json",
+    "sha256": "47916c4695f8c3493f9bbea12db4fbe1a74d660844e0e0e1d74f87a0fab70da6"
+  },
+  "correctness": {
+    "path": "artifacts\\p16-unified-quality-v1\\correctness.json",
+    "sha256": "14fd6a1ebefa7f0529340ac4bde728033048fb374f62643a7f957f20266603f7"
+  },
+  "library": {
+    "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-build\\libjshc_unified.dll",
+    "sha256": "100e4c3a754594fdb49e769a7dea3303c736abf1a2cf1f261f8fa7f3614a8981",
+    "revision": 102,
+    "capabilities": 15,
+    "avx512_cpu_os_available": true
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "pillow": "10.4.0",
+    "psutil": "5.9.0",
+    "affinity": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "physical_cores": 16,
+    "logical_cpus": 32,
+    "cpu_only": true,
+    "locked_frequency": false,
+    "compiler_and_flags": "见绑定的构建回执；本脚本不改编译参数",
+    "target_cpu": "Intel Xeon Gold 6140；仅当实际cpu相符时才属于目标机结果",
+    "build_receipt": {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-build\\build-receipt.json",
+      "sha256": "9f7b121a139e378a522dbe41a084e03e78ecc85e590f78c365eb0d59e154b6ce",
+      "content": {
+        "status": "build_passed",
+        "base_commit": "a1228b1de5cc2450171f8679f7aeb6f6d29be5f7",
+        "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0",
+        "generator": "MinGW Makefiles",
+        "build_type": "Release",
+        "standard": "C++17",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            "experiments/p16-unified-runtime",
+            "-B",
+            "artifacts/p16-unified-build",
+            "-G",
+            "MinGW Makefiles",
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_CXX_COMPILER=E:/mingw64/bin/g++.exe",
+            "-DCMAKE_C_COMPILER=E:/mingw64/bin/gcc.exe",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+          ],
+          [
+            "cmake",
+            "--build",
+            "artifacts/p16-unified-build",
+            "--target",
+            "jshc_unified",
+            "p16_avx512_contract",
+            "-j",
+            "2"
+          ]
+        ],
+        "compile_commands": [
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe   -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -mavx512f -mavx512bw -mavx512dq -mavx512vl -mtune=skylake-avx512 -ffp-contract=off -o CMakeFiles\\p16_direct_avx512.dir\\direct_avx512.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-unified-runtime/direct_avx512.cpp",
+            "output": "CMakeFiles/p16_direct_avx512.dir/direct_avx512.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -o CMakeFiles\\jshc_unified.dir\\channel_runtime.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\channel_runtime.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-unified-runtime/channel_runtime.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/channel_runtime.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\compile_shared_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\compile_shared_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-unified-runtime/compile_shared_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/compile_shared_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-scanline-prepare-runtime\\compile_scanline_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-scanline-prepare-runtime\\compile_scanline_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-scanline-prepare-runtime/compile_scanline_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-scanline-prepare-runtime/compile_scanline_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\direct_u16_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\direct_u16_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/direct_u16_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/direct_u16_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\linear.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\linear.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/linear.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/linear.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_inplace.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_inplace.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/andn_inplace.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/andn_inplace.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_outplace.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_outplace.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/andn_outplace.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/andn_outplace.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\normal_inplace.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\normal_inplace.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/normal_inplace.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-direct-u16-cache2-runtime/normal_inplace.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\outplace_bench.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\outplace_bench.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/outplace_bench.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/outplace_bench.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_inplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_inplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_outplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_outplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -mbmi -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\normal_inplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\normal_inplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -DP16_HAVE_AVX512=1 -DP16_PREPARE_SIMD=1 -Djshc_unified_EXPORTS @CMakeFiles/jshc_unified.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fstack-usage -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_unified.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+            "output": "CMakeFiles/jshc_unified.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build",
+            "command": "E:\\mingw64\\bin\\g++.exe   -O3 -DNDEBUG -std=c++17 -o CMakeFiles\\p16_avx512_contract.dir\\direct_avx512_contract.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512_contract.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/p16-unified-runtime/direct_avx512_contract.cpp",
+            "output": "CMakeFiles/p16_avx512_contract.dir/direct_avx512_contract.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -o CMakeFiles\\jshc_skylake_reference.dir\\reference_to.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\reference_to.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/reference_to.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/reference_to.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -o CMakeFiles\\jshc_skylake_reference.dir\\outplace_bench.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\outplace_bench.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/outplace_bench.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/outplace_bench.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -o CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_runtime.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_runtime.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_runtime.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_runtime.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_reference_EXPORTS @CMakeFiles/jshc_skylake_reference.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -o CMakeFiles\\jshc_skylake_andn_normal.dir\\channel_runtime.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_runtime.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/channel_runtime.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/channel_runtime.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -o CMakeFiles\\jshc_skylake_andn_normal.dir\\outplace_bench.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\outplace_bench.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/outplace_bench.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/outplace_bench.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_andn_normal.dir\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -mbmi -o CMakeFiles\\jshc_skylake_andn_normal.dir\\andn_inplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_inplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/andn_inplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -mbmi -o CMakeFiles\\jshc_skylake_andn_normal.dir\\andn_outplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_outplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/andn_outplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -mbmi -o CMakeFiles\\jshc_skylake_andn_normal.dir\\normal_inplace\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\normal_inplace\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/normal_inplace/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_andn_normal.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-exception-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_andn_normal.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/baseline",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_CC_HAVE_AVX2=1 -Djshc_skylake_andn_normal_EXPORTS @CMakeFiles/jshc_skylake_andn_normal.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fvisibility=hidden -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_skylake_andn_normal.dir\\F_\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+            "output": "baseline/CMakeFiles/jshc_skylake_andn_normal.dir/F_/Hackathon/worktrees/p16-unified-avx512-20261026/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_HAVE_AVX2=1 -DJSHC_HAVE_PORTABLE_C=1 @CMakeFiles/jshc_core.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fopenmp -o CMakeFiles\\jshc_core.dir\\cpp\\src\\lut.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\lut.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/cpp/src/lut.cpp",
+            "output": "core/CMakeFiles/jshc_core.dir/cpp/src/lut.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_HAVE_AVX2=1 -DJSHC_HAVE_PORTABLE_C=1 @CMakeFiles/jshc_core.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fopenmp -o CMakeFiles\\jshc_core.dir\\cpp\\src\\fit_r14.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\fit_r14.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/cpp/src/fit_r14.cpp",
+            "output": "core/CMakeFiles/jshc_core.dir/cpp/src/fit_r14.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_HAVE_AVX2=1 -DJSHC_HAVE_PORTABLE_C=1 @CMakeFiles/jshc_core.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fopenmp -o CMakeFiles\\jshc_core.dir\\cpp\\src\\portable_bridge.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\portable_bridge.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/cpp/src/portable_bridge.cpp",
+            "output": "core/CMakeFiles/jshc_core.dir/cpp/src/portable_bridge.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\gcc.exe -DJSHC_HAVE_AVX2=1 -DJSHC_HAVE_PORTABLE_C=1 @CMakeFiles/jshc_core.dir/includes_C.rsp -O3 -DNDEBUG -std=c99 -Wall -Wextra -o CMakeFiles\\jshc_core.dir\\portable\\src\\jshc_portable.c.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\portable\\src\\jshc_portable.c",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/portable/src/jshc_portable.c",
+            "output": "core/CMakeFiles/jshc_core.dir/portable/src/jshc_portable.c.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\g++.exe -DJSHC_HAVE_AVX2=1 -DJSHC_HAVE_PORTABLE_C=1 @CMakeFiles/jshc_core.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -fopenmp -mavx2 -mtune=skylake -ffp-contract=off -o CMakeFiles\\jshc_core.dir\\cpp\\src\\lut_simd_avx2.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\lut_simd_avx2.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/cpp/src/lut_simd_avx2.cpp",
+            "output": "core/CMakeFiles/jshc_core.dir/cpp/src/lut_simd_avx2.cpp.obj"
+          },
+          {
+            "directory": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/artifacts/p16-unified-build/core",
+            "command": "E:\\mingw64\\bin\\g++.exe  @CMakeFiles/jshc.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wno-unused-function -Wno-missing-field-initializers -fopenmp -o CMakeFiles\\jshc.dir\\cpp\\src\\main.cpp.obj -c F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\main.cpp",
+            "file": "F:/Hackathon/worktrees/p16-unified-avx512-20261026/cpp/src/main.cpp",
+            "output": "core/CMakeFiles/jshc.dir/cpp/src/main.cpp.obj"
+          }
+        ],
+        "source_sha256": {
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.cpp": "72f6bbdc7c87b560a8af25e34f3740645c3b82e76af9abe4a634d2766278eaed",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\channel_runtime.cpp": "9f4b15e87a0a26a94e1faac002cdd204f0adcb214079b6f52afa5d5e2ea0b12d",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\compile_shared_avx2.cpp": "38984a795a1b65adc11e45c15c55eb095498d2652cab3d3f4b6aacf524aa896f",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-scanline-prepare-runtime\\compile_scanline_avx2.cpp": "e95b9182cd09c204c0e8818c95dcb46ff7fc964ff1b8bf9eb509f0b96937e9d6",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\direct_u16_avx2.cpp": "c456e1652917ca0c17be5f214e3b28f0c56c6199fcfab9fb8860d1b9f0665e2d",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\linear.cpp": "c7bf039d8f1c34b286da2bfef499018fa759194a34351fa969e31075c2bc3ade",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_inplace.cpp": "219bcbbc07981136d08725fc642bbd1a7074830ef74e764bf9c89c7be142f3e7",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\andn_outplace.cpp": "55e55b9c50f1cbaae114b49a3fdc7d6007f98e18127675e50416755f10fb4ee4",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\normal_inplace.cpp": "23f68f63103d72dfb6fc74cfe62b037622bb3a0771b8a2b806395e0989bcd93a",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_inplace\\channel_avx2.cpp": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\andn_outplace\\channel_avx2.cpp": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\normal_inplace\\channel_avx2.cpp": "b0c3f432259035dd028105764b2277e5dc025685db3655c28516f7634698fbe7",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp": "82a68ce75ca019510b70c9a5f0544bf8308a6e15d92f08a00bc57fd4241f5751",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512_contract.cpp": "3254042aece1d7855aae3f7ff0db9ba97baf61a10e7e951d698b3c582f564343",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\reference_to.cpp": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-exception-runtime\\channel_runtime.cpp": "ba539a1c585ddbebb1635bfda6eae49786592a88a4c044d479a42ff272edde3c",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-domain-isolated-runtime\\channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_runtime.cpp": "762080ef58273d425d3c9049f6518f1324c5696bd9f80b0c2bf4711de005aa5d",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\portable_bridge.cpp": "2f45baf1b80b3189b6a6f2ea6f65775cb73b9ad811b5ef957e5de7a6ec5d97ea",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\portable\\src\\jshc_portable.c": "dec96a2fc97d5087da2f21220cd01124f4399b01eabbf137d4ba1508811ec40a",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\lut_simd_avx2.cpp": "7f9caf001b8d66e724e4b415a61be74e1c6b83182e0a75a8506a0d8c6bd140e7",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.h": "6f2bb342e4662b2be4b5bfeaa93c88828bb57cb86a285cc09c27b7d1f0082a3c",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\unified.h": "7b1629cb0dd158f8d2493b69cd80fb7c24df12c423693cac2ef7e7b6fbd4efa1",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\channel-runtime\\channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\channel-runtime\\channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\aligned_table.hpp": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-andn-normal-runtime\\suffix_cache.hpp": "c1024c72928c145d58fa5578f5896f210b2a53ee11de064790b50734b9c6f780",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\skylake-suffix-cache-runtime\\suffix_cache.hpp": "969dbc4274c8f72cf4e02702d5a490d813202d2b50f0e28cc46f85e0cef1e6dc",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-direct-u16-cache2-runtime\\direct_u16.hpp": "5d722985984899f62b951d2db4fb2dc02cd33a8e9398d8e205f004351f95f387",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-scanline-prepare-runtime\\small_palette.hpp": "d34d07b149ba221bfa4f7de85a60387a878ecb3d2baf60a6fd163e54c4cbbe83",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-scanline-prepare-runtime\\workload_hint.h": "5ec90ade4d929910a66c6fd3e7d8cdadf0a6e33e966da803faefedb7eb5f41ca",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\include\\jshc\\full_normals.h": "aec0fdfe4b1c6f2e7bbfc29533c44f3572c58b03334f767c02d584817bfe1483",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\include\\jshc\\image_contract.hpp": "117c11d9b5da5a23d9b84d99102e7a35656adc6d47adb7f9177c9857e166980b",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\include\\jshc\\lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\lut_simd_avx2.hpp": "374e7858822a4c38ccf3b4cfa92ed876862620a3cb88493afe1657da843ccc89",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\cpp\\src\\portable_bridge.hpp": "81fb78e265a4855b9fb9b6b7641c44827906d106f490376d6caf8654f4349730",
+          "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\portable\\include\\jshc_portable.h": "9c887ea694c8f88479bc61d0c30f413de239f4a25ba8977d479292b9eddc0abb"
+        },
+        "outputs": {
+          "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+          "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+          "libjshc_unified.dll": "100e4c3a754594fdb49e769a7dea3303c736abf1a2cf1f261f8fa7f3614a8981",
+          "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+          "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+          "p16_avx512_contract.exe": "dca151cb0eeea80f5310fbebda14747ee2ad7a1db3b80ac40d13a595b11ce27b"
+        },
+        "scope": "Windows x64 CPU-only；AVX512仅独立对象，通用wrapper基线ISA；尚非Xeon实测。"
+      }
+    },
+    "commit": "a1228b1de5cc2450171f8679f7aeb6f6d29be5f7",
+    "script_sha256": {
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\scripts\\p16_unified_support.py": "101c44b78a48d9d4b043dc56e2ba6c34341c4c1f7d3842c5c434414997e77da7",
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\scripts\\bench_p16_unified.py": "c11b52800c4c16b765794eb536e28561e0e094b20242141b69c2908e87bd56c9"
+    }
+  },
+  "comparisons": [
+    {
+      "model": "anchor",
+      "threads": 1,
+      "avx2_batch_median_ms": 49.5651,
+      "avx512_batch_median_ms": 99.34680000000002,
+      "avx512_median_throughput_vs_avx2": 0.4989098793317952,
+      "avx2_create_to_first_batch_ms": 69.07150000000001,
+      "avx512_create_to_first_batch_ms": 132.6591,
+      "model_capacity_bytes": 18579348,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "anchor",
+      "threads": 4,
+      "avx2_batch_median_ms": 17.453,
+      "avx512_batch_median_ms": 27.995600000000003,
+      "avx512_median_throughput_vs_avx2": 0.6234193944762748,
+      "avx2_create_to_first_batch_ms": 38.614200000000004,
+      "avx512_create_to_first_batch_ms": 55.002700000000004,
+      "model_capacity_bytes": 18579348,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "default",
+      "threads": 1,
+      "avx2_batch_median_ms": 48.758300000000006,
+      "avx512_batch_median_ms": 95.2833,
+      "avx512_median_throughput_vs_avx2": 0.5117192624520771,
+      "avx2_create_to_first_batch_ms": 72.6666,
+      "avx512_create_to_first_batch_ms": 122.28000000000002,
+      "model_capacity_bytes": 18715824,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "default",
+      "threads": 4,
+      "avx2_batch_median_ms": 17.1159,
+      "avx512_batch_median_ms": 28.0727,
+      "avx512_median_throughput_vs_avx2": 0.609699102686952,
+      "avx2_create_to_first_batch_ms": 37.4004,
+      "avx512_create_to_first_batch_ms": 48.6226,
+      "model_capacity_bytes": 18715824,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "max41",
+      "threads": 1,
+      "avx2_batch_median_ms": 58.49940000000001,
+      "avx512_batch_median_ms": 111.97510000000001,
+      "avx512_median_throughput_vs_avx2": 0.5224322193058993,
+      "avx2_create_to_first_batch_ms": 99.63040000000001,
+      "avx512_create_to_first_batch_ms": 157.3231,
+      "model_capacity_bytes": 35673508,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "max41",
+      "threads": 4,
+      "avx2_batch_median_ms": 18.657100000000003,
+      "avx512_batch_median_ms": 33.2432,
+      "avx512_median_throughput_vs_avx2": 0.5612305674543968,
+      "avx2_create_to_first_batch_ms": 80.9123,
+      "avx512_create_to_first_batch_ms": 73.26219999999999,
+      "model_capacity_bytes": 35673508,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "ordinary",
+      "threads": 1,
+      "avx2_batch_median_ms": 48.7538,
+      "avx512_batch_median_ms": 94.70570000000001,
+      "avx512_median_throughput_vs_avx2": 0.5147926682343301,
+      "avx2_create_to_first_batch_ms": 66.7231,
+      "avx512_create_to_first_batch_ms": 116.10830000000001,
+      "model_capacity_bytes": 18630184,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    },
+    {
+      "model": "ordinary",
+      "threads": 4,
+      "avx2_batch_median_ms": 17.186,
+      "avx512_batch_median_ms": 28.502100000000002,
+      "avx512_median_throughput_vs_avx2": 0.6029731142617561,
+      "avx2_create_to_first_batch_ms": 31.701100000000004,
+      "avx512_create_to_first_batch_ms": 42.0702,
+      "model_capacity_bytes": 18630184,
+      "source_image_bytes": 235929600,
+      "output_image_bytes": 235929600
+    }
+  ],
+  "timed_batches": 112,
+  "scope": "单场分组计时的描述性中位比较，无A/A或跨机结论；冷wall每格仅一个新句柄，不能称冷启动中位或稀疏拟合全流程。"
+}

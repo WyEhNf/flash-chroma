@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "purpose": "AVX512每64像素四组独立请求流水；仅运行时正确性和机器码核验",
+  "status": "独立合同通过，尚未正式重建/质量/性能",
+  "environment": {
+    "os": "Windows x64",
+    "cpu": "AMD Ryzen 9 8945HX",
+    "compiler": "GCC15.2.0 MinGW",
+    "threads": 1,
+    "isa": "AVX512F/BW/DQ/VL，mtune=skylake-avx512",
+    "flags": "-std=c++17 -O3 -DNDEBUG -Wall -Wextra -fvisibility=hidden -mavx512f -mavx512bw -mavx512dq -mavx512vl -mtune=skylake-avx512 -ffp-contract=off -fstack-usage"
+  },
+  "previous": {
+    "source_sha256": "72f6bbdc7c87b560a8af25e34f3740645c3b82e76af9abe4a634d2766278eaed",
+    "object_sha256": "488921284b6fd759022e85eb6c1f12f58cc5c2270fe4eb7fd1285d862ae40e99",
+    "backup": "artifacts/p16-avx512-ilp64-v2/previous",
+    "benchmark_raw": "artifacts/p16-unified-benchmark-v1"
+  },
+  "changes": [
+    "u8/u16新增64像素主循环",
+    "先完成四组输入，再四组ID gather，再四组palette gather，最后四组输出",
+    "零指令编译器屏障保持阶段边界",
+    "16像素和标量尾保留；RGB24仍单组16像素"
+  ],
+  "contract": {
+    "result": "通过",
+    "finite_calls_per_format": 193,
+    "formats": [
+      "u8",
+      "u16",
+      "RGB24"
+    ],
+    "full_domain_pixels_per_format": 33554432,
+    "full_domain_pixels_total": 100663296,
+    "guard": "图像NOACCESS末端、u8零guard表末端、u16/RGB24四字节guard均通过",
+    "log": "contract.log"
+  },
+  "assembly": {
+    "u8_id_gather_offsets": [
+      "e9",
+      "112",
+      "140",
+      "15a"
+    ],
+    "u8_palette_gather_offsets": [
+      "192",
+      "19d",
+      "1a4",
+      "1ab"
+    ],
+    "u16_id_gather_offsets": [
+      "490",
+      "49f",
+      "4ac",
+      "4b7"
+    ],
+    "u16_palette_gather_offsets": [
+      "4de",
+      "4e9",
+      "4f4",
+      "4fb"
+    ],
+    "vector_stack_spill_lines": 0,
+    "u8_static_frame_bytes": 40,
+    "u16_static_frame_bytes": 40,
+    "rgb24_static_frame_bytes": 24
+  },
+  "files": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.cpp",
+      "sha256": "4fa5c5936e2ed81d4d484bde2902f54754ec8622db3f98375e158a3a1bc7c0cd"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-avx512-ilp64-v2\\direct_avx512.o",
+      "sha256": "a59696f71aad4de6d48fd425b449a360e362f750d90ee37513d3e4e814024fa0"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-avx512-ilp64-v2\\direct_avx512_contract.exe",
+      "sha256": "f0228a55a00f7e1cf89957a43cbfb02a00f28b85f37533f11b08f2c8f5006290"
+    }
+  ],
+  "limits": [
+    "未运行性能；不能宣称已提速",
+    "未在Xeon Gold 6140执行",
+    "root后续统一DLL重建与真实模型质量验证仍需完成"
+  ]
+}
