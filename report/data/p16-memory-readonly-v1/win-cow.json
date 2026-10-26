@@ -1,0 +1,148 @@
+{
+  "passed": true,
+  "purpose": "每种原COW/WinAPI-COW/WinAPI-RO仅一个fresh提交观察，不计吞吐。",
+  "mode": "cow",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "95b289d4f0a40baa1974fd902a6ceb59f7986c5bc67216f8ae8714468d1cc855",
+  "library_sha256": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+  "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+  "model_bytes": 1056,
+  "resident": 16779328,
+  "phases": {
+    "before": {
+      "PeakWorkingSetSize": 36196352,
+      "WorkingSetSize": 36196352,
+      "PrivateUsage": 22466560,
+      "PeakPagefileUsage": 22495232,
+      "process_handles": 157,
+      "system_commit_bytes": 62249332736,
+      "system_page_size": 4096
+    },
+    "mapped_untouched": {
+      "PeakWorkingSetSize": 36208640,
+      "WorkingSetSize": 36208640,
+      "PrivateUsage": 39284736,
+      "PeakPagefileUsage": 39284736,
+      "process_handles": 159,
+      "system_commit_bytes": 62266150912,
+      "system_page_size": 4096,
+      "view": {
+        "first": {
+          "BaseAddress": 2052732747776,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 16781312,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "last": {
+          "BaseAddress": 2052749524992,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 4096,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "bytes": 16778272,
+        "address": 2052732747776
+      }
+    },
+    "prepared": {
+      "PeakWorkingSetSize": 52994048,
+      "WorkingSetSize": 52994048,
+      "PrivateUsage": 39284736,
+      "PeakPagefileUsage": 39284736,
+      "process_handles": 159,
+      "system_commit_bytes": 62266150912,
+      "system_page_size": 4096,
+      "view": {
+        "first": {
+          "BaseAddress": 2052732747776,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 16781312,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "last": {
+          "BaseAddress": 2052749524992,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 4096,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "bytes": 16778272,
+        "address": 2052732747776
+      }
+    },
+    "all_pages_read": {
+      "PeakWorkingSetSize": 52994048,
+      "WorkingSetSize": 52994048,
+      "PrivateUsage": 39284736,
+      "PeakPagefileUsage": 39284736,
+      "process_handles": 159,
+      "system_commit_bytes": 62266150912,
+      "system_page_size": 4096,
+      "view": {
+        "first": {
+          "BaseAddress": 2052732747776,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 16781312,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "last": {
+          "BaseAddress": 2052749524992,
+          "AllocationBase": 2052732747776,
+          "AllocationProtect": 8,
+          "PartitionId": 0,
+          "RegionSize": 4096,
+          "State": 4096,
+          "Protect": 8,
+          "Type": 262144
+        },
+        "bytes": 16778272,
+        "address": 2052732747776
+      }
+    },
+    "closed": {
+      "PeakWorkingSetSize": 53006336,
+      "WorkingSetSize": 36225024,
+      "PrivateUsage": 22466560,
+      "PeakPagefileUsage": 39284736,
+      "process_handles": 157,
+      "system_commit_bytes": 62249369600,
+      "system_page_size": 4096
+    }
+  },
+  "touch": {
+    "page_stride": 4096,
+    "reads": 4098,
+    "checksum": 617781
+  },
+  "closed_model_zero": true,
+  "scope": "SHA和DLL加载在before之前；原loadrom仅观察构造器返回，源不变。系统commit有其它进程噪声；WS与capacity不由commit推断。"
+}

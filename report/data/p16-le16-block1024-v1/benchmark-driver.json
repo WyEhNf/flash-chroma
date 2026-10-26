@@ -1,0 +1,60 @@
+{
+  "purpose": "固定五角色比较1024块LE16，四worker全部20情形五遍完整百图。",
+  "plan_sha256": "0d829d42723357da55abfc113bfce8c246fe8dbe487d9d21080ee123e1dea968",
+  "script_sha256": "71a01e712c72b1f94c4cbfe55c2d41670d862846aeb322ab8f60c8a2d1f02365",
+  "benchmark_module_sha256": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+  "affinity_start": {
+    "before": {
+      "process_mask": "0xffffffff",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "actual": {
+      "process_mask": "0x55",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    "scope": "自有Python子进程允许0/2/4/6；非逐OMP线程绑定，未锁频，不与旧unbound绝对耗时归因。"
+  },
+  "omp_proc_bind": "false",
+  "omp_places": null,
+  "scope": "唯一LE16；全部worker固定process0/2/4/6、CPU前后在wall外记录，四worker轮转反序，无逐OMP线程绑定/锁频。旧1024有效反例不被历史unbound通过覆盖，不比较跨控制环境绝对秒数。流式SHA及同import RSS。"
+}

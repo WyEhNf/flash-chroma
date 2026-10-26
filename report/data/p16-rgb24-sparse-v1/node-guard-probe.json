@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "purpose": "RGB24 AVX2节点读取的实际保护页验收，覆盖全部3*i对齐余数及最后节点。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "script_sha256": "e4ab6f2e0828472f4543ebc071bccf9bc63eb4f8347f75347d85391433909c29",
+  "library_sha256": "698fc47cab124e2a5c17a91ca523c92a562ba5597abfb3347497fbda226365bc",
+  "comparisons": 256,
+  "scope": "owned uint32存储整体4B对齐、真实guardword后紧贴PAGE_NOACCESS；每次含最后节点和随机节点，不依赖外部padding。"
+}

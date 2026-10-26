@@ -1,0 +1,652 @@
+{
+  "purpose": "同机同模型比较100..50%速度底线；记录各原始轮次、两种接口和独立进程RSS。",
+  "script_sha256": "0a13395b055c0807f41fc36aac6fe084aa49ef683751d1128e6a29ac5eadad53",
+  "ratios": [
+    {
+      "label": "ref78",
+      "mode": "inplace",
+      "threads": 1,
+      "speed_retention": 0.9974931143246535,
+      "per_worker": [
+        1.0,
+        1.0,
+        0.9949862286493069,
+        0.9231354596068067
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref80",
+      "mode": "inplace",
+      "threads": 1,
+      "speed_retention": 0.9903908308810376,
+      "per_worker": [
+        0.9763849859502913,
+        0.9807816617620753,
+        1.0,
+        1.0
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_24",
+      "mode": "inplace",
+      "threads": 1,
+      "speed_retention": 0.5652997829086015,
+      "per_worker": [
+        0.5687320707562579,
+        0.5618674950609452,
+        0.7238285759677507,
+        0.5240103848480692
+      ],
+      "capacity": 4871152,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_color",
+      "mode": "inplace",
+      "threads": 1,
+      "speed_retention": 0.5299462064381769,
+      "per_worker": [
+        0.4389221325541771,
+        0.5285120439373959,
+        0.6755592418374257,
+        0.5313803689389579
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "c99_color",
+      "mode": "inplace",
+      "threads": 1,
+      "speed_retention": 0.27457303666533245,
+      "per_worker": [
+        0.2467677061075644,
+        0.30130301444035584,
+        0.3400054181322513,
+        0.24784305889030903
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref78",
+      "mode": "inplace",
+      "threads": 4,
+      "speed_retention": 1.0,
+      "per_worker": [
+        0.9840837054227008,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref80",
+      "mode": "inplace",
+      "threads": 4,
+      "speed_retention": 0.9388333779345877,
+      "per_worker": [
+        1.0,
+        0.6365239963825011,
+        0.9429668844145014,
+        0.9346998714546738
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_24",
+      "mode": "inplace",
+      "threads": 4,
+      "speed_retention": 0.6733895012763365,
+      "per_worker": [
+        0.6379519942276882,
+        0.7125633164898042,
+        0.6097088808356044,
+        0.7088270083249847
+      ],
+      "capacity": 4871152,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_color",
+      "mode": "inplace",
+      "threads": 4,
+      "speed_retention": 0.5469841722689142,
+      "per_worker": [
+        0.5637747430011258,
+        0.6765594721288065,
+        0.5301936015367025,
+        0.37067097609649574
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "c99_color",
+      "mode": "inplace",
+      "threads": 4,
+      "speed_retention": 0.3415884681587403,
+      "per_worker": [
+        0.31919204177840793,
+        0.3639848945390726,
+        0.28930084965879577,
+        0.3746241930338401
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref78",
+      "mode": "outplace",
+      "threads": 1,
+      "speed_retention": 1.0,
+      "per_worker": [
+        1.0,
+        1.0,
+        1.0,
+        0.921765249579659
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref80",
+      "mode": "outplace",
+      "threads": 1,
+      "speed_retention": 0.9357027424055047,
+      "per_worker": [
+        0.9468390793010076,
+        0.8886238586016145,
+        0.9245664055100016,
+        1.0
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_24",
+      "mode": "outplace",
+      "threads": 1,
+      "speed_retention": 0.6121195012551407,
+      "per_worker": [
+        0.5780228958410388,
+        0.4752776363250505,
+        0.6462161066692426,
+        0.6569571770955646
+      ],
+      "capacity": 4871152,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_color",
+      "mode": "outplace",
+      "threads": 1,
+      "speed_retention": 0.4918437464402916,
+      "per_worker": [
+        0.4972497592793098,
+        0.48643773360127346,
+        0.5325252728508445,
+        0.4194744685264929
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "c99_color",
+      "mode": "outplace",
+      "threads": 1,
+      "speed_retention": 0.2774505166011544,
+      "per_worker": [
+        0.27324130758998505,
+        0.2553819139311396,
+        0.2816597256123238,
+        0.3016414194544615
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref78",
+      "mode": "outplace",
+      "threads": 4,
+      "speed_retention": 0.9842581678658548,
+      "per_worker": [
+        1.0,
+        0.9685163357317097,
+        0.9354035689842294,
+        1.0
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "ref80",
+      "mode": "outplace",
+      "threads": 4,
+      "speed_retention": 0.9946852010049079,
+      "per_worker": [
+        0.9528399657083738,
+        1.0,
+        1.0,
+        0.9893704020098159
+      ],
+      "capacity": 28046644,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_24",
+      "mode": "outplace",
+      "threads": 4,
+      "speed_retention": 0.6604218593235236,
+      "per_worker": [
+        0.6535904438968306,
+        0.6565262033239772,
+        0.66431751532307,
+        0.6803239467927851
+      ],
+      "capacity": 4871152,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "avx2_color",
+      "mode": "outplace",
+      "threads": 4,
+      "speed_retention": 0.5432800253867678,
+      "per_worker": [
+        0.5361178002041528,
+        0.5344795762230945,
+        0.5504422505693828,
+        0.5594488005314918
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    },
+    {
+      "label": "c99_color",
+      "mode": "outplace",
+      "threads": 4,
+      "speed_retention": 0.30072984624537424,
+      "per_worker": [
+        0.3006510770875992,
+        0.3008086154031493,
+        0.31323193895268225,
+        0.29426037165821994
+      ],
+      "capacity": 10039040,
+      "accuracy_retention": 1.0
+    }
+  ],
+  "tiers": {
+    "inplace_1": {
+      "100": null,
+      "90": null,
+      "80": null,
+      "70": null,
+      "60": null,
+      "50": null
+    },
+    "inplace_4": {
+      "100": null,
+      "90": null,
+      "80": null,
+      "70": null,
+      "60": null,
+      "50": null
+    },
+    "outplace_1": {
+      "100": null,
+      "90": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 1,
+        "speed_retention": 1.0,
+        "per_worker": [
+          1.0,
+          1.0,
+          1.0,
+          0.921765249579659
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "80": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 1,
+        "speed_retention": 1.0,
+        "per_worker": [
+          1.0,
+          1.0,
+          1.0,
+          0.921765249579659
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "70": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 1,
+        "speed_retention": 1.0,
+        "per_worker": [
+          1.0,
+          1.0,
+          1.0,
+          0.921765249579659
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "60": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 1,
+        "speed_retention": 1.0,
+        "per_worker": [
+          1.0,
+          1.0,
+          1.0,
+          0.921765249579659
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "50": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 1,
+        "speed_retention": 1.0,
+        "per_worker": [
+          1.0,
+          1.0,
+          1.0,
+          0.921765249579659
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      }
+    },
+    "outplace_4": {
+      "100": null,
+      "90": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 4,
+        "speed_retention": 0.9842581678658548,
+        "per_worker": [
+          1.0,
+          0.9685163357317097,
+          0.9354035689842294,
+          1.0
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "80": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 4,
+        "speed_retention": 0.9842581678658548,
+        "per_worker": [
+          1.0,
+          0.9685163357317097,
+          0.9354035689842294,
+          1.0
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "70": {
+        "label": "ref78",
+        "mode": "outplace",
+        "threads": 4,
+        "speed_retention": 0.9842581678658548,
+        "per_worker": [
+          1.0,
+          0.9685163357317097,
+          0.9354035689842294,
+          1.0
+        ],
+        "capacity": 28046644,
+        "accuracy_retention": 1.0
+      },
+      "60": {
+        "label": "avx2_24",
+        "mode": "outplace",
+        "threads": 4,
+        "speed_retention": 0.6604218593235236,
+        "per_worker": [
+          0.6535904438968306,
+          0.6565262033239772,
+          0.66431751532307,
+          0.6803239467927851
+        ],
+        "capacity": 4871152,
+        "accuracy_retention": 1.0
+      },
+      "50": {
+        "label": "avx2_24",
+        "mode": "outplace",
+        "threads": 4,
+        "speed_retention": 0.6604218593235236,
+        "per_worker": [
+          0.6535904438968306,
+          0.6565262033239772,
+          0.66431751532307,
+          0.6803239467927851
+        ],
+        "capacity": 4871152,
+        "accuracy_retention": 1.0
+      }
+    }
+  },
+  "gate": "精度mean/p99/max及逐图输出全部不变；速度主判使用四进程中最劣吞吐保留率，另列中位；同候选可占多档。A/A控制失败的档位只作描述观察，不正式优选。",
+  "controls": {
+    "inplace_1": {
+      "ratios": [
+        1.112488574766156,
+        0.8943711406942402,
+        0.7725569822248618,
+        1.0789080301112681
+      ],
+      "median": 0.9866395854027541,
+      "pass_": false
+    },
+    "inplace_4": {
+      "ratios": [
+        1.040245983377048,
+        0.9957693629155474,
+        0.9999005678432298,
+        1.4933383789838899
+      ],
+      "median": 1.020073275610139,
+      "pass_": false
+    },
+    "outplace_1": {
+      "ratios": [
+        1.0322681474537383,
+        0.9081936033156749,
+        0.9227307609410881,
+        0.9329953460527325
+      ],
+      "median": 0.9278630534969103,
+      "pass_": true
+    },
+    "outplace_4": {
+      "ratios": [
+        0.9959682594759544,
+        1.0003927460231603,
+        1.0109970294097061,
+        0.9540089692711871
+      ],
+      "median": 0.9981805027495574,
+      "pass_": true
+    }
+  },
+  "method": "四进程轮转/反序；每角色每线程每接口一次预热和5次全百图；未锁频/绑核；线程竞争由root安排排他窗口。",
+  "rss": {
+    "ref78": {
+      "label": "ref78",
+      "before": {
+        "PeakWorkingSetSize": 35446784,
+        "WorkingSetSize": 35446784,
+        "PrivateUsage": 22048768,
+        "PeakPagefileUsage": 22048768
+      },
+      "prepared": {
+        "PeakWorkingSetSize": 132845568,
+        "WorkingSetSize": 64630784,
+        "PrivateUsage": 52916224,
+        "PeakPagefileUsage": 121122816
+      },
+      "model_capacity": 28046644,
+      "library": "artifacts\\p16-color-dictionary-build-v1\\jshc_memory_ref78.dll",
+      "library_sha256": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+        "numpy": "1.26.4",
+        "thread_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OMP_DYNAMIC": "FALSE",
+          "OMP_WAIT_POLICY": "PASSIVE",
+          "OPENBLAS_NUM_THREADS": "1"
+        }
+      },
+      "scope": "独立新进程；模型准备后立刻读取Windows进程工作集与峰值，尚未分配图片。不是扣除运行库后的纯模型RSS。"
+    },
+    "ref80": {
+      "label": "ref80",
+      "before": {
+        "PeakWorkingSetSize": 35377152,
+        "WorkingSetSize": 35377152,
+        "PrivateUsage": 21917696,
+        "PeakPagefileUsage": 21917696
+      },
+      "prepared": {
+        "PeakWorkingSetSize": 132919296,
+        "WorkingSetSize": 64782336,
+        "PrivateUsage": 52883456,
+        "PeakPagefileUsage": 120987648
+      },
+      "model_capacity": 28046644,
+      "library": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+      "library_sha256": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+        "numpy": "1.26.4",
+        "thread_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OMP_DYNAMIC": "FALSE",
+          "OMP_WAIT_POLICY": "PASSIVE",
+          "OPENBLAS_NUM_THREADS": "1"
+        }
+      },
+      "scope": "独立新进程；模型准备后立刻读取Windows进程工作集与峰值，尚未分配图片。不是扣除运行库后的纯模型RSS。"
+    },
+    "avx2_24": {
+      "label": "avx2_24",
+      "before": {
+        "PeakWorkingSetSize": 35483648,
+        "WorkingSetSize": 35483648,
+        "PrivateUsage": 22065152,
+        "PeakPagefileUsage": 22065152
+      },
+      "prepared": {
+        "PeakWorkingSetSize": 41238528,
+        "WorkingSetSize": 41238528,
+        "PrivateUsage": 27361280,
+        "PeakPagefileUsage": 27361280
+      },
+      "model_capacity": 4871152,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll",
+      "library_sha256": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+        "numpy": "1.26.4",
+        "thread_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OMP_DYNAMIC": "FALSE",
+          "OMP_WAIT_POLICY": "PASSIVE",
+          "OPENBLAS_NUM_THREADS": "1"
+        }
+      },
+      "scope": "独立新进程；模型准备后立刻读取Windows进程工作集与峰值，尚未分配图片。不是扣除运行库后的纯模型RSS。"
+    },
+    "avx2_color": {
+      "label": "avx2_color",
+      "before": {
+        "PeakWorkingSetSize": 35450880,
+        "WorkingSetSize": 35450880,
+        "PrivateUsage": 21995520,
+        "PeakPagefileUsage": 21995520
+      },
+      "prepared": {
+        "PeakWorkingSetSize": 46137344,
+        "WorkingSetSize": 46137344,
+        "PrivateUsage": 32464896,
+        "PeakPagefileUsage": 32464896
+      },
+      "model_capacity": 10039040,
+      "library": "artifacts\\p16-color-dictionary-build-v1\\jshc_memory_color_dict.dll",
+      "library_sha256": "0d65c5d7239c7af4c1cb1102740390d8b796fade356597473b19e11e3f1a7b77",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+        "numpy": "1.26.4",
+        "thread_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OMP_DYNAMIC": "FALSE",
+          "OMP_WAIT_POLICY": "PASSIVE",
+          "OPENBLAS_NUM_THREADS": "1"
+        }
+      },
+      "scope": "独立新进程；模型准备后立刻读取Windows进程工作集与峰值，尚未分配图片。不是扣除运行库后的纯模型RSS。"
+    },
+    "c99_color": {
+      "label": "c99_color",
+      "before": {
+        "PeakWorkingSetSize": 35450880,
+        "WorkingSetSize": 35450880,
+        "PrivateUsage": 22003712,
+        "PeakPagefileUsage": 22003712
+      },
+      "prepared": {
+        "PeakWorkingSetSize": 46198784,
+        "WorkingSetSize": 46198784,
+        "PrivateUsage": 32468992,
+        "PeakPagefileUsage": 32468992
+      },
+      "model_capacity": 10039040,
+      "library": "artifacts\\p16-color-dictionary-build-v1\\jshc_memory_color_dict.dll",
+      "library_sha256": "0d65c5d7239c7af4c1cb1102740390d8b796fade356597473b19e11e3f1a7b77",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+        "numpy": "1.26.4",
+        "thread_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OMP_DYNAMIC": "FALSE",
+          "OMP_WAIT_POLICY": "PASSIVE",
+          "OPENBLAS_NUM_THREADS": "1"
+        }
+      },
+      "scope": "独立新进程；模型准备后立刻读取Windows进程工作集与峰值，尚未分配图片。不是扣除运行库后的纯模型RSS。"
+    }
+  },
+  "native_plan_sha256": "cc6f9b27988e580776e36895c9cdca19468948872610c8861f302cc9c7d19ba2"
+}

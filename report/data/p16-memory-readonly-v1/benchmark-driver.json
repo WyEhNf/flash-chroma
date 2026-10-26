@@ -1,0 +1,58 @@
+{
+  "purpose": "RO/COW八角色一次同场：848调用、四最劣worker及八RSS，原件失败保留。",
+  "plan_sha256": "902d0421bb99382d7ed5179949ad5f6f4f2bc0639e9ff612cc0db241ab0bde29",
+  "script_sha256": "d5bb3947fe3866dfd82271203eab73dab7a67be6012ea20c7b6c73ba557e7be9",
+  "benchmark_module_sha256": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+  "affinity_start": {
+    "before": {
+      "process_mask": "0xffffffff",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "actual": {
+      "process_mask": "0x55",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    "scope": "自有Python子进程允许0/2/4/6；非逐OMP线程绑定，未锁频，不与旧unbound绝对耗时归因。"
+  },
+  "scope": "输出精确但速度独立分档；AA失效清空，不以原/新COW慢分母授档。所有owner在测量原件落盘后关闭。"
+}

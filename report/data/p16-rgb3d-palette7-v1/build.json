@@ -1,0 +1,184 @@
+{
+  "purpose": "单版Clang严格C99与GCC AVX2/OMP构建，不扫描编译器/loop。",
+  "plan_sha256": "b847f81c987476a6250d8c643cab70464f80764c7d367ed4c39cbe1fcd19f145",
+  "source_sha256": {
+    "experiments/rgb3d-palette7-runtime/channel_avx2_rgb3d7.cpp": "23b7d3be1222982c934bcebe509d579c341620c2bb6dc9923124d4c627522663",
+    "experiments/rgb3d-palette7-runtime/generation.json": "55d1379fa5e54c8443da2d79624a7e000fbe6519a325c48b1b59ba926a387f09",
+    "experiments/rgb3d-palette7-runtime/memory_parallel.cpp": "abc99d9532ebe01c5ecd233b3f271f03ec5d78d2e5457b8a4c459ee732f261dd",
+    "experiments/rgb3d-palette7-runtime/memory_rom.c": "ae243cd64b4920b76f4699c4e30126f2c2c45d720ea879dedd81f980587b8339",
+    "experiments/rgb3d-palette7-runtime/memory_rom.h": "594cbd3a0560f858a14fa7af579446ccb4e6a5de885b2d58d6d4f2fdef8ca922",
+    "scripts/rgb3d7_support.py": "62401da068d1f397e8bb645325d341628d6528fb17c8d5a3952b33a8282d407c",
+    "scripts/generate_rgb3d7.py": "9ccf4f0ce58e0098a8afafffe447493c264413c52e93407c123e88a4e69636a8",
+    "scripts/rgb3d7_bench_prefix.py": "2a5a71d5f542318b3129364b9e4044bbe8f51318a88e2be2bcb67dec31ce2845",
+    "scripts/rgb3d7_bench_suffix.py": "f06de1cacdf49414f9783e40ec6ddc734ff92f5e0d59237703f88a90119ba862",
+    "scripts/bench_rgb3d7.py": "344c4f3d2377b4d8dee90965b55c56fed136ab29ac225a64d19cb5057e537f33",
+    "scripts/export_rgb3d7.py": "26da4e5ceb343e7e81c689ccba9b5e413fcbe86a484f5b25977c4a747245b731",
+    "scripts/build_rgb3d7.py": "21167c067c05adce05af2a6c1df9cf20f00a565c5291dea9ab6758dee8fde740",
+    "scripts/verify_rgb3d7.py": "eff6805a70194600ff956e54264c2203812ed81f8080b7591e1d00a7df328435",
+    "scripts/freeze_rgb3d7.py": "6b07203584b6467cd5531daa8a90a6b8d0e3e03d70616ae89fca45460a0fc942",
+    "scripts/bench_le16_block1024.py": "71a01e712c72b1f94c4cbfe55c2d41670d862846aeb322ab8f60c8a2d1f02365",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "experiments/rgb3d-palette7-design-v1.md": "dc82110551a5832c77dc139664860025133c68417342f4133cba0681c26012b4",
+    "experiments/rgb3d-palette7-proposed-v1.json": "399457c0c2ee8313864ac0251c8962ba5c3319f3ef54d7c70f406f1e35132cd6"
+  },
+  "commands": [
+    {
+      "command": [
+        "C:/Program Files/LLVM/bin/clang.exe",
+        "--target=x86_64-w64-windows-gnu",
+        "--sysroot=E:/mingw64",
+        "-isystem",
+        "E:/mingw64/x86_64-w64-mingw32/include",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-Wall",
+        "-Wextra",
+        "-march=x86-64",
+        "-mtune=generic",
+        "-mno-avx",
+        "-mno-avx2",
+        "-mno-avx512f",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb3d-palette7-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\jshc_rgb3d7_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb3d-palette7-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\rgb3d-palette7-runtime\\channel_avx2_rgb3d7.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\channel_avx2_rgb3d7.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\channel_avx2_rgb3d7.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\jshc_rgb3d7.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/objdump.exe",
+        "-d",
+        "-Mintel",
+        "--no-show-raw-insn",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "\nF:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-rgb3d7-build-v1\\memory_c.o:     file format pe-x86-64\n\n\nDisassembly of section .text:\n\n0000000000000000 <jshc_mem_model_size>:\n   0:\tmov    eax,0x20\n   5:\tret\n   6:\tcs nop WORD PTR [rax+rax*1+0x0]\n\n0000000000000010 <jshc_mem_prepare>:\n  10:\tpush   rsi\n  11:\tpush   rdi\n  12:\tpush   rbp\n  13:\tpush   rbx\n  14:\tmov    eax,0x1\n  19:\ttest   rcx,rcx\n  1c:\tje     c5 <jshc_mem_prepare+0xb5>\n  22:\tmov    r9,rdx\n  25:\tadd    r9,r8\n  28:\tjb     c5 <jshc_mem_prepare+0xb5>\n  2e:\tlea    r10,[rcx+0x20]\n  32:\tcmp    r10,rdx\n  35:\tjbe    45 <jshc_mem_prepare+0x35>\n  37:\ttest   r8,r8\n  3a:\tje     45 <jshc_mem_prepare+0x35>\n  3c:\tcmp    r9,rcx\n  3f:\tja     c5 <jshc_mem_prepare+0xb5>\n  45:\txorps  xmm0,xmm0\n  48:\tmovups XMMWORD PTR [rcx+0x10],xmm0\n  4c:\tmovups XMMWORD PTR [rcx],xmm0\n  4f:\ttest   rdx,rdx\n  52:\tsete   r9b\n  56:\tcmp    r8,0xe40424\n  5d:\tsetne  r8b\n  61:\tor     r8b,r9b\n  64:\tjne    c5 <jshc_mem_prepare+0xb5>\n  66:\tcmp    DWORD PTR [rdx],0x4b423743\n  6c:\tjne    c5 <jshc_mem_prepare+0xb5>\n  6e:\tcmp    DWORD PTR [rdx+0x4],0x1\n  72:\tjne    c5 <jshc_mem_prepare+0xb5>\n  74:\tcmp    DWORD PTR [rdx+0x8],0x200\n  7b:\tjne    c5 <jshc_mem_prepare+0xb5>\n  7d:\tcmp    DWORD PTR [rdx+0xc],0x7\n  81:\tjne    c5 <jshc_mem_prepare+0xb5>\n  83:\tcmp    DWORD PTR [rdx+0x10],0xe00000\n  8a:\tjne    c5 <jshc_mem_prepare+0xb5>\n  8c:\tcmp    DWORD PTR [rdx+0x14],0x1\n  90:\tjne    c5 <jshc_mem_prepare+0xb5>\n  92:\tcmp    DWORD PTR [rdx+0x18],0x80\n  99:\tjne    c5 <jshc_mem_prepare+0xb5>\n  9b:\tcmp    DWORD PTR [rdx+0x1c],0x0\n  9f:\tjne    c5 <jshc_mem_prepare+0xb5>\n  a1:\tcmp    BYTE PTR [rdx+0xe00420],0x0\n  a8:\tjne    c5 <jshc_mem_prepare+0xb5>\n  aa:\tcmp    BYTE PTR [rdx+0xe00421],0x0\n  b1:\tjne    c5 <jshc_mem_prepare+0xb5>\n  b3:\tcmp    BYTE PTR [rdx+0xe00422],0x0\n  ba:\tjne    c5 <jshc_mem_prepare+0xb5>\n  bc:\tcmp    BYTE PTR [rdx+0xe00423],0x0\n  c3:\tje     ca <jshc_mem_prepare+0xba>\n  c5:\tpop    rbx\n  c6:\tpop    rbp\n  c7:\tpop    rdi\n  c8:\tpop    rsi\n  c9:\tret\n  ca:\tmov    r8,rcx\n  cd:\tlea    r9,[rdx+0x420]\n  d4:\tlea    r10,[rdx+0xe00424]\n  db:\tlea    rcx,[rdx+0xe0042a]\n  e2:\txor    r11d,r11d\n  e5:\tmovzx  esi,WORD PTR [rdx+r11*2+0x20]\n  eb:\tlea    edi,[rsi-0x81]\n  f1:\tcmp    edi,0xffffff80\n  f4:\tjb     c5 <jshc_mem_prepare+0xb5>\n  f6:\tmov    esi,esi\n  f8:\txor    edi,edi\n  fa:\tjmp    10b <jshc_mem_prepare+0xfb>\n  fc:\tinc    rbx\n  ff:\tmov    rdi,rbx\n 102:\tcmp    rbx,0x80\n 109:\tje     142 <jshc_mem_prepare+0x132>\n 10b:\tmovzx  ebx,WORD PTR [rcx+rdi*4-0x4]\n 110:\tcmp    ebx,0xff\n 116:\tja     c5 <jshc_mem_prepare+0xb5>\n 118:\tcmp    rdi,rsi\n 11b:\tjb     124 <jshc_mem_prepare+0x114>\n 11d:\tor     bx,WORD PTR [rcx+rdi*4-0x6]\n 122:\tjne    c5 <jshc_mem_prepare+0xb5>\n 124:\tmovzx  ebp,WORD PTR [rcx+rdi*4]\n 128:\tcmp    ebp,0xff\n 12e:\tja     c5 <jshc_mem_prepare+0xb5>\n 130:\tlea    rbx,[rdi+0x1]\n 134:\tcmp    rbx,rsi\n 137:\tjb     fc <jshc_mem_prepare+0xec>\n 139:\tor     bp,WORD PTR [rcx+rdi*4-0x2]\n 13e:\tje     fc <jshc_mem_prepare+0xec>\n 140:\tjmp    c5 <jshc_mem_prepare+0xb5>\n 142:\tinc    r11\n 145:\tadd    rcx,0x200\n 14c:\tcmp    r11,0x200\n 153:\tjne    e5 <jshc_mem_prepare+0xd5>\n 155:\txor    r11d,r11d\n 158:\txor    esi,esi\n 15a:\tmov    ecx,r11d\n 15d:\tshr    ecx,0x3\n 160:\tmovzx  edi,WORD PTR [rdx+rcx*1+0x420]\n 168:\tmov    ecx,r11d\n 16b:\tand    cl,0x7\n 16e:\tshr    edi,cl\n 170:\tand    edi,0x7f\n 173:\tmov    ecx,esi\n 175:\tshr    ecx,0x5\n 178:\tand    ecx,0x7\n 17b:\tmov    ebx,esi\n 17d:\tshr    ebx,0xa\n 180:\tand    ebx,0x38\n 183:\tor     ebx,ecx\n 185:\tmov    ecx,esi\n 187:\tshr    ecx,0xf\n 18a:\tand    ecx,0x1c0\n 190:\tor     ecx,ebx\n 192:\tmovzx  ecx,WORD PTR [rdx+rcx*2+0x20]\n 197:\tcmp    edi,ecx\n 199:\tjae    c5 <jshc_mem_prepare+0xb5>\n 19f:\tinc    esi\n 1a1:\tadd    r11d,0x7\n 1a5:\tcmp    esi,0x1000000\n 1ab:\tjne    15a <jshc_mem_prepare+0x14a>\n 1ad:\tmov    QWORD PTR [r8],rdx\n 1b0:\tmov    QWORD PTR [r8+0x8],0xe40424\n 1b8:\tmov    QWORD PTR [r8+0x10],r9\n 1bc:\tmov    QWORD PTR [r8+0x18],r10\n 1c0:\txor    eax,eax\n 1c2:\tjmp    c5 <jshc_mem_prepare+0xb5>\n 1c7:\tnop    WORD PTR [rax+rax*1+0x0]\n\n00000000000001d0 <jshc_mem_validate_io>:\n 1d0:\tpush   rsi\n 1d1:\tpush   rbx\n 1d2:\tmov    eax,0x1\n 1d7:\ttest   rcx,rcx\n 1da:\tje     28f <jshc_mem_validate_io+0xbf>\n 1e0:\tmov    r10,QWORD PTR [rcx]\n 1e3:\ttest   r10,r10\n 1e6:\tje     28f <jshc_mem_validate_io+0xbf>\n 1ec:\tcmp    QWORD PTR [rcx+0x10],0x0\n 1f1:\tje     28f <jshc_mem_validate_io+0xbf>\n 1f7:\tmovabs r11,0x5555555555555555\n 201:\tcmp    r9,r11\n 204:\tja     28f <jshc_mem_validate_io+0xbf>\n 20a:\tcmp    QWORD PTR [rcx+0x18],0x0\n 20f:\tje     28f <jshc_mem_validate_io+0xbf>\n 211:\ttest   r9,r9\n 214:\tje     28d <jshc_mem_validate_io+0xbd>\n 216:\tlea    r9,[r9+r9*2]\n 21a:\tmov    r11,rdx\n 21d:\tadd    r11,r9\n 220:\tsetb   bl\n 223:\tadd    r9,r8\n 226:\tsetb   sil\n 22a:\ttest   rdx,rdx\n 22d:\tje     28f <jshc_mem_validate_io+0xbf>\n 22f:\ttest   r8,r8\n 232:\tje     28f <jshc_mem_validate_io+0xbf>\n 234:\ttest   bl,bl\n 236:\tjne    28f <jshc_mem_validate_io+0xbf>\n 238:\ttest   sil,sil\n 23b:\tjne    28f <jshc_mem_validate_io+0xbf>\n 23d:\tcmp    rdx,r8\n 240:\tje     254 <jshc_mem_validate_io+0x84>\n 242:\tcmp    r9,rdx\n 245:\tseta   dl\n 248:\tcmp    r11,r8\n 24b:\tseta   r11b\n 24f:\ttest   r11b,dl\n 252:\tjne    28f <jshc_mem_validate_io+0xbf>\n 254:\tlea    rdx,[rcx+0x20]\n 258:\tcmp    rdx,r8\n 25b:\tseta   dl\n 25e:\tcmp    r9,rcx\n 261:\tseta   r11b\n 265:\ttest   dl,r11b\n 268:\tjne    28f <jshc_mem_validate_io+0xbf>\n 26a:\tmov    rax,QWORD PTR [rcx+0x8]\n 26e:\ttest   rax,rax\n 271:\tsetne  cl\n 274:\tadd    rax,r10\n 277:\tcmp    rax,r8\n 27a:\tseta   al\n 27d:\tcmp    r9,r10\n 280:\tseta   dl\n 283:\tand    dl,cl\n 285:\tand    dl,al\n 287:\tmovzx  eax,dl\n 28a:\tpop    rbx\n 28b:\tpop    rsi\n 28c:\tret\n 28d:\txor    eax,eax\n 28f:\tpop    rbx\n 290:\tpop    rsi\n 291:\tret\n 292:\tdata16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]\n\n00000000000002a0 <jshc_mem_apply>:\n 2a0:\tpush   r15\n 2a2:\tpush   r14\n 2a4:\tpush   r13\n 2a6:\tpush   r12\n 2a8:\tpush   rsi\n 2a9:\tpush   rdi\n 2aa:\tpush   rbp\n 2ab:\tpush   rbx\n 2ac:\tsub    rsp,0x70\n 2b0:\tmov    eax,0x1\n 2b5:\ttest   rcx,rcx\n 2b8:\tje     868 <jshc_mem_apply+0x5c8>\n 2be:\tmov    r15,rcx\n 2c1:\tmov    rcx,QWORD PTR [rcx]\n 2c4:\ttest   rcx,rcx\n 2c7:\tje     868 <jshc_mem_apply+0x5c8>\n 2cd:\tcmp    QWORD PTR [r15+0x10],0x0\n 2d2:\tje     868 <jshc_mem_apply+0x5c8>\n 2d8:\tmov    r14,r8\n 2db:\tmovabs r8,0x5555555555555555\n 2e5:\tcmp    r9,r8\n 2e8:\tja     868 <jshc_mem_apply+0x5c8>\n 2ee:\tcmp    QWORD PTR [r15+0x18],0x0\n 2f3:\tje     868 <jshc_mem_apply+0x5c8>\n 2f9:\txor    r8d,r8d\n 2fc:\ttest   r9,r9\n 2ff:\tje     7c7 <jshc_mem_apply+0x527>\n 305:\tlea    r8,[r9+r9*2]\n 309:\tmov    r10,rdx\n 30c:\tadd    r10,r8\n 30f:\tsetb   r11b\n 313:\tadd    r8,r14\n 316:\tsetb   bl\n 319:\ttest   rdx,rdx\n 31c:\tje     868 <jshc_mem_apply+0x5c8>\n 322:\ttest   r14,r14\n 325:\tje     868 <jshc_mem_apply+0x5c8>\n 32b:\ttest   r11b,r11b\n 32e:\tjne    868 <jshc_mem_apply+0x5c8>\n 334:\ttest   bl,bl\n 336:\tjne    868 <jshc_mem_apply+0x5c8>\n 33c:\tcmp    rdx,r14\n 33f:\tje     358 <jshc_mem_apply+0xb8>\n 341:\tcmp    r8,rdx\n 344:\tseta   r11b\n 348:\tcmp    r10,r14\n 34b:\tseta   r10b\n 34f:\ttest   r10b,r11b\n 352:\tjne    868 <jshc_mem_apply+0x5c8>\n 358:\tlea    r10,[r15+0x20]\n 35c:\tcmp    r10,r14\n 35f:\tseta   r10b\n 363:\tcmp    r8,r15\n 366:\tseta   r11b\n 36a:\ttest   r10b,r11b\n 36d:\tjne    868 <jshc_mem_apply+0x5c8>\n 373:\tcmp    r8,rcx\n 376:\tjbe    38d <jshc_mem_apply+0xed>\n 378:\tmov    r8,QWORD PTR [r15+0x8]\n 37c:\ttest   r8,r8\n 37f:\tje     38d <jshc_mem_apply+0xed>\n 381:\tadd    r8,rcx\n 384:\tcmp    r8,r14\n 387:\tja     868 <jshc_mem_apply+0x5c8>\n 38d:\tcmp    r9,0x8\n 391:\tjb     7c4 <jshc_mem_apply+0x524>\n 397:\tmov    eax,0x15\n 39c:\txor    r8d,r8d\n 39f:\tmov    QWORD PTR [rsp+0x20],r14\n 3a4:\tmov    QWORD PTR [rsp+0x68],r8\n 3a9:\tmovzx  ecx,BYTE PTR [rdx+rax*1-0x15]\n 3ae:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0x14]\n 3b4:\tmov    r10d,r8d\n 3b7:\tshl    r10d,0x8\n 3bb:\tmovzx  r11d,BYTE PTR [rdx+rax*1-0x13]\n 3c1:\tmov    esi,r11d\n 3c4:\tshl    esi,0x10\n 3c7:\tor     esi,r10d\n 3ca:\tor     esi,ecx\n 3cc:\tshr    ecx,0x5\n 3cf:\tshr    r8d,0x5\n 3d3:\tlea    ecx,[rcx+r8*8]\n 3d7:\tand    r11d,0xffffffe0\n 3db:\tlea    ecx,[rcx+r11*2]\n 3df:\tmov    QWORD PTR [rsp+0x60],rcx\n 3e4:\tlea    ebp,[rsi*8+0x0]\n 3eb:\tsub    ebp,esi\n 3ed:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0x12]\n 3f3:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0x11]\n 3f9:\tmov    r11d,r10d\n 3fc:\tshl    r11d,0x8\n 400:\tmovzx  esi,BYTE PTR [rdx+rax*1-0x10]\n 405:\tmov    edi,esi\n 407:\tshl    edi,0x10\n 40a:\tor     edi,r11d\n 40d:\tor     edi,r8d\n 410:\tshr    r8d,0x5\n 414:\tshr    r10d,0x5\n 418:\tlea    r8d,[r8+r10*8]\n 41c:\tand    esi,0xffffffe0\n 41f:\tlea    r8d,[r8+rsi*2]\n 423:\tmov    QWORD PTR [rsp+0x58],r8\n 428:\tlea    r8d,[rdi*8+0x0]\n 430:\tsub    r8d,edi\n 433:\tmov    r12d,r8d\n 436:\tmov    DWORD PTR [rsp+0x10],r8d\n 43b:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0xf]\n 441:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0xe]\n 447:\tmov    r11d,r10d\n 44a:\tshl    r11d,0x8\n 44e:\tmovzx  esi,BYTE PTR [rdx+rax*1-0xd]\n 453:\tmov    edi,esi\n 455:\tshl    edi,0x10\n 458:\tor     edi,r11d\n 45b:\tor     edi,r8d\n 45e:\tshr    r8d,0x5\n 462:\tshr    r10d,0x5\n 466:\tlea    r8d,[r8+r10*8]\n 46a:\tand    esi,0xffffffe0\n 46d:\tlea    r8d,[r8+rsi*2]\n 471:\tmov    QWORD PTR [rsp+0x50],r8\n 476:\tlea    r8d,[rdi*8+0x0]\n 47e:\tsub    r8d,edi\n 481:\tmov    r13d,r8d\n 484:\tmov    DWORD PTR [rsp+0x14],r8d\n 489:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0xc]\n 48f:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0xb]\n 495:\tmov    r11d,r10d\n 498:\tshl    r11d,0x8\n 49c:\tmovzx  esi,BYTE PTR [rdx+rax*1-0xa]\n 4a1:\tmov    edi,esi\n 4a3:\tshl    edi,0x10\n 4a6:\tor     edi,r11d\n 4a9:\tor     edi,r8d\n 4ac:\tshr    r8d,0x5\n 4b0:\tshr    r10d,0x5\n 4b4:\tlea    r8d,[r8+r10*8]\n 4b8:\tand    esi,0xffffffe0\n 4bb:\tlea    r8d,[r8+rsi*2]\n 4bf:\tmov    QWORD PTR [rsp+0x48],r8\n 4c4:\tlea    r8d,[rdi*8+0x0]\n 4cc:\tsub    r8d,edi\n 4cf:\tmov    DWORD PTR [rsp+0xc],r8d\n 4d4:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0x9]\n 4da:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0x8]\n 4e0:\tmov    r11d,r10d\n 4e3:\tshl    r11d,0x8\n 4e7:\tmovzx  esi,BYTE PTR [rdx+rax*1-0x7]\n 4ec:\tmov    edi,esi\n 4ee:\tshl    edi,0x10\n 4f1:\tor     edi,r11d\n 4f4:\tor     edi,r8d\n 4f7:\tshr    r8d,0x5\n 4fb:\tshr    r10d,0x5\n 4ff:\tlea    r8d,[r8+r10*8]\n 503:\tand    esi,0xffffffe0\n 506:\tlea    r8d,[r8+rsi*2]\n 50a:\tmov    QWORD PTR [rsp+0x40],r8\n 50f:\tlea    ecx,[rdi*8+0x0]\n 516:\tsub    ecx,edi\n 518:\tmov    DWORD PTR [rsp+0x8],ecx\n 51c:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0x6]\n 522:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0x5]\n 528:\tmov    r11d,r10d\n 52b:\tshl    r11d,0x8\n 52f:\tmovzx  esi,BYTE PTR [rdx+rax*1-0x4]\n 534:\tmov    edi,esi\n 536:\tshl    edi,0x10\n 539:\tor     edi,r11d\n 53c:\tor     edi,r8d\n 53f:\tshr    r8d,0x5\n 543:\tshr    r10d,0x5\n 547:\tlea    r8d,[r8+r10*8]\n 54b:\tand    esi,0xffffffe0\n 54e:\tlea    r8d,[r8+rsi*2]\n 552:\tmov    QWORD PTR [rsp+0x38],r8\n 557:\tlea    ecx,[rdi*8+0x0]\n 55e:\tsub    ecx,edi\n 560:\tmov    DWORD PTR [rsp+0x4],ecx\n 564:\tmovzx  r8d,BYTE PTR [rdx+rax*1-0x2]\n 56a:\tmov    r10d,r8d\n 56d:\tshl    r10d,0x8\n 571:\tmovzx  r11d,BYTE PTR [rdx+rax*1-0x1]\n 577:\tmov    esi,r11d\n 57a:\tshl    esi,0x10\n 57d:\tor     esi,r10d\n 580:\tmovzx  r10d,BYTE PTR [rdx+rax*1-0x3]\n 586:\tor     esi,r10d\n 589:\tshr    r10d,0x5\n 58d:\tshr    r8d,0x5\n 591:\tlea    r8d,[r10+r8*8]\n 595:\tand    r11d,0xffffffe0\n 599:\tlea    ecx,[r8+r11*2]\n 59d:\tmov    QWORD PTR [rsp+0x30],rcx\n 5a2:\tlea    r14d,[rsi*8+0x0]\n 5aa:\tsub    r14d,esi\n 5ad:\tmov    DWORD PTR [rsp+0x18],r14d\n 5b2:\tmovzx  r8d,BYTE PTR [rdx+rax*1+0x1]\n 5b8:\tmov    r10d,r8d\n 5bb:\tshl    r10d,0x8\n 5bf:\tmovzx  r11d,BYTE PTR [rdx+rax*1+0x2]\n 5c5:\tmov    esi,r11d\n 5c8:\tshl    esi,0x10\n 5cb:\tor     esi,r10d\n 5ce:\tmovzx  r10d,BYTE PTR [rdx+rax*1]\n 5d3:\tor     esi,r10d\n 5d6:\tshr    r10d,0x5\n 5da:\tshr    r8d,0x5\n 5de:\tlea    r8d,[r10+r8*8]\n 5e2:\tand    r11d,0xffffffe0\n 5e6:\tlea    ecx,[r8+r11*2]\n 5ea:\tmov    QWORD PTR [rsp+0x28],rcx\n 5ef:\tlea    ecx,[rsi*8+0x0]\n 5f6:\tsub    ecx,esi\n 5f8:\tmov    DWORD PTR [rsp+0x1c],ecx\n 5fc:\tmov    r8d,ebp\n 5ff:\tshr    r8d,0x3\n 603:\tmov    rdi,QWORD PTR [r15+0x10]\n 607:\tmovzx  ebx,WORD PTR [rdi+r8*1]\n 60c:\tmov    r8d,r12d\n 60f:\tshr    r8d,0x3\n 613:\tmovzx  r12d,WORD PTR [rdi+r8*1]\n 618:\tmov    r8d,r13d\n 61b:\tshr    r8d,0x3\n 61f:\tmovzx  r13d,WORD PTR [rdi+r8*1]\n 624:\tmov    r8d,DWORD PTR [rsp+0xc]\n 629:\tshr    r8d,0x3\n 62d:\tmovzx  r8d,WORD PTR [rdi+r8*1]\n 632:\tmov    r10d,DWORD PTR [rsp+0x8]\n 637:\tshr    r10d,0x3\n 63b:\tmovzx  r10d,WORD PTR [rdi+r10*1]\n 640:\tmov    r11d,DWORD PTR [rsp+0x4]\n 645:\tshr    r11d,0x3\n 649:\tmovzx  r11d,WORD PTR [rdi+r11*1]\n 64e:\tmov    esi,r14d\n 651:\tshr    esi,0x3\n 654:\tmovzx  esi,WORD PTR [rdi+rsi*1]\n 658:\tmov    r14d,ecx\n 65b:\tshr    r14d,0x3\n 65f:\tmovzx  edi,WORD PTR [rdi+r14*1]\n 664:\tmov    r14,QWORD PTR [rsp+0x20]\n 669:\tand    bpl,0x7\n 66d:\tmov    ecx,ebp\n 66f:\tshr    ebx,cl\n 671:\tmov    rcx,QWORD PTR [rsp+0x60]\n 676:\tshl    ecx,0x9\n 679:\tand    ebx,0x7f\n 67c:\tlea    ebx,[rcx+rbx*4]\n 67f:\tmov    ecx,DWORD PTR [rsp+0x10]\n 683:\tand    cl,0x7\n 686:\tshr    r12d,cl\n 689:\tmov    rcx,QWORD PTR [r15+0x18]\n 68d:\tmov    ecx,DWORD PTR [rcx+rbx*1]\n 690:\tmov    DWORD PTR [r14+rax*1-0x15],ecx\n 695:\tmov    rcx,QWORD PTR [rsp+0x58]\n 69a:\tshl    ecx,0x9\n 69d:\tand    r12d,0x7f\n 6a1:\tlea    ecx,[rcx+r12*4]\n 6a5:\tmov    rbx,QWORD PTR [r15+0x18]\n 6a9:\tmov    ebx,DWORD PTR [rbx+rcx*1]\n 6ac:\tmov    ecx,DWORD PTR [rsp+0x14]\n 6b0:\tand    cl,0x7\n 6b3:\tshr    r13d,cl\n 6b6:\tmov    DWORD PTR [r14+rax*1-0x12],ebx\n 6bb:\tmov    rcx,QWORD PTR [rsp+0x50]\n 6c0:\tshl    ecx,0x9\n 6c3:\tand    r13d,0x7f\n 6c7:\tlea    ecx,[rcx+r13*4]\n 6cb:\tmov    rbx,QWORD PTR [r15+0x18]\n 6cf:\tmov    ecx,DWORD PTR [rbx+rcx*1]\n 6d2:\tmov    DWORD PTR [r14+rax*1-0xf],ecx\n 6d7:\tmov    ecx,DWORD PTR [rsp+0xc]\n 6db:\tand    cl,0x7\n 6de:\tshr    r8d,cl\n 6e1:\tmov    rcx,QWORD PTR [rsp+0x48]\n 6e6:\tshl    ecx,0x9\n 6e9:\tand    r8d,0x7f\n 6ed:\tlea    ecx,[rcx+r8*4]\n 6f1:\tmov    r8,QWORD PTR [r15+0x18]\n 6f5:\tmov    ecx,DWORD PTR [r8+rcx*1]\n 6f9:\tmov    DWORD PTR [r14+rax*1-0xc],ecx\n 6fe:\tmov    ecx,DWORD PTR [rsp+0x8]\n 702:\tand    cl,0x7\n 705:\tshr    r10d,cl\n 708:\tmov    ecx,DWORD PTR [rsp+0x4]\n 70c:\tand    cl,0x7\n 70f:\tshr    r11d,cl\n 712:\tmov    rcx,QWORD PTR [rsp+0x40]\n 717:\tshl    ecx,0x9\n 71a:\tand    r10d,0x7f\n 71e:\tlea    ecx,[rcx+r10*4]\n 722:\tmov    r8,QWORD PTR [r15+0x18]\n 726:\tmov    ecx,DWORD PTR [r8+rcx*1]\n 72a:\tmov    DWORD PTR [r14+rax*1-0x9],ecx\n 72f:\tmov    rcx,QWORD PTR [rsp+0x38]\n 734:\tshl    ecx,0x9\n 737:\tand    r11d,0x7f\n 73b:\tlea    ecx,[rcx+r11*4]\n 73f:\tmov    r8,QWORD PTR [r15+0x18]\n 743:\tmov    r8d,DWORD PTR [r8+rcx*1]\n 747:\tmov    ecx,DWORD PTR [rsp+0x18]\n 74b:\tand    cl,0x7\n 74e:\tshr    esi,cl\n 750:\tmov    DWORD PTR [r14+rax*1-0x6],r8d\n 755:\tmov    rcx,QWORD PTR [rsp+0x30]\n 75a:\tshl    ecx,0x9\n 75d:\tand    esi,0x7f\n 760:\tlea    ecx,[rcx+rsi*4]\n 763:\tmov    r8,QWORD PTR [r15+0x18]\n 767:\tmov    ecx,DWORD PTR [r8+rcx*1]\n 76b:\tmov    DWORD PTR [r14+rax*1-0x3],ecx\n 770:\tmov    ecx,DWORD PTR [rsp+0x1c]\n 774:\tand    cl,0x7\n 777:\tshr    edi,cl\n 779:\tmov    rcx,QWORD PTR [rsp+0x28]\n 77e:\tshl    ecx,0x9\n 781:\tand    edi,0x7f\n 784:\tlea    ecx,[rcx+rdi*4]\n 787:\tmov    r8,QWORD PTR [r15+0x18]\n 78b:\tmovzx  r10d,BYTE PTR [r8+rcx*1+0x2]\n 791:\tmov    BYTE PTR [r14+rax*1+0x2],r10b\n 796:\tmovzx  ecx,WORD PTR [r8+rcx*1]\n 79b:\tmov    r8,QWORD PTR [rsp+0x68]\n 7a0:\tmov    WORD PTR [r14+rax*1],cx\n 7a5:\tadd    rax,0x18\n 7a9:\tlea    rcx,[r9+r8*1]\n 7ad:\tadd    rcx,0xfffffffffffffff8\n 7b1:\tadd    r8,0xfffffffffffffff8\n 7b5:\tcmp    rcx,0x7\n 7b9:\tja     3a4 <jshc_mem_apply+0x104>\n 7bf:\tneg    r8\n 7c2:\tjmp    7c7 <jshc_mem_apply+0x527>\n 7c4:\txor    r8d,r8d\n 7c7:\tsub    r9,r8\n 7ca:\tjbe    866 <jshc_mem_apply+0x5c6>\n 7d0:\tlea    rax,[r8+r8*2]\n 7d4:\tdata16 data16 cs nop WORD PTR [rax+rax*1+0x0]\n 7e0:\tmovzx  ecx,BYTE PTR [rdx+rax*1]\n 7e4:\tmovzx  r10d,BYTE PTR [rdx+rax*1+0x1]\n 7ea:\tmov    r8d,r10d\n 7ed:\tshl    r8d,0x8\n 7f1:\tmovzx  r11d,BYTE PTR [rdx+rax*1+0x2]\n 7f7:\tmov    esi,r11d\n 7fa:\tshl    esi,0x10\n 7fd:\tor     esi,r8d\n 800:\tor     esi,ecx\n 802:\tmov    rdi,QWORD PTR [r15+0x10]\n 806:\tmov    r8,QWORD PTR [r15+0x18]\n 80a:\tshr    ecx,0x5\n 80d:\tshr    r10d,0x5\n 811:\tlea    ecx,[rcx+r10*8]\n 815:\tand    r11d,0xffffffe0\n 819:\tlea    r10d,[rcx+r11*2]\n 81d:\tlea    ecx,[rsi*8+0x0]\n 824:\tsub    ecx,esi\n 826:\tmov    r11d,ecx\n 829:\tshr    r11d,0x3\n 82d:\tmovzx  r11d,WORD PTR [rdi+r11*1]\n 832:\tand    cl,0x7\n 835:\tshr    r11d,cl\n 838:\tshl    r10d,0x9\n 83c:\tand    r11d,0x7f\n 840:\tlea    ecx,[r10+r11*4]\n 844:\tmovzx  r10d,BYTE PTR [r8+rcx*1+0x2]\n 84a:\tmov    BYTE PTR [r14+rax*1+0x2],r10b\n 84f:\tmovzx  ecx,WORD PTR [r8+rcx*1]\n 854:\tmov    WORD PTR [r14+rax*1],cx\n 859:\tadd    rax,0x3\n 85d:\tdec    r9\n 860:\tjne    7e0 <jshc_mem_apply+0x540>\n 866:\txor    eax,eax\n 868:\tadd    rsp,0x70\n 86c:\tpop    rbx\n 86d:\tpop    rbp\n 86e:\tpop    rdi\n 86f:\tpop    rsi\n 870:\tpop    r12\n 872:\tpop    r13\n 874:\tpop    r14\n 876:\tpop    r15\n 878:\tret\n",
+      "stderr": ""
+    }
+  ],
+  "compiler_sha256": {
+    "C:/Program Files/LLVM/bin/clang.exe": "07e62068e7cbce378c053cfd0633b1a235fa8b38ebd57b27998dda17fe375a8c",
+    "E:/mingw64/bin/gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:/mingw64/bin/g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "libraries": {
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_rgb3d7.dll": "89a325f566b3890ce335c028837407504a7bbc5f63a6888e0be1cff8d312e932",
+    "jshc_rgb3d7_c99.dll": "0d10454be2a6f235b701e5c802c4b001ae9823d51181cb472ce606d711bfb549",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "c99_mnemonics": [
+    "add",
+    "and",
+    "cmp",
+    "cs",
+    "data16",
+    "dec",
+    "inc",
+    "ja",
+    "jae",
+    "jb",
+    "jbe",
+    "je",
+    "jmp",
+    "jne",
+    "lea",
+    "mov",
+    "movabs",
+    "movups",
+    "movzx",
+    "neg",
+    "nop",
+    "or",
+    "pop",
+    "push",
+    "ret",
+    "seta",
+    "setb",
+    "sete",
+    "setne",
+    "shl",
+    "shr",
+    "sub",
+    "test",
+    "xor",
+    "xorps"
+  ],
+  "c99_forbidden": [],
+  "scope": "唯一Clang通用x64 C99，无AVX/BMI；独立GCC AVX2 TU无新增BMI/native/AVX512；全部源/数据冻结，旧控制不重编译。"
+}

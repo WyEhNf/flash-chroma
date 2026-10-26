@@ -1,0 +1,85 @@
+{
+  "purpose": "构建通用冻结稀疏句柄，逐字节复用原specialized AVX2对象。",
+  "plan_sha256": "6a16a577eefe60648d72474c9df361625598ddc124332cde05c6d7db810c5e3c",
+  "source_sha256": {
+    "experiments/compact-sparse-runtime/channel_runtime.cpp": "16032485c4bb1a4baa09b4a3d872cce9f5c8713540813d296b10cdc4f9c44dab",
+    "scripts/build_compact_sparse.py": "acce4ceeb1d543f5ad7f9005bf5c05e3b34854e9458c4820ace5f88f135dd9e1",
+    "scripts/verify_compact_sparse.py": "917d27c8a4e30af1f18d914b8df15df6ed1952323fc1b3da9cab85665fbdaf64",
+    "scripts/bench_compact_sparse.py": "d3eb8d20e1869857c74e006ac7c6fa5f008ea342aeb0c5c2186fbacc774e43fa",
+    "experiments/channel-runtime/channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+    "experiments/channel-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "scripts/verify_channel_coordinates.py": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab",
+    "python/lutlab/channel_coordinates.py": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3"
+  },
+  "inputs": {
+    "core": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+      "sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6"
+    },
+    "avx2_object": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+      "sha256": "2edcc3ae0792294ebd59614c9634719869830cb839a8838c551987443afac3e4"
+    },
+    "specialized": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    }
+  },
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_CC_HAVE_AVX2=1",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\worktrees\\p16-memory-20261023\\cpp\\include",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\compact-sparse-runtime\\channel_runtime.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-sparse-build-v1\\runtime.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-fopenmp",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-sparse-build-v1\\runtime.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-sparse-build-v1\\jshc_compact_sparse.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_channel_specialized.dll": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+    "jshc_compact_sparse.dll": "ea76b52a397c3b9cbbb10ff4922e86d4b9bb91d74f5d3b083bc1e625b36df265",
+    "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+    "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "abi": 1,
+  "revisions": {
+    "specialized": 2,
+    "compact": 1001
+  },
+  "scope": "只编译baseline ISA的C++17 dispatcher；原specialized AVX2对象原字节链接，没有像素TU改动。"
+}

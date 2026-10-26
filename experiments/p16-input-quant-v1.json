@@ -1,0 +1,12 @@
+{
+  "purpose": "独立研究输入近邻量化后直接RGB派生表的容量/精度边界；不与palette量化、ROM字典或compact句柄叠加。",
+  "base_commit": "16ae431030a5c734a1485089c8b58d15b21902f6",
+  "cube_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+  "reference_sha256": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690",
+  "manifest_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+  "bits": [7, 6, 5],
+  "geometry": "每轴节点0,step,...,256-step,255，step=2^(8-bits)，共2^bits+1个；输入索引min((x+step/2)>>log2(step),2^bits)。取最近采样点，平距向大值。端点255单独保真，不追加相位扫描。",
+  "export": "仅查询已验a399四级模型输出流生成129³/65³/33³ RGB32表；不使用gold/照片/误差来选节点或拟合。最初四个33³源模型及其整数逐级语义保持绑定。",
+  "accuracy_gate": "全域、完整100图合并、最劣单图mean/p99/max分别比baseline；保留率min(1,old_error/new_error)，零须仍零；100/90/80/70/60/50六档，全部完成后任一最劣指标低50则不进native性能。",
+  "limits": "这是有损派生编译研究，不能称作与原四次变换完全等价，也不能将129³/65³当作赛事m允许范围。派生表许可未知；需另行确认，不宣称官方合法/通过。质量筛查不提供新吞吐或RSS结论。"
+}
