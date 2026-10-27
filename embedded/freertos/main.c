@@ -1,5 +1,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
+#ifdef JSHC_EMBEDDED_SINGLE_HEADER_PARITY
+#include "flash_chroma_c.h"
+#endif
 #ifdef JSHC_EMBEDDED_PORTABLE_PARITY
 #include "jshc_portable.h"
 #endif
@@ -44,6 +47,13 @@ static void worker(void *argument)
     jshc_platform_number((uint32_t)uxTaskGetStackHighWaterMark(NULL));
     jshc_platform_write("\n");
     if (result || !heartbeat || xTaskGetTickCount() == start) jshc_platform_fail();
+#ifdef JSHC_EMBEDDED_SINGLE_HEADER_PARITY
+    jshc_platform_write("新C99单头普通/分输出Q16合同通过，模型视图字节=");
+    jshc_platform_number((uint32_t)sizeof(fc_model));
+    jshc_platform_write("，链视图字节=");
+    jshc_platform_number((uint32_t)sizeof(fc_chain));
+    jshc_platform_write("；模型和侧表存储另计\n");
+#endif
 #ifdef JSHC_EMBEDDED_PORTABLE_PARITY
     jshc_platform_write("portable 通用/结构化路径对照通过，单模型对象字节=");
     jshc_platform_number((uint32_t)jshc_p_model_bytes());

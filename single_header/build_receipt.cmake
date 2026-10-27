@@ -1,0 +1,12 @@
+# 在实际链接后记录编译来源；读取库时核SHA，避免把工作树新头标作旧库来源。
+file(SHA256 "${FC_LIBRARY}" library_sha)
+set(receipt "{}")
+string(JSON receipt SET "${receipt}" library_sha256 "\"${library_sha}\"")
+string(JSON receipt SET "${receipt}" compiler "\"${FC_COMPILER}\"")
+string(JSON receipt SET "${receipt}" language "\"C++17 / C99\"")
+string(JSON receipt SET "${receipt}" headers "{}")
+foreach(header flash_chroma.hpp flash_chroma_c.h)
+  file(SHA256 "${FC_ROOT}/include/${header}" header_sha)
+  string(JSON receipt SET "${receipt}" headers "include/${header}" "\"${header_sha}\"")
+endforeach()
+file(WRITE "${FC_LIBRARY}.build.json" "${receipt}\n")
