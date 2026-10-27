@@ -1,0 +1,452 @@
+{
+  "schema_version": 1,
+  "purpose": "固定100图、当前仓库热核与四个同源单变量候选的CPU-only AVX2配对筛查",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel(R) Core(TM) Ultra 5 125H；来自Windows注册表及WSL lscpu核对",
+    "compiler": "g++.exe (Rev2, Built by MSYS2 project) 14.2.0",
+    "compile_flags": "-O3 -DNDEBUG -std=c++17 -mavx2 -mbmi -mtune=skylake -fopenmp",
+    "thread_affinity": {
+      "1": [
+        0
+      ],
+      "4": [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    "gpu_npu": "未调用"
+  },
+  "inputs": {
+    "photos": "artifacts\\joint-lut-avx2-20261027\\photo-batch\\photos.rgb",
+    "photos_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+    "pixels": 78643200,
+    "bytes": 235929600,
+    "executable_sha256": "1dffafc0a0dba7c0a929bf53c5f59b4ca14e7cdab7192f4f55a672f1792cf061"
+  },
+  "correctness": {
+    "complete_rgb8": true,
+    "pixels": 16777216,
+    "kernels": 10,
+    "hash": 10007360481601617047
+  },
+  "method": "每候选独立进程；预热当前核和候选各1次；8个循环交替ABBA/BAAB；每循环两次当前核与两次候选取均值；保留全部8个配对比。",
+  "results": [
+    {
+      "candidate": "repo_current",
+      "threads": 1,
+      "cycles": 8,
+      "baseline_median_ms": 136.89945,
+      "candidate_median_ms": 144.61935,
+      "paired_ratio_median": 1.02981,
+      "paired_ratio_min": 0.81362,
+      "paired_ratio_max": 1.114658,
+      "baseline_cycle_ms": [
+        200.7332,
+        207.6261,
+        156.922,
+        125.4427,
+        136.32685,
+        136.89945,
+        127.5138,
+        136.53015
+      ],
+      "candidate_cycle_ms": [
+        165.8253,
+        168.9287,
+        161.5999,
+        137.9659,
+        144.61935,
+        132.13375,
+        142.13425,
+        129.17025
+      ],
+      "paired_ratios": [
+        0.826098,
+        0.81362,
+        1.02981,
+        1.099832,
+        1.060828,
+        0.965188,
+        1.114658,
+        0.946093
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_no_prefetch",
+      "threads": 1,
+      "cycles": 8,
+      "baseline_median_ms": 136.18045,
+      "candidate_median_ms": 136.79475,
+      "paired_ratio_median": 1.018034,
+      "paired_ratio_min": 0.912691,
+      "paired_ratio_max": 1.146941,
+      "baseline_cycle_ms": [
+        137.28845,
+        123.30735,
+        136.18045,
+        135.64095,
+        136.20225,
+        135.5436,
+        132.6018,
+        141.9677
+      ],
+      "candidate_cycle_ms": [
+        136.79475,
+        130.34785,
+        126.5815,
+        123.7983,
+        141.69255,
+        137.98805,
+        152.0865,
+        135.6978
+      ],
+      "paired_ratios": [
+        0.996404,
+        1.057097,
+        0.929513,
+        0.912691,
+        1.04031,
+        1.018034,
+        1.146941,
+        0.955836
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_t0",
+      "threads": 1,
+      "cycles": 8,
+      "baseline_median_ms": 196.8745,
+      "candidate_median_ms": 196.36265,
+      "paired_ratio_median": 1.000369,
+      "paired_ratio_min": 0.90274,
+      "paired_ratio_max": 1.350541,
+      "baseline_cycle_ms": [
+        153.4611,
+        139.2496,
+        196.8745,
+        203.59125,
+        196.2902,
+        214.686,
+        216.11195,
+        191.9949
+      ],
+      "candidate_cycle_ms": [
+        198.01035,
+        188.0623,
+        195.41365,
+        198.26175,
+        196.36265,
+        206.3214,
+        195.093,
+        192.7372
+      ],
+      "paired_ratios": [
+        1.290297,
+        1.350541,
+        0.99258,
+        0.973823,
+        1.000369,
+        0.961038,
+        0.90274,
+        1.003866
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_cached",
+      "threads": 1,
+      "cycles": 8,
+      "baseline_median_ms": 228.7152,
+      "candidate_median_ms": 226.63825,
+      "paired_ratio_median": 1.003649,
+      "paired_ratio_min": 0.734822,
+      "paired_ratio_max": 1.109175,
+      "baseline_cycle_ms": [
+        135.023,
+        127.65815,
+        162.50245,
+        336.94325,
+        232.33855,
+        229.7771,
+        224.89065,
+        228.7152
+      ],
+      "candidate_cycle_ms": [
+        131.0225,
+        130.3401,
+        173.9531,
+        247.5934,
+        257.70415,
+        226.63825,
+        218.24255,
+        229.5497
+      ],
+      "paired_ratios": [
+        0.970372,
+        1.021009,
+        1.070464,
+        0.734822,
+        1.109175,
+        0.98634,
+        0.970439,
+        1.003649
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_t0_cached",
+      "threads": 1,
+      "cycles": 8,
+      "baseline_median_ms": 216.37165,
+      "candidate_median_ms": 206.8371,
+      "paired_ratio_median": 1.01614,
+      "paired_ratio_min": 0.902208,
+      "paired_ratio_max": 1.066611,
+      "baseline_cycle_ms": [
+        151.1735,
+        153.99585,
+        230.5339,
+        216.37165,
+        222.68765,
+        212.2118,
+        219.73645,
+        203.8978
+      ],
+      "candidate_cycle_ms": [
+        157.55555,
+        164.2536,
+        229.94055,
+        219.8638,
+        200.9105,
+        206.8371,
+        204.5752,
+        207.20575
+      ],
+      "paired_ratios": [
+        1.042217,
+        1.066611,
+        0.997426,
+        1.01614,
+        0.902208,
+        0.974673,
+        0.931003,
+        1.016224
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_current",
+      "threads": 4,
+      "cycles": 8,
+      "baseline_median_ms": 121.4838,
+      "candidate_median_ms": 104.97335,
+      "paired_ratio_median": 0.890267,
+      "paired_ratio_min": 0.653234,
+      "paired_ratio_max": 1.219662,
+      "baseline_cycle_ms": [
+        114.8452,
+        95.72345,
+        64.2918,
+        121.4838,
+        99.62055,
+        124.52595,
+        162.20095,
+        202.7342
+      ],
+      "candidate_cycle_ms": [
+        89.2559,
+        78.15875,
+        78.41425,
+        104.97335,
+        99.0601,
+        110.86135,
+        105.95515,
+        230.19075
+      ],
+      "paired_ratios": [
+        0.777184,
+        0.816506,
+        1.219662,
+        0.864093,
+        0.994374,
+        0.890267,
+        0.653234,
+        1.135431
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_no_prefetch",
+      "threads": 4,
+      "cycles": 8,
+      "baseline_median_ms": 146.29075,
+      "candidate_median_ms": 155.89235,
+      "paired_ratio_median": 1.185849,
+      "paired_ratio_min": 0.745611,
+      "paired_ratio_max": 1.637159,
+      "baseline_cycle_ms": [
+        75.6438,
+        78.90525,
+        90.90555,
+        146.724,
+        117.8769,
+        180.26275,
+        197.6309,
+        146.29075
+      ],
+      "candidate_cycle_ms": [
+        123.84095,
+        93.56975,
+        120.34475,
+        163.6941,
+        183.51465,
+        134.40595,
+        206.6941,
+        155.89235
+      ],
+      "paired_ratios": [
+        1.637159,
+        1.185849,
+        1.323844,
+        1.11566,
+        1.556833,
+        0.745611,
+        1.045859,
+        1.065634
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_t0",
+      "threads": 4,
+      "cycles": 8,
+      "baseline_median_ms": 109.29705,
+      "candidate_median_ms": 106.11355,
+      "paired_ratio_median": 1.047319,
+      "paired_ratio_min": 0.554497,
+      "paired_ratio_max": 1.143726,
+      "baseline_cycle_ms": [
+        100.06165,
+        106.5779,
+        62.4394,
+        77.78845,
+        151.9412,
+        109.29705,
+        116.5382,
+        159.30845
+      ],
+      "candidate_cycle_ms": [
+        106.11355,
+        59.0971,
+        65.394,
+        64.7506,
+        110.70695,
+        115.01615,
+        133.2878,
+        104.2811
+      ],
+      "paired_ratios": [
+        1.060482,
+        0.554497,
+        1.047319,
+        0.832393,
+        0.728617,
+        1.052326,
+        1.143726,
+        0.654586
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_cached",
+      "threads": 4,
+      "cycles": 8,
+      "baseline_median_ms": 97.1741,
+      "candidate_median_ms": 121.12345,
+      "paired_ratio_median": 1.194378,
+      "paired_ratio_min": 0.768246,
+      "paired_ratio_max": 2.138558,
+      "baseline_cycle_ms": [
+        70.7934,
+        104.5799,
+        63.55015,
+        60.28875,
+        93.2971,
+        152.3163,
+        101.41135,
+        97.1741
+      ],
+      "candidate_cycle_ms": [
+        68.4255,
+        123.6433,
+        135.90565,
+        116.5916,
+        96.98375,
+        117.01645,
+        121.12345,
+        169.7482
+      ],
+      "paired_ratios": [
+        0.966552,
+        1.182286,
+        2.138558,
+        1.933887,
+        1.039515,
+        0.768246,
+        1.194378,
+        1.746846
+      ],
+      "hash": 5994812645084340114
+    },
+    {
+      "candidate": "repo_t0_cached",
+      "threads": 4,
+      "cycles": 8,
+      "baseline_median_ms": 110.55445,
+      "candidate_median_ms": 83.5293,
+      "paired_ratio_median": 0.92159,
+      "paired_ratio_min": 0.755549,
+      "paired_ratio_max": 1.534822,
+      "baseline_cycle_ms": [
+        81.95915,
+        73.37175,
+        71.33505,
+        68.48995,
+        110.55445,
+        139.3394,
+        122.09455,
+        111.18115
+      ],
+      "candidate_cycle_ms": [
+        75.53275,
+        66.84345,
+        75.8838,
+        74.83765,
+        83.5293,
+        112.5096,
+        110.20975,
+        170.6433
+      ],
+      "paired_ratios": [
+        0.92159,
+        0.911024,
+        1.063766,
+        1.092681,
+        0.755549,
+        0.80745,
+        0.902659,
+        1.534822
+      ],
+      "hash": 5994812645084340114
+    }
+  ],
+  "qualification": {
+    "status": "没有候选获得性能资格",
+    "reason": "A/A自身配对范围已超过±3%，且所有候选区间均跨过1或存在明显反例；仅保留方向性观察。"
+  }
+}
