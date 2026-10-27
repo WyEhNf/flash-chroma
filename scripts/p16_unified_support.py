@@ -13,7 +13,10 @@ import time
 
 import numpy as np
 from PIL import Image
-import psutil
+try:
+    import psutil
+except ImportError:
+    psutil = None
 
 U8 = ct.POINTER(ct.c_uint8)
 TEXT = ct.POINTER(ct.c_char)
@@ -121,6 +124,8 @@ def expected_photos(frames, cube):
 
 
 def rss():
+    if psutil is None:
+        return {'available': False, 'reason': '未安装可选psutil，未测量RSS或进程峰值'}
     value = psutil.Process().memory_info()
     return {name: int(getattr(value, name)) for name in ('rss', 'vms', 'peak_wset', 'private')
         if hasattr(value, name)}
@@ -134,8 +139,11 @@ def environment(build_receipt=None):
             cpu = winreg.QueryValueEx(key, 'ProcessorNameString')[0].strip()
     result = {'platform': platform.platform(), 'machine': platform.machine(), 'cpu': cpu,
         'python': sys.version, 'numpy': np.__version__, 'pillow': Image.__version__,
-        'psutil': psutil.__version__, 'affinity': psutil.Process().cpu_affinity(),
-        'physical_cores': psutil.cpu_count(logical=False), 'logical_cpus': psutil.cpu_count(),
+        'psutil': psutil.__version__ if psutil is not None else None,
+        'affinity': psutil.Process().cpu_affinity() if psutil is not None else
+            sorted(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity') else None,
+        'physical_cores': psutil.cpu_count(logical=False) if psutil is not None else None,
+        'logical_cpus': psutil.cpu_count() if psutil is not None else os.cpu_count(),
         'cpu_only': True, 'locked_frequency': False, 'compiler_and_flags': '未提供构建回执，不推断',
         'target_cpu': 'Intel Xeon Gold 6140；仅当实际cpu相符时才属于目标机结果'}
     if build_receipt is not None:
@@ -154,7 +162,13 @@ def environment(build_receipt=None):
 
 def setup(dll_directory=None, cpus=None):
     if cpus:
-        psutil.Process().cpu_affinity([int(value) for value in cpus.split(',')])
+        requested = [int(value) for value in cpus.split(',')]
+        if psutil is not None:
+            psutil.Process().cpu_affinity(requested)
+        elif hasattr(os, 'sched_setaffinity'):
+            os.sched_setaffinity(0, requested)
+        else:
+            raise ValueError('当前系统缺少psutil，无法执行可选的CPU绑核请求；不传cpus可正常运行')
     if os.name == 'nt':
         directory = Path(dll_directory) if dll_directory else Path('E:/mingw64/bin')
         if directory.is_dir():
