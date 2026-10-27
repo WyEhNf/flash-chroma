@@ -22,19 +22,30 @@ def main():
     args=parser.parse_args()
     raw=json.loads((args.measurement/'results.json').read_text(encoding='utf-8'))
     catalog=json.loads((args.measurement/'catalog.json').read_text(encoding='utf-8'))
+    quality=json.loads(args.quality.read_text(encoding='utf-8'))
     if raw.get('completed') is not True:
         raise ValueError('测量尚未完成，拒绝发布')
+    if (not quality.get('passed') or quality['library']['sha256']!=raw['library']['sha256']
+            or quality['manifest']['sha256']!=support.digest(args.model_manifest)):
+        raise ValueError('完整域证据与实际库或源模型清单不一致')
     if args.output.exists() or args.models_output.exists():
         raise FileExistsError('发布目录已存在，拒绝覆盖')
     value,models=support.load_models(args.model_manifest)
+    root=Path(value.get('path_root',args.model_manifest.resolve().parent))
+    if not root.is_absolute(): root=args.model_manifest.resolve().parent/root
+    sources=value.get('original_luts',raw['reference_source_luts'])
+    source_sha=value.get('source_luts_sha256',[record['sha256'] for record in sources])
+    if source_sha!=[record['sha256'] for record in raw['reference_source_luts']]:
+        raise ValueError('原始LUT与测量来源不一致')
+    if any(model['profile'] not in models for model in catalog['models'].values()):
+        raise ValueError('发布模型没有包含全部已测profile')
     args.output.mkdir(parents=True)
     (args.models_output/'objects').mkdir(parents=True)
-    manifest={'interpolation_basis':'tetra_q16','path_root':'.',
-        'source_luts_sha256':value['source_luts_sha256'],'original_luts':value['original_luts'],
-        'profiles':{}, 'note':'固定Cinema来源；新LUT重新拟合并整链验证，全批固定参数。'}
+    manifest={'default_profile':value.get('default_profile',next(iter(models))),'interpolation_basis':'tetra_q16','path_root':'.',
+        'source_luts_sha256':source_sha,'original_luts':sources,
+        'profiles':{}, 'note':'源LUT身份固定；新LUT重新拟合并整链验证，全批固定参数。'}
     for name,model in models.items():
         profile=copy.deepcopy(model.profile)
-        root=Path(value['path_root'])
         for record in profile['models']+[r for r in profile['sidecars'] if r]:
             source=Path(record['path'])
             if not source.is_absolute(): source=root/source
@@ -51,8 +62,19 @@ def main():
         profile['interpolation_basis']='tetra_q16'
         profile['source_luts_sha256']=manifest['source_luts_sha256']
         manifest['profiles'][name]=profile
-    shutil.copyfile(support.ROOT/'data/p16-unified-models/LICENSE.stripedpurple',args.models_output/'LICENSE.stripedpurple')
-    manifest['licenses']=[{'path':'LICENSE.stripedpurple','sha256':support.digest(args.models_output/'LICENSE.stripedpurple')}]
+    manifest['licenses']=[]
+    for index,record in enumerate(value.get('licenses',[])):
+        source=Path(record['path'])
+        if not source.is_absolute(): source=root/source
+        if support.digest(source)!=record['sha256']: raise ValueError('源许可摘要不符')
+        name=source.name
+        if name.casefold() in ('manifest.json','objects'):
+            name=f'license-{index:02d}-'+name
+        destination=args.models_output/name
+        if destination.exists() and support.digest(destination)!=record['sha256']:
+            name=f'{index:02d}-'+name;destination=args.models_output/name
+        if not destination.exists(): shutil.copyfile(source,destination)
+        manifest['licenses'].append({'path':name,'sha256':record['sha256']})
     manifest_path=args.models_output/'manifest.json'
     support.write_json(manifest_path,manifest)
     for model in catalog['models'].values():

@@ -94,7 +94,7 @@ def bind_evidence(candidate, context, catalog_path):
             or not frontier._sha(row.get('batch_sha256'))):
         raise ValueError('原始证据与catalog的库、输入或执行配置不一致')
     return row, {'path': str(path), 'sha256': support.digest(path), 'record_id': record_id,
-                 'environment': evidence.get('environment'), 'completed': evidence.get('completed')}
+                 'environment': row.get('measurement_environment',evidence.get('environment')), 'completed': evidence.get('completed')}
 
 
 def create_output(path):
@@ -213,7 +213,8 @@ def run(args):
                        'prepare_to_first_preloaded_batch_wall_ms': first_wall_ms,
                        'read_images_to_output_application_wall_ms': application_ms,
                        'application_includes_png_write': bool(args.write_images),
-                       'scope': '单次实际百图；apply为原生映射调用，prepare含Runtime准备而不含模型读盘/离线拟合；application含输入SHA、解码、分配及数据身份检查，选配PNG写盘，不含库/模型读取、输出哈希和后续参考精度校验。'}
+                       'application_includes_png_file_sha': bool(args.write_images),
+                       'scope': '单次实际百图；apply为原生映射调用，prepare含Runtime准备而不含模型读盘/离线拟合；application含输入SHA、解码、分配及数据身份检查，选配PNG编码写盘和PNG文件SHA，不含库/模型读取、之后的逐图/整批像素SHA和参考精度校验。'}
             frontier.save_new(output / 'runtime.json', {'timings': timings, 'memory': memory,
                 'batch_output_sha256': output_sha, 'per_image_output_sha256': per_image, 'written_images': written})
         quality = {'verified_this_run': False, 'inherited_from_catalog': True,

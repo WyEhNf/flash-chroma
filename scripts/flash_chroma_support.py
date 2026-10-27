@@ -98,6 +98,8 @@ class Model:
 def load_models(manifest, names=None):
     path = Path(manifest).resolve()
     value = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(value.get('profiles'),dict) or not value['profiles']:
+        raise ValueError('模型清单至少需要一个profile，不能把空集合当作验证通过')
     root = Path(value.get('path_root', path.parent))
     if not root.is_absolute():
         root = path.parent / root

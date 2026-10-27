@@ -1,5 +1,6 @@
 """宿主FFI拒绝不连续或只读输出，防止绕过原生容量契约。"""
 import sys
+import json
 from pathlib import Path
 import numpy as np
 import pytest
@@ -34,3 +35,10 @@ def test_config_invalid_zero_thread_and_block():
         config[key]=0
         with pytest.raises(ValueError):
             support.config_struct(config)
+
+
+def test_empty_manifest_cannot_pass_verification(tmp_path):
+    path=tmp_path/'manifest.json'
+    path.write_text(json.dumps({'profiles':{},'interpolation_basis':'tetra_q16'}),encoding='utf-8')
+    with pytest.raises(ValueError,match='至少需要一个profile'):
+        support.load_models(path)
