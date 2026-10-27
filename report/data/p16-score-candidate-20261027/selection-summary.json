@@ -1,0 +1,71 @@
+{
+  "default_profile": "default",
+  "precision_mean_profile": "max_first",
+  "official_score_available": false,
+  "official_threshold": null,
+  "library": {
+    "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-score-cpu-build\\libjshc_unified.dll",
+    "sha256": "afdb1a891bb49a0d9945161e3512b76343e4ace57fa5b0e22e100177cf32e524",
+    "revision": 102,
+    "capabilities": 7,
+    "avx512_runtime_available": false,
+    "avx512_note": "本库未编入AVX512；旧回执同名字段由capabilities bit8导出，不是独立硬件检测。"
+  },
+  "metrics": {
+    "default": {
+      "mean_delta_e": 0.6954861590589635,
+      "worst_image_mean_delta_e": 1.1190513220562066,
+      "model_capacity_bytes": 18715824,
+      "run_batch_ms": 37.4289,
+      "run_create_first_ms": 104.5274,
+      "application_seconds": 2.6447548000000003,
+      "all_output_hashes_match_frozen_oracle": true
+    },
+    "max_first": {
+      "mean_delta_e": 0.67909018105776,
+      "worst_image_mean_delta_e": 1.0841023903421438,
+      "model_capacity_bytes": 35495456,
+      "run_batch_ms": 43.4661,
+      "run_create_first_ms": 151.8813,
+      "application_seconds": 2.6873762,
+      "all_output_hashes_match_frozen_oracle": true
+    },
+    "max48": {
+      "mean_delta_e": 0.6791094634971097,
+      "worst_image_mean_delta_e": 1.0841023903421438,
+      "model_capacity_bytes": 35533672,
+      "run_batch_ms": 40.9763,
+      "run_create_first_ms": 134.90630000000002,
+      "application_seconds": 2.7508923000000003,
+      "all_output_hashes_match_frozen_oracle": true
+    },
+    "max41": {
+      "mean_delta_e": 0.6809360078718589,
+      "worst_image_mean_delta_e": 1.0930542871075424,
+      "model_capacity_bytes": 35673508,
+      "run_batch_ms": 43.772000000000006,
+      "run_create_first_ms": 163.2036,
+      "application_seconds": 2.6660775,
+      "all_output_hashes_match_frozen_oracle": true
+    }
+  },
+  "quality_scope": {
+    "full_rgb8_streams": 24,
+    "finite_cases": 6048,
+    "photo_batches": 48,
+    "per_image_sha_comparisons": 4800,
+    "full_rgb8_stream_groups": 12,
+    "full_stream_native_calls": 1536
+  },
+  "pair_aa_valid": {
+    "hot_apply": false,
+    "create_to_first_batch": false
+  },
+  "selection_reason": "优先逐图mean过线；保留已验成熟AVX2默认。新配对A/A未过，不把新热时间用于升级；均值优先选max_first，不按max优先选max41。",
+  "timing_scope": "metrics.run_*是交付入口单进程七轮描述，不是稳定排名；application含输入哈希、解码和分配，但未启用写图。",
+  "source_sync": {
+    "joint": "b685a3b2210eb1cfe021da3dff3b724c9e0a53d4",
+    "merge": "082f3d975566dd4ac409b7981891372308fd1337"
+  },
+  "implementation_commit": "dd55bb67795c68f4d958280ce17f7bed58f06f37"
+}
