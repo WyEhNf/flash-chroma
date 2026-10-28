@@ -83,6 +83,7 @@ def main():
     executed_sources={}
     for relative in ('include/flash_chroma.hpp','include/flash_chroma_c.h',
                      'src/flash_chroma_cpp.inc','src/flash_chroma_selection.inc',
+                     'src/flash_chroma_direct.inc','src/flash_chroma_prepare.inc',
                      'single_header/bridge.cpp','single_header/c_bridge.c',
                      'scripts/bench_flash_chroma.py','scripts/flash_chroma_support.py',
                      'scripts/p16_frontier.py'):
@@ -167,6 +168,7 @@ def main():
                 stable=all(0.90<=v['ratio']<=1.10 for v in controls)
                 record = {'id':candidate_id, 'profile':name, 'config':dict(config),
                     'resources':engine.info, 'prepare_ms':engine.prepare_ms,
+                    'preparation':engine.preparation,
                     'first_batch_ms':first, 'prepare_to_first_ms':first_wall, 'warmup_ms':warmup,
                     'hot_batch_ms':values, 'batch_sha256':actual, 'per_round_sha256':hashes,
                     'per_image_sha256':[support.sha(image) for image in target],

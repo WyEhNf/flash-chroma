@@ -130,6 +130,10 @@ class Library:
         d.fc_bridge_apply.restype = ct.c_int
         d.fc_bridge_destroy.argtypes = [ct.c_void_p]
         d.fc_bridge_destroy.restype = None
+        self.prepare_info = getattr(d, 'fc_bridge_prepare_info', None)
+        if self.prepare_info is not None:
+            self.prepare_info.argtypes = [ct.c_void_p, ct.POINTER(ct.c_uint64), ct.c_size_t]
+            self.prepare_info.restype = ct.c_int
         d.fc_c_bridge_apply.argtypes = [ct.POINTER(Bytes), ct.POINTER(Bytes), U8, ct.c_size_t,
             ct.c_size_t, U8, ct.c_size_t, ct.c_size_t, ct.c_size_t, ct.c_size_t]
         d.fc_c_bridge_apply.restype = ct.c_int
@@ -178,6 +182,14 @@ class Engine:
         if status:
             raise RuntimeError(f'运行库准备失败：{status} {STATUS.get(status, "宿主适配错误")}；{config}')
         self.info = {key: int(getattr(info, key)) for key, _ in Info._fields_}
+        self.preparation = None
+        diagnostic = getattr(library, 'prepare_info', None)
+        if diagnostic is not None:
+            values = (ct.c_uint64 * 2)()
+            if diagnostic(self.handle, values, 2):
+                self.close()
+                raise RuntimeError('准备路径诊断失败')
+            self.preparation = {'suffix_cache': bool(values[0]), 'cache_entries': int(values[1])}
 
     def apply(self, source, target, width=None, height=1, source_stride=None, target_stride=None):
         check_arrays(source,target)

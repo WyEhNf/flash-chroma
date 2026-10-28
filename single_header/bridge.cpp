@@ -2,8 +2,8 @@
 #define FLASH_CHROMA_IMPLEMENTATION
 #include "flash_chroma.hpp"
 #include <cstdint>
+#include <memory>
 #include <new>
-#include <vector>
 
 #if defined(_WIN32)
 #define FC_BRIDGE_API __declspec(dllexport)
@@ -23,7 +23,7 @@ struct fc_bridge_info {
 };
 struct fc_bridge_handle {
     fc::Runtime runtime;
-    std::vector<uint8_t> arena;
+    std::unique_ptr<uint8_t[]> arena;
 };
 static fc::RuntimeConfig config_from(const fc_bridge_config& source) {
     fc::RuntimeConfig value;
@@ -72,10 +72,13 @@ FC_BRIDGE_API int fc_bridge_create(const fc_bridge_bytes* models,const fc_bridge
     if (static_cast<int>(status)!=0) return static_cast<int>(status);
     auto* handle=new(std::nothrow) fc_bridge_handle;
     if (!handle) return -2;
-    try { handle->arena.resize(req.arena_bytes); }
-    catch (const std::bad_alloc&) { delete handle; return -2; }
+    /* prepare负责初始化其使用的区域，宿主不再先把整个direct空间清零。 */
+    if (req.arena_bytes) {
+        handle->arena.reset(new(std::nothrow) uint8_t[req.arena_bytes]);
+        if (!handle->arena) { delete handle; return -2; }
+    }
     status=fc::Runtime::prepare(bundle,selected,
-        fc::Workspace{handle->arena.data(),handle->arena.size()},&handle->runtime);
+        fc::Workspace{handle->arena.get(),req.arena_bytes},&handle->runtime);
     if (static_cast<int>(status)!=0) { delete handle; return static_cast<int>(status); }
     info_from(info,handle->runtime.resources(),static_cast<uint32_t>(handle->runtime.selected_backend()),
               static_cast<uint32_t>(handle->runtime.palette_entries()));
@@ -88,6 +91,14 @@ FC_BRIDGE_API int fc_bridge_apply(void* handle,const uint8_t* source,size_t sour
     if (!handle) return -1;
     return static_cast<int>(static_cast<fc_bridge_handle*>(handle)->runtime.apply(source,source_bytes,
         source_stride,destination,destination_bytes,destination_stride,width,height));
+}
+/* 单独扩展诊断符号，保持原Info结构ABI以便新旧DLL同场比较。 */
+FC_BRIDGE_API int fc_bridge_prepare_info(void* handle,uint64_t* output,size_t entries) {
+    if (!handle || !output || entries!=2) return -1;
+    const auto& runtime=static_cast<fc_bridge_handle*>(handle)->runtime;
+    output[0]=runtime.prepared_with_suffix_cache()?1:0;
+    output[1]=runtime.preparation_cache_entries();
+    return 0;
 }
 FC_BRIDGE_API void fc_bridge_destroy(void* handle) { delete static_cast<fc_bridge_handle*>(handle); }
 }

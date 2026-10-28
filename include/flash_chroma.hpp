@@ -368,6 +368,12 @@ FC_CPP_CORE_API fc_status fc_apply_rgb8(const fc_chain *chain,
 #define FLASH_CHROMA_ENABLE_OPENMP 0
 #endif
 #endif
+#ifndef FLASH_CHROMA_ENABLE_PREPARE_CACHE
+#define FLASH_CHROMA_ENABLE_PREPARE_CACHE (FLASH_CHROMA_ENABLE_DIRECT && FLASH_CHROMA_ENABLE_AVX2)
+#endif
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE && (!FLASH_CHROMA_ENABLE_DIRECT || !FLASH_CHROMA_ENABLE_AVX2)
+#error "准备缓存快路径需要direct与AVX2；可关闭FLASH_CHROMA_ENABLE_PREPARE_CACHE"
+#endif
 #if FLASH_CHROMA_ENABLE_OPENMP && !defined(_OPENMP)
 #error "启用 OpenMP 需由编译器提供 _OPENMP"
 #endif
@@ -439,6 +445,8 @@ public:
     const Requirements& resources() const noexcept { return resources_; }
     Backend selected_backend() const noexcept { return backend_; }
     std::uint32_t palette_entries() const noexcept { return palette_count_; }
+    bool prepared_with_suffix_cache() const noexcept { return prepared_cache_; }
+    std::size_t preparation_cache_entries() const noexcept { return prepared_cache_entries_; }
     bool ready() const noexcept { return ready_; }
 private:
     RuntimeConfig config_{};
@@ -453,6 +461,8 @@ private:
     const std::uint32_t* palette_=nullptr;
     std::uint32_t palette_count_=0;
     const std::uint8_t* arena_=nullptr;
+    std::size_t prepared_cache_entries_=0;
+    bool prepared_cache_=false;
     bool ready_=false;
 };
 }
@@ -588,34 +598,583 @@ FC_AVX2 inline void sparse8(const PackedView* views,const std::uint8_t* src,std:
     for(std::size_t i=0;i<n;i+=8) {Rgb rgb;load8(src+3*i,rgb);for(unsigned s=0;s<4;++s)transform(views[s],rgb);store8(dst+3*i,rgb);}
 }
 #if FLASH_CHROMA_ENABLE_DIRECT
-FC_AVX2 inline void direct8(const std::uint8_t* table,const std::uint32_t* palette,Representation rep,
-    const std::uint8_t* src,std::uint8_t* dst,std::size_t n) noexcept {
-    const __m256i mask=_mm256_set1_epi32(255);
-    for(std::size_t i=0;i<n;i+=8) {
-        Rgb rgb;load8(src+3*i,rgb);
-        const __m256i code=_mm256_or_si256(rgb.r,_mm256_or_si256(_mm256_slli_epi32(rgb.g,8),_mm256_slli_epi32(rgb.b,16)));
-        __m256i value;
-        if(rep==Representation::DirectRGB24) {
-            const auto offset=_mm256_add_epi32(code,_mm256_slli_epi32(code,1));
-            value=_mm256_i32gather_epi32(reinterpret_cast<const int*>(table),offset,1);
-        } else {
-            __m256i id;
-            if(rep==Representation::DirectU8) {
-                const auto words=gather(reinterpret_cast<const std::uint32_t*>(table),_mm256_srli_epi32(code,2));
-                const auto shifts=_mm256_slli_epi32(_mm256_and_si256(code,_mm256_set1_epi32(3)),3);
-                id=_mm256_and_si256(_mm256_srlv_epi32(words,shifts),mask);
-            } else {
-                const auto words=gather(reinterpret_cast<const std::uint32_t*>(table),_mm256_srli_epi32(code,1));
-                const auto shifts=_mm256_slli_epi32(_mm256_and_si256(code,_mm256_set1_epi32(1)),4);
-                id=_mm256_and_si256(_mm256_srlv_epi32(words,shifts),_mm256_set1_epi32(65535));
-            }
-            value=gather(palette,id);
-        }
-        rgb.r=_mm256_and_si256(value,mask);rgb.g=_mm256_and_si256(_mm256_srli_epi32(value,8),mask);rgb.b=_mm256_and_si256(_mm256_srli_epi32(value,16),mask);store8(dst+3*i,rgb);
-    }
+/* 精确 direct 热核：从成熟 adaptive-linear 路径迁移的标量 ILP 查表与 AVX2 打包。
+ * 本片段由生成器嵌入 fc::detail；调用者先检查 AVX2，输入/输出只能同址或分离。
+ * U8/U16 表不要求 guard；RGB24 沿用原有的四字节尾部容量契约。
+ * 基础路径不依赖 BMI；可选强目标函数由每块一次的 CPU 能力检测保护。
+ * 不申请堆，不使用可变全局状态，也不改变任何模型或四级整数结果。
+ */
+
+template<bool Wide>
+inline std::uint32_t direct_palette_id(const std::uint8_t* table,std::uint32_t code) noexcept {
+    if constexpr(Wide)return reinterpret_cast<const std::uint16_t*>(table)[code];
+    else return table[code];
+}
+
+template<bool Wide>
+inline std::uint32_t direct_palette_value(const std::uint8_t* table,
+    const std::uint32_t* palette,std::uint32_t code) noexcept {
+    return palette[direct_palette_id<Wide>(table,code)];
+}
+
+/* 仅宽循环使用；第四字节只用于机器读取，随后掩掉，不参与颜色地址。 */
+inline std::uint32_t direct_code_wide(const std::uint8_t* p) noexcept {
+    std::uint32_t value;std::memcpy(&value,p,4);return value&0xffffffu;
+}
+
+/* 精确读取八个像素的24B，不依赖下一个像素或图像 padding。 */
+template<bool Wide>
+FC_AVX2 inline __attribute__((always_inline)) __m256i direct_read_exact(
+    const std::uint8_t* table,const std::uint32_t* palette,const std::uint8_t* p) noexcept {
+    std::uint64_t a,b,c;std::memcpy(&a,p,8);std::memcpy(&b,p+8,8);std::memcpy(&c,p+16,8);
+    return _mm256_setr_epi32(
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t(a&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t((a>>24)&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t(((a>>48)|(b<<16))&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t((b>>8)&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t((b>>32)&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t(((b>>56)|(c<<8))&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t((c>>16)&0xffffffu))),
+        static_cast<int>(direct_palette_value<Wide>(table,palette,std::uint32_t(c>>40))));
+}
+
+/* 八路ID读取按两组提前发出；其后再读取小调色板，保留成熟内核的ILP组织。 */
+template<bool Wide>
+FC_AVX2 inline __attribute__((always_inline)) __m256i direct_read_wide(
+    const std::uint8_t* table,const std::uint32_t* palette,const std::uint8_t* p) noexcept {
+    const auto i0=direct_palette_id<Wide>(table,direct_code_wide(p));
+    const auto i1=direct_palette_id<Wide>(table,direct_code_wide(p+3));
+    const auto i2=direct_palette_id<Wide>(table,direct_code_wide(p+6));
+    const auto i3=direct_palette_id<Wide>(table,direct_code_wide(p+9));
+    __asm__ volatile("" : : "r"(i0),"r"(i1),"r"(i2),"r"(i3) : "memory");
+    const __m128i lo=_mm_setr_epi32(static_cast<int>(palette[i0]),static_cast<int>(palette[i1]),
+        static_cast<int>(palette[i2]),static_cast<int>(palette[i3]));
+    const auto i4=direct_palette_id<Wide>(table,direct_code_wide(p+12));
+    const auto i5=direct_palette_id<Wide>(table,direct_code_wide(p+15));
+    const auto i6=direct_palette_id<Wide>(table,direct_code_wide(p+18));
+    const auto i7=direct_palette_id<Wide>(table,direct_code_wide(p+21));
+    __asm__ volatile("" : : "r"(i4),"r"(i5),"r"(i6),"r"(i7) : "memory");
+    const __m128i hi=_mm_setr_epi32(static_cast<int>(palette[i4]),static_cast<int>(palette[i5]),
+        static_cast<int>(palette[i6]),static_cast<int>(palette[i7]));
+    return _mm256_inserti128_si256(_mm256_castsi128_si256(lo),hi,1);
+}
+
+/* 保持强目标只进入独立 BMI 主模板，不内联到仅支持 AVX2 的分派函数。 */
+#if defined(__x86_64__)
+#define FC_DIRECT_BMI __attribute__((target("avx2,bmi")))
+
+FC_DIRECT_BMI inline __attribute__((always_inline)) std::uint64_t direct_pair48_input(
+    const std::uint8_t* p) noexcept {
+    typedef std::uint64_t unaligned_alias_u64 __attribute__((aligned(1),may_alias));
+    const std::uint64_t high_mask=0xffff000000000000ULL;
+    std::uint64_t packed;
+    /* AT&T顺序为内存、取反掩码、目标，结果精确保留低48位的两个RGB像素。 */
+    __asm__("andn %1, %q2, %q0" : "=r"(packed)
+        : "m"(*reinterpret_cast<const unaligned_alias_u64*>(p)),"r"(high_mask) : "cc");
+    return packed;
+}
+
+template<bool Wide>
+FC_DIRECT_BMI inline __attribute__((always_inline)) __m256i direct_read_pair48(
+    const std::uint8_t* table,const std::uint32_t* palette,const std::uint8_t* p) noexcept {
+    const auto q0=direct_pair48_input(p);
+    const auto i0=direct_palette_id<Wide>(table,std::uint32_t(q0&0xffffffu));
+    const auto i1=direct_palette_id<Wide>(table,std::uint32_t(q0>>24));
+    const auto q1=direct_pair48_input(p+6);
+    const auto i2=direct_palette_id<Wide>(table,std::uint32_t(q1&0xffffffu));
+    const auto i3=direct_palette_id<Wide>(table,std::uint32_t(q1>>24));
+    __asm__ volatile("" : : "r"(i0),"r"(i1),"r"(i2),"r"(i3) : "memory");
+    const auto lo=_mm_setr_epi32(static_cast<int>(palette[i0]),static_cast<int>(palette[i1]),
+        static_cast<int>(palette[i2]),static_cast<int>(palette[i3]));
+    const auto q2=direct_pair48_input(p+12);
+    const auto i4=direct_palette_id<Wide>(table,std::uint32_t(q2&0xffffffu));
+    const auto i5=direct_palette_id<Wide>(table,std::uint32_t(q2>>24));
+    const auto q3=direct_pair48_input(p+18);
+    const auto i6=direct_palette_id<Wide>(table,std::uint32_t(q3&0xffffffu));
+    const auto i7=direct_palette_id<Wide>(table,std::uint32_t(q3>>24));
+    __asm__ volatile("" : : "r"(i4),"r"(i5),"r"(i6),"r"(i7) : "memory");
+    const auto hi=_mm_setr_epi32(static_cast<int>(palette[i4]),static_cast<int>(palette[i5]),
+        static_cast<int>(palette[i6]),static_cast<int>(palette[i7]));
+    return _mm256_inserti128_si256(_mm256_castsi128_si256(lo),hi,1);
 }
 #endif
+
+FC_AVX2 inline __attribute__((always_inline)) void direct_output8(
+    std::uint8_t* p,__m256i value) noexcept {
+    const auto bytes=_mm256_shuffle_epi8(value,_mm256_setr_epi8(
+        0,1,2,4,5,6,8,9,10,12,13,14,-1,-1,-1,-1,
+        0,1,2,4,5,6,8,9,10,12,13,14,-1,-1,-1,-1));
+    const auto lo=_mm256_castsi256_si128(bytes),hi=_mm256_extracti128_si256(bytes,1);
+    _mm_storeu_si128(reinterpret_cast<__m128i*>(p),_mm_or_si128(lo,_mm_slli_si128(hi,12)));
+    _mm_storel_epi64(reinterpret_cast<__m128i*>(p+16),_mm_srli_si128(hi,4));
+}
+
+template<int Phase>
+FC_AVX2 inline __attribute__((always_inline)) __m256i direct_pack(__m256i value) noexcept {
+    const auto bytes=_mm256_shuffle_epi8(value,_mm256_setr_epi8(
+        0,1,2,4,5,6,8,9,10,12,13,14,-1,-1,-1,-1,
+        0,1,2,4,5,6,8,9,10,12,13,14,-1,-1,-1,-1));
+    if constexpr(Phase==0)return _mm256_permutevar8x32_epi32(bytes,_mm256_setr_epi32(0,1,2,4,5,6,3,7));
+    else if constexpr(Phase==1)return _mm256_permutevar8x32_epi32(bytes,_mm256_setr_epi32(2,4,5,6,3,7,0,1));
+    else if constexpr(Phase==2)return _mm256_permutevar8x32_epi32(bytes,_mm256_setr_epi32(5,6,3,7,0,1,2,4));
+    else return _mm256_permutevar8x32_epi32(bytes,_mm256_setr_epi32(3,7,0,1,2,4,5,6));
+}
+
+FC_AVX2 inline __attribute__((always_inline)) void direct_output32_stream(
+    std::uint8_t* p,__m256i v0,__m256i v1,__m256i v2,__m256i v3) noexcept {
+    const auto s0=_mm256_blend_epi32(v0,v1,0xc0);
+    const auto s1=_mm256_permute2x128_si256(v1,v2,0x30);
+    const auto s2=_mm256_blend_epi32(v3,v2,0x03);
+    _mm256_stream_si256(reinterpret_cast<__m256i*>(p),s0);
+    _mm256_stream_si256(reinterpret_cast<__m256i*>(p+32),s1);
+    _mm256_stream_si256(reinterpret_cast<__m256i*>(p+64),s2);
+}
+
+FC_AVX2 inline __attribute__((always_inline)) void direct_output32(
+    std::uint8_t* p,__m256i v0,__m256i v1,__m256i v2,__m256i v3) noexcept {
+    const auto a=_mm256_castsi256_si128(v0),b=_mm256_extracti128_si256(v0,1);
+    const auto c=_mm256_castsi256_si128(v1),d=_mm256_extracti128_si256(v1,1);
+    const auto e=_mm256_castsi256_si128(v2),f=_mm256_extracti128_si256(v2,1);
+    const auto g=_mm256_castsi256_si128(v3),h=_mm256_extracti128_si256(v3,1);
+    const auto s0=_mm256_inserti128_si256(_mm256_castsi128_si256(a),_mm_unpacklo_epi64(b,c),1);
+    const auto s1=_mm256_inserti128_si256(_mm256_castsi128_si256(_mm_alignr_epi8(d,c,8)),e,1);
+    const auto s2=_mm256_inserti128_si256(_mm256_castsi128_si256(_mm_unpacklo_epi64(f,g)),_mm_alignr_epi8(h,g,8),1);
+    _mm256_storeu_si256(reinterpret_cast<__m256i*>(p),s0);
+    _mm256_storeu_si256(reinterpret_cast<__m256i*>(p+32),s1);
+    _mm256_storeu_si256(reinterpret_cast<__m256i*>(p+64),s2);
+}
+
+template<bool Wide>
+inline void direct_palette_scalar(const std::uint8_t* table,const std::uint32_t* palette,
+    const std::uint8_t* src,std::uint8_t* dst) noexcept {
+    store_rgb(dst,direct_palette_value<Wide>(table,palette,rgb32(src)));
+}
+
+template<bool Wide>
+FC_AVX2 inline void direct_palette_run(const std::uint8_t* table,const std::uint32_t* palette,
+    const std::uint8_t* source,std::uint8_t* destination,std::size_t remaining) noexcept {
+    const std::size_t initial=remaining>341?1024:remaining*3;
+    for(std::size_t offset=0;offset<initial;offset+=64)
+        _mm_prefetch(reinterpret_cast<const char*>(source+offset),_MM_HINT_NTA);
+    /* 3与64互质；最多63个像素后到达缓存行边界，且不写入范围外。 */
+    for(;remaining&&(reinterpret_cast<std::uintptr_t>(destination)&63);source+=3,destination+=3,--remaining)
+        direct_palette_scalar<Wide>(table,palette,source,destination);
+    bool streamed=false;
+    for(;remaining>=72;source+=192,destination+=192,remaining-=64) {
+        /* 最大提示地址为source+1215；remaining>=406保证它仍在当前输入块内。 */
+        if(remaining>=406) {
+            const auto* future=source+1024;
+            _mm_prefetch(reinterpret_cast<const char*>(future),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+64),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+128),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+191),_MM_HINT_NTA);
+        }
+        /* 宽读末端多出的1B位于剩余块内；先读取64像素，再写精确192B。 */
+        const auto r0=direct_pack<0>(direct_read_wide<Wide>(table,palette,source));
+        const auto r1=direct_pack<1>(direct_read_wide<Wide>(table,palette,source+24));
+        const auto r2=direct_pack<2>(direct_read_wide<Wide>(table,palette,source+48));
+        const auto r3=direct_pack<3>(direct_read_wide<Wide>(table,palette,source+72));
+        const auto r4=direct_pack<0>(direct_read_wide<Wide>(table,palette,source+96));
+        const auto r5=direct_pack<1>(direct_read_wide<Wide>(table,palette,source+120));
+        const auto r6=direct_pack<2>(direct_read_wide<Wide>(table,palette,source+144));
+        const auto r7=direct_pack<3>(direct_read_wide<Wide>(table,palette,source+168));
+        direct_output32_stream(destination,r0,r1,r2,r3);
+        direct_output32_stream(destination+96,r4,r5,r6,r7);
+        streamed=true;
+    }
+    /* 在普通尾部、调用方读取和OpenMP barrier前发布NT写入。 */
+    if(streamed)_mm_sfence();
+    for(;remaining>=40;source+=96,destination+=96,remaining-=32) {
+        const auto r0=direct_pack<0>(direct_read_wide<Wide>(table,palette,source));
+        const auto r1=direct_pack<0>(direct_read_wide<Wide>(table,palette,source+24));
+        const auto r2=direct_pack<0>(direct_read_wide<Wide>(table,palette,source+48));
+        const auto r3=direct_pack<0>(direct_read_wide<Wide>(table,palette,source+72));
+        direct_output32(destination,r0,r1,r2,r3);
+    }
+    for(;remaining>=8;source+=24,destination+=24,remaining-=8)
+        direct_output8(destination,direct_read_exact<Wide>(table,palette,source));
+    for(;remaining;source+=3,destination+=3,--remaining)
+        direct_palette_scalar<Wide>(table,palette,source,destination);
+}
+
+/* 与基础模板保持同一写入、预取和短尾协议；只替换宽循环的双像素读取。 */
+#if defined(__x86_64__)
+template<bool Wide>
+FC_DIRECT_BMI inline void direct_palette_run_bmi(const std::uint8_t* table,const std::uint32_t* palette,
+    const std::uint8_t* source,std::uint8_t* destination,std::size_t remaining) noexcept {
+    const std::size_t initial=remaining>341?1024:remaining*3;
+    for(std::size_t offset=0;offset<initial;offset+=64)
+        _mm_prefetch(reinterpret_cast<const char*>(source+offset),_MM_HINT_NTA);
+    for(;remaining&&(reinterpret_cast<std::uintptr_t>(destination)&63);source+=3,destination+=3,--remaining)
+        direct_palette_scalar<Wide>(table,palette,source,destination);
+    bool streamed=false;
+    for(;remaining>=72;source+=192,destination+=192,remaining-=64) {
+        if(remaining>=406) {
+            const auto* future=source+1024;
+            _mm_prefetch(reinterpret_cast<const char*>(future),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+64),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+128),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+191),_MM_HINT_NTA);
+        }
+        /* 最后一次8B读取起于source+186，末端194B仍在72像素的216B内。 */
+        const auto r0=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source));
+        const auto r1=direct_pack<1>(direct_read_pair48<Wide>(table,palette,source+24));
+        const auto r2=direct_pack<2>(direct_read_pair48<Wide>(table,palette,source+48));
+        const auto r3=direct_pack<3>(direct_read_pair48<Wide>(table,palette,source+72));
+        const auto r4=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source+96));
+        const auto r5=direct_pack<1>(direct_read_pair48<Wide>(table,palette,source+120));
+        const auto r6=direct_pack<2>(direct_read_pair48<Wide>(table,palette,source+144));
+        const auto r7=direct_pack<3>(direct_read_pair48<Wide>(table,palette,source+168));
+        direct_output32_stream(destination,r0,r1,r2,r3);
+        direct_output32_stream(destination+96,r4,r5,r6,r7);
+        streamed=true;
+    }
+    if(streamed)_mm_sfence();
+    for(;remaining>=40;source+=96,destination+=96,remaining-=32) {
+        /* 最后一次8B读取起于source+90，末端98B仍在40像素的120B内。 */
+        const auto r0=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source));
+        const auto r1=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source+24));
+        const auto r2=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source+48));
+        const auto r3=direct_pack<0>(direct_read_pair48<Wide>(table,palette,source+72));
+        direct_output32(destination,r0,r1,r2,r3);
+    }
+    for(;remaining>=8;source+=24,destination+=24,remaining-=8)
+        direct_output8(destination,direct_read_exact<Wide>(table,palette,source));
+    for(;remaining;source+=3,destination+=3,--remaining)
+        direct_palette_scalar<Wide>(table,palette,source,destination);
+}
 #endif
+
+/* RGB24保留已有gather路线、精确24B图像读写与表尾guard契约。 */
+FC_AVX2 inline void direct_rgb24_run(const std::uint8_t* table,const std::uint8_t* src,
+    std::uint8_t* dst,std::size_t pixels) noexcept {
+    const auto mask=_mm256_set1_epi32(255);
+    std::size_t i=0;
+    for(;pixels-i>=8;i+=8) {
+        Rgb rgb;load8(src+3*i,rgb);
+        const auto code=_mm256_or_si256(rgb.r,_mm256_or_si256(_mm256_slli_epi32(rgb.g,8),_mm256_slli_epi32(rgb.b,16)));
+        const auto offset=_mm256_add_epi32(code,_mm256_slli_epi32(code,1));
+        const auto value=_mm256_i32gather_epi32(reinterpret_cast<const int*>(table),offset,1);
+        rgb.r=_mm256_and_si256(value,mask);rgb.g=_mm256_and_si256(_mm256_srli_epi32(value,8),mask);
+        rgb.b=_mm256_and_si256(_mm256_srli_epi32(value,16),mask);store8(dst+3*i,rgb);
+    }
+    for(;i<pixels;++i)store_rgb(dst+3*i,rgb32(table+std::size_t(rgb32(src+3*i))*3));
+}
+
+FC_AVX2 inline void direct8(const std::uint8_t* table,const std::uint32_t* palette,Representation rep,
+    const std::uint8_t* src,std::uint8_t* dst,std::size_t pixels) noexcept {
+    if(rep==Representation::DirectRGB24) {direct_rgb24_run(table,src,dst,pixels);return;}
+    /* GCC/Clang已初始化的CPU能力位：每块检查一次，不在八像素循环里做CPUID。 */
+#if defined(__x86_64__)
+    if(__builtin_cpu_supports("bmi")) {
+        if(rep==Representation::DirectU8)direct_palette_run_bmi<false>(table,palette,src,dst,pixels);
+        else direct_palette_run_bmi<true>(table,palette,src,dst,pixels);
+        return;
+    }
+#endif
+    if(rep==Representation::DirectU8)direct_palette_run<false>(table,palette,src,dst,pixels);
+    else direct_palette_run<true>(table,palette,src,dst,pixels);
+}
+
+#undef FC_DIRECT_BMI
+
+#endif
+#endif
+/* direct准备专用：证明首层到达域，精确编译后三层，再并行扫描首层。
+ * 注入点位于 fc::detail 内、AVX2原语之后。关闭开关时只留下空域描述。
+ */
+struct PrepareDomain {
+    int r_min=0, r_max=-1, dg_min=0, dg_max=-1, db_min=0, db_max=-1;
+    int width_g=0, width_b=0;
+    std::size_t entries=0;
+    bool proven=false;
+};
+
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE
+inline int prepare_min(int a,int b) noexcept { return a<b?a:b; }
+inline int prepare_max(int a,int b) noexcept { return a>b?a:b; }
+inline std::int64_t prepare_floor_q16(std::int64_t n) noexcept {
+    return n>=0?n/65536:-((-n+65535)/65536);
+}
+inline std::uint32_t prepare_fraction(const fc_core::fc_model& m,unsigned channel,unsigned axis,unsigned code) noexcept {
+    const auto* p=m.sidecar.data?m.sidecar.data+(channel*768u+axis*256u+code)*4u:
+        m.fraction_le+(axis*256u+code)*4u;
+    return read32(p);
+}
+
+/* 与旧域证书相同的逐cell界：同坐标时通道差在八角点差的凸包内；
+ * 分输出坐标的每轴扰动以该cell四条平行边斜率的最小/最大值包围。
+ * 对负下界取floor、正上界取ceil，覆盖每级half-up后的整数差。
+ * 固定局部数组1920B，八角点96B；它们是有界栈，不属于arena账单。
+ */
+inline PrepareDomain prepare_domain(const fc_core::fc_model& first) noexcept {
+    PrepareDomain d;
+    int rmin=255,rmax=0,gmin=255,gmax=-255,bmin=255,bmax=-255;
+    const std::size_t nodes=std::size_t(first.m)*first.m*first.m;
+    for(std::size_t i=0;i<nodes;++i) {
+        const int r=first.nodes[i*3],g=int(first.nodes[i*3+1])-r,b=int(first.nodes[i*3+2])-r;
+        rmin=prepare_min(rmin,r);rmax=prepare_max(rmax,r);
+        gmin=prepare_min(gmin,g);gmax=prepare_max(gmax,g);
+        bmin=prepare_min(bmin,b);bmax=prepare_max(bmax,b);
+    }
+    d.r_min=rmin;d.r_max=rmax;
+    d.dg_min=prepare_max(-255,gmin-2);d.dg_max=prepare_min(255,gmax+2);
+    d.db_min=prepare_max(-255,bmin-2);d.db_max=prepare_min(255,bmax+2);
+    d.width_g=d.dg_max-d.dg_min+1;d.width_b=d.db_max-d.db_min+1;
+    d.entries=std::size_t(rmax-rmin+1)*std::size_t(d.width_g)*std::size_t(d.width_b);
+    if(d.entries>2u*MiB/sizeof(std::uint32_t)) {d.entries=0;return d;}
+    const unsigned cells=first.m-1;
+    int low[2][3][32],high[2][3][32],count[3][32]{};
+    for(unsigned c=0;c<2;++c)for(unsigned a=0;a<3;++a)for(unsigned i=0;i<cells;++i) {
+        low[c][a][i]=65536;high[c][a][i]=-65536;
+    }
+    for(unsigned a=0;a<3;++a)for(unsigned x=0;x<256;++x) {
+        const unsigned cell=first.index[a*256u+x];++count[a][cell];
+        const int red=int(prepare_fraction(first,0,a,x));
+        for(unsigned c=0;c<2;++c) {
+            const int delta=int(prepare_fraction(first,c+1,a,x))-red;
+            low[c][a][cell]=prepare_min(low[c][a][cell],delta);
+            high[c][a][cell]=prepare_max(high[c][a][cell],delta);
+        }
+    }
+    bool reachable=false;
+    for(unsigned r=0;r<cells;++r)for(unsigned g=0;g<cells;++g)for(unsigned b=0;b<cells;++b) {
+        if(!count[0][r]||!count[1][g]||!count[2][b])continue;
+        reachable=true;
+        const unsigned indices[3]={r,g,b};int corner[8][3];
+        for(unsigned k=0;k<8;++k) {
+            const auto at=((std::size_t(r+((k>>2)&1))*first.m+g+((k>>1)&1))*first.m+b+(k&1))*3;
+            for(unsigned c=0;c<3;++c)corner[k][c]=first.nodes[at+c];
+        }
+        for(unsigned c=0;c<2;++c) {
+            int nmin=255,nmax=-255;
+            for(unsigned k=0;k<8;++k) {
+                const int diff=corner[k][c+1]-corner[k][0];
+                nmin=prepare_min(nmin,diff);nmax=prepare_max(nmax,diff);
+            }
+            std::int64_t lower=0,upper=0;
+            for(unsigned a=0;a<3;++a) {
+                const unsigned bit=1u<<(2-a);int smin=255,smax=-255;
+                for(unsigned k=0;k<8;++k)if(!(k&bit)) {
+                    const int slope=corner[k|bit][c+1]-corner[k][c+1];
+                    smin=prepare_min(smin,slope);smax=prepare_max(smax,slope);
+                }
+                const int lo=low[c][a][indices[a]],hi=high[c][a][indices[a]];
+                const std::int64_t products[4]={std::int64_t(smin)*lo,std::int64_t(smin)*hi,
+                    std::int64_t(smax)*lo,std::int64_t(smax)*hi};
+                auto pmin=products[0],pmax=products[0];
+                for(unsigned k=1;k<4;++k) {if(products[k]<pmin)pmin=products[k];if(products[k]>pmax)pmax=products[k];}
+                lower+=pmin;upper+=pmax;
+            }
+            const int lo=prepare_max(-255,nmin+int(prepare_floor_q16(lower)));
+            const int hi=prepare_min(255,nmax-int(prepare_floor_q16(-upper)));
+            if(lo<(c?d.db_min:d.dg_min)||hi>(c?d.db_max:d.dg_max)) {d.entries=0;return d;}
+        }
+    }
+    d.proven=reachable;
+    if(!reachable)d.entries=0;
+    return d;
+}
+
+constexpr std::size_t prepare_chunk_pixels=4096;
+constexpr std::size_t prepare_chunk_bytes=prepare_chunk_pixels*3;
+inline unsigned prepare_cache_workers(const PrepareDomain& d,const RuntimeConfig& config) noexcept {
+    const auto blocks=d.entries/prepare_chunk_pixels+(d.entries%prepare_chunk_pixels!=0);
+    return blocks<config.threads?static_cast<unsigned>(blocks):config.threads;
+}
+inline std::size_t prepare_cache_scratch(const PrepareDomain& d,const RuntimeConfig& config) noexcept {
+    if(!d.proven)return 0;
+    const bool rgb=config.representation==Representation::DirectRGB24;
+    const bool narrow=config.representation==Representation::DirectU8;
+    const auto cache_bytes=aligned(d.entries*4);
+    const auto used_stride=aligned((narrow?256u:65536u)/8u);
+    return cache_bytes+(rgb?0:cache_bytes+(narrow?1024u:131072u)*8u+std::size_t(config.threads)*used_stride)+
+        std::size_t(prepare_cache_workers(d,config))*prepare_chunk_bytes;
+}
+
+/* 一次只处理有界RGB块；失效域槽存UINT32_MAX，不参与palette资格。
+ * 末块按8像素补零，cache自身按64B预留，因此向量末写仍在arena内。
+ */
+FC_AVX2 inline void prepare_suffix_block(const PackedView* views,const PrepareDomain& d,
+    std::size_t begin,std::size_t n,std::uint8_t* colours,std::uint32_t* cache) noexcept {
+    const std::size_t rounded=(n+7u)&~std::size_t{7};
+    const std::size_t plane=std::size_t(d.width_g)*d.width_b;
+    for(std::size_t i=0;i<rounded;++i) {
+        const auto index=begin+i;
+        const int r=d.r_min+int(index/plane);
+        const int g=r+d.dg_min+int((index/std::size_t(d.width_b))%std::size_t(d.width_g));
+        const int b=r+d.db_min+int(index%std::size_t(d.width_b));
+        const bool valid=i<n&&g>=0&&g<=255&&b>=0&&b<=255;
+        auto* p=colours+i*3;
+        p[0]=valid?std::uint8_t(r):0;p[1]=valid?std::uint8_t(g):0;p[2]=valid?std::uint8_t(b):0;
+        cache[index]=valid?0:0xffffffffu;
+    }
+    for(std::size_t i=0;i<rounded;i+=8) {
+        Rgb value;load8(colours+i*3,value);
+        for(unsigned s=1;s<4;++s)transform(views[s],value);
+        const auto packed=_mm256_or_si256(value.r,_mm256_or_si256(_mm256_slli_epi32(value.g,8),_mm256_slli_epi32(value.b,16)));
+        const auto invalid=_mm256_loadu_si256(reinterpret_cast<const __m256i*>(cache+begin+i));
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(cache+begin+i),_mm256_or_si256(packed,invalid));
+    }
+}
+
+/* R连续加载、G/B广播；分输出侧表分别计算自己的分数与顶点排序。 */
+template<bool Shared>
+FC_AVX2 inline void prepare_first8(const PackedView& v,unsigned red,
+    const std::uint32_t* green,const std::uint32_t* blue,Rgb& rgb) noexcept {
+    const auto ar=_mm256_loadu_si256(reinterpret_cast<const __m256i*>(v.axes[0][0]+red));
+    const auto ag=_mm256_set1_epi32(static_cast<int>(green[0])),ab=_mm256_set1_epi32(static_cast<int>(blue[0]));
+    const auto base=_mm256_add_epi32(_mm256_mullo_epi32(_mm256_srli_epi32(ar,17),_mm256_set1_epi32(v.sr)),
+        _mm256_add_epi32(_mm256_mullo_epi32(_mm256_srli_epi32(ag,17),_mm256_set1_epi32(v.sg)),_mm256_srli_epi32(ab,17)));
+    const auto mask=_mm256_set1_epi32(0x1ffff),x=_mm256_and_si256(ar,mask),y=_mm256_and_si256(ag,mask),z=_mm256_and_si256(ab,mask);
+    const auto n0=gather(v.nodes,base),n3=gather(v.nodes,_mm256_add_epi32(base,_mm256_set1_epi32(v.sr+v.sg+1)));
+    if constexpr(Shared) {
+        __m256i high,middle,low,first,last;geometry(v,x,y,z,high,middle,low,first,last);
+        const auto n1=gather(v.nodes,_mm256_add_epi32(base,first));
+        const auto n2=gather(v.nodes,_mm256_add_epi32(base,_mm256_sub_epi32(_mm256_set1_epi32(v.sr+v.sg+1),last)));
+        rgb.r=interpolate<0>(n0,n1,n2,n3,high,middle,low);
+        rgb.g=interpolate<1>(n0,n1,n2,n3,high,middle,low);
+        rgb.b=interpolate<2>(n0,n1,n2,n3,high,middle,low);
+    } else {
+        rgb.r=channel<0>(v,base,n0,n3,x,y,z);
+        rgb.g=channel<1>(v,base,n0,n3,
+            _mm256_and_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(v.axes[1][0]+red)),mask),
+            _mm256_and_si256(_mm256_set1_epi32(static_cast<int>(green[1])),mask),
+            _mm256_and_si256(_mm256_set1_epi32(static_cast<int>(blue[1])),mask));
+        rgb.b=channel<2>(v,base,n0,n3,
+            _mm256_and_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(v.axes[2][0]+red)),mask),
+            _mm256_and_si256(_mm256_set1_epi32(static_cast<int>(green[2])),mask),
+            _mm256_and_si256(_mm256_set1_epi32(static_cast<int>(blue[2])),mask));
+    }
+}
+
+template<unsigned Format,bool Shared>
+FC_AVX2 inline void prepare_direct_blue(const PackedView& first,const PrepareDomain& d,
+    const std::uint32_t* table,std::uint8_t* destination,unsigned blue_code,std::uint8_t* used) noexcept {
+    std::uint32_t blues[Shared?1:3];
+    for(unsigned c=0;c<(Shared?1u:3u);++c)blues[c]=first.axes[c][2][blue_code];
+    const auto bytes8=_mm_setr_epi8(0,4,8,12,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+    const auto words8=_mm_setr_epi8(0,1,4,5,8,9,12,13,-1,-1,-1,-1,-1,-1,-1,-1);
+    for(unsigned green_code=0;green_code<256;++green_code) {
+        std::uint32_t greens[Shared?1:3];
+        for(unsigned c=0;c<(Shared?1u:3u);++c)greens[c]=first.axes[c][1][green_code];
+        for(unsigned red_code=0;red_code<256;red_code+=8) {
+            Rgb rgb;prepare_first8<Shared>(first,red_code,greens,blues,rgb);
+            const auto dg=_mm256_sub_epi32(rgb.g,rgb.r),db=_mm256_sub_epi32(rgb.b,rgb.r);
+            const auto index=_mm256_add_epi32(
+                _mm256_mullo_epi32(_mm256_sub_epi32(rgb.r,_mm256_set1_epi32(d.r_min)),_mm256_set1_epi32(d.width_g*d.width_b)),
+                _mm256_add_epi32(_mm256_mullo_epi32(_mm256_sub_epi32(dg,_mm256_set1_epi32(d.dg_min)),_mm256_set1_epi32(d.width_b)),
+                    _mm256_sub_epi32(db,_mm256_set1_epi32(d.db_min))));
+            const auto value=gather(table,index);
+            auto* out=destination+(std::size_t(green_code)*256+red_code)*Format;
+            if constexpr(Format==3) {
+                const auto mask=_mm256_set1_epi32(255);
+                rgb.r=_mm256_and_si256(value,mask);rgb.g=_mm256_and_si256(_mm256_srli_epi32(value,8),mask);rgb.b=_mm256_srli_epi32(value,16);
+                store8(out,rgb);
+            } else {
+                /* worker私有位图只记录实际完整RGB8到达的ID；缓存超集不能冒充可达palette。 */
+                alignas(32) std::uint32_t reached[8];
+                _mm256_store_si256(reinterpret_cast<__m256i*>(reached),value);
+                for(unsigned i=0;i<8;++i)used[reached[i]>>3]|=std::uint8_t(1u<<(reached[i]&7));
+                const auto lo=_mm256_castsi256_si128(value),hi=_mm256_extracti128_si256(value,1);
+                if constexpr(Format==1) {
+                    _mm_storel_epi64(reinterpret_cast<__m128i*>(out),_mm_unpacklo_epi32(_mm_shuffle_epi8(lo,bytes8),_mm_shuffle_epi8(hi,bytes8)));
+                } else {
+                    _mm_storeu_si128(reinterpret_cast<__m128i*>(out),_mm_unpacklo_epi64(_mm_shuffle_epi8(lo,words8),_mm_shuffle_epi8(hi,words8)));
+                }
+            }
+        }
+    }
+}
+
+inline bool prepare_cached_direct(const PackedView* views,const PrepareDomain& d,
+    const RuntimeConfig& config,std::uint8_t* destination,std::uint8_t* temporary,
+    std::uint32_t* palette,std::uint32_t* palette_count) noexcept {
+    if(!d.proven)return false;
+    const bool rgb=config.representation==Representation::DirectRGB24;
+    const bool narrow=config.representation==Representation::DirectU8;
+    const std::size_t cache_bytes=aligned(d.entries*4),slots=narrow?1024:131072,limit=narrow?256:65536;
+    auto* cache=reinterpret_cast<std::uint32_t*>(temporary);
+    auto* ids=rgb?nullptr:reinterpret_cast<std::uint32_t*>(temporary+cache_bytes);
+    auto* keys=rgb?nullptr:reinterpret_cast<std::uint32_t*>(temporary+2*cache_bytes);
+    auto* values=rgb?nullptr:keys+slots;
+    const auto used_stride=aligned(limit/8u);
+    auto* used=rgb?nullptr:reinterpret_cast<std::uint8_t*>(values+slots);
+    auto* scratch=rgb?temporary+cache_bytes:used+std::size_t(config.threads)*used_stride;
+    const std::size_t blocks=d.entries/prepare_chunk_pixels+(d.entries%prepare_chunk_pixels!=0);
+#if FLASH_CHROMA_ENABLE_OPENMP
+    const int workers=omp_in_parallel()?1:static_cast<int>(prepare_cache_workers(d,config));
+#pragma omp parallel for schedule(static) num_threads(workers)
+#endif
+    for(long long task=0;task<static_cast<long long>(blocks);++task) {
+        const std::size_t begin=std::size_t(task)*prepare_chunk_pixels;
+        const std::size_t n=d.entries-begin<prepare_chunk_pixels?d.entries-begin:prepare_chunk_pixels;
+        std::size_t worker=0;
+#if FLASH_CHROMA_ENABLE_OPENMP
+        worker=static_cast<std::size_t>(omp_get_thread_num());
+#endif
+        prepare_suffix_block(views,d,begin,n,scratch+worker*prepare_chunk_bytes,cache);
+    }
+    if(!rgb) {
+        for(std::size_t i=0;i<slots;++i)keys[i]=0xffffffffu;
+        for(std::size_t i=0;i<limit;++i)palette[i]=0;
+        std::uint32_t count=0;
+        for(std::size_t i=0;i<d.entries;++i) {
+            const auto colour=cache[i];
+            if(colour==0xffffffffu) {ids[i]=0;continue;}
+            std::size_t slot=(std::uint32_t(colour*2654435761u))>>(narrow?22:15);
+            while(keys[slot]!=0xffffffffu&&keys[slot]!=colour)slot=(slot+1)&(slots-1);
+            if(keys[slot]==0xffffffffu) {
+                /* 超集palette过大不等于实际全RGB8过大，必须走通用资格回退。 */
+                if(count==limit)return false;
+                keys[slot]=colour;values[slot]=count;palette[count++]=colour;
+            }
+            ids[i]=values[slot];
+        }
+        if(!count)return false;
+        *palette_count=count;
+    } else *palette_count=0;
+    if(!rgb)for(std::size_t i=0;i<std::size_t(config.threads)*used_stride;++i)used[i]=0;
+#if FLASH_CHROMA_ENABLE_OPENMP
+    const int direct_workers=omp_in_parallel()?1:static_cast<int>(config.threads);
+#pragma omp parallel for schedule(static) num_threads(direct_workers)
+#endif
+    for(int blue=0;blue<256;++blue) {
+        const auto* lookup=rgb?cache:ids;
+        const auto offset=std::size_t(blue)*65536u*(rgb?3u:(narrow?1u:2u));
+        std::size_t worker=0;
+#if FLASH_CHROMA_ENABLE_OPENMP
+        worker=static_cast<std::size_t>(omp_get_thread_num());
+#endif
+        auto* reached=rgb?nullptr:used+worker*used_stride;
+        if(rgb) {
+            if(views[0].shared)prepare_direct_blue<3,true>(views[0],d,lookup,destination+offset,unsigned(blue),nullptr);
+            else prepare_direct_blue<3,false>(views[0],d,lookup,destination+offset,unsigned(blue),nullptr);
+        } else if(narrow) {
+            if(views[0].shared)prepare_direct_blue<1,true>(views[0],d,lookup,destination+offset,unsigned(blue),reached);
+            else prepare_direct_blue<1,false>(views[0],d,lookup,destination+offset,unsigned(blue),reached);
+        } else {
+            if(views[0].shared)prepare_direct_blue<2,true>(views[0],d,lookup,destination+offset,unsigned(blue),reached);
+            else prepare_direct_blue<2,false>(views[0],d,lookup,destination+offset,unsigned(blue),reached);
+        }
+    }
+    if(!rgb) {
+        /* 合并worker位图，只报告完整RGB8实际可达颜色数。
+         * 私有palette仍保留超集ID及未用槽；热核只按固定容量访问，不把该计数当ID上界。
+         * 这样无需为了只读诊断再读写整张16/32MiB direct表。
+         */
+        for(unsigned worker=1;worker<config.threads;++worker)
+            for(std::size_t i=0;i<used_stride;++i)used[i]|=used[std::size_t(worker)*used_stride+i];
+        const auto old_count=*palette_count;
+        std::uint32_t actual=0;
+        for(std::uint32_t i=0;i<old_count;++i)if(used[i>>3]&(1u<<(i&7)))++actual;
+        *palette_count=actual;
+    }
+    if(rgb)for(unsigned i=0;i<4;++i)destination[colours*3+i]=0;
+    return true;
+}
+#endif
+
 }
 
 std::uint32_t compiled_capabilities() noexcept {
@@ -647,7 +1206,10 @@ const char* status_string(Status status) noexcept {
     switch(status) {case Status::Unsupported:return "当前目标、编译能力或CPU不支持配置";case Status::Budget:return "工作区预算或容量不足";case Status::Capacity:return "完整色域的调色板超过所选索引容量";default:return "未知状态";}
 }
 
-Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& config,Requirements* out) noexcept {
+namespace detail {
+inline Status runtime_requirements(const ModelBundle& bundle,const RuntimeConfig& config,
+    Requirements* out,PrepareDomain* domain) noexcept {
+    (void)domain;
     if(!out)return Status::Null;
     if(!fc_core::fc_detail_span_valid(out,sizeof(*out)))return Status::Overflow;
     if(fc_core::fc_detail_intersects(out,sizeof(*out),&bundle,sizeof(bundle))||fc_core::fc_detail_intersects(out,sizeof(*out),&config,sizeof(config)))return Status::Overlap;
@@ -674,17 +1236,31 @@ Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& conf
         r.persistent_bytes=detail::colours*(narrow?1:2)+(narrow?256:65536)*4;
         r.temporary_bytes=packed+(narrow?1024:131072)*8+detail::aligned(4096*3);
     }
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE
+    if(config.representation!=Representation::Sparse&&backend==Backend::Avx2) {
+        const auto proven=detail::prepare_domain(models[0]);
+        const auto fast=detail::prepare_cache_scratch(proven,config);
+        if(fast&&packed+fast>r.temporary_bytes)r.temporary_bytes=packed+fast;
+        if(domain)*domain=proven;
+    }
+#endif
 #endif
     r.arena_bytes=r.persistent_bytes+r.temporary_bytes;
     if(r.arena_bytes&&!detail::add(r.arena_bytes,63))return Status::Overflow;
     if(r.arena_bytes>config.max_workspace_bytes)return Status::Budget;
     *out=r;return Status::Ok;
 }
+}
+
+Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& config,Requirements* out) noexcept {
+    return detail::runtime_requirements(bundle,config,out,nullptr);
+}
 
 Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Workspace workspace,Runtime* out) noexcept {
     if(!out)return Status::Null;
     if(!fc_core::fc_detail_span_valid(out,sizeof(*out)))return Status::Overflow;
-    Requirements r;const auto st=requirements(bundle,config,&r);if(st!=Status::Ok)return st;
+    Requirements r;detail::PrepareDomain domain;
+    const auto st=detail::runtime_requirements(bundle,config,&r,&domain);if(st!=Status::Ok)return st;
     if(r.arena_bytes&&(!workspace.data||workspace.bytes<r.arena_bytes))return Status::Budget;
     if(workspace.bytes&&!workspace.data)return Status::Null;
     if(workspace.data&&!fc_core::fc_detail_span_valid(workspace.data,workspace.bytes))return Status::Overflow;
@@ -695,7 +1271,8 @@ Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Wo
         const Bytes inputs[2]={bundle.models[s],bundle.sidecars[s]};
         for(const auto bytes:inputs)if(fc_core::fc_detail_intersects(out,sizeof(*out),bytes.data,bytes.size)||fc_core::fc_detail_intersects(workspace.data,workspace.bytes,bytes.data,bytes.size))return Status::Overlap;
     }
-    out->ready_=false;out->config_=config;out->resources_=r;
+    out->ready_=false;out->prepared_cache_=false;out->prepared_cache_entries_=0;
+    out->config_=config;out->resources_=r;
     detail::resolve(config,&out->backend_);
     for(unsigned s=0;s<4;++s)fc_core::fc_model_init(out->models_+s,bundle.models[s],bundle.sidecars[s]);
     const fc_core::fc_model* ptrs[4]={out->models_,out->models_+1,out->models_+2,out->models_+3};
@@ -720,6 +1297,17 @@ Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Wo
     if(packed)detail::pack_views(out->models_,temporary,out->packed_);
 #endif
     out->direct_=arena;
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE
+    if(domain.proven&&out->backend_==Backend::Avx2) {
+        const bool rgb=config.representation==Representation::DirectRGB24;
+        const bool narrow=config.representation==Representation::DirectU8;
+        auto* palette=rgb?nullptr:reinterpret_cast<std::uint32_t*>(arena+detail::colours*(narrow?1:2));
+        if(detail::prepare_cached_direct(out->packed_,domain,config,arena,temporary+packed,palette,&out->palette_count_)) {
+            out->palette_=palette;out->prepared_cache_=true;out->prepared_cache_entries_=domain.entries;
+            out->ready_=true;return Status::Ok;
+        }
+    }
+#endif
     if(config.representation==Representation::DirectRGB24) {
         const std::size_t blocks=detail::colours/config.block_pixels+(detail::colours%config.block_pixels!=0);
 #if FLASH_CHROMA_ENABLE_OPENMP

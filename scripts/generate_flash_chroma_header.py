@@ -15,6 +15,10 @@ def rendered():
     core = re.sub(r'#ifdef __cplusplus\s+extern "C" \{\s+#endif', '', core)
     core = re.sub(r'#ifdef __cplusplus\s+\}\s+#endif', '', core)
     cpp = (ROOT / 'src/flash_chroma_cpp.inc').read_text(encoding='utf-8')
+    # 维护片段只在生成时展开，部署头不引用仓库私有文件。
+    def fragment(match):
+        return (ROOT / 'src' / match.group(1)).read_text(encoding='utf-8')
+    cpp = re.sub(r'^// @include (flash_chroma_[a-z_]+\.inc)$', fragment, cpp, flags=re.MULTILINE)
     selection_path = ROOT / 'src/flash_chroma_selection.inc'
     selection = selection_path.read_text(encoding='utf-8') if selection_path.exists() else ''
     return '\n'.join([

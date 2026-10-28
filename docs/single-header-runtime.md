@@ -21,7 +21,7 @@ C++ 在一个翻译单元中定义实现宏：
 
 模型、sidecar 和工作区都由调用方持有，必须在使用期间有效且保持模型不可变。运行库不根据当前图片重新拟合或换模型。direct 表从已固定的稀疏模型构造，精确保留上述四级语义；它不会消除稀疏模型相对原始密集 LUT 的近似误差。`tri` 和 `matched` 拟合模型需要各自正确的恢复器，不能因文件可解析就当作本接口的同精度模型。
 
-C++ 头文件由 C99 核、`src/flash_chroma_cpp.inc` 和 `src/flash_chroma_selection.inc` 生成，整数核心不分别手工维护。修改维护源码后运行：
+C++ 头文件由 C99 核、`src/flash_chroma_cpp.inc` 和 `src/flash_chroma_selection.inc` 生成。运行库中的两个维护片段分别是 [`src/flash_chroma_direct.inc`](../src/flash_chroma_direct.inc) 和 [`src/flash_chroma_prepare.inc`](../src/flash_chroma_prepare.inc)，由生成器在 `// @include` 标记处展开。交付的 `.hpp` 已包含展开后的完整实现，不会在部署时包含这些私有片段。整数核心不分别手工维护。修改任一维护源码后运行：
 
 ```bash
 python scripts/generate_flash_chroma_header.py
@@ -37,8 +37,8 @@ python scripts/generate_flash_chroma_header.py --check
 | `target` | Desktop、Mobile、Embedded 或 Portable 的能力约束 |
 | `backend` | Auto、Scalar、Avx2；Avx512 当前返回 Unsupported |
 | `representation` | Sparse、DirectU8、DirectU16 或 DirectRGB24 |
-| `threads` | OpenMP 编译启用时的请求线程数，范围 1..256 |
-| `block_pixels` | 每行任务中最多映射的像素数，必须大于 0 |
+| `threads` | OpenMP 编译启用时的请求线程数，范围 1..256；也约束缓存与 direct 扫描线准备的并行度 |
+| `block_pixels` | 每行映射任务最多处理的像素数，必须大于 0；通用 RGB24 准备也使用此粒度 |
 | `max_workspace_bytes` | 本次准备所允许的完整 arena 预算 |
 
 Auto 在 Desktop/Mobile 上且 CPU/OS 与编译能力允许时选择 AVX2，否则选择 Scalar。它不在运行时测多个配置择优，也不改模型。配置目录中的候选应记录明确的 Scalar/Avx2 后端，避免实测身份随机器变化。
@@ -51,7 +51,15 @@ Auto 在 Desktop/Mobile 上且 CPU/OS 与编译能力允许时选择 AVX2，否�
 | DirectU16 | 穷举 RGB8 输入，建立 32MiB 索引与最多 65536 项 RGB 调色板 |
 | DirectRGB24 | 穷举 RGB8 输入，建立约 48MiB 的 RGB 输出表，另有明确容量的保护字节及对齐空间 |
 
-三种 direct 表都支持 Scalar/Avx2。U8/U16 的调色板资格由完整输入域构造决定，模型不适合时返回 `Capacity`，不会改变模型或静默换表示。其调色板保留所选索引格式的最大容量，`palette_entries()`另报告实际使用项数。
+三种 direct 表都支持 Scalar/Avx2。U8/U16 的调色板资格由完整输入域构造决定，模型不适合时返回 `Capacity`，不会改变模型或静默换表示。调色板保留所选索引格式的最大容量，`palette_entries()`另报告完整 RGB8 输入实际可达的不同输出颜色数。缓存准备可能保留未使用的私有调色板槽，因此该计数不是私有 ID 的上界；公开接口不暴露这些 ID 或调色板存储。
+
+当前 U8/U16 的 AVX2 热路径迁入成熟的独立索引读取、调色板读取与指令并行组织，再以 AVX2 打包 RGB。基础版本只要求 AVX2；CPU 另支持 BMI 时，每块选择独立的 BMI 目标函数。较大的块先对齐输出，再按 64 像素写出完整缓存行，使用 NT 写入，并在转入普通尾部和返回前执行 fence。32 像素、精确 8 像素及标量尾部负责剩余数据；图像不需要额外保护字节。RGB24 仍使用已有 gather 路线，表尾保护字节计入其 arena 容量。以上描述实现策略，实际收益须由本轮统一测试取得。
+
+对启用 AVX2 的 direct 准备，`FLASH_CHROMA_ENABLE_PREPARE_CACHE`允许使用有证明的小域快路径：先从首层节点构造 `(R,G−R,B−R)` 候选域，逐 cell 用通道差及坐标扰动的斜率界证明所有首层整数输出都被覆盖；随后在不超过 2MiB 的打包颜色表中精确计算后三层。最后通过 R 连续加载、G/B 广播的扫描线只计算首层并查小域表，构建完整 RGB8 direct 表。各层 m 和 sidecar 仍独立生效，每层 half-up 与 RGB8 边界保持不变。
+
+域过大、证明不足，或缓存超集的调色板超过所选索引容量时，会保留原完整四级通用构建。缓存超集过大本身不会返回 `Capacity`；只有完整 RGB8 实际输出不能容纳时才拒绝。快路径在生成完整 direct 表时以 worker 私有位图统计实际使用的 ID，因此域内不可达颜色不会混入公开的 `palette_entries()`计数。缓存、ID 表及位图只服务准备，成功后映射不依赖它们。
+
+缓存准备的后三层工作块固定为最多 4096 像素，首层扫描按 B 平面分组；这两个内部粒度不由`block_pixels`改变。OpenMP 可分别并行构造后三层缓存和首层 direct 扫描线；在外层 OpenMP 并行区中按单线程准备。通用 U8/U16 的字典构建仍串行，通用 RGB24 构建可并行，不能把请求线程数当作所有准备步骤均按该线程数执行。
 
 AVX2 在 GCC/Clang x86 上以函数目标属性隔离；基础路径不要求全局 `-mavx2`。进入 AVX2 前同时检查编译能力、CPUID、OSXSAVE 和 XCR0。当前未实现单头 AVX-512 或 ARM NEON 内核。其他编译器/架构可以使用标量路径；未实测组合不能继承本机结果。
 
@@ -88,7 +96,16 @@ status = runtime.apply(source, source_bytes, source_stride,
 
 图像不要求额外 padding 或特定对齐，支持正向 stride、非对齐地址、精确原地和完全分离输出。部分相交区域会被拒绝；输出不得覆盖模型、sidecar、Runtime 对象或持久 arena。对有效 Runtime，零宽或零高为无操作，图像指针允许空。正常参数检查在写像素前完成；缓冲区实际可访问容量和寿命仍由调用者保证。
 
-`ready()`、`config()`、`resources()`、`selected_backend()`及`palette_entries()`提供实际诊断；`status_string()`返回中文状态说明。`compiled_capabilities()`和`available_backends()`返回 u32 掩码：1 为标量，2 为 AVX2，4 为 OpenMP；前者表示编入能力，后者另检查 CPU/OS。
+`ready()`、`config()`、`resources()`、`selected_backend()`及`palette_entries()`提供实际诊断；`status_string()`返回中文状态说明。准备诊断另有：
+
+| 方法 | 含义 |
+| --- | --- |
+| `prepared_with_suffix_cache()` | 本次成功准备是否实际采用后三层小域缓存；通用回退时为 false |
+| `preparation_cache_entries()` | 成功快路径使用的候选域槽数；通用回退或未准备时为 0 |
+
+域槽数可能包括无效 RGB 组合及首层不可达位置，不能解释为实际输出颜色数、稀疏节点数或仍在使用的持久缓存。两项诊断在通过输入安全检查、开始初始化本次 Runtime 时清零，只在快路径成功后设置；早于初始化的参数拒绝不会破坏既有有效 Runtime。增加的对象字段由`object_bytes=sizeof(Runtime)`计账。
+
+`compiled_capabilities()`和`available_backends()`返回 u32 掩码：1 为标量，2 为 AVX2，4 为 OpenMP；前者表示编入能力，后者另检查 CPU/OS。
 
 ## 4. arena 与内存预算口径
 
@@ -103,7 +120,11 @@ status = runtime.apply(source, source_bytes, source_stride,
 | `alignment` | 内部 arena 的对齐要求，当前为 64B；传入指针可不对齐 |
 | `object_bytes` | Runtime 对象本身的字节数 |
 
-`max_workspace_bytes`检查完整准备 arena；传入工作区容量小于查询值会返回 `Budget`。U8/U16 的哈希字典、准备像素块和 AVX2 打包数据全部计入 arena。固定局部变量与编译器栈、调用者图像、OpenMP 运行库及 OS 线程栈另记，不能把 arena 当作整个进程内存上界。
+`max_workspace_bytes`检查完整准备 arena；传入工作区容量小于查询值会返回 `Budget`。查询与实际准备使用同一个确定性资源计算，临时区取所选计划可能需要的通用构建与缓存构建峰值。AVX2 打包数据、小域 RGB 表、ID 表、哈希字典、worker RGB 工作块及实际 ID 位图全部计入 arena，不隐藏在分配器或堆中。U8 位图按每 worker 64B 对齐预留，U16 每 worker 8192B；RGB 工作块按实际可并行的缓存块数量预留，每块最多 12288B。
+
+当前采用固定准备计划：域证明成功且编译启用快路径时，查询包含该快路径的完整暂态需求。预算低于此查询值会返回 `Budget`，不会因内存不足自动改用较慢的通用计划；需要该低内存方案时，可使用`FLASH_CHROMA_ENABLE_PREPARE_CACHE=0`构建并重新查询。缓存资格失败后的通用回退也使用已查询的同一 arena，不会临时增加容量。修改编译开关得到的是不同构建，其时间与资源结果须分别记录。
+
+固定局部变量与编译器栈、调用者图像、OpenMP 运行库及 OS 线程栈另记，不能把 arena 当作整个进程内存上界。域证明有 1920B 固定数组和 96B 八角点数组，此外还有标量局部量、函数帧和编译器保存区；这些是栈上的准备空间，不能把`temporary_bytes`读成总暂态 RAM，精确栈需求应看对应构建的栈用量记录。
 
 准备成功后，direct 映射不再使用临时尾段；应用若支持分段回收，可释放该段。由于原始指针可能存在起始对齐偏移，保留原工作区前缀时至少保留 `persistent_bytes + 63`，并继续保持已准备数据地址不变。一般容器会保留完整 arena 到句柄销毁，实际占用仍应按容器保留容量或 RSS 报告，不能假设已经归还临时空间。
 
@@ -125,6 +146,9 @@ status = runtime.apply(source, source_bytes, source_stride,
 | `FLASH_CHROMA_ENABLE_DIRECT` | Desktop/Mobile 默认 1；Embedded/Portable 默认 0，预处理裁剪 direct 实现 |
 | `FLASH_CHROMA_ENABLE_AVX2` | Desktop/Mobile 且 GCC/Clang x86 时默认 1；其他默认 0 |
 | `FLASH_CHROMA_ENABLE_OPENMP` | Desktop/Mobile 且编译器定义 `_OPENMP` 时默认 1；其他默认 0 |
+| `FLASH_CHROMA_ENABLE_PREPARE_CACHE` | 默认 `ENABLE_DIRECT && ENABLE_AVX2`；设为 0 裁剪小域证明、缓存和扫描线准备，保留通用 direct 构建 |
+
+强制将准备缓存设为 1 同时关闭 DIRECT 或 AVX2 是不成立的构建组合，会在编译期拒绝。该开关不改变模型精度、direct 表的完整域语义或运行时后端编号。
 
 Embedded/Portable 运行目标限定 Sparse、Scalar、1 线程；默认构建不依赖堆、异常、RTTI、文件系统或线程库。C99 入口始终是这一最小整数映射路径。Mobile 在已实现能力内使用分块、内存预算与线程控制；没有 GPU/NPU 调用，也没有已实现的 NEON 加速。
 
@@ -182,4 +206,6 @@ ctest --test-dir build-single-header --output-on-failure
 
 Windows 可使用 MinGW Makefiles 并显式指定 GCC/G++。OpenMP/AVX2 可分别通过`FLASH_CHROMA_TEST_OPENMP`和`FLASH_CHROMA_TEST_AVX2`关闭。这两个名称属于仓库验证工程；直接集成头文件时使用上节的部署宏。
 
-旧统一库、Python拟合器、实验目录和历史证据继续保留，作为兼容入口、对照及来源记录。新运行库没有自动吸收所有旧实验，包括有界后缀缓存/扫描线专门准备器、AVX-512及特定 NT 写入变体。新库准备时间和吞吐量必须按新实现实测，不能继承旧17ms或旧模型创建成绩。现有QEMU合同用于数值与系统接入，不能证明移动/嵌入式实板吞吐量、功耗或最坏时延。
+旧统一库、Python拟合器、实验目录和历史证据继续保留，作为兼容入口、对照及来源记录。本轮已迁入 direct 的基础/BMI 热路径、有证明的后三层小域缓存与首层扫描线准备，但没有吸收所有旧实验；单头 AVX-512、ARM NEON、平台专属 GPU/NPU、旧特定实验变体及各类布局研究仍未迁入。缓存准备只用于满足资格的 AVX2 direct，Sparse 和 Scalar 仍保持各自原路径。
+
+新库准备时间、热吞吐与暂态内存必须按修复后的同一实现统一验证，不能继承旧17ms或旧模型创建成绩，也不从源代码迁移本身推断已恢复到旧库性能。宏开关、线程数、私有 palette 容量和实际到达颜色数应随构建/运行记录一起保存。现有QEMU合同用于数值与系统接入，不能证明移动/嵌入式实板吞吐量、功耗或最坏时延；Xeon6140、移动/嵌入式实板和本轮迁移后的性能采用条件仍以相应实测为准。

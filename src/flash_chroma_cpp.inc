@@ -35,6 +35,12 @@
 #define FLASH_CHROMA_ENABLE_OPENMP 0
 #endif
 #endif
+#ifndef FLASH_CHROMA_ENABLE_PREPARE_CACHE
+#define FLASH_CHROMA_ENABLE_PREPARE_CACHE (FLASH_CHROMA_ENABLE_DIRECT && FLASH_CHROMA_ENABLE_AVX2)
+#endif
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE && (!FLASH_CHROMA_ENABLE_DIRECT || !FLASH_CHROMA_ENABLE_AVX2)
+#error "准备缓存快路径需要direct与AVX2；可关闭FLASH_CHROMA_ENABLE_PREPARE_CACHE"
+#endif
 #if FLASH_CHROMA_ENABLE_OPENMP && !defined(_OPENMP)
 #error "启用 OpenMP 需由编译器提供 _OPENMP"
 #endif
@@ -106,6 +112,8 @@ public:
     const Requirements& resources() const noexcept { return resources_; }
     Backend selected_backend() const noexcept { return backend_; }
     std::uint32_t palette_entries() const noexcept { return palette_count_; }
+    bool prepared_with_suffix_cache() const noexcept { return prepared_cache_; }
+    std::size_t preparation_cache_entries() const noexcept { return prepared_cache_entries_; }
     bool ready() const noexcept { return ready_; }
 private:
     RuntimeConfig config_{};
@@ -120,6 +128,8 @@ private:
     const std::uint32_t* palette_=nullptr;
     std::uint32_t palette_count_=0;
     const std::uint8_t* arena_=nullptr;
+    std::size_t prepared_cache_entries_=0;
+    bool prepared_cache_=false;
     bool ready_=false;
 };
 }
@@ -255,34 +265,10 @@ FC_AVX2 inline void sparse8(const PackedView* views,const std::uint8_t* src,std:
     for(std::size_t i=0;i<n;i+=8) {Rgb rgb;load8(src+3*i,rgb);for(unsigned s=0;s<4;++s)transform(views[s],rgb);store8(dst+3*i,rgb);}
 }
 #if FLASH_CHROMA_ENABLE_DIRECT
-FC_AVX2 inline void direct8(const std::uint8_t* table,const std::uint32_t* palette,Representation rep,
-    const std::uint8_t* src,std::uint8_t* dst,std::size_t n) noexcept {
-    const __m256i mask=_mm256_set1_epi32(255);
-    for(std::size_t i=0;i<n;i+=8) {
-        Rgb rgb;load8(src+3*i,rgb);
-        const __m256i code=_mm256_or_si256(rgb.r,_mm256_or_si256(_mm256_slli_epi32(rgb.g,8),_mm256_slli_epi32(rgb.b,16)));
-        __m256i value;
-        if(rep==Representation::DirectRGB24) {
-            const auto offset=_mm256_add_epi32(code,_mm256_slli_epi32(code,1));
-            value=_mm256_i32gather_epi32(reinterpret_cast<const int*>(table),offset,1);
-        } else {
-            __m256i id;
-            if(rep==Representation::DirectU8) {
-                const auto words=gather(reinterpret_cast<const std::uint32_t*>(table),_mm256_srli_epi32(code,2));
-                const auto shifts=_mm256_slli_epi32(_mm256_and_si256(code,_mm256_set1_epi32(3)),3);
-                id=_mm256_and_si256(_mm256_srlv_epi32(words,shifts),mask);
-            } else {
-                const auto words=gather(reinterpret_cast<const std::uint32_t*>(table),_mm256_srli_epi32(code,1));
-                const auto shifts=_mm256_slli_epi32(_mm256_and_si256(code,_mm256_set1_epi32(1)),4);
-                id=_mm256_and_si256(_mm256_srlv_epi32(words,shifts),_mm256_set1_epi32(65535));
-            }
-            value=gather(palette,id);
-        }
-        rgb.r=_mm256_and_si256(value,mask);rgb.g=_mm256_and_si256(_mm256_srli_epi32(value,8),mask);rgb.b=_mm256_and_si256(_mm256_srli_epi32(value,16),mask);store8(dst+3*i,rgb);
-    }
-}
+// @include flash_chroma_direct.inc
 #endif
 #endif
+// @include flash_chroma_prepare.inc
 }
 
 std::uint32_t compiled_capabilities() noexcept {
@@ -314,7 +300,10 @@ const char* status_string(Status status) noexcept {
     switch(status) {case Status::Unsupported:return "当前目标、编译能力或CPU不支持配置";case Status::Budget:return "工作区预算或容量不足";case Status::Capacity:return "完整色域的调色板超过所选索引容量";default:return "未知状态";}
 }
 
-Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& config,Requirements* out) noexcept {
+namespace detail {
+inline Status runtime_requirements(const ModelBundle& bundle,const RuntimeConfig& config,
+    Requirements* out,PrepareDomain* domain) noexcept {
+    (void)domain;
     if(!out)return Status::Null;
     if(!fc_core::fc_detail_span_valid(out,sizeof(*out)))return Status::Overflow;
     if(fc_core::fc_detail_intersects(out,sizeof(*out),&bundle,sizeof(bundle))||fc_core::fc_detail_intersects(out,sizeof(*out),&config,sizeof(config)))return Status::Overlap;
@@ -341,17 +330,31 @@ Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& conf
         r.persistent_bytes=detail::colours*(narrow?1:2)+(narrow?256:65536)*4;
         r.temporary_bytes=packed+(narrow?1024:131072)*8+detail::aligned(4096*3);
     }
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE
+    if(config.representation!=Representation::Sparse&&backend==Backend::Avx2) {
+        const auto proven=detail::prepare_domain(models[0]);
+        const auto fast=detail::prepare_cache_scratch(proven,config);
+        if(fast&&packed+fast>r.temporary_bytes)r.temporary_bytes=packed+fast;
+        if(domain)*domain=proven;
+    }
+#endif
 #endif
     r.arena_bytes=r.persistent_bytes+r.temporary_bytes;
     if(r.arena_bytes&&!detail::add(r.arena_bytes,63))return Status::Overflow;
     if(r.arena_bytes>config.max_workspace_bytes)return Status::Budget;
     *out=r;return Status::Ok;
 }
+}
+
+Status Runtime::requirements(const ModelBundle& bundle,const RuntimeConfig& config,Requirements* out) noexcept {
+    return detail::runtime_requirements(bundle,config,out,nullptr);
+}
 
 Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Workspace workspace,Runtime* out) noexcept {
     if(!out)return Status::Null;
     if(!fc_core::fc_detail_span_valid(out,sizeof(*out)))return Status::Overflow;
-    Requirements r;const auto st=requirements(bundle,config,&r);if(st!=Status::Ok)return st;
+    Requirements r;detail::PrepareDomain domain;
+    const auto st=detail::runtime_requirements(bundle,config,&r,&domain);if(st!=Status::Ok)return st;
     if(r.arena_bytes&&(!workspace.data||workspace.bytes<r.arena_bytes))return Status::Budget;
     if(workspace.bytes&&!workspace.data)return Status::Null;
     if(workspace.data&&!fc_core::fc_detail_span_valid(workspace.data,workspace.bytes))return Status::Overflow;
@@ -362,7 +365,8 @@ Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Wo
         const Bytes inputs[2]={bundle.models[s],bundle.sidecars[s]};
         for(const auto bytes:inputs)if(fc_core::fc_detail_intersects(out,sizeof(*out),bytes.data,bytes.size)||fc_core::fc_detail_intersects(workspace.data,workspace.bytes,bytes.data,bytes.size))return Status::Overlap;
     }
-    out->ready_=false;out->config_=config;out->resources_=r;
+    out->ready_=false;out->prepared_cache_=false;out->prepared_cache_entries_=0;
+    out->config_=config;out->resources_=r;
     detail::resolve(config,&out->backend_);
     for(unsigned s=0;s<4;++s)fc_core::fc_model_init(out->models_+s,bundle.models[s],bundle.sidecars[s]);
     const fc_core::fc_model* ptrs[4]={out->models_,out->models_+1,out->models_+2,out->models_+3};
@@ -387,6 +391,17 @@ Status Runtime::prepare(const ModelBundle& bundle,const RuntimeConfig& config,Wo
     if(packed)detail::pack_views(out->models_,temporary,out->packed_);
 #endif
     out->direct_=arena;
+#if FLASH_CHROMA_ENABLE_PREPARE_CACHE
+    if(domain.proven&&out->backend_==Backend::Avx2) {
+        const bool rgb=config.representation==Representation::DirectRGB24;
+        const bool narrow=config.representation==Representation::DirectU8;
+        auto* palette=rgb?nullptr:reinterpret_cast<std::uint32_t*>(arena+detail::colours*(narrow?1:2));
+        if(detail::prepare_cached_direct(out->packed_,domain,config,arena,temporary+packed,palette,&out->palette_count_)) {
+            out->palette_=palette;out->prepared_cache_=true;out->prepared_cache_entries_=domain.entries;
+            out->ready_=true;return Status::Ok;
+        }
+    }
+#endif
     if(config.representation==Representation::DirectRGB24) {
         const std::size_t blocks=detail::colours/config.block_pixels+(detail::colours%config.block_pixels!=0);
 #if FLASH_CHROMA_ENABLE_OPENMP
