@@ -1,4 +1,4 @@
-"""仅监听本机的真实 RAW 工作流界面与任务服务。"""
+"""仅监听本机的照片调色工作台与真实RAW任务服务。"""
 from __future__ import annotations
 
 import argparse
@@ -23,12 +23,19 @@ import webbrowser
 import numpy as np
 from PIL import Image
 
+if __package__:
+    from .studio import StudioService, StudioUnavailable, StudioBusy, API_VERSION
+else:
+    from studio import StudioService, StudioUnavailable, StudioBusy, API_VERSION
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "artifacts/camera-raw-workflow-v1"
 JOBS = ROOT / "artifacts/gui-jobs"
 STATIC = Path(__file__).with_name("static")
 POLICY = ROOT / "experiments/camera-raw-workflow-v1.json"
 TOKEN = secrets.token_urlsafe(32)
+STUDIO = None
+SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 LOCK = threading.RLock()
 SAMPLES = {}
 TASKS = {}
@@ -364,7 +371,7 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, *_):
         pass
 
-    def send(self, status, content, mime="application/json; charset=utf-8"):
+    def send(self, status, content, mime="application/json; charset=utf-8", headers=None):
         if not isinstance(content, bytes):
             content = json.dumps(content, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
@@ -372,6 +379,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(content)))
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Cache-Control", "no-store" if mime.startswith("application/json") else "private, max-age=60")
+        for key, value in (headers or {}).items():
+            self.send_header(key, value)
         self.end_headers()
         self.wfile.write(content)
 
@@ -385,7 +394,22 @@ class Handler(BaseHTTPRequestHandler):
                 with LOCK:
                     return self.send(200, {"samples": list(SAMPLES.values()), "execution_warning": execution_warning(), "jobs": [public_job(j) for j in sorted(TASKS.values(), key=lambda j: j["created"], reverse=True)][:30]})
             if parsed.path == "/api/health":
-                return self.send(200, {"root": str(ROOT), "status": "ready"})
+                return self.send(200, {"root": str(ROOT), "status": "ready", "application": "flash-chroma-studio",
+                    "api_version": API_VERSION, "studio_api_version": API_VERSION,
+                    "engine": STUDIO.engine_info(), "server_source_sha256": SERVER_SOURCE_SHA256,
+                    "studio_source_sha256": STUDIO.source_sha256, "studio_catalog_sha256": STUDIO.catalog_sha256})
+            if parsed.path == "/api/studio/catalog":
+                return self.send(200, STUDIO.catalog())
+            if parsed.path == "/api/studio/photo":
+                size = query.get("size", "preview")
+                return self.send(200, STUDIO.photo(query["id"], size), "image/png" if size == "full" else "image/jpeg")
+            if parsed.path == "/api/studio/look":
+                return self.send(200, STUDIO.look(query["photo"], query["preset"]), "image/jpeg")
+            if parsed.path == "/api/studio/result":
+                kind = query.get("kind", "output")
+                payload, filename = STUDIO.result(query["id"], kind)
+                headers = {"Content-Disposition": f'attachment; filename="{filename}"'} if kind == "download" else None
+                return self.send(200, payload, "image/png", headers)
             if parsed.path == "/api/frame":
                 return self.send(200, preview(query["run"], query.get("target", "sdr"), int(query.get("frame", 0)), query.get("kind", "runtime")), "image/png")
             if parsed.path == "/api/report":
@@ -398,17 +422,25 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(200, {"path": str(path), "parent": str(path.parent) if path != ROOT else None,
                     "dirs": [{"name": p.name, "path": str(p)} for p in entries if p.is_dir() and not p.name.startswith(".")],
                     "files": [{"name": p.name, "path": str(p)} for p in entries if p.is_file() and p.suffix.lower() in (".ari", ".r3d", ".braw")]})
-            relative = "index.html" if parsed.path == "/" else parsed.path.lstrip("/").removeprefix("static/")
+            pages = {"/": "studio.html", "/studio": "studio.html", "/studio/": "studio.html",
+                     "/raw": "index.html", "/raw/": "index.html"}
+            relative = pages.get(parsed.path, parsed.path.lstrip("/").removeprefix("static/"))
             path = (STATIC / relative).resolve()
             if not path.is_relative_to(STATIC) or not path.is_file():
                 return self.send(404, {"message": "文件不存在"})
             payload = path.read_bytes()
-            if path.name == "index.html":
+            if path.name in ("index.html", "studio.html"):
                 payload = payload.replace(b"__APP_TOKEN__", TOKEN.encode("ascii"))
             return self.send(200, payload, mimetypes.guess_type(path.name)[0] or "application/octet-stream")
+        except StudioUnavailable as exc:
+            self.send(503, {"message": str(exc)})
+        except StudioBusy as exc:
+            self.send(429, {"message": str(exc)})
+        except RuntimeError as exc:
+            self.send(503, {"message": str(exc)})
         except (ValueError, KeyError, FileNotFoundError, IndexError) as exc:
             self.send(400, {"message": str(exc)})
-        except BrokenPipeError:
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
             pass
 
     def do_POST(self):
@@ -422,6 +454,11 @@ class Handler(BaseHTTPRequestHandler):
             if not 0 < length <= 16_384:
                 raise ValueError("请求长度不合法")
             data = json.loads(self.rfile.read(length))
+            if not isinstance(data, dict):
+                raise ValueError("请求须为JSON对象")
+            if self.path == "/api/studio/render":
+                result, _ = STUDIO.render(data)
+                return self.send(200, result)
             if self.path in ("/api/run", "/api/export"):
                 return self.send(202, {"job": create_job("render" if self.path == "/api/run" else "export", data)})
             if self.path == "/api/cancel":
@@ -448,15 +485,24 @@ class Handler(BaseHTTPRequestHandler):
                     subprocess.Popen(["xdg-open", str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 return self.send(200, {"message": "已打开", "path": str(path)})
             self.send(404, {"message": "未知操作"})
+        except StudioUnavailable as exc:
+            self.send(503, {"message": str(exc)})
+        except StudioBusy as exc:
+            self.send(429, {"message": str(exc)})
+        except RuntimeError as exc:
+            self.send(503, {"message": str(exc)})
         except (ValueError, KeyError, FileNotFoundError, OSError) as exc:
             self.send(400, {"message": str(exc)})
 
 
 def main():
+    global STUDIO
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--open", action="store_true")
+    parser.add_argument("--studio-library", type=Path, help="当前单头运行库完整路径")
     args = parser.parse_args()
+    STUDIO = StudioService(ROOT, library=args.studio_library)
     init_catalog()
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
@@ -474,6 +520,7 @@ def main():
     finally:
         for job in list(TASKS.values()):
             cancel(job)
+        STUDIO.close()
         server.server_close()
 
 
