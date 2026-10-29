@@ -20,9 +20,12 @@ Set-Location 'F:\Hackathon\极速焕彩测试框架\FlashChroma'
 .\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Backend auto -Fit sample
 .\run.ps1 -GridSizes '17,25,33,33' -Mode sparse -Fit sample
 .\run.ps1 -Data '..\data' -GridSizes 33 -Mode direct_rgb24 -Fit chain_ls -Count 4
+.\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Grid framework -Fit chain_ls
 ```
 
 `-Count 100` 要求完整的 `image/1.bin` 至 `100.bin`，不会把四张样图重复当成一百张。数据来自已存在目录，安装和运行不修改原 LUT 或图片。
+
+当前补充百图上，`33 + framework + chain_ls` 的平均RGB误差1.484947、最差单图2.385774；它只基于LUT拟合。可先试这档，再用实际精度阈值验收。默认仍保留sample基线。若正式规则不允许额外全域运行缓存，用 `-Mode sparse`；相同模型的数值输出不变，耗时/内存不同。预处理约数秒，框架计时不含它。
 
 如需直接编译，在交付目录使用：
 
