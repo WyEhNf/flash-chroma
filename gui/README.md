@@ -20,7 +20,7 @@
 
 当前本机验证：三家18种首帧PNG及5项接口边界共23项通过；已从浏览器完成ARRI重新处理与四份视频导出，并核对四路RGB的SHA与原验证结果完全相等。BRAW时间轴已在界面定位到第52帧，导入浏览器和分割线已操作检查。
 
-后续联调遇到WSL启动失败（`Wsl/Service/E_UNEXPECTED`及空输出退出1），本机Windows拒绝重启`WslService`，需要操作者在管理员终端恢复服务；故障根因尚未定位。此时GUI仍可浏览既有54帧及执行Windows导出，新RAW任务会失败并显示提示，不能把旧结果当成新任务。RED/BRAW的新GUI解码与取消进程组验证尚未完成；前序命令行工作流的成功不能代替本GUI验收。恢复环境后可运行下面的真实集成检查，它会创建独立RED/BRAW首帧及取消任务，保留所有文件：
+后续联调曾遇到WSL启动失败及主机提交空间不足。现已应用1GB/4核/F盘2GB交换的CPU配置，三家首帧重新解码、12路输出SHA、新导入及启动窗口真实worker取消已通过；旧失败记录保留。配置、内存采样、备份和回滚见[WSL内存阶段](../docs/stages/2026-10-23-wsl-memory-budget.md)。该预算下完整52帧、长时间稳定性及运行中解码子进程的取消仍未验收；完整任务还需要足够磁盘。下面的真实集成检查会创建独立RED/BRAW首帧及取消任务，保留所有文件：
 
 ```powershell
 python -X utf8 gui/smoke_test.py --views-only --output artifacts/gui-jobs/view-verification-repro.json
