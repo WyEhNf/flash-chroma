@@ -15,6 +15,9 @@ int main(void)
         printf("客户机：%s %s，架构=%s，PID=1\n", os.sysname, os.release, os.machine);
         result = jshc_embedded_contract(NULL);
         printf("失败行=%d\n", result);
+#ifdef JSHC_EMBEDDED_SINGLE_HEADER_PARITY
+        if (!result) puts("新C99单头普通/分输出Q16合同通过；模型和侧表存储另计");
+#endif
     }
     puts(result ? "FAIL: Linux Cortex-A53 LUT contract" : "PASS: Linux Cortex-A53 LUT contract");
     reboot(RB_POWER_OFF);

@@ -1,5 +1,7 @@
 # flash-chroma · 极速焕彩
 
+2026-10-28：[独立单头文件运行库](docs/single-header-runtime.md)提供 C++17 `.hpp` 与可选 C99 `.h`，支持连续三维偏好、硬预算、桌面/移动/嵌入式/可移植裁剪。专用查表、成块写出和并行后缀准备已迁入，见[性能修复与集中验证](docs/stages/2026-10-28-header-performance-repair.md)和[最新实测目录](report/data/p16-header-performance-20261028/catalog.json)。20种配置的本轮目录独立绑定新库；三方对照的A/A失败及与旧库残余差距如实保留，尚不宣称稳定追平。原[单头阶段报告](docs/stages/2026-10-27-p16-frontier-header.md)与历史证据保留。构建/选择入口为 `pixi run --locked build-header`、`pixi run --locked frontier --help`。
+
 当前版本的算法、批次性能与运行内存见[CPU版本性能与方法总结](docs/p16-cpu-performance-summary.md)。
 
 2026-10-27：当前推荐的[CPU评分候选入口](submission/README.md)已整合最新研究，默认373a＋AVX2，均值优先档为max_first；提供固定模型包、百图mean严格门、完整计时和运行内存账单。使用`pixi run --locked build-score`构建，`pixi run --locked score --help`查看入口。固定Cinema模型是回归示例，新LUT必须重新拟合；官方分数和Xeon6140成绩尚未获得。

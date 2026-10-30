@@ -1,0 +1,544 @@
+{
+  "timings": {
+    "prepare_native_ms": 286.6057,
+    "batch_apply_ms": 46.3273,
+    "prepare_to_first_preloaded_batch_wall_ms": 332.9932,
+    "read_images_to_output_application_wall_ms": 15934.0579,
+    "application_includes_png_write": true,
+    "scope": "单次实际百图；apply为原生映射调用，prepare含Runtime准备而不含模型读盘/离线拟合；application含输入SHA、解码、分配及数据身份检查，选配PNG写盘，不含库/模型读取、输出哈希和后续参考精度校验。"
+  },
+  "memory": {
+    "resources": {
+      "persistent_bytes": 33816576,
+      "temporary_bytes": 1654528,
+      "arena_bytes": 35471167,
+      "model_bytes": 457468,
+      "alignment": 64,
+      "object_bytes": 808,
+      "selected_backend": 2,
+      "palette_entries": 336
+    },
+    "model_payload_bytes": 457468,
+    "source_image_bytes": 235929600,
+    "output_image_bytes": 235929600,
+    "controlled_runtime_bytes": 507788643,
+    "rss_before_prepare": {
+      "rss": 284663808,
+      "vms": 502579200,
+      "peak_wset": 289685504,
+      "private": 502579200
+    },
+    "rss_after_apply": {
+      "rss": 556670976,
+      "vms": 538951680,
+      "peak_wset": 559812608,
+      "private": 538951680
+    },
+    "scope": "源模型+Runtime对象+保留的完整arena+百图输入输出；不含OS/OpenMP栈和分配器，非RSS硬上界。"
+  },
+  "batch_output_sha256": "5564f7e184cbf00614a2f5f76c1e0e58550592af51e85a0ad2896c27bd3f7929",
+  "per_image_output_sha256": [
+    "73726a96ff972c0b89211b05e7d6e4105110d82bdf4a12c3d29578d813e17826",
+    "c455cb1c16163ae9db24602991172fca8a8ec9ee55ad29178e63eeebcdf59d03",
+    "24e24aef820b686af281b849b3c3ec91cfc3aa2192f10abcc4ef6682ee5bddab",
+    "d8e6242a83679d581b2ff6169d852c6a2edd68c178946017472a83c51b84404a",
+    "daf1b6b5aee8bb0b6bbb706543b8dded006448d50c8605b874496b51a8cbe6b7",
+    "2bfff3992915166114223457aed61be49d830c11976440c1a27c0c5826394372",
+    "b29fde47a531ff5af299099660f1083ce32ee999bbd61c9fd9649633779b2467",
+    "09b165d7132259ca75c77a22131af5a5539c8e357e1d21fefc85e80e0b70ed48",
+    "4efbc79053d57bf385d84c1296bd2021f8fe8e137d5b4d577628f9d4e9953e8a",
+    "5c2e4214b6a78d8a68849046dd24fc0c6846d5f6c559a7e464d6734a75f81da0",
+    "93704286748ecbc0111bbf7b7eb21c031181be4c2678b42664a4e5cdc354d2b1",
+    "f88339baaabe73b93cb4c7588893d66d602d107519be192e63cec57cd02b9350",
+    "93eac30a86a97f35c0cfb37d57dd228653cfdba01a160197e858dc8623a3cd61",
+    "c1a13c9a59a2013055e703e80243c3ec42b96476e877de7461a06936203f240a",
+    "bb2fa5adbb77d1e797db79a5a3db46e5370bd322068c8d98af19a6879827f847",
+    "84d90b871bd425d33418523605d7bfa47726f022cd743203e1fa60c42748397b",
+    "78e066bea8fb9dc166f56995c965ee077d2837f5d4ead46b417fea516087d6f9",
+    "920ca2ddc126dc72838dc5976c73a63ac497b5be4060d0fab91f5dc434b6d36c",
+    "caea9e72c1e3c4da3152cb6c9a7481a87cfb4a70660f8189fa2c3cdfebd71d32",
+    "5feae9d68826d9be5d4f32ca29f9ed3aed81ea7b08e1ff4808339be23ea7e24c",
+    "c1b6823de7ed20dd958ceab5a4d6168c3968b7fbf4e56ff64225d21038882ba5",
+    "4f3a4d6d886006c35f92c335309b179244c24fa56882addcb98f378ebbc81c37",
+    "0e674e47b2fab44707544a0dde6cdd4780d656e906cf7dc60b8f5bceabf26b22",
+    "72ccc26e141d786a2b1357e22b61bc8190148350a2bc19ae4f67168f37f6d8ba",
+    "82828d996b19ca078cb8e9a332c1c0c2a989d1775477aedf05fb448f248d1028",
+    "ca916026402e2b10dc721cc4b9b0f436c25a11cdbe3abd9edf93d39676b218f0",
+    "3de015098667d58c2ce1bd57ab28535a69d548ef407064d9218fc1eb833068fb",
+    "f36b36abf96233e7242d111fb0f187ad8a7a9008c6a66022db0f1aef1a2db51c",
+    "bcdf0eadf831a0195b7a04d7ecd90a65d46a0d0ce0f88609d4ee779211f4ea97",
+    "e088df14bf16020046657becc1d4f5d7f2e0c0418073e33e7843d822c536303e",
+    "4b4b104562b35629ad10a351236980253073b15542aea4d9a892be1df7e7a43a",
+    "66f78818f589cabbb7534a547b6f42b3c1182c7746f67529474cda8a04044b36",
+    "2de4eee6b5d4c79329da8779eb0918cc43fd005971c69b453ff152fb25566300",
+    "abd2ea7152faeb03d695bce734089f5d7fa6ec9fc8bcbc69d2719627454d16fe",
+    "52881e2503a1c48dc3740819838d81f68c69a5b8c6cddd44234df71823cd8d27",
+    "d200bd269c97eca41a653de494acc24d7dfa3b33efcaf057c5ded1385a3dbcc4",
+    "a7dd3c8218e236fef569b21c93caa3e5c213350341330b3c69bf3b0257353b2e",
+    "976e8e444a4913033164993af6066209b6ac1e4d77e9d12e07bbf066b867dcda",
+    "65f3840085e8ca2cf785f506f07d3ee47b0c273d8714c5dec89462c2c36c82a7",
+    "adfbf9cb899818a14f5219bcd43c56057df35db93f9ece4bcca334aca3a53413",
+    "f83c9bee86087d87cae9a04909431a3a52904dcc718c5702a99828605479d124",
+    "d56327e9c195a44e1f700e896ff9c1e5891fe28059a500cf99f7c9636f10e50f",
+    "e4abf596a65b911c5aae2ef3813cec915ef4d35d917766b855a413e03ff8a1a8",
+    "f135bf7150fa8273bdea1add890f8531f6c5d1189841b88192b75fbe1a18a7b3",
+    "a21677602540cb99375657c0e841d9da9c0697f64bd05116864355483f76b2ec",
+    "e3b5f772ac2f755884bf770166cb0d472e88d9409b65ae6b4ce36b9256052385",
+    "3dc426793482a70d5a31ff18cbd1f827f1f9363ce73fcab0a6455bcd9377b91a",
+    "b40a042b7785049674bde9f32beaa7108be1164830c037791bb471adcd0e4d15",
+    "ee802bf74b4471c4a2d175aa407c29f6b48d1c120d6a969bd7af7427e240a9c6",
+    "5b73ca4ff62aa31dd613502c02a6b4af3e2cff7269c9de870bf51ff5e1300b07",
+    "525c02358fe92f0f32bc928a97aab057904b32fe13d32b3148fe6d23e1eb5126",
+    "fba8edd1bd7c6ad66d25567f88e1ca7e8421367ecc8e34bc6c53993e8695c134",
+    "0301e6040ac8f13bcc212b385561c14529d76492733ef3f9da589e23c0e72fde",
+    "f2e1c7758204a2799d64afef28595b0a60411f542dfb07166da5c38b8d5f9851",
+    "dad2277a1da4241f19cbfcdb620691b72830ba810f6fe22befac649abc5c405b",
+    "656fa28275e0e627081cfaeb29fbf5f353b5d1e451a8f9b6566bf561f1cded3e",
+    "4640735b9f6684d18361c99c972c2f8df273e1273941332a39b6e53dc41797e1",
+    "6bf193e63154432d3fa3e561b8e96ad67c8fb2878433c139c221a0a0e32b929d",
+    "04f3994f9cbf4d62d6a814644740edb752d924f8cbbb48ff07cb1be23197e268",
+    "744775e436e359631142c57cf4a43dedf0c5668e8454947c37208fd94842ac8c",
+    "26d0b36850cd893e2dec9fc6f559efea21d0760077ecac2717bac2253d347304",
+    "408c25a16f81aa3312cd6cc1a83dbe44102375fb1e20374cf5867e28fb9473a0",
+    "67fd225899aed0ecf2a162cd0436ac61ebf0e9f75568c2f1d1fdb77f4ffe12f8",
+    "5bf151e2a4cb9274eef38943a564f4500a83ba9495bb8aa28026acdc47b5f243",
+    "b995dc91a0d9c62be21e3077bd6f28a581b6a95c68ae8e6eac52f58e2ad7fd6f",
+    "2af2419cffde93965f8013f1cd9b461f644f96499dc166300a6e9eea0e68b1e9",
+    "e3954b81d6eab7bed7f4bb5a34054ed67c79bad843ecedc620681d6c54281748",
+    "28256319fdeed03883e51e35feac0f777585580e1b0e5a7112a6af878dfeb9f3",
+    "e2a76bf6c931d38b2773e006c26273803ac704b5a34a78e42492135cfd30c821",
+    "0a55d7bb1c0a145bfcf3c6cc9a737a1f945ddee5214f51fc8635a5c04d7dc37a",
+    "aaabc1b9e00994b988bde4ba5e5f5bf0d640713ff3a045ad0756e1e29b08384f",
+    "e7444c32bab5253898997fa9a772fee92d1c23c3969e0091c7492641f6160151",
+    "cbd2c07e465a6d378cfaf74683e5fb25c7510f7371afdaa2f7ff50dec39c0cc7",
+    "b75aa84f8a8525bad7ad00420da17298f3f6ce56797ac65c6cebf4bf2e64e139",
+    "345b0b2894d9401a7267abfa276bdf6af0e49414b7eb9f7357d74395803b77fb",
+    "6d2897988c78f2455095cdc0ad529be6f1fefb6d8424b087116da6d5fe37ece2",
+    "525060868146c914dffe25ad8d17c38c62077ae0a1afb1a427f31a24cc94dfbd",
+    "ee8d1615bd46ba48a20fb92b88cbbd771d521cdee3d1f936fe859be9149ea62b",
+    "083452c307bcafac31fac3bc5dc7553e1b62f98aa7381fbeb4641a5791ddedaa",
+    "0b1c749948295b819268f6d680c15030dad91b35db1db579ad4545b58253da66",
+    "2ad4038495b9f90d5d6e0bce7b210feb66cae0f28c97c1bbddb7185f2ad1def5",
+    "1e4589cbf2f40b48dae1bc1e8f34be9d53ed62bb6e8aa0ad08c214f6029f7986",
+    "fd7c482f4269858195d3cfef15e812dce6a6daf3f5ef9b3cde85123e343ae9d8",
+    "2d6dd333508531ba4f305ab0ff00bf017db7320fec99784fd6ef96c28903fd0e",
+    "272c1e3c7ce8ed6fe1f53a8b5fe5d9f07871040f35d4e923841936b0621bd7c1",
+    "d8e0d43ed9904a86bea61f00214cde5cd7737f63d77d68540bdb0accaba00703",
+    "1b94e4188fbb62c94b40be813e927f91f66b8845fa57d58e35c48effcac7df4b",
+    "43d5d1ea67fafcb2cc93703724ef7b9c679faf211eca459e573fbbefa3fb34bf",
+    "91974d711f8e98300729a94eba5cc825e44565baf5c49a1568455401b963ff45",
+    "b8d60c14916d47da21b044ea024c7c73858e7f89671852734fdf454c08f8587e",
+    "ad9a9d9f76034a8bb953274dbb91668160c290259dec56d79cbca038b0b56014",
+    "ba21a0b1fbda6219216e77f9e20be2f67a3d511af759947f01d777b50e705334",
+    "110c1ee79a2767a7879f9ab9b90b8491d9c0a76a24de9471330e9120f3931c30",
+    "644370b228956f7025e74a8caf0877fb99231e010653c0f2149e701f739d05ac",
+    "132c23cd2d901fcf006f44c7c2ecf9e2f2a7527daed5076ccc513dba1b311858",
+    "b44dc10f4eff25f07af14a68a6ea73a2d79de03622d948e59b4db5934d89c815",
+    "9ab22ec12bc9ded4620a6956bedc031596442c79afbc4e7924d51873874aeba8",
+    "0df39e0d997a526ea7583ef295a0764954282f5339450b5d1184173d857c4755",
+    "63a07b347dfdfc94a23935555e20a32f100ab55c7d0bb6a1bdab873de533767f",
+    "49a08a648fc993236b6a71408fd7a9f4f2ba5672efce9fac6199992023bde020"
+  ],
+  "written_images": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0001.png",
+      "sha256": "6834f194b1ba14d6bc97014aca0b9434ac16304899f318e2a5f56f72a178e3e5"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0002.png",
+      "sha256": "d40664a84f9c2db01db6a27eb2df43e34921315bd1a5b47ac93d61c9840dc5ab"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0003.png",
+      "sha256": "4837b81407f6d9dc3b3b590a2e4c3122a587df0a57ab6f638cf090f9c4c40b5b"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0004.png",
+      "sha256": "7d6fde02941c452651b193f000accb7005b353e6e00eeaba462ec906e50c475c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0005.png",
+      "sha256": "aead629eb8d848e844cc8cf9a28c07fd91bdef16155f6f5f564b7cb9c61ad120"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0006.png",
+      "sha256": "6616e0030b2aa3cf21f139a9b7e2bd9387dd66bc9c0b6c3ef9fa35d71647dbd8"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0007.png",
+      "sha256": "24b793e8281c93eddcebb6a1c78713322ca04d4396064c295a76a99e3cf44059"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0008.png",
+      "sha256": "dec6366b4f91fcf710acedd6ee00cfff427f3a56eddf0f3b293b38713a97b079"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0009.png",
+      "sha256": "6905731a3ad750e0f5dbb34fe982a062f8ca4dd25072865910d7b261b00fd204"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0010.png",
+      "sha256": "49fb9676ff843eb0fd0409df576f714e3eb627603e5d31763f647597cce36f34"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0011.png",
+      "sha256": "9e212417986b9624fb81e5c3398f6da52129d2486964a56c30fe7c723fcb58a0"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0012.png",
+      "sha256": "f80959b6c3e76e3643d2527d88edc69354a179e4dbbcf21189f0548351a4570d"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0013.png",
+      "sha256": "1ed89f417647a8a919671e01936ee0da0497fde3293d3a0ba5118d3149b19068"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0014.png",
+      "sha256": "7d3a4a5e99bc04ba65c0cfa8bd32b0185def090138d560c6c14c64243facf84c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0015.png",
+      "sha256": "18345e5933f5ba4fa4c4fc12eed46763c7e6e2fd96d973f7e55a1a169f913b1f"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0016.png",
+      "sha256": "f936f6b8fe6b4af003c081f78cb77f7d818740550ec3f71cd2931dedaaedfa80"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0017.png",
+      "sha256": "976d42532100cc12273c41f9fa0892f106cb21f394ce0fd52369275f437426b1"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0018.png",
+      "sha256": "a73c7e19786603ae591b9539fbe175d8aedcb1eda08980ceba7d7e8097888996"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0019.png",
+      "sha256": "04779dab9392d6b3a6ffa0009acee926aa9e64618d7ef9f6f56afdf604e3cea6"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0020.png",
+      "sha256": "402ecd96c95bfe4323bf21929848024cef75cfeebae5a6e1c191cceaea00fe64"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0021.png",
+      "sha256": "a2974604a38fdab8fc8b9be43fd302c3d589fddef67d7ec0b7da8fc893388108"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0022.png",
+      "sha256": "27564f0e6d036035cc458e003d240979bb819f50340d1e009b89684f6041cdbe"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0023.png",
+      "sha256": "5151526c8bea06c19a37299db70e8fce2bb124837b9d7edfb52a38bd67ef4fc7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0024.png",
+      "sha256": "22b481faae805a50a3b22add20db4815ec942ecd2c63257fb7fa0e2fa7b2b2ed"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0025.png",
+      "sha256": "bca732af2e915fec58520856768dcc7818d512ad87ff218682e6e398112ecc3c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0026.png",
+      "sha256": "eb890ca527d21a83703e9152322e9e327307992ac7e701d62f77e5ed7366e3c5"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0027.png",
+      "sha256": "71c8c63081e9ac382081becbea42f04b3dfebaa7d0da6bec8026d7526703f83c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0028.png",
+      "sha256": "2c2bcf0becb57756188c450265bd0f273e96b6d781a3c23b64d1ed0ec31b089f"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0029.png",
+      "sha256": "dc89e91c0eeb40a86bd6c8f974d9e6fb352e68cb888d1bd17cc2b37a9cf714cb"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0030.png",
+      "sha256": "4d4595042db337e229d3268da91633f2e79f45d589302d0acd48fd6de5becb84"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0031.png",
+      "sha256": "60d098c0eb7e1c5f791a7b9a0f2c1f35bc5c9478f3070e18eaa200c4e457f059"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0032.png",
+      "sha256": "278eb012c4e9be3e9edf0dfd6610fb88c42a8d1b5588992b02e22563f1562c23"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0033.png",
+      "sha256": "ec86c030526e1e3bc39c03f5a9545b7d0f4f3d5831d92bc4bb9af2ab606a430a"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0034.png",
+      "sha256": "90101dd019ab665f226fdcafc48b08184792e5d3712265f3f4234d2f904d6231"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0035.png",
+      "sha256": "2eb454044a33f1bb5be3512cdd621570c8053a3e48f54328b4f8cdaa6c2c681e"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0036.png",
+      "sha256": "9eaece79b98b985ed5dcd13d9a070cecabb0f767e0c560ea00c3a4cef4e66333"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0037.png",
+      "sha256": "35cee27854c84da4d1edd2c3b086baa9159c40c346c5ac757a1ed67719c756b4"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0038.png",
+      "sha256": "7f979cba260cadafc3a5b8b900fd32a33b8783ec966801dfd655319c1a11f18b"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0039.png",
+      "sha256": "f81547204d750fca1f1c6523a83ded345194abf9a561d3908bf8a27cccfd21a7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0040.png",
+      "sha256": "7d38ce4f02842c8ea85689fed2e89d238b262a019e4f6be2ae5c7298e174ec10"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0041.png",
+      "sha256": "dbed6b79943ad232720b0928b9cdbcaaf2725ffc35499d8679be068e4607e542"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0042.png",
+      "sha256": "b28069c81d126f3a58df4c2a52370f4597bd0dac9f4600515a21f16759885ad4"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0043.png",
+      "sha256": "b234c7f91e3f4b1b28e34d82ff6316b9de14f34c6b9dc806d87080c32b08b2a8"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0044.png",
+      "sha256": "9cdc0dec1238ebb08a12131bde587b468ce7c601167c333af5227bdc0c4eb975"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0045.png",
+      "sha256": "c1bbe432a5d067023cc4435f53e4c83a147bf49b9cd36357af91384900c07d18"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0046.png",
+      "sha256": "73634a9d419f8e986ac84d226839e265857cb3853071b5b9f6d55121fbab6409"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0047.png",
+      "sha256": "0e484e7d8447097d9edb5d6cb2d56dc6f46dd1cf7af4153ad3062afa98f77fc6"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0048.png",
+      "sha256": "0ab0ef676d97e10302f9f1938082014bf4ea6286db16f52ef2bd789417c5105d"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0049.png",
+      "sha256": "70649ebd97594c07c18d94b5adcb9e8a9ce7532b0e66bda741c340ba902a8e28"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0050.png",
+      "sha256": "9c4451ed5a15b1422cf74c70aae9f50fc07f7a03185dd0a2a7cf427fbc545c2c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0051.png",
+      "sha256": "8af92b85605bbeef17a21a16475756c36c370221ca2320f74081c89cb2226f14"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0052.png",
+      "sha256": "07bca9f050492738268ded456cb7b70455f90654a52dd7e9c452000f731bf361"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0053.png",
+      "sha256": "5cff236672153d488daab090be3cc79cbfa45ce70ebb13473e18dd691d997320"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0054.png",
+      "sha256": "d933544fb25be8634b8bc4fe85093f2e200012ce68f9d5d2ead06a671a44709d"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0055.png",
+      "sha256": "7b769687b6b8e1db109072c236300ae889ac0e7226e2e6167262c567e1a05c9a"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0056.png",
+      "sha256": "e04c8abed3e07b1c8b0b562187c2f5a93963edcf5bb4f96c9bd7d48525e2e7f6"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0057.png",
+      "sha256": "92856e174316c7c25e63f4c066c1e325af6862fd5614fa46adfb4b2329d0dd45"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0058.png",
+      "sha256": "5bdd13744dd65c0bdd432ce535dd49ae03142e3f7e7762b106040421ccb84cef"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0059.png",
+      "sha256": "6d3421f48dbf4a19711da4f9fd4c9779566a25425d1c78e8f3368f49fcc21fef"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0060.png",
+      "sha256": "877fed9e8df384a9a00e31dc7fda70f7e873b68fa0cbefb1b1d9cf2b0814ad77"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0061.png",
+      "sha256": "f81e864c9dc9faae0bf0cbc14d2db570aa92968b747e5caa8e00f3903d490b0d"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0062.png",
+      "sha256": "5bb5aa8dc463e8845728f3cec0a37b0445c6d904ec8d7ae506ccee2194c67728"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0063.png",
+      "sha256": "9034611e81c2caa4f0d657c03b7e26459d8570844057bbadbd9fa5f507bfc853"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0064.png",
+      "sha256": "867ef43192a3c5c62006b923cf77b6418ea7e515a5b4a645f07467bdf60db181"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0065.png",
+      "sha256": "c9a439ed4015b944609f4711cf84566345c7e6d17e871fb7836fe3dd421743ee"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0066.png",
+      "sha256": "82b018f85bef3a9a762a67c0b0d296525401849b61ff7cc600cdfb88ad2cdab9"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0067.png",
+      "sha256": "aa28218d00c15806dce60fafc63384a2c42f9397d3bec7ead50a116f9c4f3a5e"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0068.png",
+      "sha256": "a32291677ad348ec99f545e8e14e35810629c3cf9f7d76fcae36c7f00def2f24"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0069.png",
+      "sha256": "37b3c50ea80f4879ad5ea1070d3bd4b69ef1009eada5c49eae2f30f38e2fc061"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0070.png",
+      "sha256": "26bda5048956fbaf2bdc9f11fea49a1f335e9cb8d334a1cf7b1ae47e479dd334"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0071.png",
+      "sha256": "cbc124b716d347a9761980d2ecfd8d787b9fa542dca75e201681d2643e09fff1"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0072.png",
+      "sha256": "19700d1a1e18abbad9477667cce6793ad9010c39a2db36a6fe9c24b8b0cc1253"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0073.png",
+      "sha256": "af3e17ebd0bd2b3bc740d3fd1e5f4570e977a513aae5df288b1d06d16a38091b"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0074.png",
+      "sha256": "9e557327d12e73e9b5a6803d8ced5f839882bc22c676299dead47e2cb3067a3a"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0075.png",
+      "sha256": "df48b8c898e962859d3bb7c25a09f9f08bbf2da748bfac2aa23e74c0471af9c9"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0076.png",
+      "sha256": "d87fcf70a10d2cc372c0133f141b33839114952ed34868c762bfd5dfeb8fff21"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0077.png",
+      "sha256": "233bfdf6331490689d4acf3d2a542f81840c68eac99a1d03987a19ded2e883a3"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0078.png",
+      "sha256": "c463ec4b3722836bc083e09d5be66e498b4ca97868b5a22ab0ee66becce808e0"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0079.png",
+      "sha256": "16b1a8d5292fde70cf7d6e1b9dd6fff1560bd9f0fc4a780af0ab9bf35e2c32b5"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0080.png",
+      "sha256": "efcb49afc6cd628df643cfac96c483f4625de0545bb40295e6caf5f991bee654"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0081.png",
+      "sha256": "d63f358802a08dce90a079a2a1e3e592d936c1a705d89c7d07f5f32ae7a96d4f"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0082.png",
+      "sha256": "a7d7e0e45f0176ddb719563cd2f96fbf57437ee571d4f752227cf2b1350ad0cd"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0083.png",
+      "sha256": "117162e5b681a05f62caa6c4e5075cdb70489433d0e823b26a42d53d05a67ed9"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0084.png",
+      "sha256": "16d8c78e83bf6d8b3c5fb2f6354fec2efd1a7ecc6db79351238eb1fc0e0f59b7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0085.png",
+      "sha256": "a13f1ec2c54013febdbf874ae00d1138e86903344b6bd7052d1d163e1492c4a0"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0086.png",
+      "sha256": "b262b49d6a28b3999c79e34436c04e2ed7fccde635d6471c24f582a643770d45"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0087.png",
+      "sha256": "68261ca3557a462749e71ee990cf44e014047b59a1baa817fc70e73329381ada"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0088.png",
+      "sha256": "592c60ebf3be3b40cb7635b7785a6643f14420b7e62dc57ca0fd66ec05dcc318"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0089.png",
+      "sha256": "1e6aec0aff51e87a13c754ef36f4bd9ca1a9225b092a4d30061f0538ca93c756"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0090.png",
+      "sha256": "5da05b64efe38518e1537217132e537a9c884fdb5b481e8c36f28af8f1aa4be8"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0091.png",
+      "sha256": "174f0733f7ea755b59aa6a25d83c6e45574a08bb9b909cb65837d7c0f5bc9799"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0092.png",
+      "sha256": "d4b9afb10fe129649b80920ab14ee30c3d7922ff63fdfddea6203067133e2fe9"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0093.png",
+      "sha256": "3a1b7c38df6d066ebc14887c5e8f1b2e40b5c91830ae1e5acef4cd5750f39718"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0094.png",
+      "sha256": "3b20520ba706b01269b98cfb70b9bed6d970119ace1c3d5dbdfc23dc379bfb12"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0095.png",
+      "sha256": "63c610d353293c7fb6e5f419073ef23874f4d00a5c35777a553bc15dbe81dab3"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0096.png",
+      "sha256": "f9c027858490e42338382778ba0f5cc840f61a715e9479dff2f9efd60f4828d6"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0097.png",
+      "sha256": "9adfcc8be17226de255e8911a558ef733ef8dd6b23c5bd803605c5875537cbe3"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0098.png",
+      "sha256": "5e0d7e2870f3f8ac4232dbd60c028bb5301d945ce953c12f1809c5750e1caa4b"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0099.png",
+      "sha256": "01cddb9dd787549c383895e68a53b20eafc0e0a9a0446262de36eaf100911155"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\frontier-selected-run\\images\\0100.png",
+      "sha256": "51ed422c2497786e3fb72465652cb5a47fc141ddb37fe053a145e39f0bc9b42e"
+    }
+  ]
+}
