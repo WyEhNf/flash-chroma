@@ -1,0 +1,12 @@
+{
+  "purpose": "保留首次交付静态失败，不改变任何数值或性能结果",
+  "command": "python artifacts/skylake-direct-tiles-delivery-v1/static_check.py report/data/skylake-direct-tiles-v1/static-delivery-first-check.json",
+  "process_exit_code": 1,
+  "failed_subprocess": "git diff --cached --check",
+  "subprocess_exit_code": 2,
+  "reason": "expected-pr52-body.txt:31: new blank line at EOF",
+  "action": "仅该原始PR文本设置whitespace=-blank-at-eof，原文及manifest SHA保持不变；重新执行全阶段静态核对",
+  "commit_created_after_failure": false,
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}

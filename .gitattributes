@@ -343,3 +343,17 @@ scripts/report_quantile_tail_study.py -text
 
 # PR原文包含合法Markdown双空格换行，保留原字节。
 /report/data/skylake-input-path-v1/expected-pr51-body.txt -text whitespace=-blank-at-eol
+
+/experiments/skylake-directtile* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-directtile-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_directtile*.py -text
+/experiments/skylake-tilexy* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-tilexy-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_tilexy*.py -text
+/experiments/skylake-clangload* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-clangload-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_clangload*.py -text
+/scripts/*skylake_direct_tiles*.py -text
+/report/data/skylake-direct-tiles-v1/**/*.asm -text -diff
+/report/data/skylake-direct-tiles-v1/**/CMakeCache.txt -text -diff
+/report/data/skylake-direct-tiles-v1/expected-pr52-body.txt -text whitespace=-blank-at-eof
