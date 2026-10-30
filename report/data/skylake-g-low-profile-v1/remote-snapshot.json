@@ -1,0 +1,69 @@
+{
+  "checked_at_utc": "2026-10-21 13:04:37 UTC",
+  "comparison": {
+    "before": 66,
+    "after": 67,
+    "new": [
+      73
+    ],
+    "changed": []
+  },
+  "pr73": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/73",
+      "number": 73,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Agent：Codex /root、/root/direct_tile_audit\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对23至少三倍吞吐\nStatus：Failed（79四线程纯apply）/ Draft；整体In Progress\n\n修订79将78两个独立BMI1像素TU的read_wide改成每两个RGB24一次mem64 ANDN保留低48位、拆出两项ID，保留四ID先行与既有palette/输出。唯一16MiB表、精确24B尾、72/40宽窗口、65536块、static调度、NTA/NT/SFENCE和先读后写保持。CPU构造时检测BMI1，无支持回退原线性；无模型、近似、表容量或默认路径变更。\n\nRyzen9 8945HX / Windows11宿主WSL2 Ubuntu Linux6.18.33.2 / GCC15.2 / Python3.14.4标准库，通用AVX2、-mtune=skylake，仅两TU -mbmi。静态四区段321/170/319/168条，32/16条mem64 ANDN、逐条低/高24位及194/98B边界、掩码活跃期、四ID、先读后写、无热区栈和ISA隔离通过；独立审计覆盖实际ELF字节及dispatcher。输入load指令减半，机器指令增加，按事前新假设验收，不沿用78少指令门槛；源请求仍4B/像素，不声称DRAM减半。保留Python同名inspect导入前置失败及死mask结果移位误报初件，修正检查器不改候选或对象。\n\n独立16,777,216色物理表与24组完整RGB8原地/分离逐字节一致；2208finite、4416out/same-buffer、736guard、1280align、44分离拒绝/9直表拒绝及null检查通过。byte/sentinel零差，实际pair48单级0/四级1，资源四级28,046,644字节，与78相同。真实Skylake、缺BMI1硬件未执行。\n\n完整域后冻结原四串行进程ABBA长批次，同句柄A/A、1/4线程每批16/64内轮，共1920轮、48预热及48批末SHA；先批内均值再四对中位。与78策略/胶水归一比较只换身份与说明，三倍/A/A/单进程/准备门槛、quiet/绑核/THP及唯一条件确认不变。\n\n| 接口 | 1线程耗时比 / 吞吐 | 4线程耗时比 / 吞吐 |\n| --- | ---: | ---: |\n| 纯apply | 0.324159 / **3.084902倍** | 0.424973 / **2.353089倍** |\n| 真实分离输出 | 0.254476 / 3.929639倍 | 0.214304 / 4.666262倍 |\n| 准备+首组输出 | 0.603949 | 0.798798 |\n\nA/A中位1.024342/1.006215，全部单对在冻结范围；输出/源/边界、实际团队与TID绑定、前后精确VMA/16MiB全THP通过。唯一失败是四线程纯apply，确认系列/调用0，保留全部结果、不重跑择优或采用。79和78未同场直接配对，不从跨场数值归因其独立性能差异。\n\n124份原件及全部1920内轮独立复算，145份暂存实验/脚本/档案与磁盘原字节一致；语法及空白检查通过。仅冻结unified diff的协议上下文空格设专用空白属性，原字节未改。保存Windows辅助GBK读取失败及归档未开始的记录；显式UTF-8后只读交付，没有原生重测。另两个轻量只读假设因新增提取/压缩解码依赖缺少收益依据暂止，未实现或计时。\n\n[阶段说明/复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-pair48-input-20261021/docs/stages/2026-10-21-skylake-pair48-input.md) · [原件/独立复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-pair48-input-20261021/report/data/skylake-pair48-v1) · [协作回执](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-pair48-input-20261021/report/data/skylake-pair48-v1/remote-check.json)\n\n提交886e733，基于Draft #72头91b7c73。操作前fetch GitHub，完整读取66份PR正文与前65份比较仅新增72，其余一致；72正文/完整评论/review/行内再次刷新均无新意见，最终updated检索PR/issue为空。issue7修复337a3dd以及main b19c5a0/876e15b8/397cc367均包含；issue8双C99已集成，接口/预算/实板继续跟踪。Discussion接口仍不可读取，保留缺口，不合并或关闭事项。官方派生表许可/预算/Threshold、真实Skylake及整体三倍继续待验证。",
+      "title": "验证双像素64位输入读取并保留四线程性能缺口",
+      "base": "codex/skylake-dispatch-diagnostic-20261021",
+      "base_sha": "91b7c7359f938876d22fc7fc12fa7b2b0e02ebe0",
+      "head": "codex/skylake-pair48-input-20261021",
+      "head_sha": "886e733b5168e2ea7d8ed17583eabbb23ef8ef2e",
+      "head_repo_id": 1420743436,
+      "head_repo_full_name": "WyEhNf/flash-chroma",
+      "merge_commit_sha": "40c6790d01379cbaba95065045ef9a5a08a71b53",
+      "user": {
+        "login": "WyEhNf",
+        "name": "WyEhNf",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+        "id": 228311419
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-21T12:56:16Z",
+      "updated_at": "2026-10-21T12:56:16Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 147,
+      "additions": 65106,
+      "deletions": 0,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/73",
+      "display_title": "验证双像素64位输入读取并保留四线程性能缺口"
+    },
+    {
+      "comments": [],
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/73",
+      "title": "WyEhNf/flash-chroma PR #73 comments",
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/73",
+      "display_title": "WyEhNf/flash-chroma PR #73 comments"
+    },
+    {
+      "reviews": []
+    },
+    {
+      "review_threads": []
+    }
+  ],
+  "issue_search": {
+    "issues": []
+  },
+  "previous_record": "前66份正文与PR73依赖原件完全一致，只新增73；issue7/8正文及全部评论见report/data/skylake-dispatch-diagnostic-v1/remote-snapshot.json，updated检索无变化",
+  "discussion_limit": "接口仍不能刷新Discussion，不视为无新问题；不合并或关闭事项"
+}
