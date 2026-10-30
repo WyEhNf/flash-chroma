@@ -1307,3 +1307,21 @@ scripts/report_quantile_tail_study.py -text
 # PR95审查证据和实际执行脚本保留原字节，防止跨平台换行转换破坏SHA。
 /report/pr95-review-20261028/evidence/** -text linguist-generated=true whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /scripts/review_pr95_*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol
+
+# 保留工作台/赛前交付源码与验证回执的原始字节，支持包和证据SHA复核。
+/gui/server.py -text
+/gui/studio.py -text
+/gui/studio_catalog.json -text
+/gui/studio_smoke_test.py -text
+/gui/static/studio.* -text
+/gui/README.md -text
+/start-event.ps1 -text
+/scripts/p16_event.py -text
+/scripts/package_p16_event.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/prepare_studio_catalog.py -text
+/scripts/archive_studio_event.py -text
+/tests/test_studio.py -text
+/tests/test_p16_event.py -text
+/tests/test_p16_event_package.py -text
+/docs/event-quickstart.md -text
+/report/data/p16-studio-event-20261029/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

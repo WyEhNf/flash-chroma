@@ -1,5 +1,7 @@
 # flash-chroma · 极速焕彩
 
+2026-10-29：[赛前快速调试指南](docs/event-quickstart.md)提供统一的 `init / doctor / fit / run` 入口，支持四张新LUT重新拟合、混合网格、固定整批参数、逐图精度门禁和失败回执。Windows运行 `.\start-event.ps1 -Mode studio` 打开[照片工作台](gui/README.md)：20张代表图片、18个LUT、17套组合，参数调整实际调用当前单头CPU库。另提供独立C++连续RGB8接入层和可校验的本机离线调试包；[本阶段验证与交付范围](docs/stages/2026-10-29-studio-event-ready.md)明确已测功能、官方协议/Threshold待确认及旧入口待修复事项。
+
 2026-10-28：[独立单头文件运行库](docs/single-header-runtime.md)提供 C++17 `.hpp` 与可选 C99 `.h`，支持连续三维偏好、硬预算、桌面/移动/嵌入式/可移植裁剪。专用查表、成块写出和并行后缀准备已迁入，见[性能修复与集中验证](docs/stages/2026-10-28-header-performance-repair.md)和[最新实测目录](report/data/p16-header-performance-20261028/catalog.json)。20种配置的本轮目录独立绑定新库；三方对照的A/A失败及与旧库残余差距如实保留，尚不宣称稳定追平。原[单头阶段报告](docs/stages/2026-10-27-p16-frontier-header.md)与历史证据保留。构建/选择入口为 `pixi run --locked build-header`、`pixi run --locked frontier --help`。
 
 当前版本的算法、批次性能与运行内存见[CPU版本性能与方法总结](docs/p16-cpu-performance-summary.md)。
