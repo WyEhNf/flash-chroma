@@ -1,0 +1,12 @@
+{
+  "purpose": "保留首次静态入口执行失败；未开始反汇编或原生调用",
+  "command": "python3 artifacts/skylake-pair48-static-v1/inspect.py",
+  "environment": "WSL2 Ubuntu Python3.14.4",
+  "source_sha256": "ec6e0d73be840c88d264eeb4dfffeb5a323e1ad7a3e3e7d5e92a623e239f3764",
+  "failure": "AttributeError: module 'inspect' has no attribute 'signature'",
+  "cause": "argparse自动颜色加载dataclasses后导入标准库inspect，脚本同名且脚本目录在sys.path首位导致遮蔽；异常发生在ArgumentParser创建阶段",
+  "candidate_library_loads": 0,
+  "pixel_calls": 0,
+  "performance_calls": 0,
+  "correction": "不改冻结检查器、源码、对象或门槛；使用Python -P安全路径选项避免添加脚本目录，标准库正常解析"
+}

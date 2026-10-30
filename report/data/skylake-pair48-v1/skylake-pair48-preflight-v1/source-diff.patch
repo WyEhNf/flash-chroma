@@ -1,0 +1,204 @@
+--- experiments/skylake-andn-split-runtime/andn_inplace/channel_avx2.cpp
++++ experiments/skylake-pair48-runtime/andn_inplace/channel_avx2.cpp
+@@ -13,26 +13,31 @@
+       value(uint32_t((b>>32)&0xffffff)),value(uint32_t(((b>>56)|(c<<8))&0xffffff)),
+       value(uint32_t((c>>16)&0xffffff)),value(uint32_t(c>>40)));
+ }
+-// 仅宽循环调用；最后一个32bit输入读取多出的1字节仍在当前线程块内。
++// 仅宽循环调用；每对读取8字节并保留低48位，多出的2字节仍在当前线程块内。
+ inline __attribute__((always_inline)) __m256i read_wide(const uint32_t* table,const uint32_t* palette,const uint8_t* p) {
+   const uint8_t* bytes=reinterpret_cast<const uint8_t*>(table);
+-  // GNU低对齐可别名类型只描述原有合法4字节输入；不得用于精确24字节尾部。
+-  typedef uint32_t unaligned_alias_u32 __attribute__((aligned(1),may_alias));
+-  const uint32_t high_mask=0xff000000u;
+-  const auto id=[bytes,p,high_mask](size_t offset) {
+-    // 输出声明覆盖整个地址寄存器；x86-64写%k0会同时清零其高32位。
+-    uintptr_t code;
+-    // AT&T源顺序：内存、取反掩码、目标；结果为~high_mask & input32。
+-    // 精确memory operand与cc描述依赖，不额外阻止四ID组间调度。
+-    asm("andn %1, %k2, %k0" : "=r"(code)
+-        : "m"(*reinterpret_cast<const unaligned_alias_u32*>(p+offset)),"r"(high_mask) : "cc");
+-    return bytes[code];
++  // GNU低对齐可别名类型精确描述8字节输入；不得用于精确24字节尾部。
++  typedef uint64_t unaligned_alias_u64 __attribute__((aligned(1),may_alias));
++  const uint64_t high_mask=0xffff000000000000ULL;
++  const auto input=[p,high_mask](size_t offset) {
++    uint64_t packed;
++    // AT&T源顺序：内存、取反掩码、目标；64位结果为~high_mask & input64。
++    // %q选择完整64位寄存器，精确memory输入与cc描述依赖，不增加内存屏障。
++    asm("andn %1, %q2, %q0" : "=r"(packed)
++        : "m"(*reinterpret_cast<const unaligned_alias_u64*>(p+offset)),"r"(high_mask) : "cc");
++    return packed;
+   };
+-  const uint32_t i0=id(0),i1=id(3),i2=id(6),i3=id(9);
++  const uint64_t q0=input(0);
++  const uint32_t i0=bytes[q0&0xffffffULL],i1=bytes[q0>>24];
++  const uint64_t q1=input(6);
++  const uint32_t i2=bytes[q1&0xffffffULL],i3=bytes[q1>>24];
+   asm volatile("" : : "r"(i0),"r"(i1),"r"(i2),"r"(i3) : "memory");
+   const __m128i lo=_mm_setr_epi32(int32_t(palette[i0]),int32_t(palette[i1]),
+       int32_t(palette[i2]),int32_t(palette[i3]));
+-  const uint32_t i4=id(12),i5=id(15),i6=id(18),i7=id(21);
++  const uint64_t q2=input(12);
++  const uint32_t i4=bytes[q2&0xffffffULL],i5=bytes[q2>>24];
++  const uint64_t q3=input(18);
++  const uint32_t i6=bytes[q3&0xffffffULL],i7=bytes[q3>>24];
+   asm volatile("" : : "r"(i4),"r"(i5),"r"(i6),"r"(i7) : "memory");
+   const __m128i hi=_mm_setr_epi32(int32_t(palette[i4]),int32_t(palette[i5]),
+       int32_t(palette[i6]),int32_t(palette[i7]));
+@@ -127,5 +132,5 @@
+ 
+ }
+  }
+-void avx2_chain_andn_split(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
++void avx2_chain_pair48(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
+ }
+--- experiments/skylake-andn-split-runtime/andn_outplace/channel_avx2.cpp
++++ experiments/skylake-pair48-runtime/andn_outplace/channel_avx2.cpp
+@@ -13,26 +13,31 @@
+       value(uint32_t((b>>32)&0xffffff)),value(uint32_t(((b>>56)|(c<<8))&0xffffff)),
+       value(uint32_t((c>>16)&0xffffff)),value(uint32_t(c>>40)));
+ }
+-// 仅宽循环调用；最后一个32bit输入读取多出的1字节仍在当前线程块内。
++// 仅宽循环调用；每对读取8字节并保留低48位，多出的2字节仍在当前线程块内。
+ inline __attribute__((always_inline)) __m256i read_wide(const uint32_t* table,const uint32_t* palette,const uint8_t* p) {
+   const uint8_t* bytes=reinterpret_cast<const uint8_t*>(table);
+-  // GNU低对齐可别名类型只描述原有合法4字节输入；不得用于精确24字节尾部。
+-  typedef uint32_t unaligned_alias_u32 __attribute__((aligned(1),may_alias));
+-  const uint32_t high_mask=0xff000000u;
+-  const auto id=[bytes,p,high_mask](size_t offset) {
+-    // 输出声明覆盖整个地址寄存器；x86-64写%k0会同时清零其高32位。
+-    uintptr_t code;
+-    // AT&T源顺序：内存、取反掩码、目标；结果为~high_mask & input32。
+-    // 精确memory operand与cc描述依赖，不额外阻止四ID组间调度。
+-    asm("andn %1, %k2, %k0" : "=r"(code)
+-        : "m"(*reinterpret_cast<const unaligned_alias_u32*>(p+offset)),"r"(high_mask) : "cc");
+-    return bytes[code];
++  // GNU低对齐可别名类型精确描述8字节输入；不得用于精确24字节尾部。
++  typedef uint64_t unaligned_alias_u64 __attribute__((aligned(1),may_alias));
++  const uint64_t high_mask=0xffff000000000000ULL;
++  const auto input=[p,high_mask](size_t offset) {
++    uint64_t packed;
++    // AT&T源顺序：内存、取反掩码、目标；64位结果为~high_mask & input64。
++    // %q选择完整64位寄存器，精确memory输入与cc描述依赖，不增加内存屏障。
++    asm("andn %1, %q2, %q0" : "=r"(packed)
++        : "m"(*reinterpret_cast<const unaligned_alias_u64*>(p+offset)),"r"(high_mask) : "cc");
++    return packed;
+   };
+-  const uint32_t i0=id(0),i1=id(3),i2=id(6),i3=id(9);
++  const uint64_t q0=input(0);
++  const uint32_t i0=bytes[q0&0xffffffULL],i1=bytes[q0>>24];
++  const uint64_t q1=input(6);
++  const uint32_t i2=bytes[q1&0xffffffULL],i3=bytes[q1>>24];
+   asm volatile("" : : "r"(i0),"r"(i1),"r"(i2),"r"(i3) : "memory");
+   const __m128i lo=_mm_setr_epi32(int32_t(palette[i0]),int32_t(palette[i1]),
+       int32_t(palette[i2]),int32_t(palette[i3]));
+-  const uint32_t i4=id(12),i5=id(15),i6=id(18),i7=id(21);
++  const uint64_t q2=input(12);
++  const uint32_t i4=bytes[q2&0xffffffULL],i5=bytes[q2>>24];
++  const uint64_t q3=input(18);
++  const uint32_t i6=bytes[q3&0xffffffULL],i7=bytes[q3>>24];
+   asm volatile("" : : "r"(i4),"r"(i5),"r"(i6),"r"(i7) : "memory");
+   const __m128i hi=_mm_setr_epi32(int32_t(palette[i4]),int32_t(palette[i5]),
+       int32_t(palette[i6]),int32_t(palette[i7]));
+@@ -128,5 +133,5 @@
+ 
+ }
+  }
+-void avx2_chain_andn_split_to(const uint32_t* table,const uint32_t* palette,const uint8_t* source,uint8_t* destination,size_t pixels) noexcept {run(table,palette,source,destination,pixels);}
++void avx2_chain_pair48_to(const uint32_t* table,const uint32_t* palette,const uint8_t* source,uint8_t* destination,size_t pixels) noexcept {run(table,palette,source,destination,pixels);}
+ }
+--- experiments/skylake-andn-split-runtime/channel_runtime.cpp
++++ experiments/skylake-pair48-runtime/channel_runtime.cpp
+@@ -29,7 +29,7 @@
+   jshc_cc_cache_info cache_info{};
+   bool extended = false;
+   bool domain_proven = false;
+-  bool andn_split_supported = false; // 与既有bool相邻，构造时只检测一次BMI1能力。
++  bool pair48_supported = false; // 与既有bool相邻，构造时只检测一次BMI1能力。
+   std::vector<uint32_t> compiled;
+   std::vector<uint32_t> exceptions;
+   jshc_channel::AlignedTable direct_index;
+@@ -215,7 +215,7 @@
+       vectorized=n&~size_t{7};
+       if(h.cache_info.enabled) {
+         if(!h.direct_index.empty()) {
+-          if(h.andn_split_supported)jshc_channel::avx2_chain_andn_split(h.direct_index.data(),h.output_palette.data(),data,vectorized);
++          if(h.pair48_supported)jshc_channel::avx2_chain_pair48(h.direct_index.data(),h.output_palette.data(),data,vectorized);
+           else jshc_channel::avx2_chain_adaptive_linear(h.direct_index.data(),h.output_palette.data(),data,vectorized);
+         }
+         else if(!h.compiled.empty())jshc_channel::avx2_chain_exception(h.compiled.data(),h.exceptions.data(),h.output_palette.data(),data,vectorized);
+@@ -248,7 +248,7 @@
+ #if defined(JSHC_CC_HAVE_AVX2)
+     if(kernel==1 && !h.direct_index.empty()) {
+       const size_t vectorized=n&~size_t{7};
+-      if(h.andn_split_supported)jshc_channel::avx2_chain_andn_split_to(h.direct_index.data(),h.output_palette.data(),in,target,vectorized);
++      if(h.pair48_supported)jshc_channel::avx2_chain_pair48_to(h.direct_index.data(),h.output_palette.data(),in,target,vectorized);
+       else jshc_channel::avx2_chain_adaptive_linear_to(h.direct_index.data(),h.output_palette.data(),in,target,vectorized);
+       if(n!=vectorized) {
+         std::memcpy(target+3*vectorized,in+3*vectorized,3*(n-vectorized));
+@@ -348,7 +348,7 @@
+ 
+ extern "C" {
+ uint32_t jshc_cc_abi_version(void) {return 1;}
+-uint32_t jshc_cc_revision(void) {return 78;}
++uint32_t jshc_cc_revision(void) {return 79;}
+ uint32_t jshc_cc_capabilities(void) {
+   uint32_t mask=1;
+ #if defined(JSHC_CC_HAVE_AVX2)
+@@ -365,7 +365,7 @@
+     if (!paths || !output || stages<1 || stages>4) throw std::runtime_error("研究链要求1..4个模型");
+     auto h=std::make_unique<Handle>();h->models.reserve(stages);h->fractions.resize(stages);h->views.reserve(stages);h->original.reserve(stages);
+     // 检测留在通用TU；BMI1使用GCC特征名bmi。普通API调用晚于GCC能力初始化构造器。
+-    h->andn_split_supported=__builtin_cpu_supports("bmi")!=0;
++    h->pair48_supported=__builtin_cpu_supports("bmi")!=0;
+     for (size_t s=0;s<stages;++s) {
+       if (!paths[s]) throw std::runtime_error("空模型路径");
+       h->models.push_back(jshc::SparseLut::load(paths[s]));
+@@ -459,11 +459,11 @@
+   const auto& h=*static_cast<const Handle*>(handle);
+   *output={1,uint32_t(h.direct_index.advice()==0),0,0,uint64_t(reinterpret_cast<uintptr_t>(h.direct_index.data())),h.direct_index.bytes()};return 0;
+ }
+-JSHC_CC_API uint32_t jshc_cc_andn_split_enabled(const void* handle) {
++JSHC_CC_API uint32_t jshc_cc_pair48_enabled(const void* handle) {
+   if(!handle)return 0;
+   const auto& h=*static_cast<const Handle*>(handle);
+   // 表示本句柄AVX2原地及分离输出会选择ANDN；无表时原精确回退不使用该指令。
+-  return h.andn_split_supported && !h.direct_index.empty()?1u:0u;
++  return h.pair48_supported && !h.direct_index.empty()?1u:0u;
+ }
+ int jshc_cc_apply_to(void* handle,const uint8_t* source,uint8_t* destination,size_t bytes,int kernel,int threads,char* error,size_t size) {
+   try {if(!handle)throw std::runtime_error("空研究句柄");apply_to(*static_cast<Handle*>(handle),source,destination,bytes,kernel,threads);message(error,size,"");return 0;}
+--- experiments/skylake-andn-split-runtime/CMakeLists.txt
++++ experiments/skylake-pair48-runtime/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ cmake_minimum_required(VERSION 3.24)
+-project(jshc_skylake_andn_split LANGUAGES CXX C)
+-set(SKYLAKE_CANDIDATE_TARGET jshc_skylake_andn_split)
++project(jshc_skylake_pair48 LANGUAGES CXX C)
++set(SKYLAKE_CANDIDATE_TARGET jshc_skylake_pair48)
+ set(SKYLAKE_RUNTIME_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/channel_runtime.cpp")
+ # 新候选共用构建骨架；既有两个候选的独立CMake保留原执行身份。
+ set(CMAKE_CXX_STANDARD 17)
+--- experiments/skylake-andn-split-runtime/suffix_cache.hpp
++++ experiments/skylake-pair48-runtime/suffix_cache.hpp
+@@ -60,8 +60,8 @@
+ 
+ namespace jshc_channel {
+ void avx2_chain_adaptive_linear(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
+-void avx2_chain_andn_split(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
+-void avx2_chain_andn_split_to(const uint32_t*,const uint32_t*,const uint8_t*,uint8_t*,size_t) noexcept;
++void avx2_chain_pair48(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
++void avx2_chain_pair48_to(const uint32_t*,const uint32_t*,const uint8_t*,uint8_t*,size_t) noexcept;
+ }
+ extern "C" {
+ struct jshc_cc_direct_info {uint32_t version,enabled,format,reserved;uint64_t entries,table_capacity_bytes;int32_t dg_min,db_min;};
+@@ -73,7 +73,7 @@
+ struct jshc_cc_paged_info {uint32_t version,advised,reserved0,reserved1;uint64_t base,bytes;};
+ JSHC_CC_API int jshc_cc_get_paged_info(const void*,jshc_cc_paged_info*,size_t);
+ // 本句柄AVX2原地及分离输出是否会选择ANDN；空句柄或未构造线性表返回0。
+-JSHC_CC_API uint32_t jshc_cc_andn_split_enabled(const void*);
++JSHC_CC_API uint32_t jshc_cc_pair48_enabled(const void*);
+ }
+ 
+ namespace jshc_channel {
