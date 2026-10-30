@@ -245,8 +245,8 @@ FC_DIRECT_BMI inline void direct_palette_run_bmi(const std::uint8_t* table,const
 }
 #endif
 
-/* RGB24保留已有gather路线、精确24B图像读写与表尾guard契约。 */
-FC_AVX2 inline void direct_rgb24_run(const std::uint8_t* table,const std::uint8_t* src,
+/* 保留旧gather作为可复测基线，表尾guard与精确24B图像读写契约不变。 */
+FC_AVX2 inline void direct_rgb24_gather_run(const std::uint8_t* table,const std::uint8_t* src,
     std::uint8_t* dst,std::size_t pixels) noexcept {
     const auto mask=_mm256_set1_epi32(255);
     std::size_t i=0;
@@ -259,6 +259,109 @@ FC_AVX2 inline void direct_rgb24_run(const std::uint8_t* table,const std::uint8_
         rgb.b=_mm256_and_si256(_mm256_srli_epi32(value,16),mask);store8(dst+3*i,rgb);
     }
     for(;i<pixels;++i)store_rgb(dst+3*i,rgb32(table+std::size_t(rgb32(src+3*i))*3));
+}
+
+/* RGB24节点只有3B；读取第4B由既有表尾guard保证，打包时明确丢弃。 */
+inline std::uint32_t direct_rgb24_value(const std::uint8_t* table,std::uint32_t code) noexcept {
+    std::uint32_t value;std::memcpy(&value,table+std::size_t(code)*3,4);return value;
+}
+
+/* 输入只读精确24B，用于最后的8像素及保护页边界。 */
+FC_AVX2 inline __attribute__((always_inline)) __m256i direct_rgb24_read_exact(
+    const std::uint8_t* table,const std::uint8_t* p) noexcept {
+    std::uint64_t a,b,c;std::memcpy(&a,p,8);std::memcpy(&b,p+8,8);std::memcpy(&c,p+16,8);
+    return _mm256_setr_epi32(
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t(a&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t((a>>24)&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t(((a>>48)|(b<<16))&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t((b>>8)&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t((b>>32)&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t(((b>>56)|(c<<8))&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t((c>>16)&0xffffffu))),
+        static_cast<int>(direct_rgb24_value(table,std::uint32_t(c>>40))));
+}
+
+/* 八个独立节点读取分组发出，减少单条gather内部的串行等待。 */
+FC_AVX2 inline __attribute__((always_inline)) __m256i direct_rgb24_read_wide(
+    const std::uint8_t* table,const std::uint8_t* p) noexcept {
+    const auto v0=direct_rgb24_value(table,direct_code_wide(p));
+    const auto v1=direct_rgb24_value(table,direct_code_wide(p+3));
+    const auto v2=direct_rgb24_value(table,direct_code_wide(p+6));
+    const auto v3=direct_rgb24_value(table,direct_code_wide(p+9));
+    __asm__ volatile("" : : "r"(v0),"r"(v1),"r"(v2),"r"(v3) : "memory");
+    const auto lo=_mm_setr_epi32(static_cast<int>(v0),static_cast<int>(v1),static_cast<int>(v2),static_cast<int>(v3));
+    const auto v4=direct_rgb24_value(table,direct_code_wide(p+12));
+    const auto v5=direct_rgb24_value(table,direct_code_wide(p+15));
+    const auto v6=direct_rgb24_value(table,direct_code_wide(p+18));
+    const auto v7=direct_rgb24_value(table,direct_code_wide(p+21));
+    __asm__ volatile("" : : "r"(v4),"r"(v5),"r"(v6),"r"(v7) : "memory");
+    const auto hi=_mm_setr_epi32(static_cast<int>(v4),static_cast<int>(v5),static_cast<int>(v6),static_cast<int>(v7));
+    return _mm256_inserti128_si256(_mm256_castsi128_si256(lo),hi,1);
+}
+
+template<bool Stream>
+FC_AVX2 inline void direct_rgb24_block_run(const std::uint8_t* table,const std::uint8_t* source,
+    std::uint8_t* destination,std::size_t remaining) noexcept {
+    const std::size_t initial=remaining>341?1024:remaining*3;
+    for(std::size_t offset=0;offset<initial;offset+=64)
+        _mm_prefetch(reinterpret_cast<const char*>(source+offset),_MM_HINT_NTA);
+    for(;remaining&&(reinterpret_cast<std::uintptr_t>(destination)&63);source+=3,destination+=3,--remaining)
+        store_rgb(destination,rgb32(table+std::size_t(rgb32(source))*3));
+    bool streamed=false;
+    for(;remaining>=72;source+=192,destination+=192,remaining-=64) {
+        if(remaining>=406) {
+            const auto* future=source+1024;
+            _mm_prefetch(reinterpret_cast<const char*>(future),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+64),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+128),_MM_HINT_NTA);
+            _mm_prefetch(reinterpret_cast<const char*>(future+191),_MM_HINT_NTA);
+        }
+        /* 最后一个宽输入读取末端为193B，始终在至少216B的剩余输入内。 */
+        const auto r0=direct_pack<0>(direct_rgb24_read_wide(table,source));
+        const auto r1=direct_pack<1>(direct_rgb24_read_wide(table,source+24));
+        const auto r2=direct_pack<2>(direct_rgb24_read_wide(table,source+48));
+        const auto r3=direct_pack<3>(direct_rgb24_read_wide(table,source+72));
+        const auto r4=direct_pack<0>(direct_rgb24_read_wide(table,source+96));
+        const auto r5=direct_pack<1>(direct_rgb24_read_wide(table,source+120));
+        const auto r6=direct_pack<2>(direct_rgb24_read_wide(table,source+144));
+        const auto r7=direct_pack<3>(direct_rgb24_read_wide(table,source+168));
+        if constexpr(Stream) {
+            direct_output32_stream(destination,r0,r1,r2,r3);
+            direct_output32_stream(destination+96,r4,r5,r6,r7);
+            streamed=true;
+        } else {
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination),_mm256_blend_epi32(r0,r1,0xc0));
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination+32),_mm256_permute2x128_si256(r1,r2,0x30));
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination+64),_mm256_blend_epi32(r3,r2,0x03));
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination+96),_mm256_blend_epi32(r4,r5,0xc0));
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination+128),_mm256_permute2x128_si256(r5,r6,0x30));
+            _mm256_store_si256(reinterpret_cast<__m256i*>(destination+160),_mm256_blend_epi32(r7,r6,0x03));
+        }
+    }
+    if(streamed)_mm_sfence();
+    for(;remaining>=40;source+=96,destination+=96,remaining-=32) {
+        const auto r0=direct_pack<0>(direct_rgb24_read_wide(table,source));
+        const auto r1=direct_pack<0>(direct_rgb24_read_wide(table,source+24));
+        const auto r2=direct_pack<0>(direct_rgb24_read_wide(table,source+48));
+        const auto r3=direct_pack<0>(direct_rgb24_read_wide(table,source+72));
+        direct_output32(destination,r0,r1,r2,r3);
+    }
+    for(;remaining>=8;source+=24,destination+=24,remaining-=8)
+        direct_output8(destination,direct_rgb24_read_exact(table,source));
+    for(;remaining;source+=3,destination+=3,--remaining)
+        store_rgb(destination,rgb32(table+std::size_t(rgb32(source))*3));
+}
+
+/* 回归复测可显式重放旧核；两个版本共享模型/表格式与资源需求。 */
+FC_AVX2 inline void direct_rgb24_run(const std::uint8_t* table,const std::uint8_t* src,
+    std::uint8_t* dst,std::size_t pixels) noexcept {
+#if defined(FLASH_CHROMA_RGB24_LEGACY) && FLASH_CHROMA_RGB24_LEGACY
+    direct_rgb24_gather_run(table,src,dst,pixels);
+#elif defined(FLASH_CHROMA_RGB24_STREAMING) && FLASH_CHROMA_RGB24_STREAMING
+    direct_rgb24_block_run<true>(table,src,dst,pixels);
+#else
+    direct_rgb24_block_run<false>(table,src,dst,pixels);
+#endif
 }
 
 FC_AVX2 inline void direct8(const std::uint8_t* table,const std::uint32_t* palette,Representation rep,

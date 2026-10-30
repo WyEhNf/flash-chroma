@@ -1,0 +1,67 @@
+{
+  "schema": "rgb24_cached_default_contract_v1",
+  "completed": true,
+  "performance_test": false,
+  "default_dispatch": "cached",
+  "explicit_streaming_macro": 1,
+  "header_sha256": "9e5fa9ac474c6f9f60c05c19ad859353bf9b6fe88983cc01c3bee21cf1e11953",
+  "actual_compile_command": "E:\\mingw64\\bin\\g++.exe -DFLASH_CHROMA_ENABLE_OPENMP=0 @CMakeFiles/fc_rgb24_contract.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -mno-bmi -mno-bmi2 -o CMakeFiles\\fc_rgb24_contract.dir\\F_\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\single_header_rgb24_contract.cpp.obj -c F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\single_header_rgb24_contract.cpp",
+  "compared_pixels_per_variant": 16777216,
+  "full_domain_modes": [
+    "separate",
+    "in_place"
+  ],
+  "kernel_variants": [
+    "gather",
+    "block_cached",
+    "block_streaming",
+    "default_cached"
+  ],
+  "comparisons": 174244,
+  "unchanged_explicit_block_machine_bytes": true,
+  "block_machine_bytes_sha256": {
+    "void fc::detail::direct_rgb24_block_run<false>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": "59c1da3e08393b029823cd5ad92065ea8c350e69010cfd91d58564ef30ba8f3f",
+    "void fc::detail::direct_rgb24_block_run<true>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": "c497238558aa11d3e1c08b44f95550b55b8aeb483e3f94ce4d932a78b8b56f61"
+  },
+  "previous_verification": "artifacts/rgb24-contract-verification-20261030.json",
+  "additional_integration_tests_rerun": false,
+  "scope": "仅默认分派从流式改为缓存；单次重编译并复跑RGB24完整域与边界合同，未复跑其他四项，未测性能。",
+  "files": [
+    {
+      "path": "include/flash_chroma.hpp",
+      "sha256": "9e5fa9ac474c6f9f60c05c19ad859353bf9b6fe88983cc01c3bee21cf1e11953"
+    },
+    {
+      "path": "src/flash_chroma_direct.inc",
+      "sha256": "ca352346705cbdfa5131efff6b1c8fdf92703b5064bd26def81bc056539d9dd0"
+    },
+    {
+      "path": "tests/single_header_rgb24_contract.cpp",
+      "sha256": "f1d1bae8ff65942ef24253fead472324246267e82375b817dc05d3f82beafc00"
+    },
+    {
+      "path": "single_header/CMakeLists.txt",
+      "sha256": "ebe0a1fee13bd3cbcedcfbeb8528f77e9e951fe47b658020684f2247b6586cc2"
+    },
+    {
+      "path": "artifacts/rgb24-cached-default-before-20261030.json",
+      "sha256": "0810676f3cd37854412c78d953358e4d2216fef7cee685367b5dc90814fae668"
+    },
+    {
+      "path": "artifacts/rgb24-cached-default-build-20261030.log",
+      "sha256": "3804a7bddcbd102cb5179b05553891dec0d977e1bfc562b17e435c3a4c1dc625"
+    },
+    {
+      "path": "artifacts/rgb24-cached-default-tests-20261030.log",
+      "sha256": "c3b726688660f8a718255ed2e61366299101c561356f17aa239744812c9f4886"
+    },
+    {
+      "path": "artifacts/rgb24-cached-default-stdout-20261030.log",
+      "sha256": "e167993affd44268dd816e287d0f4142500adaf9c035b73779312c515d94dbc8"
+    },
+    {
+      "path": "artifacts\\framework-contract-cmake-20261029\\fc_rgb24_contract.exe",
+      "sha256": "656f9eca109e2ef74aa94089e5ed26d7a068e9882f835d87f37644f74d50779c"
+    }
+  ]
+}
