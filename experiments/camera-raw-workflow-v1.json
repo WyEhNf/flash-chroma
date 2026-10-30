@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "purpose": "真实RAW工作流适用性测试：高精度参考与四级RGB8模型分开评价；不继承旧照片场次的性能排名或三倍资格",
+  "base_commit": "4dc79c5d00c787a71ad392e634a78b48924e3abe",
+  "runtime": {
+    "revision": 78,
+    "library": "artifacts/skylake-andn-split-linux-build-v1/libjshc_skylake_andn_split.so",
+    "sha256": "51ed7ccd99817c61e89487db8f4afe1970932f637050515ae937280c0cd1532b",
+    "threads": 4,
+    "kernel": 1,
+    "scalar_comparison": "kernel=0, threads=1，每一帧逐字节相等；核对时间不计入生产apply"
+  },
+  "reference": {
+    "opencolorio": "2.6.0",
+    "config": "studio-config-v4.0.0_aces-v2.0_ocio-v2.5",
+    "working_space": "ACEScct",
+    "precision": "RGB float32，参考链阶段间不裁剪/量化；输出文件16bit整数",
+    "stage1": "摄影机Log/色域至ACEScct",
+    "stage2": "ACEScg中+0.25档曝光及RGB增益[1.02,1,0.98]，再转ACEScct",
+    "stage3": "ACEScct中以18%灰为中心的1.08对比度及0.92饱和度；全局示例grade，不声称逐镜头人工调色",
+    "stage4_sdr": ["Rec.1886 Rec.709 - Display", "ACES 2.0 - SDR 100 nits (Rec.709)"],
+    "stage4_hdr": ["Rec.2100-PQ - Display", "ACES 2.0 - HDR 1000 nits (Rec.2020)"],
+    "lut_cube_size": 33,
+    "fit": "各阶段独立均匀33³采样；保留float CUBE及节点RGB8 SLUT；本轮不拟合/改变旧固定模型"
+  },
+  "cameras": {
+    "arri": {
+      "raw": "artifacts/camera-raw-workflow-v1/raw/arri/L001C028_140110_R6MS.0018267.ari",
+      "raw_sha256": "eca7f6f8ca8530dd912856a7713d9519854109f76e5b651fee664ee22504aacc",
+      "decoded": "artifacts/camera-raw-workflow-v1/decoded/arri/linear.exr",
+      "decoded_sha256": "1b89649a82bd90d813a8a65567f153fc6ab83c9da9245d7304d59b5356dc8898",
+      "decoded_space": "Linear ARRI Wide Gamut 3",
+      "input_space": "ARRI LogC3 (EI800)",
+      "frames": 1,
+      "width": 2880,
+      "height": 1620,
+      "fps": 24,
+      "decoder": "ART CMD 1.0.0 Windows CPU；AWG3/D65/linear；EXR ZIP float32；Log编码由同版OCIO完成"
+    },
+    "blackmagic": {
+      "raw": "artifacts/camera-raw-workflow-v1/raw/blackmagic/The-End-of-the-World-Train-Original.braw",
+      "decoded": "artifacts/camera-raw-workflow-v1/decoded/braw-log-gen5",
+      "decoded_space": "BMDFilm WideGamut Gen5",
+      "input_space": "BMDFilm WideGamut Gen5",
+      "frames": 52,
+      "width": 6144,
+      "height": 3456,
+      "fps": 25,
+      "decoder": "官方BRAW SDK3.3运行库，经MDK公开再分发；WSL2 CPU/AVX2/4线程；Gen5 Film，post LUT Disabled；完整52帧RGBF32"
+    },
+    "red": {
+      "input_space": "Log3G10 REDWideGamutRGB",
+      "status": "pending_source",
+      "reason": "官方KOMODO-X及EPIC DRAGON样片当前需登录；未登录或绕过；REDline65.0.22已下载，尚无R3D解码结果"
+    }
+  },
+  "measurement": {
+    "scope": "一次端到端原型回放与逐帧正确性/误差诊断；不作为旧A/A/ABBA性能验收",
+    "intermediate_io": "真实落盘中间float与RGB结果，I/O及编码另列；ART在Windows，映射与BRAW解码在WSL2，不跨环境作加速比",
+    "full_rgb_domain": false,
+    "quality": "逐帧全部像素的归一化RGB MAE/RMSE/max及超范围计数；float33³与RGB8各单列，不把对同模型的字节一致性当作高精度HDR等价",
+    "deliverable": "SDR/HDR参考RGB16与RGB8模型结果；本地FFV1 lossless MKV，标记Rec709/BT1886和Rec2020/PQ；不上传第三方素材、像素或厂商运行库",
+    "skylake": "未实机测试；自研库为通用AVX2/BMI1门控；OCIO默认CPU路径的具体ISA不据本轮推断"
+  }
+}

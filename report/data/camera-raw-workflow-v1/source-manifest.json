@@ -1,0 +1,104 @@
+{
+  "purpose": "最终权威来源身份；初始pending_source和旧检索事实仍按历史原件保留",
+  "materials": [
+    {
+      "camera": "arri",
+      "path": "artifacts/camera-raw-workflow-v1/raw/arri/L001C028_140110_R6MS.0018267.ari",
+      "bytes": 7008640,
+      "sha256": "eca7f6f8ca8530dd912856a7713d9519854109f76e5b651fee664ee22504aacc",
+      "source_url": "https://www.arri.com/en/learn/camera-systems/camera-sample-footage-reference-image",
+      "scope": "官方FTPS路径见agent-arri-download.json；公开凭据不保存"
+    },
+    {
+      "camera": "blackmagic",
+      "path": "artifacts/camera-raw-workflow-v1/raw/blackmagic/The-End-of-the-World-Train-Original.braw",
+      "bytes": 58648704,
+      "sha256": "3e92137e6845a6f152bbbc9f0ebc0b9dbb8f2ae47c43f0d78906c449167b7682",
+      "source_url": "https://downloads.blackmagicdesign.com/products/blackmagicpocketcinemacamera/originals/end-of-the-world/The-End-of-the-World-Train-Original.zip",
+      "scope": "官方图库完整52帧，Guido Pezz作品；ZIP身份见下方工具/素材下载包"
+    },
+    {
+      "camera": "red",
+      "path": "artifacts/camera-raw-workflow-v1/raw/red/F099_C001_0317IH.R3D",
+      "bytes": 6619136,
+      "sha256": "084786df236b9a5313ad0bb4ec81f12869af1eb9600ccfe59735171793e69778",
+      "source_url": "https://samples.ffmpeg.org/r3d/F099_C001_0317IH.R3D",
+      "scope": "FFmpeg公开原始R3D测试单帧；实际使用官方REDline解码，不冒充RED当前官方样片"
+    }
+  ],
+  "downloads": [
+    {
+      "original_receipt": {
+        "path": "artifacts/camera-raw-workflow-v1/downloads/arri-art-cmd-linux.tar.gz.download.json",
+        "bytes": 993,
+        "sha256": "c35fbab809767de3a8cd441bad7011d0c231b6346d896eeeeb71051688afd8a2"
+      },
+      "source_url": "https://www.arri.com/resource/blob/402594/84951ee009e4c021196958ac10b0a678/arrireferencetool-cmd-1-0-0-rhel8-gcc85-x64-tar-data.gz",
+      "status": "failed",
+      "http_status": 403,
+      "error": "HTTPError('403 Client Error: Forbidden for url: https://www.arri.com/resource/blob/402594/84951ee009e4c021196958ac10b0a678/arrireferencetool-cmd-1-0-0-rhel8-gcc85-x64-tar-data.gz')"
+    },
+    {
+      "original_receipt": {
+        "path": "artifacts/camera-raw-workflow-v1/downloads/arri-art-cmd-win.zip.download.json",
+        "bytes": 1543,
+        "sha256": "4feb57f9fcf0d9096b3aa00f8b35fe6fc24fe41e6e2cae9610524677a81167df"
+      },
+      "source_url": "https://arri.canto.de/direct/other/q6q26483mp3hn5nl785g297k7d/ezdjiW13460Tjr-ZalaTj2m4jSo/original?content-type=application%2Fzip&name=ARRIReferenceTool_CMD_1.0.0_win_msvc192_x64_data.zip",
+      "status": "downloaded",
+      "bytes": 33469545,
+      "sha256": "36cd2269877a73ecd2247a4bc50201b4c93f7d0ed80659540b58ba010be5178d",
+      "http_status": 200
+    },
+    {
+      "original_receipt": {
+        "path": "artifacts/camera-raw-workflow-v1/downloads/braw-api-mdk-3.3-linux64.tar.xz.download.json",
+        "bytes": 774,
+        "sha256": "163ea15792dc9128348b25f66124e13dcb5b8b33acbf4992d5db225ce358a59b"
+      },
+      "source_url": "https://master.dl.sourceforge.net/project/mdk-sdk/deps/braw/BlackmagicRawAPI3.3-linux64.tar.xz",
+      "status": "downloaded",
+      "bytes": 1390172,
+      "sha256": "e98062b531a95a1076d4c96475ab1aed33c60d22f204a8f5e04062fbeb014099",
+      "http_status": 200
+    },
+    {
+      "original_receipt": {
+        "path": "artifacts/camera-raw-workflow-v1/downloads/braw-train.zip.download.json",
+        "bytes": 1105,
+        "sha256": "cb72343a0773e403ed57822c61c1ea4aa8c9a2f4845ce849144888f3e41f4efc"
+      },
+      "source_url": "https://downloads.blackmagicdesign.com/products/blackmagicpocketcinemacamera/originals/end-of-the-world/The-End-of-the-World-Train-Original.zip",
+      "status": "downloaded",
+      "bytes": 43188676,
+      "sha256": "98e920d4ab904be5cded39d8e326c7921396cce2923d548dfb12cee2885ca30c",
+      "http_status": 200
+    },
+    {
+      "original_receipt": {
+        "path": "artifacts/camera-raw-workflow-v1/downloads/REDline_Build_65.0.22_Installer.sh.download.json",
+        "bytes": 1441,
+        "sha256": "3739c778b5922f6f19b4b28cb101815151b551e684e0949c79850b06e6f306a2"
+      },
+      "source_url": "https://downloads.reddigitalcinema.com/software/redline/linux/beta/65.0.22/REDline_Build_65.0.22_Installer.sh",
+      "status": "downloaded",
+      "bytes": 33981666,
+      "sha256": "cd88ed590d1644dd10e85659cbbdc35f5f28f05890e9fe29a80cc95532aae465",
+      "http_status": 200
+    }
+  ],
+  "decoder_evidence": {
+    "arri": "arri-decode-v3.json",
+    "blackmagic": [
+      "braw-configuration.json",
+      "braw-decode.json"
+    ],
+    "red": "red-input-verification.json"
+  },
+  "limitations": [
+    "ARRI/RED均单帧；只有Blackmagic是52帧短片",
+    "不分发第三方素材、像素、视频或厂商二进制",
+    "RED成功输入来源补充red-camera.json，烘焙策略不变",
+    "先前工具及来源快照不覆盖或改写"
+  ]
+}
