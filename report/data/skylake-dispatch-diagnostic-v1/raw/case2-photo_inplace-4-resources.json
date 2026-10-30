@@ -1,0 +1,452 @@
+{
+  "case": "photo_inplace",
+  "requested_threads": 4,
+  "group": "resources",
+  "actual_team": {
+    "requested": 4,
+    "actual": 4,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "main_allowed_cpus_after_openmp": [
+      0
+    ],
+    "task_affinities": [
+      {
+        "tid": 307,
+        "allowed_cpus": [
+          0
+        ]
+      },
+      {
+        "tid": 703,
+        "allowed_cpus": [
+          2
+        ]
+      },
+      {
+        "tid": 704,
+        "allowed_cpus": [
+          4
+        ]
+      },
+      {
+        "tid": 705,
+        "allowed_cpus": [
+          6
+        ]
+      }
+    ]
+  },
+  "pixels": 78643200,
+  "runtime_block_pixels": 65536,
+  "runtime_blocks": 1200,
+  "nominal_assignment_source": "冻结78的schedule(static)，1200块被1/4个参与线程整除；非线程内测量",
+  "counter_window": "逐TID启用后的一次公开API调用；包括调度、barrier和收尾自旋，未拆出纯像素循环",
+  "output_sha256_expected": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "table_before": {
+    "direct_info": {
+      "version": 1,
+      "enabled": 1,
+      "format": 9,
+      "reserved": 0,
+      "entries": 4194304,
+      "table_capacity_bytes": 16777216,
+      "dg_min": 0,
+      "db_min": 0
+    },
+    "paged_info": {
+      "version": 1,
+      "advised": 1,
+      "reserved0": 0,
+      "reserved1": 0,
+      "base": 125974742040576,
+      "bytes": 16777216,
+      "smaps": {
+        "header": "7292c7c00000-7292c8c00000 rw-p 00000000 00:00 0 ",
+        "properties": {
+          "Size": "16384 kB",
+          "KernelPageSize": "4 kB",
+          "MMUPageSize": "4 kB",
+          "Rss": "16384 kB",
+          "Pss": "16384 kB",
+          "Pss_Dirty": "16384 kB",
+          "Shared_Clean": "0 kB",
+          "Shared_Dirty": "0 kB",
+          "Private_Clean": "0 kB",
+          "Private_Dirty": "16384 kB",
+          "Referenced": "16384 kB",
+          "Anonymous": "16384 kB",
+          "KSM": "0 kB",
+          "LazyFree": "0 kB",
+          "AnonHugePages": "16384 kB",
+          "ShmemPmdMapped": "0 kB",
+          "FilePmdMapped": "0 kB",
+          "Shared_Hugetlb": "0 kB",
+          "Private_Hugetlb": "0 kB",
+          "Swap": "0 kB",
+          "SwapPss": "0 kB",
+          "Locked": "0 kB",
+          "THPeligible": "1",
+          "VmFlags": "rd wr mr mw me ac sd hg"
+        },
+        "mapping_bytes": 16777216
+      },
+      "anon_huge_bytes": 16777216,
+      "fully_huge": true,
+      "aligned_2m": true
+    },
+    "model_accounting_bytes": 28046644,
+    "andn_split_enabled": 1
+  },
+  "warmup_return_code": 0,
+  "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "tasks_before": [
+    {
+      "tid": 307,
+      "allowed_cpus": [
+        0
+      ]
+    },
+    {
+      "tid": 703,
+      "allowed_cpus": [
+        2
+      ]
+    },
+    {
+      "tid": 704,
+      "allowed_cpus": [
+        4
+      ]
+    },
+    {
+      "tid": 705,
+      "allowed_cpus": [
+        6
+      ]
+    }
+  ],
+  "counter_enable_tid_order": [
+    703,
+    704,
+    705,
+    307
+  ],
+  "counter_disable_tid_order": [
+    307,
+    705,
+    704,
+    703
+  ],
+  "native_return_code": 0,
+  "thread_counters": [
+    {
+      "tid": 307,
+      "group": "resources",
+      "raw_group_read_hex": "0600000000000000129bf40000000000129bf400000000002a73bc0400000000320e0000000000006c97000000000000324e0200000000007c9c8903000000007ae3e90200000000",
+      "time_enabled_ns": 16030482,
+      "time_running_ns": 16030482,
+      "counts": {
+        "cycles": 79459114,
+        "integer_prf_stall_cycles": 3634,
+        "integer_scheduler_any_stall_cycles": 38764,
+        "retire_token_stall_cycles": 151090,
+        "oldest_not_complete": 59350140,
+        "oldest_load_not_complete": 48882554
+      },
+      "running_fraction": 1.0,
+      "cpu": 0,
+      "participates_in_requested_team": true,
+      "nominal_assigned_pixels": 19660800,
+      "is_calling_thread": true,
+      "inactive_zero_window": false,
+      "per_nominal_pixel": {
+        "cycles": 4.041499532063802,
+        "integer_prf_stall_cycles": 0.00018483479817708333,
+        "integer_scheduler_any_stall_cycles": 0.0019716389973958334,
+        "retire_token_stall_cycles": 0.007684834798177083,
+        "oldest_not_complete": 3.0187042236328123,
+        "oldest_load_not_complete": 2.4862952677408856
+      },
+      "integer_prf_stall_cycles_fraction": 4.573421244037531e-05,
+      "integer_scheduler_any_stall_cycles_fraction": 0.00048784837948230835,
+      "retire_token_stall_cycles_fraction": 0.001901481056030904,
+      "oldest_not_complete_fraction": 0.7469267779653319,
+      "oldest_load_not_complete_fraction": 0.6151912793792289
+    },
+    {
+      "tid": 703,
+      "group": "resources",
+      "raw_group_read_hex": "060000000000000028e3f4000000000028e3f40000000000eec0ed0400000000c908000000000000e682000000000000408b0300000000001292e30300000000e6a74c0300000000",
+      "time_enabled_ns": 16048936,
+      "time_running_ns": 16048936,
+      "counts": {
+        "cycles": 82690286,
+        "integer_prf_stall_cycles": 2249,
+        "integer_scheduler_any_stall_cycles": 33510,
+        "retire_token_stall_cycles": 232256,
+        "oldest_not_complete": 65245714,
+        "oldest_load_not_complete": 55355366
+      },
+      "running_fraction": 1.0,
+      "cpu": 2,
+      "participates_in_requested_team": true,
+      "nominal_assigned_pixels": 19660800,
+      "is_calling_thread": false,
+      "inactive_zero_window": false,
+      "per_nominal_pixel": {
+        "cycles": 4.205845438639323,
+        "integer_prf_stall_cycles": 0.00011439005533854167,
+        "integer_scheduler_any_stall_cycles": 0.00170440673828125,
+        "retire_token_stall_cycles": 0.011813151041666666,
+        "oldest_not_complete": 3.3185686238606773,
+        "oldest_load_not_complete": 2.815519510904948
+      },
+      "integer_prf_stall_cycles_fraction": 2.719787424607529e-05,
+      "integer_scheduler_any_stall_cycles_fraction": 0.00040524711693463,
+      "retire_token_stall_cycles_fraction": 0.0028087458785666796,
+      "oldest_not_complete_fraction": 0.7890372274199172,
+      "oldest_load_not_complete_fraction": 0.6694300948481421
+    },
+    {
+      "tid": 704,
+      "group": "resources",
+      "raw_group_read_hex": "060000000000000096b4f4000000000096b4f4000000000021d08904000000006e01000000000000b35700000000000002420300000000000b967c0300000000d1bde50200000000",
+      "time_enabled_ns": 16037014,
+      "time_running_ns": 16037014,
+      "counts": {
+        "cycles": 76140577,
+        "integer_prf_stall_cycles": 366,
+        "integer_scheduler_any_stall_cycles": 22451,
+        "retire_token_stall_cycles": 213506,
+        "oldest_not_complete": 58496523,
+        "oldest_load_not_complete": 48610769
+      },
+      "running_fraction": 1.0,
+      "cpu": 4,
+      "participates_in_requested_team": true,
+      "nominal_assigned_pixels": 19660800,
+      "is_calling_thread": false,
+      "inactive_zero_window": false,
+      "per_nominal_pixel": {
+        "cycles": 3.8727100118001303,
+        "integer_prf_stall_cycles": 1.861572265625e-05,
+        "integer_scheduler_any_stall_cycles": 0.0011419169108072918,
+        "retire_token_stall_cycles": 0.010859476725260416,
+        "oldest_not_complete": 2.9752870178222657,
+        "oldest_load_not_complete": 2.4724715677897136
+      },
+      "integer_prf_stall_cycles_fraction": 4.806898166794822e-06,
+      "integer_scheduler_any_stall_cycles_fraction": 0.0002948624883680616,
+      "retire_token_stall_cycles_fraction": 0.0028041027322396046,
+      "oldest_not_complete_fraction": 0.7682700250616699,
+      "oldest_load_not_complete_fraction": 0.6384344710179961
+    },
+    {
+      "tid": 705,
+      "group": "resources",
+      "raw_group_read_hex": "06000000000000003cb4f300000000003cb4f3000000000047fdf104000000001806000000000000f24b00000000000082710300000000002e43ff0300000000d4916c0300000000",
+      "time_enabled_ns": 15971388,
+      "time_running_ns": 15971388,
+      "counts": {
+        "cycles": 82967879,
+        "integer_prf_stall_cycles": 1560,
+        "integer_scheduler_any_stall_cycles": 19442,
+        "retire_token_stall_cycles": 225666,
+        "oldest_not_complete": 67060526,
+        "oldest_load_not_complete": 57446868
+      },
+      "running_fraction": 1.0,
+      "cpu": 6,
+      "participates_in_requested_team": true,
+      "nominal_assigned_pixels": 19660800,
+      "is_calling_thread": false,
+      "inactive_zero_window": false,
+      "per_nominal_pixel": {
+        "cycles": 4.219964548746745,
+        "integer_prf_stall_cycles": 7.9345703125e-05,
+        "integer_scheduler_any_stall_cycles": 0.0009888712565104167,
+        "retire_token_stall_cycles": 0.01147796630859375,
+        "oldest_not_complete": 3.410874735514323,
+        "oldest_load_not_complete": 2.9218988037109375
+      },
+      "integer_prf_stall_cycles_fraction": 1.8802457273856547e-05,
+      "integer_scheduler_any_stall_cycles_fraction": 0.00023433165020405065,
+      "retire_token_stall_cycles_fraction": 0.0027199200789500715,
+      "oldest_not_complete_fraction": 0.8082709454341963,
+      "oldest_load_not_complete_fraction": 0.6923988981326135
+    }
+  ],
+  "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "tasks_after": [
+    {
+      "tid": 307,
+      "allowed_cpus": [
+        0
+      ]
+    },
+    {
+      "tid": 703,
+      "allowed_cpus": [
+        2
+      ]
+    },
+    {
+      "tid": 704,
+      "allowed_cpus": [
+        4
+      ]
+    },
+    {
+      "tid": 705,
+      "allowed_cpus": [
+        6
+      ]
+    }
+  ],
+  "actual_team_after": {
+    "requested": 4,
+    "actual": 4,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "main_allowed_cpus_after_openmp": [
+      0
+    ],
+    "task_affinities": [
+      {
+        "tid": 307,
+        "allowed_cpus": [
+          0
+        ]
+      },
+      {
+        "tid": 703,
+        "allowed_cpus": [
+          2
+        ]
+      },
+      {
+        "tid": 704,
+        "allowed_cpus": [
+          4
+        ]
+      },
+      {
+        "tid": 705,
+        "allowed_cpus": [
+          6
+        ]
+      }
+    ]
+  },
+  "participating_sum": {
+    "counts": {
+      "cycles": 321257856,
+      "integer_prf_stall_cycles": 7809,
+      "integer_scheduler_any_stall_cycles": 114167,
+      "retire_token_stall_cycles": 822518,
+      "oldest_not_complete": 250152903,
+      "oldest_load_not_complete": 210295557
+    },
+    "per_nominal_pixel": {
+      "cycles": 4.0850048828125,
+      "integer_prf_stall_cycles": 9.929656982421875e-05,
+      "integer_scheduler_any_stall_cycles": 0.001451708475748698,
+      "retire_token_stall_cycles": 0.010458857218424478,
+      "oldest_not_complete": 3.1808586502075196,
+      "oldest_load_not_complete": 2.674046287536621
+    },
+    "integer_prf_stall_cycles_fraction": 2.4307576777204166e-05,
+    "integer_scheduler_any_stall_cycles_fraction": 0.0003553749670794043,
+    "retire_token_stall_cycles_fraction": 0.0025603047042684615,
+    "oldest_not_complete_fraction": 0.7786670374840576,
+    "oldest_load_not_complete_fraction": 0.654600511932695
+  },
+  "all_observed_tid_sum_counts": {
+    "cycles": 321257856,
+    "integer_prf_stall_cycles": 7809,
+    "integer_scheduler_any_stall_cycles": 114167,
+    "retire_token_stall_cycles": 822518,
+    "oldest_not_complete": 250152903,
+    "oldest_load_not_complete": 210295557
+  },
+  "nonparticipating_sum_counts": {
+    "cycles": 0,
+    "integer_prf_stall_cycles": 0,
+    "integer_scheduler_any_stall_cycles": 0,
+    "retire_token_stall_cycles": 0,
+    "oldest_not_complete": 0,
+    "oldest_load_not_complete": 0
+  },
+  "individual_cycle_range": {
+    "min": 76140577,
+    "max": 82967879,
+    "meaning": "含barrier/收尾/启停差异；不能单独解释为每线程像素工作量或自旋时间"
+  },
+  "table_after": {
+    "direct_info": {
+      "version": 1,
+      "enabled": 1,
+      "format": 9,
+      "reserved": 0,
+      "entries": 4194304,
+      "table_capacity_bytes": 16777216,
+      "dg_min": 0,
+      "db_min": 0
+    },
+    "paged_info": {
+      "version": 1,
+      "advised": 1,
+      "reserved0": 0,
+      "reserved1": 0,
+      "base": 125974742040576,
+      "bytes": 16777216,
+      "smaps": {
+        "header": "7292c7c00000-7292c8c00000 rw-p 00000000 00:00 0 ",
+        "properties": {
+          "Size": "16384 kB",
+          "KernelPageSize": "4 kB",
+          "MMUPageSize": "4 kB",
+          "Rss": "16384 kB",
+          "Pss": "16384 kB",
+          "Pss_Dirty": "16384 kB",
+          "Shared_Clean": "0 kB",
+          "Shared_Dirty": "0 kB",
+          "Private_Clean": "0 kB",
+          "Private_Dirty": "16384 kB",
+          "Referenced": "16384 kB",
+          "Anonymous": "16384 kB",
+          "KSM": "0 kB",
+          "LazyFree": "0 kB",
+          "AnonHugePages": "16384 kB",
+          "ShmemPmdMapped": "0 kB",
+          "FilePmdMapped": "0 kB",
+          "Shared_Hugetlb": "0 kB",
+          "Private_Hugetlb": "0 kB",
+          "Swap": "0 kB",
+          "SwapPss": "0 kB",
+          "Locked": "0 kB",
+          "THPeligible": "1",
+          "VmFlags": "rd wr mr mw me ac sd hg"
+        },
+        "mapping_bytes": 16777216
+      },
+      "anon_huge_bytes": 16777216,
+      "fully_huge": true,
+      "aligned_2m": true
+    },
+    "model_accounting_bytes": 28046644,
+    "andn_split_enabled": 1
+  },
+  "source_unchanged": true,
+  "sentinels_unchanged": true,
+  "pass": true
+}
