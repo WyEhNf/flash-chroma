@@ -1,0 +1,178 @@
+{
+  "pass": true,
+  "checks": 937,
+  "raw_groups": 192,
+  "AA_checks": 144,
+  "AA_failures": [
+    {
+      "worker": 0,
+      "path": "inplace",
+      "threads": 1,
+      "role": "287p99",
+      "metric": "pure_apply_seconds",
+      "B_over_A": 1.168,
+      "pass": false
+    },
+    {
+      "worker": 1,
+      "path": "inplace",
+      "threads": 1,
+      "role": "87old",
+      "metric": "pure_apply_seconds",
+      "B_over_A": 0.8475924132112614,
+      "pass": false
+    },
+    {
+      "worker": 2,
+      "path": "to",
+      "threads": 1,
+      "role": "287a399",
+      "metric": "api_total_seconds",
+      "B_over_A": 0.8341483903873271,
+      "pass": false
+    },
+    {
+      "worker": 3,
+      "path": "inplace",
+      "threads": 1,
+      "role": "287a399",
+      "metric": "pure_apply_seconds",
+      "B_over_A": 1.2541330863662339,
+      "pass": false
+    },
+    {
+      "worker": 3,
+      "path": "inplace",
+      "threads": 1,
+      "role": "287a399",
+      "metric": "copy_apply_seconds",
+      "B_over_A": 1.2329348676125573,
+      "pass": false
+    }
+  ],
+  "comparisons": 432,
+  "pairs": {
+    "287a399/87a399": {
+      "minimum_valid_throughput_retention": 0.9003462870334744,
+      "tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "AA_all_passed_for_pair": false
+    },
+    "287old/87old": {
+      "minimum_valid_throughput_retention": 0.8342060092027637,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "AA_all_passed_for_pair": false
+    },
+    "287old/87a399": {
+      "minimum_valid_throughput_retention": 0.8792539043851872,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "AA_all_passed_for_pair": true
+    },
+    "287max/87a399": {
+      "minimum_valid_throughput_retention": 0.31378208720995404,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": true
+    },
+    "287p99/87a399": {
+      "minimum_valid_throughput_retention": 0.3287327876134272,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": false
+    },
+    "287max/87old": {
+      "minimum_valid_throughput_retention": 0.3362235175428764,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": false
+    },
+    "287p99/87old": {
+      "minimum_valid_throughput_retention": 0.32435961486056863,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": false
+    },
+    "287max/287old": {
+      "minimum_valid_throughput_retention": 0.3446212535355216,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": true
+    },
+    "287p99/287old": {
+      "minimum_valid_throughput_retention": 0.30737271218644024,
+      "tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "AA_all_passed_for_pair": false
+    }
+  },
+  "candidate_gates": {
+    "287max": {
+      "hard50": false,
+      "rejected_by_valid_below_50": true
+    },
+    "287p99": {
+      "hard50": false,
+      "rejected_by_valid_below_50": true
+    }
+  },
+  "performance_reruns": 0,
+  "discarded_workers": 0,
+  "source_sha256": "40f89de83c07002e3e460751a43714ef63afedbe6375f39a7e522ce4d4872938",
+  "scope": "从所有raw五次值精确Decimal中位数重算；不调用原汇总，不重跑映射/计时。"
+}

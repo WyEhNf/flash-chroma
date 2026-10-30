@@ -1,0 +1,12 @@
+{
+  "schema": "p16_last_stage_local_milp_v1",
+  "baseline_stage4_sha256": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386",
+  "joint_support": "沿用完整861个(arrival,gold)与int64频数，不读百图拟合。固定轴与前三模型。",
+  "node_box": "104个正支撑节点每分量仅在当前值±2且0..255；同时跨parity求解，不是模型族全局搜索。",
+  "target_max_squared": 56,
+  "constraints": "精确Q16 half-up线性整数约束；平方误差在整数差分上的分段线性表示；mean双口径/RMS双口径/p99>12计数/固定√12阈值CVaR上界均不超过当前新best。",
+  "solver": "SciPy1.15.2 milp/随包HiGHS，threads=1；最多4个外逼近轮次，各time_limit20秒/node_limit20000/mip_rel_gap0；遇无incumbent/不可行即结束，不加预算重复重跑。",
+  "mean_outer_approximation": "初始26方向及当前误差方向范数支撑平面，得到候选后添加该候选处精确范数支撑平面；只有真实整数全支撑指标过线才接受，松弛解或超时不是成功。",
+  "acceptance": "独立uint64实际输出必须等于MILP整数y；真实完整支撑max²≤56，mean/RMS/p99/CVaR不退；通过后才另跑四级完整域/native/百图与性能，不宣称浮点求解器给形式全局证明。",
+  "sources": ["https://docs.scipy.org/doc/scipy-1.15.2/reference/generated/scipy.optimize.milp.html", "https://ergo-code.github.io/HiGHS/dev/options/definitions/", "https://highs.dev/"]
+}

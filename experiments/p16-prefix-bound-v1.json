@@ -1,0 +1,9 @@
+{
+  "schema": "p16_prefix_integer_minimax_bound_v1",
+  "baseline": "同severe_first加已验收末级，完整域max平方59",
+  "target_squared": 58,
+  "prefixes": [1, 2],
+  "policy": "先查当前d²=59全部原色对应的前缀输出，再完整域重放收集这些前缀组的所有不同gold及频数。逐组穷举RGB8球交；无解即给出固定前缀任意确定性整数后缀无法达到max²≤58的证书。不是整个模型族全局下界。",
+  "coverage": "完整16777216 RGB8输入，块大小262144；无照片选择，无新模型，无性能结论",
+  "contract": "独立Python整数循环小集合穷举交叉验证，边界0/255与目标半径0/1/2/5/58；证书另按原色编号核对gold和独立uint64前缀"
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "p16_arrival_joint_nodes_v1",
+  "stage": 4,
+  "starting_model": "当前severe_first+已验收新stage4，cube SHA150bd55ede2419b3ede748705adad388562137e3144de7aaebb929ee4f066c6a",
+  "directions": "26个RGB节点±1方向；一次八色扫描，不增加轮数，不同时改其它级或轴",
+  "compression": "完整RGB8按(固定前缀到达RGB,独立gold RGB)联合分组，保留整数uniform频数和原60图训练质量；不是抽样/删低频支撑。零权重角可映射0，仅紧凑化正支撑节点编号。",
+  "policy": "每批双mean/双RMS/p99平方12的计数与超额/严重尾超额36及49/原max平方59计数均不增。逐组cap=max(58,起点d²)。选型只看完整域与原60图；之后百图只验不调。",
+  "promotion": "完整域max必须<sqrt(59)或p99必须<sqrt(12)，双mean/RMS/CVaR不退；完整域独立uint64四级/原生/百图另终验，未通过不得升级。",
+  "memory": "压缩和紧凑设计只改变离线研究暂态；不宣称native模型RAM变小。"
+}

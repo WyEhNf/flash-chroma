@@ -1,0 +1,46 @@
+{
+  "case": "velvia",
+  "input_sha256": {
+    "model": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "reference": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "baseline": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0",
+    "mass": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "points": "fac03692667ab8d5220a4a09035b420d96037094c101b91011de303209ccaaea"
+  },
+  "policy": "一次8色26方向，severe_first排序；双mean/双RMS及p99超阈计数逐节点非增；cap=max(49,本案例当前最佳逐色d²)。没有中途照片选择，没有后续追加轮数。",
+  "labels": "Cinema为四原表逐级RGB8真值及固定三稀疏后缀；Velvia为独立单原表与离线恒等后缀，不冒充四级。",
+  "p99_squared": 40,
+  "severe_squared": 100,
+  "source_sha256": {
+    "scripts/run_protected_tail_case.py": "a8d51cc77e695f24f711fa55a2c86461f460a4c860ca46bb74f47687d7c425b3",
+    "python/lutlab/channel_tail_nodes.py": "32e9f1fe7e9604a5ac188f6166743d02cd4e6fe70aad603ede3dc1eea7609c69"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4
+}
