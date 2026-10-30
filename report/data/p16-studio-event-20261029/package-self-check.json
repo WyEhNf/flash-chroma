@@ -1,0 +1,404 @@
+{
+  "passed": true,
+  "invocations": [
+    {
+      "name": "cpp-help",
+      "command": [
+        "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2\\bin\\flash_chroma_run.exe",
+        "--help"
+      ],
+      "cwd": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2",
+      "returncode": 0
+    },
+    {
+      "name": "catalog",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/prepare_studio_catalog.py",
+        "--check"
+      ],
+      "cwd": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2",
+      "returncode": 0
+    },
+    {
+      "name": "doctor",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/p16_event.py",
+        "doctor",
+        "--config",
+        "event-demo.json",
+        "--output",
+        "SELF-CHECK/doctor.json"
+      ],
+      "cwd": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2",
+      "returncode": 0
+    },
+    {
+      "name": "run",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/p16_event.py",
+        "run",
+        "--config",
+        "event-demo.json",
+        "--output",
+        "SELF-CHECK/run",
+        "--limit",
+        "1"
+      ],
+      "cwd": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2",
+      "returncode": 0
+    },
+    {
+      "name": "png-studio",
+      "command": [
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Scripts\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-c",
+        "import hashlib,json\nfrom pathlib import Path\nfrom PIL import Image\nfrom gui.studio import StudioService\nroot=Path.cwd().resolve()\nrun=json.loads((root/'SELF-CHECK/run/results.json').read_text(encoding='utf-8'))\nrecord=run['records'][0]\nwith Image.open(record['written']['path']) as image:\n image.load()\n assert image.mode=='RGB' and image.size==(1024,768)\n assert hashlib.sha256(image.tobytes()).hexdigest()==record['output_pixel_sha256']\nservice=StudioService(root=root,library=root/'artifacts/single-header-perf-build/libflash_chroma_bridge.dll')\nrenders=[]\ntry:\n assert service.library.path.resolve().is_relative_to(root)\n for preset in ('native-default','native-max-first','natural-clear'):\n  response,pixels=service.render({'preset':preset,'threads':1},preview_size=192,keep=False)\n  assert response['metrics']['runtime_equal'] is True\n  assert hashlib.sha256(pixels.tobytes()).hexdigest()==response['metrics']['output_sha256']\n  renders.append(response)\n assert service.native_manifest[1].is_relative_to(root)\nfinally:service.close()\nprint(json.dumps({'passed':True,'png_pixel_sha256':record['output_pixel_sha256'],'studio_renders':renders},ensure_ascii=False))\n"
+      ],
+      "cwd": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2",
+      "returncode": 0
+    }
+  ],
+  "image_and_studio": {
+    "passed": true,
+    "png_pixel_sha256": "73726a96ff972c0b89211b05e7d6e4105110d82bdf4a12c3d29578d813e17826",
+    "studio_renders": [
+      {
+        "id": "48c758d319df18522c2789f9",
+        "image_url": "/api/studio/result?id=48c758d319df18522c2789f9&kind=output",
+        "difference_url": "/api/studio/result?id=48c758d319df18522c2789f9&kind=difference",
+        "download_url": "/api/studio/result?id=48c758d319df18522c2789f9&kind=download",
+        "photo": "div2k-0807",
+        "preset": "native-default",
+        "mode": "native",
+        "stages": [
+          {
+            "lut": "native:default:stage1",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 1",
+            "lut_title": "Cinema 固定映射 1",
+            "m": 33,
+            "model_sha256": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad"
+          },
+          {
+            "lut": "native:default:stage2",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 2",
+            "lut_title": "Cinema 固定映射 2",
+            "m": 33,
+            "model_sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+          },
+          {
+            "lut": "native:default:stage3",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 3",
+            "lut_title": "Cinema 固定映射 3",
+            "m": 33,
+            "model_sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+          },
+          {
+            "lut": "native:default:stage4",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 4",
+            "lut_title": "Cinema 固定映射 4",
+            "m": 33,
+            "model_sha256": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386"
+          }
+        ],
+        "config": {
+          "target": "desktop",
+          "backend": "avx2",
+          "representation": "direct_u8",
+          "threads": 1,
+          "block_pixels": 65536,
+          "max_workspace_bytes": 50331648,
+          "profile": "balanced",
+          "weights": [
+            0.6,
+            0.6,
+            0.6
+          ],
+          "m": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "native_profile": "default",
+          "requested_threads": 1,
+          "selection_policy": "固定native模型，仅调整执行表示/块大小",
+          "quality_scope": "仅本图本组合，不继承未知LUT或历史照片成绩"
+        },
+        "metrics": {
+          "apply_ms": 0.267,
+          "prepare_ms": 113.3954,
+          "model_ms": 6.1361,
+          "reference_ms": 2.0061,
+          "total_ms": 157.998,
+          "mean_delta_e": null,
+          "max_delta_e": null,
+          "p99_delta_e": null,
+          "runtime_equal": true,
+          "model_bytes": 457468,
+          "arena_bytes": 19150335,
+          "image_buffer_bytes": 165888,
+          "output_sha256": "9e397d903253fa935bb965ee3a2cab6125c6d67f51455212e817e2deb5448ef9",
+          "reference_kind": "缺少原密集LUT，仅独立C99执行一致性；不报告拟合色差",
+          "difference_scope": "输出与输入RGB绝对差×4",
+          "memory_scope": "模型/arena/两份RGB图像分别列示；不等于Python进程峰值",
+          "timing_scope": "一次本图实际调用，非稳定基准；total含解码、建模、准备、参考和PNG编码",
+          "official_threshold_pass": null,
+          "official_score": null,
+          "engine_reused": false
+        },
+        "engine": {
+          "available": true,
+          "name": "flash-chroma 单头CPU",
+          "backend": "avx2",
+          "capabilities": 7,
+          "library_sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "library_path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2\\artifacts\\single-header-perf-build\\libflash_chroma_bridge.dll",
+          "api_version": 1,
+          "cpu_only": true,
+          "error": null
+        },
+        "width": 192,
+        "height": 144
+      },
+      {
+        "id": "2a54f61c76fa24670842de5d",
+        "image_url": "/api/studio/result?id=2a54f61c76fa24670842de5d&kind=output",
+        "difference_url": "/api/studio/result?id=2a54f61c76fa24670842de5d&kind=difference",
+        "download_url": "/api/studio/result?id=2a54f61c76fa24670842de5d&kind=download",
+        "photo": "div2k-0807",
+        "preset": "native-max-first",
+        "mode": "native",
+        "stages": [
+          {
+            "lut": "native:max_first:stage1",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 1",
+            "lut_title": "Cinema 固定映射 1",
+            "m": 33,
+            "model_sha256": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad"
+          },
+          {
+            "lut": "native:max_first:stage2",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 2",
+            "lut_title": "Cinema 固定映射 2",
+            "m": 33,
+            "model_sha256": "904e30a1c0f805175b0b9518949e4e96c9ff2a7e7980978ed8e90fd1282bd924"
+          },
+          {
+            "lut": "native:max_first:stage3",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 3",
+            "lut_title": "Cinema 固定映射 3",
+            "m": 33,
+            "model_sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+          },
+          {
+            "lut": "native:max_first:stage4",
+            "enabled": true,
+            "strength": 1.0,
+            "display_title": "Cinema 固定映射 4",
+            "lut_title": "Cinema 固定映射 4",
+            "m": 33,
+            "model_sha256": "5b8be3d4125b6676eb694749622ff9574b5b79bc18318bee7f504e601a519386"
+          }
+        ],
+        "config": {
+          "target": "desktop",
+          "backend": "avx2",
+          "representation": "direct_u16",
+          "threads": 1,
+          "block_pixels": 65536,
+          "max_workspace_bytes": 50331648,
+          "profile": "balanced",
+          "weights": [
+            0.6,
+            0.6,
+            0.6
+          ],
+          "m": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "native_profile": "max_first",
+          "requested_threads": 1,
+          "selection_policy": "固定native模型，仅调整执行表示/块大小",
+          "quality_scope": "仅本图本组合，不继承未知LUT或历史照片成绩"
+        },
+        "metrics": {
+          "apply_ms": 0.2222,
+          "prepare_ms": 115.005,
+          "model_ms": 3.3896,
+          "reference_ms": 1.7014,
+          "total_ms": 129.176,
+          "mean_delta_e": null,
+          "max_delta_e": null,
+          "p99_delta_e": null,
+          "runtime_equal": true,
+          "model_bytes": 457468,
+          "arena_bytes": 37237183,
+          "image_buffer_bytes": 165888,
+          "output_sha256": "7549c6c46dee8256c4ad51749506a3742bd565055c1ba3f6a762b261bb04aa92",
+          "reference_kind": "缺少原密集LUT，仅独立C99执行一致性；不报告拟合色差",
+          "difference_scope": "输出与输入RGB绝对差×4",
+          "memory_scope": "模型/arena/两份RGB图像分别列示；不等于Python进程峰值",
+          "timing_scope": "一次本图实际调用，非稳定基准；total含解码、建模、准备、参考和PNG编码",
+          "official_threshold_pass": null,
+          "official_score": null,
+          "engine_reused": false
+        },
+        "engine": {
+          "available": true,
+          "name": "flash-chroma 单头CPU",
+          "backend": "avx2",
+          "capabilities": 7,
+          "library_sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "library_path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2\\artifacts\\single-header-perf-build\\libflash_chroma_bridge.dll",
+          "api_version": 1,
+          "cpu_only": true,
+          "error": null
+        },
+        "width": 192,
+        "height": 144
+      },
+      {
+        "id": "40af4ec7e55fbb317bc4f488",
+        "image_url": "/api/studio/result?id=40af4ec7e55fbb317bc4f488&kind=output",
+        "difference_url": "/api/studio/result?id=40af4ec7e55fbb317bc4f488&kind=difference",
+        "download_url": "/api/studio/result?id=40af4ec7e55fbb317bc4f488&kind=download",
+        "photo": "div2k-0807",
+        "preset": "natural-clear",
+        "mode": "creative",
+        "stages": [
+          {
+            "lut": "spring-water",
+            "enabled": true,
+            "strength": 0.18,
+            "display_title": "清泉",
+            "lut_title": "清泉",
+            "m": 25,
+            "model_sha256": "4c586e0cf15d6f0f556aaac0de9fd2d1582c726cb37e1b9b63603f61a10a51f1"
+          },
+          {
+            "lut": "vanilla-bean",
+            "enabled": true,
+            "strength": 0.08,
+            "display_title": "香草暖调",
+            "lut_title": "香草暖调",
+            "m": 25,
+            "model_sha256": "7796436b32fb3fe72a193c7c9d29a97ac19a2a1559309bcd219799b5cb5b22b2"
+          },
+          {
+            "lut": "identity",
+            "enabled": false,
+            "strength": 0.0,
+            "display_title": "恒等映射",
+            "lut_title": "恒等映射",
+            "m": 25,
+            "model_sha256": "63e670871fd9e801e26a21accbce4c93dbb5fb0e8db42bf34163cbd792199e71"
+          },
+          {
+            "lut": "identity",
+            "enabled": false,
+            "strength": 0.0,
+            "display_title": "恒等映射",
+            "lut_title": "恒等映射",
+            "m": 25,
+            "model_sha256": "63e670871fd9e801e26a21accbce4c93dbb5fb0e8db42bf34163cbd792199e71"
+          }
+        ],
+        "config": {
+          "target": "desktop",
+          "backend": "avx2",
+          "representation": "sparse",
+          "threads": 1,
+          "block_pixels": 65536,
+          "max_workspace_bytes": 50331648,
+          "profile": "balanced",
+          "weights": [
+            0.6,
+            0.6,
+            0.6
+          ],
+          "m": [
+            25,
+            25,
+            25,
+            25
+          ],
+          "native_profile": null,
+          "requested_threads": 1,
+          "selection_policy": "档位与连续偏好映射到m17/25/33；参数策略，不是已测Pareto排名",
+          "quality_scope": "仅本图本组合，不继承未知LUT或历史照片成绩"
+        },
+        "metrics": {
+          "apply_ms": 0.5503,
+          "prepare_ms": 0.0997,
+          "model_ms": 67.6615,
+          "reference_ms": 25.6118,
+          "total_ms": 99.0634,
+          "mean_delta_e": 0.5812603304513992,
+          "max_delta_e": 2.8284271247461903,
+          "p99_delta_e": 2.0,
+          "runtime_equal": true,
+          "model_bytes": 204124,
+          "arena_bytes": 262463,
+          "image_buffer_bytes": 165888,
+          "output_sha256": "f87863c2938a38bf8667c0ab0966798899ffdad4ef05d1a53ff2a1c08eed1ec2",
+          "reference_kind": "当前四个CUBE强度混合后逐级RGB8量化；本图全部像素三线性参考",
+          "difference_scope": "与本图参考的RGB绝对差×16",
+          "memory_scope": "模型/arena/两份RGB图像分别列示；不等于Python进程峰值",
+          "timing_scope": "一次本图实际调用，非稳定基准；total含解码、建模、准备、参考和PNG编码",
+          "official_threshold_pass": null,
+          "official_score": null,
+          "engine_reused": false
+        },
+        "engine": {
+          "available": true,
+          "name": "flash-chroma 单头CPU",
+          "backend": "avx2",
+          "capabilities": 7,
+          "library_sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "sha256": "39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17",
+          "library_path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\p16-event-ready-20261029-v2\\artifacts\\single-header-perf-build\\libflash_chroma_bridge.dll",
+          "api_version": 1,
+          "cpu_only": true,
+          "error": null
+        },
+        "width": 192,
+        "height": 144
+      }
+    ]
+  },
+  "scope": "从包目录实际目录检查、doctor及限1图原生/C99映射，PNG像素SHA回读及两个native和一个creative渲染；没有正式百图或性能排名。"
+}

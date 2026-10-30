@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="app-token" content="__APP_TOKEN__">
+  <meta name="color-scheme" content="dark">
+  <title>Flash Chroma · 色彩工作台</title>
+  <link rel="stylesheet" href="/studio.css">
+  <script defer src="/studio.js"></script>
+</head>
+<body>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9m4 0h3M4 17h3m4 0h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 16 5-5 5 5 3-3 5 5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5"/></symbol>
+    <symbol id="i-split" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 2v20m-6-8 2-2-2-2m12 4-2-2 2-2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8l10-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V3H3v13h5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+  </defs></svg>
+
+  <header class="app-header">
+    <a class="brand" href="/studio" aria-label="Flash Chroma 色彩工作台"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Flash<span class="brand-light">Chroma</span><small>COLOR ENGINE</small></span></a>
+    <nav class="main-nav" aria-label="主导航"><a class="active" href="/studio" aria-current="page">照片调色</a><a href="/raw">RAW 工作流<svg class="icon"><use href="#i-arrow"/></svg></a></nav>
+    <div class="header-actions"><span class="engine-pill" id="engine-pill"><span class="status-dot"></span><span id="engine-label">连接本地引擎</span></span><button class="icon-button" id="about-button" title="版本与素材来源" aria-label="版本与素材来源"><svg class="icon"><use href="#i-info"/></svg></button><button class="primary-button" id="export-button" disabled><svg class="icon"><use href="#i-download"/></svg><span>导出 PNG</span></button></div>
+  </header>
+
+  <section class="workspace-heading"><div><p class="eyebrow">THE COLOR WORKSPACE <span>01 / PHOTO</span></p><h1>色彩工作台 <span>从真实画面，探索每一种可能。</span></h1></div><div class="heading-meta"><span class="local-dot"></span>本机处理 · 图片不上传</div></section>
+
+  <main class="workspace">
+    <aside class="photo-panel" aria-label="代表性照片库">
+      <div class="panel-title"><h2><svg class="icon"><use href="#i-image"/></svg>样片库</h2><span class="count" id="photo-count">—</span></div>
+      <label class="search-field"><svg class="icon"><use href="#i-search"/></svg><input id="photo-search" type="search" placeholder="搜索场景、色彩…" autocomplete="off" aria-label="搜索样片"></label>
+      <div class="photo-filters" id="photo-filters" aria-label="筛选样片场景"></div>
+      <div class="photo-grid" id="photo-grid"><div class="photo-skeleton"></div><div class="photo-skeleton"></div><div class="photo-skeleton"></div><div class="photo-skeleton"></div></div>
+      <div class="photo-panel-footer"><span class="tiny-dot"></span><span>真实摄影 · 多场景覆盖</span><button id="sources-button" aria-label="查看图片及LUT来源">来源<svg class="icon"><use href="#i-arrow"/></svg></button></div>
+    </aside>
+
+    <section class="editor-panel" aria-label="照片预览与风格组合">
+      <div class="editor-toolbar"><div class="current-photo"><span id="photo-title">正在准备样片</span><span id="photo-size">RGB8</span></div><div class="viewer-controls"><div class="mode-switch" aria-label="预览方式"><button data-mode="original" title="原图">原图</button><button data-mode="compare" class="active" aria-pressed="true"><svg class="icon"><use href="#i-split"/></svg>对比</button><button data-mode="output">结果</button><button data-mode="difference" title="稀疏模型相对源LUT参考的代码差异">差异</button></div><span class="toolbar-divider"></span><button class="icon-button" id="fullscreen-button" title="展开预览" aria-label="展开预览"><svg class="icon"><use href="#i-expand"/></svg></button></div></div>
+
+      <div class="viewer" id="viewer" data-mode="compare" aria-busy="true">
+        <div class="image-canvas" id="image-canvas">
+          <img class="preview-image" id="original-image" alt="选中样片的原始照片" draggable="false">
+          <div class="processed-layer" id="processed-layer"><img class="preview-image" id="output-image" alt="四级LUT处理结果" draggable="false"></div>
+          <img class="preview-image difference-image" id="difference-image" alt="源LUT参考与稀疏运行库的差异图" hidden draggable="false">
+        </div>
+        <div class="image-label label-before" id="before-label"><span></span>原始画面</div><div class="image-label label-after" id="after-label"><span></span><span id="result-look-label">LUT 处理</span></div>
+        <div class="split-line" id="split-line"><span class="split-knob"><svg class="icon"><use href="#i-split"/></svg></span></div>
+        <input class="split-range" id="split-range" type="range" min="0" max="100" value="50" aria-label="原图与处理结果分割位置">
+        <div class="loading-overlay" id="loading-overlay"><div class="loading-card"><span class="spinner"></span><span id="loading-text">正在连接色彩引擎</span></div></div>
+        <div class="viewer-empty" id="viewer-empty" hidden><svg class="icon"><use href="#i-image"/></svg><strong>当前无法生成预览</strong><p id="viewer-error">请检查本地运行库后重试。</p><button class="secondary-button" id="retry-button">重新尝试</button></div>
+        <div class="viewer-bottom"><span class="viewer-hint" id="viewer-hint"><kbd>空格</kbd>按住查看原图</span><div class="zoom-controls"><button id="zoom-out" aria-label="缩小预览">−</button><button id="zoom-fit" title="点击恢复适应画面">适应画面</button><button id="zoom-in" aria-label="放大预览">+</button></div></div>
+      </div>
+
+      <div class="image-readout"><div><span class="readout-dot"></span><span id="render-status">等待预览</span><span class="muted" id="render-config"></span></div><div class="readout-actions"><button id="reset-button" title="还原当前预设"><svg class="icon"><use href="#i-reset"/></svg>还原预设</button><button id="copy-button" title="复制四级组合与参数"><svg class="icon"><use href="#i-copy"/></svg>复制配置</button></div></div>
+
+      <section class="looks-section" aria-label="LUT组合预设"><div class="looks-heading"><div><h2>发现你的色彩</h2><span id="looks-count">四级 LUT 组合</span></div><div class="looks-filters" id="looks-filters" aria-label="筛选LUT组合"></div><div class="look-scroll-controls"><button id="looks-previous" class="icon-button" aria-label="向左浏览组合"><svg class="icon rotate"><use href="#i-chevron"/></svg></button><button id="looks-next" class="icon-button" aria-label="向右浏览组合"><svg class="icon"><use href="#i-chevron"/></svg></button></div></div><div class="looks-grid" id="looks-grid"></div></section>
+    </section>
+
+    <aside class="controls-panel" aria-label="调色与性能设置">
+      <div class="controls-tabs" role="tablist" aria-label="设置类别"><button role="tab" id="tab-chain" aria-selected="true" aria-controls="panel-chain" data-panel="chain" class="active"><svg class="icon"><use href="#i-layers"/></svg>调色链</button><button role="tab" id="tab-performance" aria-selected="false" aria-controls="panel-performance" data-panel="performance"><svg class="icon"><use href="#i-sliders"/></svg>性能</button></div>
+      <div class="controls-scroll">
+        <section id="panel-chain" role="tabpanel" aria-labelledby="tab-chain">
+          <div class="selected-look-heading"><p class="eyebrow">CURRENT LOOK</p><div><h2 id="selected-look-title">选择一种组合</h2><span class="look-tag" id="look-tag">四级组合</span></div><p id="selected-look-description">从预设开始，逐级调整自己的色彩。</p></div>
+          <div class="chain-flow-label"><span>输入 RGB8</span><svg class="icon"><use href="#i-arrow"/></svg><span>四级顺序处理</span></div>
+          <div class="stage-list" id="stage-list"></div>
+          <div class="chain-output"><span class="output-symbol">↳</span><div><strong>输出 RGB8</strong><span>每级整数舍入 · 精确执行</span></div><span class="chain-dots"><i></i><i></i><i></i></span></div>
+          <p class="context-note" id="chain-note">调整任一级LUT或强度后，预览会自动更新。</p>
+        </section>
+
+        <section id="panel-performance" role="tabpanel" aria-labelledby="tab-performance" hidden>
+          <div class="performance-heading"><p class="eyebrow">MAKE YOUR TRADEOFF</p><h2>性能，由你定义</h2><p>调节偏好，选择精度、速度与内存之间的平衡。</p></div>
+          <fieldset class="profile-select"><legend>执行策略</legend><button data-profile="balanced" class="active"><span>均衡</span><small>日常探索</small></button><button data-profile="detail"><span>细腻</span><small>精度优先</small></button><button data-profile="compact"><span>轻量</span><small>紧凑内存</small></button></fieldset>
+          <div class="preference-control"><label for="weight-accuracy"><span><b>A</b>精度偏好</span><output id="weight-accuracy-value">70</output></label><input id="weight-accuracy" type="range" min="0" max="100" value="70"><div><span>轻量探索</span><span>细节优先</span></div></div>
+          <div class="preference-control"><label for="weight-speed"><span><b>B</b>速度偏好</span><output id="weight-speed-value">50</output></label><input id="weight-speed" type="range" min="0" max="100" value="50"><div><span>从容处理</span><span>更快响应</span></div></div>
+          <div class="preference-control"><label for="weight-memory"><span><b>C</b>内存偏好</span><output id="weight-memory-value">30</output></label><input id="weight-memory" type="range" min="0" max="100" value="30"><div><span>宽裕工作区</span><span>紧凑占用</span></div></div>
+          <label class="thread-control" for="thread-select"><span>CPU线程</span><select id="thread-select"><option value="4">4线程</option><option value="1">1线程</option></select></label>
+          <div class="actual-config"><div><svg class="icon"><use href="#i-cpu"/></svg><strong>实际执行配置</strong></div><dl><div><dt>插值网格</dt><dd id="actual-grid">—</dd></div><div><dt>后端 / 表示</dt><dd id="actual-backend">—</dd></div><div><dt>准备工作区</dt><dd id="actual-arena">—</dd></div></dl><p id="selection-policy">处理后显示实际配置。</p></div>
+        </section>
+
+        <section class="measurement-panel"><div class="measurement-heading"><h3>本图实测</h3><span id="measurement-check">等待处理</span></div><div class="measurement-main"><div><span>映射耗时</span><strong id="metric-time">—<small>ms</small></strong></div><div><span>平均色差 <button id="metric-info" class="inline-info" title="相对本图源LUT参考的RGB代码欧氏距离；不代表未见图片上的质量。" aria-label="查看色差口径">ⓘ</button></span><strong id="metric-error">—</strong></div></div><div class="measurement-secondary"><span>模型容量<strong id="metric-model">—</strong></span><span>最大色差<strong id="metric-max">—</strong></span></div><p id="measurement-scope">本图数据，不替代百图基准或目标设备性能。</p></section>
+      </div>
+      <div class="controls-footer"><svg class="icon"><use href="#i-check"/></svg><span>由独立单头 C++ 运行库驱动</span></div>
+    </aside>
+  </main>
+
+  <footer class="status-bar"><span><span class="status-dot" id="connection-dot"></span><span id="connection-status">连接中</span><span class="status-separator">/</span><span id="footer-backend">CPU</span></span><span id="footer-photo">选择样片开始探索</span><button id="footer-version" title="查看运行库来源">FLASH CHROMA <span>·</span> HPP EDITION</button></footer>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <dialog id="about-dialog"><div class="dialog-heading"><div><p class="eyebrow">FLASH CHROMA / LOCAL STUDIO</p><h2>真实色彩，真实执行。</h2></div><button id="close-about" class="icon-button" aria-label="关闭说明"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-intro">这是一间运行在你电脑上的调色工作台。选择真实照片、组合四级LUT，并直接查看当前C++单头运行库的处理结果。</p><div class="dialog-stats"><div><strong id="about-photos">—</strong><span>代表性样片</span></div><div><strong id="about-looks">—</strong><span>LUT组合</span></div><div><strong id="about-luts">—</strong><span>可选LUT</span></div></div><h3>运行库</h3><dl class="about-engine"><div><dt>引擎</dt><dd id="about-engine">—</dd></div><div><dt>实际后端</dt><dd id="about-backend">—</dd></div><div><dt>库 SHA256</dt><dd id="about-sha">—</dd></div></dl><h3>图片与LUT来源</h3><p id="about-source-note">样片来自项目已有的Kodak、DPED与DIV2K摄影素材，保留各自的来源与研究使用限制。创意LUT来自Striped Purple，保留MIT许可。工作台不会向外部服务发送图片。</p><p id="about-current-source" class="source-detail"></p><h3>如何理解结果</h3><p>创意组合的网格由参数策略选择，预览按实际配置计算。色差来自当前图片的源LUT参考；Cinema固定模型与创意组合分别标识。本图耗时、已见百图基准、实板性能属于不同范围。</p><div class="dialog-footer"><span>为探索而设计 · 在本地精确执行</span><button class="secondary-button" id="about-done">回到工作台<svg class="icon"><use href="#i-arrow"/></svg></button></div></dialog>
+</body>
+</html>
