@@ -1,0 +1,190 @@
+"""仅用Python标准库核验Linux原生ABI与完整RGB8输出；不含拟合、照片计时或Skylake实测结论。"""
+from __future__ import annotations
+import argparse
+import ctypes as ct
+import hashlib
+import json
+import mmap
+import os
+from pathlib import Path
+import platform
+import random
+import sys
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def read(path):
+    return json.loads(Path(path).read_text(encoding='utf-8'))
+
+
+def digest(path):
+    with Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def save(path, value):
+    Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False)+'\n', encoding='utf-8')
+
+
+def checked(spec):
+    path = Path(spec['path'])
+    if not path.is_absolute():
+        path = ROOT/path
+    if digest(path) != spec['sha256']:
+        raise ValueError('输入字节不同：'+str(path))
+    return path
+
+
+def bind(path):
+    d = ct.CDLL(str(path)); text = ct.POINTER(ct.c_char); u8 = ct.POINTER(ct.c_uint8)
+    for name in ('abi_version', 'revision', 'capabilities'):
+        f = getattr(d, 'jshc_cc_'+name); f.argtypes = []; f.restype = ct.c_uint32
+    d.jshc_cc_create.argtypes = [ct.POINTER(ct.c_char_p), ct.POINTER(ct.c_char_p), ct.c_size_t,
+                                ct.POINTER(ct.c_void_p), text, ct.c_size_t]
+    d.jshc_cc_create.restype = ct.c_int
+    d.jshc_cc_destroy.argtypes = [ct.c_void_p]; d.jshc_cc_destroy.restype = None
+    d.jshc_cc_apply.argtypes = [ct.c_void_p, u8, ct.c_size_t, ct.c_int, ct.c_int, text, ct.c_size_t]
+    d.jshc_cc_apply.restype = ct.c_int
+    d.jshc_cc_model_bytes.argtypes = [ct.c_void_p]; d.jshc_cc_model_bytes.restype = ct.c_size_t
+    return d
+
+
+def create(d, models, sides):
+    paths = (ct.c_char_p*len(models))(*(str(p).encode('utf-8') for p in models))
+    fractions = (ct.c_char_p*len(models))(*(str(p).encode('utf-8') if p else None for p in sides))
+    handle = ct.c_void_p(); error = ct.create_string_buffer(1024)
+    if d.jshc_cc_create(paths, fractions, len(models), ct.byref(handle), error, len(error)):
+        raise RuntimeError(error.value.decode('utf-8', errors='replace'))
+    return handle
+
+
+def apply(d, handle, source, kernel, threads, offset=0):
+    storage = (ct.c_uint8*(len(source)+offset+17))()
+    ct.memset(storage, 0xa7, len(storage)); address = ct.addressof(storage)+offset
+    ct.memmove(address, source, len(source)); error = ct.create_string_buffer(1024)
+    if d.jshc_cc_apply(handle, ct.cast(address, ct.POINTER(ct.c_uint8)), len(source), kernel, threads, error, len(error)):
+        raise RuntimeError(error.value.decode('utf-8', errors='replace'))
+    if bytes(storage[:offset]) != b'\xa7'*offset or bytes(storage[offset+len(source):]) != b'\xa7'*17:
+        raise AssertionError('Linux非对齐/尾部哨兵被改写')
+    return ct.string_at(address, len(source))
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    for name in ('plan', 'build', 'single-oracle-stream', 'output'):
+        p.add_argument('--'+name, type=Path, required=True)
+    p.add_argument('--affinity-cpus', help='可选固定CPU集合；由服务器入口预先核对物理核/L3/NUMA')
+    args = p.parse_args()
+    if platform.system() != 'Linux' or not Path('/proc/self/maps').is_file():
+        raise ValueError('此入口只核验Linux原生库，不把其他系统伪装为Linux')
+    if args.affinity_cpus:
+        cpus = {int(x) for x in args.affinity_cpus.split(',')}
+        if not cpus or not cpus <= os.sched_getaffinity(0):
+            raise ValueError('请求CPU不在允许集合')
+        os.sched_setaffinity(0, cpus)
+    plan = read(args.plan); build = read(args.build/'build.json')
+    if build['plan_sha256'] != digest(args.plan) or build['source_sha256'] != plan['source_sha256']:
+        raise ValueError('构建不属于冻结计划')
+    sources = dict(plan['source_sha256']); sources[Path(__file__).resolve().relative_to(ROOT).as_posix()] = digest(__file__)
+    for name, sha in sources.items():
+        if digest(ROOT/name) != sha:
+            raise ValueError('源码变动：'+name)
+    fixed = {name: checked(plan['fixed_inputs'][name]) for name in ('base', 'sidecar', 'cube', 'prior_full', 'model')}
+    suffix = [checked(s) for s in plan['suffix_models']]
+    prior = read(fixed['prior_full'])
+    single_sha = prior['native']['cube_sha256']['single_oracle']
+    if digest(args.single_oracle_stream) != single_sha:
+        raise ValueError('单级完整oracle流与已验独立u64输出不同')
+    out = args.output.resolve()
+    if out.exists():
+        raise ValueError('不覆盖既有Linux证据')
+    out.mkdir(parents=True)
+    cpu = Path('/proc/cpuinfo').read_text().split('\n\n')[0]
+    environment = {'platform': platform.platform(), 'python': sys.version, 'machine': platform.machine(),
+        'cpu': cpu, 'initial_affinity': sorted(os.sched_getaffinity(0)),
+        'thread_environment': {k: os.environ.get(k) for k in ('OMP_NUM_THREADS', 'OMP_DYNAMIC', 'OMP_PROC_BIND', 'OMP_PLACES')},
+        'gather_data_sampling': Path('/sys/devices/system/cpu/vulnerabilities/gather_data_sampling').read_text().strip()
+            if Path('/sys/devices/system/cpu/vulnerabilities/gather_data_sampling').is_file() else '系统未提供'}
+    save(out/'run.json', {'purpose': __doc__, 'source_sha256': sources, 'environment': environment,
+        'build_sha256': digest(args.build/'build.json'), 'plan_sha256': digest(args.plan),
+        'single_oracle_stream': {'path': str(args.single_oracle_stream.resolve()), 'sha256': single_sha},
+        'inputs': {name: plan['fixed_inputs'][name] for name in fixed}, 'suffix_models': plan['suffix_models']})
+    with zipfile.ZipFile(out/'measured-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+        for name in sources:
+            archive.write(ROOT/name, name)
+        archive.write(args.plan, args.plan.resolve().relative_to(ROOT).as_posix())
+    libraries = {}; operators = {}; counts = {}; hashes = {}; memory = {}
+    models = [fixed['base'], *suffix]; sides = [fixed['sidecar'], None, None, None]
+    with fixed['cube'].open('rb') as cf, args.single_oracle_stream.open('rb') as sf:
+        cube = mmap.mmap(cf.fileno(), 0, access=mmap.ACCESS_READ)
+        single = mmap.mmap(sf.fileno(), 0, access=mmap.ACCESS_READ)
+        try:
+            for name, spec in build['libraries'].items():
+                d = bind(checked(spec)); libraries[name] = d
+                if d.jshc_cc_abi_version() != 1 or d.jshc_cc_revision() != build['revisions'][name] or d.jshc_cc_capabilities() != 7:
+                    raise ValueError('实际Linux ABI/AVX2/OpenMP/修订不符')
+                operators[name] = {'single': create(d, models[:1], sides[:1]), 'chain': create(d, models, sides)}
+                memory[name] = {mode: d.jshc_cc_model_bytes(h) for mode, h in operators[name].items()}
+                for mode in operators[name]:
+                    for kernel, threads in ((0, 1), (1, 1), (1, 4)):
+                        key = f'{name}_{mode}_{kernel}_{threads}'; hashes[key] = hashlib.sha256(); counts[key] = 0
+            # 固定尾部、非对齐与批边界；预期来自已经独立核验的完整输出流。
+            rng = random.Random(2026102003)
+            probe = bytes(rng.randrange(256) for _ in range(4097*3)); finite = 0
+            for n in plan['contract']['lengths']:
+                source = probe[:n*3]
+                for name, d in libraries.items():
+                    for mode, truth_stream in (('single', single), ('chain', cube)):
+                        expected = b''.join(truth_stream[(source[i]*65536+source[i+1]*256+source[i+2])*3:
+                            (source[i]*65536+source[i+1]*256+source[i+2])*3+3] for i in range(0, len(source), 3))
+                        for kernel, threads in ((0, 1), (1, 1), (1, 4)):
+                            for offset in plan['contract']['byte_offsets']:
+                                if apply(d, operators[name][mode], source, kernel, threads, offset) != expected:
+                                    raise AssertionError('Linux有限输入输出不同')
+                                finite += 1
+            # 65536像素是4096批与8像素向量的整倍数；遍历所有RGB8输入一次。
+            gb = bytes(x for g in range(256) for b in range(256) for x in (g, b))
+            for red in range(256):
+                source = bytearray(65536*3); source[0::3] = bytes([red])*65536
+                source[1::3] = gb[0::2]; source[2::3] = gb[1::2]; source = bytes(source)
+                start = red*65536*3; end = start+len(source)
+                for name, d in libraries.items():
+                    for mode, truth_stream in (('single', single), ('chain', cube)):
+                        expected = truth_stream[start:end]
+                        for kernel, threads in ((0, 1), (1, 1), (1, 4)):
+                            actual = apply(d, operators[name][mode], source, kernel, threads)
+                            if actual != expected:
+                                raise AssertionError('Linux完整RGB8输出不同')
+                            key = f'{name}_{mode}_{kernel}_{threads}'; hashes[key].update(actual); counts[key] += 65536
+            outputs = {key: value.hexdigest() for key, value in hashes.items()}
+            loaded = []
+            mapped = {Path(line.split(maxsplit=5)[-1]).resolve() for line in Path('/proc/self/maps').read_text().splitlines()
+                      if '/' in line and Path(line.split(maxsplit=5)[-1]).is_file()}
+            for spec in build['libraries'].values():
+                if checked(spec).resolve() not in mapped:
+                    raise ValueError('实际Linux映射缺少已验库')
+            for path in sorted(mapped):
+                if path.name.startswith(('libjshc_', 'libgomp.', 'libstdc++.', 'libgcc_s.', 'libc.', 'libm.')):
+                    loaded.append({'path': str(path), 'sha256': digest(path)})
+        finally:
+            for name, handles in operators.items():
+                for handle in handles.values():
+                    libraries[name].jshc_cc_destroy(handle)
+            cube.close(); single.close()
+    for name, sha in sources.items():
+        if digest(ROOT/name) != sha:
+            raise ValueError('核验期间源码改变：'+name)
+    save(out/'results.json', {'pass': True, 'purpose': __doc__, 'build_sha256': digest(args.build/'build.json'),
+        'plan_sha256': digest(args.plan), 'libraries': build['libraries'], 'loaded_libraries': loaded,
+        'finite_backend_offset_comparisons': finite, 'full_domain_pixels_per_configuration': counts,
+        'output_sha256': outputs, 'byte_mismatches': 0, 'sentinel_mismatches': 0,
+        'model_accounting_bytes': memory, 'performance_calls': 0, 'photo_calls': 0, 'new_fits': 0,
+        'scope': 'Linux实际主机见run.json；两库单级/四级的标量1与AVX2请求1/4完整字节比较。'
+            '预期来自Windows已验独立u64/完整流；本脚本不重算独立oracle，不代表Skylake实机。'})
+    print('Linux标准库入口通过：', finite, '个有限后端/偏移比较，12组完整RGB8输出一致', flush=True)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,970 @@
+{
+  "purpose": "完整检查R连续缓存的四种全命中循环，含所有后向边；建模client/server两种Skylake，不运行候选。",
+  "plan_sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867",
+  "build_sha256": "7769fe621a6ad1685ec92cbaa20bde2012d5a351fe9fa19617d6d779120e7d6f",
+  "variants": {
+    "reference": {
+      "object_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3",
+      "selected": [
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x158",
+          "end": "0x4c3",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11,
+          "models": {
+            "skylake": {
+              "Total Cycles": 14026.0,
+              "Total uOps": 24100.0,
+              "Block RThroughput": 45.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 14026.0,
+              "Total uOps": 24100.0,
+              "Block RThroughput": 45.0
+            }
+          }
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc08",
+          "end": "0xf83",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11,
+          "models": {
+            "skylake": {
+              "Total Cycles": 11427.0,
+              "Total uOps": 24100.0,
+              "Block RThroughput": 45.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 11427.0,
+              "Total uOps": 24100.0,
+              "Block RThroughput": 45.0
+            }
+          }
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x12f0",
+          "end": "0x1885",
+          "instructions": 264,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33,
+          "models": {
+            "skylake": {
+              "Total Cycles": 28937.0,
+              "Total uOps": 39600.0,
+              "Block RThroughput": 101.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 28937.0,
+              "Total uOps": 39600.0,
+              "Block RThroughput": 101.0
+            }
+          }
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x2190",
+          "end": "0x271a",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33,
+          "models": {
+            "skylake": {
+              "Total Cycles": 29338.0,
+              "Total uOps": 39600.0,
+              "Block RThroughput": 101.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 29338.0,
+              "Total uOps": 39600.0,
+              "Block RThroughput": 101.0
+            }
+          }
+        }
+      ],
+      "all_loop_inventory": [
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x158",
+          "end": "0x4c3",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1b6",
+          "end": "0xb83",
+          "instructions": 504,
+          "gathers": 28,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 20
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc08",
+          "end": "0xf83",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xfa1",
+          "end": "0x1275",
+          "instructions": 136,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 19
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x12f0",
+          "end": "0x1885",
+          "instructions": 264,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x18aa",
+          "end": "0x1b9f",
+          "instructions": 139,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 23
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1b7b",
+          "end": "0x1e73",
+          "instructions": 132,
+          "gathers": 10,
+          "vpmulld": 6,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 27
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x134f",
+          "end": "0x1e82",
+          "instructions": 515,
+          "gathers": 34,
+          "vpmulld": 28,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 83
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1263",
+          "end": "0x210a",
+          "instructions": 676,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 105
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc68",
+          "end": "0x2119",
+          "instructions": 974,
+          "gathers": 59,
+          "vpmulld": 58,
+          "calls": 0,
+          "branches": 17,
+          "rsp_operands": 137
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1280",
+          "end": "0x2123",
+          "instructions": 678,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 13,
+          "rsp_operands": 104
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1ba8",
+          "end": "0x212c",
+          "instructions": 253,
+          "gathers": 20,
+          "vpmulld": 12,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1ba8",
+          "end": "0x2236",
+          "instructions": 305,
+          "gathers": 21,
+          "vpmulld": 14,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 46
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x2190",
+          "end": "0x271a",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x21ef",
+          "end": "0x2dfb",
+          "instructions": 586,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2f40",
+          "end": "0x3244",
+          "instructions": 142,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 32
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2fee",
+          "end": "0x34a4",
+          "instructions": 218,
+          "gathers": 17,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 40
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed8",
+          "end": "0x34fd",
+          "instructions": 286,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 53
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x34b0",
+          "end": "0x3576",
+          "instructions": 35,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 14
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x357f",
+          "instructions": 327,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x358c",
+          "instructions": 329,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 10,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x3599",
+          "instructions": 331,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 11,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x35a6",
+          "instructions": 333,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3506",
+          "end": "0x35af",
+          "instructions": 28,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3606",
+          "end": "0x4199",
+          "instructions": 568,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 38
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3503",
+          "end": "0x419f",
+          "instructions": 612,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 53
+        }
+      ]
+    },
+    "candidate": {
+      "object_sha256": "3e6feec1fc104b229972304738ee97c2d38c72d8187cdbaadcee30f7f5b41502",
+      "selected": [
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x180",
+          "end": "0x4e2",
+          "instructions": 176,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 12,
+          "models": {
+            "skylake": {
+              "Total Cycles": 13823.0,
+              "Total uOps": 23900.0,
+              "Block RThroughput": 45.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 13823.0,
+              "Total uOps": 23900.0,
+              "Block RThroughput": 45.0
+            }
+          }
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc38",
+          "end": "0xfaa",
+          "instructions": 176,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 12,
+          "models": {
+            "skylake": {
+              "Total Cycles": 11329.0,
+              "Total uOps": 23900.0,
+              "Block RThroughput": 45.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 11329.0,
+              "Total uOps": 23900.0,
+              "Block RThroughput": 45.0
+            }
+          }
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1330",
+          "end": "0x18be",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 34,
+          "models": {
+            "skylake": {
+              "Total Cycles": 29222.0,
+              "Total uOps": 39400.0,
+              "Block RThroughput": 101.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 29222.0,
+              "Total uOps": 39400.0,
+              "Block RThroughput": 101.0
+            }
+          }
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x21e0",
+          "end": "0x276e",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 34,
+          "models": {
+            "skylake": {
+              "Total Cycles": 29124.0,
+              "Total uOps": 39400.0,
+              "Block RThroughput": 101.0
+            },
+            "skylake-avx512": {
+              "Total Cycles": 29124.0,
+              "Total uOps": 39400.0,
+              "Block RThroughput": 101.0
+            }
+          }
+        }
+      ],
+      "all_loop_inventory": [
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x180",
+          "end": "0x4e2",
+          "instructions": 176,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1d5",
+          "end": "0xba2",
+          "instructions": 504,
+          "gathers": 28,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 20
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc38",
+          "end": "0xfaa",
+          "instructions": 176,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xfc8",
+          "end": "0x12a4",
+          "instructions": 137,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 18
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1330",
+          "end": "0x18be",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 34
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x18e0",
+          "end": "0x1be9",
+          "instructions": 142,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 26
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1bc8",
+          "end": "0x1ec2",
+          "instructions": 135,
+          "gathers": 10,
+          "vpmulld": 6,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 30
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1386",
+          "end": "0x1ed1",
+          "instructions": 521,
+          "gathers": 34,
+          "vpmulld": 28,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 89
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1287",
+          "end": "0x2146",
+          "instructions": 680,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 11,
+          "rsp_operands": 112
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc8f",
+          "end": "0x2155",
+          "instructions": 976,
+          "gathers": 59,
+          "vpmulld": 58,
+          "calls": 0,
+          "branches": 16,
+          "rsp_operands": 141
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x12b0",
+          "end": "0x2163",
+          "instructions": 679,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 109
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1bf0",
+          "end": "0x216c",
+          "instructions": 251,
+          "gathers": 20,
+          "vpmulld": 12,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1bf0",
+          "end": "0x227d",
+          "instructions": 303,
+          "gathers": 21,
+          "vpmulld": 14,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 48
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x21e0",
+          "end": "0x276e",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 34
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain_cached(jshc_r_contiguous::View const*, jshc_r_contiguous::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x2236",
+          "end": "0x2e4f",
+          "instructions": 589,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2fa0",
+          "end": "0x32a4",
+          "instructions": 142,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 32
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x304e",
+          "end": "0x3504",
+          "instructions": 218,
+          "gathers": 17,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 40
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2f38",
+          "end": "0x355d",
+          "instructions": 286,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 53
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3510",
+          "end": "0x35d6",
+          "instructions": 35,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 14
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed1",
+          "end": "0x35df",
+          "instructions": 327,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed1",
+          "end": "0x35ec",
+          "instructions": 329,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 10,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed1",
+          "end": "0x35f9",
+          "instructions": 331,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 11,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed1",
+          "end": "0x3606",
+          "instructions": 333,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3566",
+          "end": "0x360f",
+          "instructions": 28,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3666",
+          "end": "0x41f9",
+          "instructions": 568,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 38
+        },
+        {
+          "function": "jshc_r_contiguous::avx2_chain(jshc_r_contiguous::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3563",
+          "end": "0x41ff",
+          "instructions": 612,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 53
+        }
+      ]
+    }
+  },
+  "conservative_bounds": [
+    {
+      "cpu_model": "skylake",
+      "gathers": 8,
+      "conservative_candidate_max_over_reference_min": {
+        "Total Cycles": 1.2096788308392403,
+        "Block RThroughput": 1.0
+      },
+      "pass": false
+    },
+    {
+      "cpu_model": "skylake",
+      "gathers": 18,
+      "conservative_candidate_max_over_reference_min": {
+        "Total Cycles": 1.009848982271832,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    },
+    {
+      "cpu_model": "skylake-avx512",
+      "gathers": 8,
+      "conservative_candidate_max_over_reference_min": {
+        "Total Cycles": 1.2096788308392403,
+        "Block RThroughput": 1.0
+      },
+      "pass": false
+    },
+    {
+      "cpu_model": "skylake-avx512",
+      "gathers": 18,
+      "conservative_candidate_max_over_reference_min": {
+        "Total Cycles": 1.009848982271832,
+        "Block RThroughput": 1.0
+      },
+      "pass": true
+    }
+  ],
+  "static_cost_gate_pass": false,
+  "commands": [
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-r-contiguous-build-v1\\CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-0-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-0-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-1-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-1-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-2-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-2-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-3-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\reference-3-hit.s"
+    ],
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-r-contiguous-build-v1\\CMakeFiles\\jshc_skylake_r_contiguous.dir\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-0-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-0-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-1-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-1-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-2-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-2-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-3-hit.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-r-contiguous-static-v1\\candidate-3-hit.s"
+    ]
+  ],
+  "analysis_sources": {
+    "scripts/inspect_skylake_rcontiguous.py": "b0f55efc3837304b5752e13f82663b5aa010f8d437781edfebb6b402eade01a4",
+    "scripts/inspect_skylake_preweight.py": "c469c4898d98d17fc2aed0737c8221dd34473ecee507aeb9d6df9e63d95da4c1",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4"
+  },
+  "tools": {
+    "E:/mingw64/bin/objdump.exe": {
+      "sha256": "8b17003d665949503d5e97430bc393aede3c5b9d2f295e419bfb8a458184cefb",
+      "version": [
+        "GNU objdump (GNU Binutils) 2.45",
+        "Copyright (C) 2025 Free Software Foundation, Inc.",
+        "This program is free software; you may redistribute it under the terms of",
+        "the GNU General Public License version 3 or (at your option) any later version."
+      ]
+    },
+    "C:/Program Files/LLVM/bin/llvm-mca.exe": {
+      "sha256": "0d2693ce8dfb1afd490a14c199c2b53bc2befbb4894967917e162f1f4436be21",
+      "version": [
+        "LLVM (http://llvm.org/):",
+        "  LLVM version 21.1.0",
+        "  Optimized build.",
+        "  Default target: x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "native_calls": 0,
+  "performance_calls": 0,
+  "scope": "两种CPU模型都消费同一AVX2汇编，不启用AVX512。全部四族不挑选，取候选最贵/参考最便宜保守界；没有真实缓存、GDS、回退或系统噪声，不是Skylake实测。"
+}

@@ -1,0 +1,428 @@
+{
+  "purpose": "验证原回退对象逐字节保留，并对唯一新增无检查循环作client/server静态门槛。",
+  "plan_sha256": "259a4368b2ab9e2ee37782c2beb342c4e91f10b23ca425d1ce44c256a3fd5bc3",
+  "build_sha256": "bf4ca35f6af26a4ac26c9dec1b231e32e1fd55c954b36d3ba9c9e70c4fd1db1e",
+  "fallback_object_proof": {
+    "reference_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3",
+    "candidate_fallback_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3",
+    "old_reference_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3",
+    "byte_identical": true
+  },
+  "variants": {
+    "reference": {
+      "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+      "start": "0x2190",
+      "end": "0x271a",
+      "instructions": 261,
+      "gathers": 18,
+      "vpmulld": 13,
+      "calls": 0,
+      "branches": 2,
+      "rsp_operands": 33,
+      "models": {
+        "skylake": {
+          "Total Cycles": 29338.0,
+          "Total uOps": 39600.0,
+          "Block RThroughput": 101.0
+        },
+        "skylake-avx512": {
+          "Total Cycles": 29338.0,
+          "Total uOps": 39600.0,
+          "Block RThroughput": 101.0
+        }
+      },
+      "object_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3",
+      "all_loop_inventory": [
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x158",
+          "end": "0x4c3",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1b6",
+          "end": "0xb83",
+          "instructions": 504,
+          "gathers": 28,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 20
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc08",
+          "end": "0xf83",
+          "instructions": 179,
+          "gathers": 8,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 11
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xfa1",
+          "end": "0x1275",
+          "instructions": 136,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 19
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x12f0",
+          "end": "0x1885",
+          "instructions": 264,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x18aa",
+          "end": "0x1b9f",
+          "instructions": 139,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 23
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1b7b",
+          "end": "0x1e73",
+          "instructions": 132,
+          "gathers": 10,
+          "vpmulld": 6,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 27
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x134f",
+          "end": "0x1e82",
+          "instructions": 515,
+          "gathers": 34,
+          "vpmulld": 28,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 83
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1263",
+          "end": "0x210a",
+          "instructions": 676,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 105
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xc68",
+          "end": "0x2119",
+          "instructions": 974,
+          "gathers": 59,
+          "vpmulld": 58,
+          "calls": 0,
+          "branches": 17,
+          "rsp_operands": 137
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1280",
+          "end": "0x2123",
+          "instructions": 678,
+          "gathers": 45,
+          "vpmulld": 36,
+          "calls": 0,
+          "branches": 13,
+          "rsp_operands": 104
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1ba8",
+          "end": "0x212c",
+          "instructions": 253,
+          "gathers": 20,
+          "vpmulld": 12,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x1ba8",
+          "end": "0x2236",
+          "instructions": 305,
+          "gathers": 21,
+          "vpmulld": 14,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 46
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x2190",
+          "end": "0x271a",
+          "instructions": 261,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 33
+        },
+        {
+          "function": "jshc_channel::avx2_chain_cached(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0x21ef",
+          "end": "0x2dfb",
+          "instructions": 586,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 42
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2f40",
+          "end": "0x3244",
+          "instructions": 142,
+          "gathers": 7,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 32
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2fee",
+          "end": "0x34a4",
+          "instructions": 218,
+          "gathers": 17,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 40
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2ed8",
+          "end": "0x34fd",
+          "instructions": 286,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 53
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x34b0",
+          "end": "0x3576",
+          "instructions": 35,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 14
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x357f",
+          "instructions": 327,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x358c",
+          "instructions": 329,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 10,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x3599",
+          "instructions": 331,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 11,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e71",
+          "end": "0x35a6",
+          "instructions": 333,
+          "gathers": 17,
+          "vpmulld": 17,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 68
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3506",
+          "end": "0x35af",
+          "instructions": 28,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3606",
+          "end": "0x4199",
+          "instructions": 568,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 38
+        },
+        {
+          "function": "jshc_channel::avx2_chain(jshc_channel::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3503",
+          "end": "0x419f",
+          "instructions": 612,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 53
+        }
+      ]
+    },
+    "candidate": {
+      "function": "jshc_channel::avx2_chain_domain(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+      "start": "0xa8",
+      "end": "0x5ca",
+      "instructions": 251,
+      "gathers": 18,
+      "vpmulld": 13,
+      "calls": 0,
+      "branches": 1,
+      "rsp_operands": 24,
+      "models": {
+        "skylake": {
+          "Total Cycles": 21294.0,
+          "Total uOps": 37800.0,
+          "Block RThroughput": 99.0
+        },
+        "skylake-avx512": {
+          "Total Cycles": 21294.0,
+          "Total uOps": 37800.0,
+          "Block RThroughput": 99.0
+        }
+      },
+      "object_sha256": "aa76b76a09540a3623064468957a1d88070741011bffe0b00d8d1849d34487ec",
+      "all_loop_inventory": [
+        {
+          "function": "jshc_channel::avx2_chain_domain(jshc_channel::View const*, jshc_channel::SuffixCacheView const&, unsigned char*, unsigned long long)",
+          "start": "0xa8",
+          "end": "0x5ca",
+          "instructions": 251,
+          "gathers": 18,
+          "vpmulld": 13,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 24
+        }
+      ]
+    }
+  },
+  "actual_cost_gates": [
+    {
+      "cpu": "skylake",
+      "ratios": {
+        "Total Cycles": 0.7258163473992774,
+        "Block RThroughput": 0.9801980198019802
+      },
+      "pass": true
+    },
+    {
+      "cpu": "skylake-avx512",
+      "ratios": {
+        "Total Cycles": 0.7258163473992774,
+        "Block RThroughput": 0.9801980198019802
+      },
+      "pass": true
+    }
+  ],
+  "static_cost_gate_pass": true,
+  "all_other_four_hit_paths_ratio": 1.0,
+  "commands": [
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-domain-isolated-build-v1\\CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-suffix-cache-runtime\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-domain-isolated-static-v1\\reference.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-domain-isolated-static-v1\\reference.s"
+    ],
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-domain-isolated-build-v1\\CMakeFiles\\jshc_skylake_domain_isolated.dir\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-domain-isolated-static-v1\\candidate.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake-avx512",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-domain-isolated-static-v1\\candidate.s"
+    ]
+  ],
+  "analysis_source_sha256": "7d28d91bab89d23d496ddc005f170520f14a09613844193245899bd6a88150d5",
+  "native_calls": 0,
+  "performance_calls": 0,
+  "scope": "原对象同字节证明的是原内核，不包括新证明准备/入口成本；MCA无真实缓存/GDS/噪声，不是Skylake实测。"
+}

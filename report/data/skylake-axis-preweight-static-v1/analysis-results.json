@@ -1,0 +1,613 @@
+{
+  "purpose": "检查共享轴预计算的两类完整四级循环，按gather/乘法族固定对应，不择优选循环。",
+  "plan_sha256": "e22506df19683d1aa608edf44130b8b4b1615023f82f93e132850f8b73ab3727",
+  "build_sha256": "e058a3149df14eb2777df993ee8473cd5820c3918cbf4336a1ba73fcac3cc4cc",
+  "variants": {
+    "reference": {
+      "object_sha256": "7781d5c8d5111fb468a81d8be7a0109000373a042585c340c931e39fe2ef1151",
+      "function_sizes": {
+        "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)": 1632
+      },
+      "all_loops": [
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x130",
+          "end": "0x5d8",
+          "instructions": 218,
+          "gathers": 14,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 3,
+          "rsp_operands": 39
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x317",
+          "end": "0x7d0",
+          "instructions": 220,
+          "gathers": 17,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 4,
+          "rsp_operands": 35
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x351",
+          "end": "0x891",
+          "instructions": 245,
+          "gathers": 17,
+          "vpmulld": 15,
+          "calls": 0,
+          "branches": 4,
+          "rsp_operands": 39
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xd8",
+          "end": "0x8eb",
+          "instructions": 379,
+          "gathers": 21,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 59
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8a4",
+          "end": "0x964",
+          "instructions": 34,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 12
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x96d",
+          "instructions": 420,
+          "gathers": 21,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 11,
+          "rsp_operands": 73
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x97a",
+          "instructions": 422,
+          "gathers": 21,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 73
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x987",
+          "instructions": 424,
+          "gathers": 21,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 13,
+          "rsp_operands": 73
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x71",
+          "end": "0x994",
+          "instructions": 426,
+          "gathers": 21,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 14,
+          "rsp_operands": 73
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f4",
+          "end": "0x9a7",
+          "instructions": 30,
+          "gathers": 0,
+          "vpmulld": 0,
+          "calls": 0,
+          "branches": 7,
+          "rsp_operands": 11
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x9fe",
+          "end": "0x1598",
+          "instructions": 570,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 38
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f1",
+          "end": "0x159e",
+          "instructions": 616,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 9,
+          "rsp_operands": 52
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f4",
+          "end": "0x15a6",
+          "instructions": 617,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 10,
+          "rsp_operands": 52
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x15fd",
+          "end": "0x219d",
+          "instructions": 575,
+          "gathers": 35,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 41
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8f1",
+          "end": "0x21a3",
+          "instructions": 1208,
+          "gathers": 73,
+          "vpmulld": 88,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 96
+        }
+      ],
+      "selected": [
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x15fd",
+          "end": "0x219d",
+          "instructions": 575,
+          "gathers": 35,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 41,
+          "mca": {
+            "Total Cycles": 44732.0,
+            "Total uOps": 83300.0,
+            "Block RThroughput": 180.5
+          }
+        },
+        {
+          "function": "jshc_delta16::avx2_chain(jshc_delta16::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x9fe",
+          "end": "0x1598",
+          "instructions": 570,
+          "gathers": 38,
+          "vpmulld": 44,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 38,
+          "mca": {
+            "Total Cycles": 56434.0,
+            "Total uOps": 84400.0,
+            "Block RThroughput": 196.5
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "object_sha256": "c4a93c0d4cc20a54c8e753e502be4d0b11b8d14d13931f28ca313f275bf0ce36",
+      "function_sizes": {
+        "void jshc_axis_preweight::(anonymous namespace)::transform<true, false, false>(jshc_axis_preweight::View const&, jshc_axis_preweight::(anonymous namespace)::Rgb&)": 149,
+        "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)": 2555
+      },
+      "all_loops": [
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x430",
+          "end": "0x932",
+          "instructions": 229,
+          "gathers": 14,
+          "vpmulld": 11,
+          "calls": 0,
+          "branches": 4,
+          "rsp_operands": 49
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8b5",
+          "end": "0xb49",
+          "instructions": 134,
+          "gathers": 7,
+          "vpmulld": 9,
+          "calls": 0,
+          "branches": 2,
+          "rsp_operands": 10
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x3d0",
+          "end": "0xb99",
+          "instructions": 372,
+          "gathers": 18,
+          "vpmulld": 20,
+          "calls": 0,
+          "branches": 8,
+          "rsp_operands": 57
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8a8",
+          "end": "0xe41",
+          "instructions": 272,
+          "gathers": 14,
+          "vpmulld": 15,
+          "calls": 0,
+          "branches": 5,
+          "rsp_operands": 38
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x8a8",
+          "end": "0xf07",
+          "instructions": 308,
+          "gathers": 14,
+          "vpmulld": 21,
+          "calls": 0,
+          "branches": 6,
+          "rsp_operands": 45
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xb53",
+          "end": "0xf14",
+          "instructions": 173,
+          "gathers": 7,
+          "vpmulld": 12,
+          "calls": 0,
+          "branches": 4,
+          "rsp_operands": 35
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf1e",
+          "instructions": 552,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 13,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf2c",
+          "instructions": 554,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 14,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf3a",
+          "instructions": 556,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 15,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf48",
+          "instructions": 558,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 16,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf66",
+          "instructions": 563,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 18,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0xf74",
+          "instructions": 565,
+          "gathers": 25,
+          "vpmulld": 32,
+          "calls": 0,
+          "branches": 19,
+          "rsp_operands": 94
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xba2",
+          "end": "0xf88",
+          "instructions": 176,
+          "gathers": 7,
+          "vpmulld": 12,
+          "calls": 0,
+          "branches": 12,
+          "rsp_operands": 34
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xfcc",
+          "end": "0x1b9e",
+          "instructions": 573,
+          "gathers": 38,
+          "vpmulld": 38,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 35
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xb9f",
+          "end": "0x1ba4",
+          "instructions": 761,
+          "gathers": 45,
+          "vpmulld": 50,
+          "calls": 0,
+          "branches": 14,
+          "rsp_operands": 71
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0x1bb2",
+          "instructions": 1156,
+          "gathers": 63,
+          "vpmulld": 70,
+          "calls": 0,
+          "branches": 24,
+          "rsp_operands": 131
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x367",
+          "end": "0x1bc0",
+          "instructions": 1158,
+          "gathers": 63,
+          "vpmulld": 70,
+          "calls": 0,
+          "branches": 25,
+          "rsp_operands": 131
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xba2",
+          "end": "0x1bd8",
+          "instructions": 770,
+          "gathers": 45,
+          "vpmulld": 50,
+          "calls": 0,
+          "branches": 18,
+          "rsp_operands": 71
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x1c27",
+          "end": "0x2183",
+          "instructions": 252,
+          "gathers": 14,
+          "vpmulld": 11,
+          "calls": 3,
+          "branches": 1,
+          "rsp_operands": 41
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xb9f",
+          "end": "0x2189",
+          "instructions": 1038,
+          "gathers": 59,
+          "vpmulld": 61,
+          "calls": 3,
+          "branches": 20,
+          "rsp_operands": 114
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xba2",
+          "end": "0x2191",
+          "instructions": 1039,
+          "gathers": 59,
+          "vpmulld": 61,
+          "calls": 3,
+          "branches": 21,
+          "rsp_operands": 114
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x21d3",
+          "end": "0x2dec",
+          "instructions": 583,
+          "gathers": 35,
+          "vpmulld": 38,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 36
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xb9f",
+          "end": "0x2df2",
+          "instructions": 1634,
+          "gathers": 94,
+          "vpmulld": 99,
+          "calls": 3,
+          "branches": 23,
+          "rsp_operands": 152
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xba2",
+          "end": "0x2dfa",
+          "instructions": 1635,
+          "gathers": 94,
+          "vpmulld": 99,
+          "calls": 3,
+          "branches": 24,
+          "rsp_operands": 152
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x2e43",
+          "end": "0x3806",
+          "instructions": 475,
+          "gathers": 31,
+          "vpmulld": 33,
+          "calls": 1,
+          "branches": 1,
+          "rsp_operands": 40
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xb9f",
+          "end": "0x380c",
+          "instructions": 2125,
+          "gathers": 125,
+          "vpmulld": 132,
+          "calls": 4,
+          "branches": 26,
+          "rsp_operands": 194
+        }
+      ],
+      "selected": [
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0x21d3",
+          "end": "0x2dec",
+          "instructions": 583,
+          "gathers": 35,
+          "vpmulld": 38,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 36,
+          "mca": {
+            "Total Cycles": 49520.0,
+            "Total uOps": 84800.0,
+            "Block RThroughput": 183.5
+          }
+        },
+        {
+          "function": "jshc_axis_preweight::avx2_chain(jshc_axis_preweight::View const*, unsigned long long, unsigned char*, unsigned long long)",
+          "start": "0xfcc",
+          "end": "0x1b9e",
+          "instructions": 573,
+          "gathers": 38,
+          "vpmulld": 38,
+          "calls": 0,
+          "branches": 1,
+          "rsp_operands": 35,
+          "mca": {
+            "Total Cycles": 60242.0,
+            "Total uOps": 85600.0,
+            "Block RThroughput": 201.0
+          }
+        }
+      ]
+    }
+  },
+  "selection_failures": [],
+  "commands": [
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-axis-preweight-build-v1\\CMakeFiles\\jshc_skylake_reference.dir\\F_\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-axis-preweight-static-v1\\reference-0-hot.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-axis-preweight-static-v1\\reference-1-hot.s"
+    ],
+    [
+      "E:/mingw64/bin/objdump.exe",
+      "-d",
+      "-C",
+      "artifacts\\skylake-axis-preweight-build-v1\\CMakeFiles\\jshc_skylake_axis_preweight.dir\\channel_avx2.cpp.obj"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-axis-preweight-static-v1\\candidate-0-hot.s"
+    ],
+    [
+      "C:/Program Files/LLVM/bin/llvm-mca.exe",
+      "-mcpu=skylake",
+      "-iterations=100",
+      "-resource-pressure",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-axis-preweight-static-v1\\candidate-1-hot.s"
+    ]
+  ],
+  "analysis_sources": {
+    "scripts/inspect_skylake_preweight.py": "c469c4898d98d17fc2aed0737c8221dd34473ecee507aeb9d6df9e63d95da4c1",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4"
+  },
+  "tools": {
+    "E:/mingw64/bin/objdump.exe": {
+      "sha256": "8b17003d665949503d5e97430bc393aede3c5b9d2f295e419bfb8a458184cefb",
+      "version": [
+        "GNU objdump (GNU Binutils) 2.45",
+        "Copyright (C) 2025 Free Software Foundation, Inc.",
+        "This program is free software; you may redistribute it under the terms of",
+        "the GNU General Public License version 3 or (at your option) any later version."
+      ]
+    },
+    "C:/Program Files/LLVM/bin/llvm-mca.exe": {
+      "sha256": "0d2693ce8dfb1afd490a14c199c2b53bc2befbb4894967917e162f1f4436be21",
+      "version": [
+        "LLVM (http://llvm.org/):",
+        "  LLVM version 21.1.0",
+        "  Optimized build.",
+        "  Default target: x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "native_calls": 0,
+  "performance_calls": 0,
+  "scope": "完整平坦循环的静态建模，不含真实缓存/GDS、准备或噪声，不是Skylake实测"
+}

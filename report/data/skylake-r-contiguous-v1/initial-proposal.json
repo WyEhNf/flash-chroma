@@ -1,0 +1,20 @@
+{
+  "purpose": "精确后缀缓存沿R连续排列，减少灰度/亮度相邻输入的跨缓存行访问；不改任何表值或容量",
+  "reference": "已在四后端矩阵四场景通过的缓存单独修订4，不混合差值或其他停止候选",
+  "candidate_revision": 13,
+  "canonical_index": "((r-rmin)*wg+(dg-gmin))*wb+(db-bmin)",
+  "storage_index": "((db-bmin)*wg+(dg-gmin))*wr+(r-rmin)",
+  "proof": "矩形三个坐标的基数展开置换；每个合法/非法槽一一对应，值及逐级RGB8不变。只改建表写入位置和SIMD索引；C ABI快照仍按原字典序，新增只读storage导出独立验证。",
+  "profile": {
+    "path": "artifacts/skylake-cache-layout-profile-v1/results.json",
+    "sha256": "1ba225c043987f80d7eb3f06dd05c4af68c92568b8dc9ad2acd9956d1c4a813c"
+  },
+  "profile_signal": "固定已见100图全命中，仅2490个键；16种自然对齐下，逐包行数约0.826..0.844、逐4096块行数约0.350..0.378。不是真实miss/PMU或提速。半字压缩行数几乎不改善，停止不实现。",
+  "static_gate_before_build": "四种shared/unshared首级与后缀全命中路径均须零调用、gather不增加，MCA周期和吞吐均不得回退超过3%；固定两布局剖面的逐4096块行数全部基址余数须至少减少10%，否则静态停止，不扫其他排列。",
+  "runtime_if_justified": "一次55+6、缓存55与所有槽及新存储导出合同，然后8组实际完整256³及100图；再唯一80组固定1/4线程平衡性能，原3%/2%/copy/准备门槛不变。",
+  "scope": "只私有研究，不改公共默认/冠军/GUI/C99/AGENTS或服务器旧包；输出及模型容量保持，仍需Skylake实测和规则许可",
+  "hardware_context_source": "https://cdrdv2-public.intel.com/821612/248966-Optimization-Reference-Manual-V1-050.pdf",
+  "target_limit": "Skylake server与client缓存不同，Xeon Scalable server L2为1MiB，具体SKU仍未知；不以AMD/静态模型替代目标服务器。",
+  "native_calls": 0,
+  "performance_calls": 0
+}

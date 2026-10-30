@@ -1,0 +1,65 @@
+{
+  "purpose": "同色后缀候选的静态停止，不执行运行验收",
+  "analysis_sha256": "a4072b9a7fb635b3bf64a77a1754edbc1bff257caf07130528dd853e13465673",
+  "profile_sha256": "456cb87617fdd0c4cbb0679f8ee57c37cd7c51dc4906a3c7683c14d1650a0fe7",
+  "families": [
+    {
+      "gather_family": 35,
+      "is_actual_a399_family": true,
+      "reference_cycles": 44732.0,
+      "normal_cycles": 49323.0,
+      "uniform_cycle_range": [
+        32527.0,
+        33226.0
+      ],
+      "normal_ratio": 1.1026334615040687,
+      "uniform_path_count": 216,
+      "p_from_seen_photos": 0.16032958984375,
+      "illustrative_mixed_ratio_range": [
+        1.0424328044573095,
+        1.0449381783127325
+      ],
+      "break_even_fraction_range": [
+        0.27333889021195523,
+        0.28520842392992485
+      ],
+      "three_percent_gain_fraction_range": [
+        0.3532364848773517,
+        0.368575510964776
+      ],
+      "scope": "线性混合只作潜力筛选，不是动态性能模型；p只与实际a399的35-gather路径绑定，38族仅展示假设数值"
+    },
+    {
+      "gather_family": 38,
+      "is_actual_a399_family": false,
+      "reference_cycles": 56434.0,
+      "normal_cycles": 59026.0,
+      "uniform_cycle_range": [
+        44026.0,
+        44725.0
+      ],
+      "normal_ratio": 1.0459297586561294,
+      "uniform_path_count": 216,
+      "p_from_seen_photos": 0.16032958984375,
+      "illustrative_mixed_ratio_range": [
+        1.0033146002825204,
+        1.0053004666627305
+      ],
+      "break_even_fraction_range": [
+        0.1728,
+        0.18124606670862178
+      ],
+      "three_percent_gain_fraction_range": [
+        0.28566800000000026,
+        0.2996307950492975
+      ],
+      "scope": "线性混合只作潜力筛选，不是动态性能模型；p只与实际a399的35-gather路径绑定，38族仅展示假设数值"
+    }
+  ],
+  "stop": true,
+  "reason": "实际模型普通包路径周期增加10.26%，即使用最便宜同色路径及固定16.03%覆盖的乐观线性混合仍增加约4.24%，缺少可观时间收益依据；不追加像素/性能或重测。",
+  "correctness_verified": false,
+  "project_native_calls": 0,
+  "performance_calls": 0,
+  "scope": "MCA和剖面不能证明实现正确或真实Skylake更慢；保留全部436条建模，不选择最有利排序路径。"
+}

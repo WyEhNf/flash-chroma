@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "purpose": "缓存单独基线修订4对R连续排列修订13的唯一平衡比较；表值/范围/容量不变",
+  "plan": {
+    "path": "experiments/skylake-r-contiguous-v1.json",
+    "sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867"
+  },
+  "build_path": "artifacts/skylake-r-contiguous-build-v1",
+  "build": {
+    "path": "artifacts/skylake-r-contiguous-build-v1/build.json",
+    "sha256": "7769fe621a6ad1685ec92cbaa20bde2012d5a351fe9fa19617d6d779120e7d6f"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-r-contiguous-full-v1/results.json",
+    "sha256": "6f2a5e9196092c875e3e8c89b772def826784c34c0b49a4cd1804a3d3ebdb763"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备"
+  ],
+  "extra_validation": {
+    "path": "experiments\\skylake-r-contiguous-validation-v2.json",
+    "sha256": "c4c9713f4400ab254e4e93653660e13df91d93b897f9ea621d07b38630856492"
+  },
+  "storage_contract": {
+    "path": "artifacts\\skylake-r-contiguous-layout-contract-v1\\results.json",
+    "sha256": "e172c82cced27487b010cdb625e7f64ab85a48d0412b4cfff07f8465850f6149"
+  }
+}

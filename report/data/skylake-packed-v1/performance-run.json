@@ -1,0 +1,115 @@
+{
+  "source_sha256": {
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/skylake-packed-perf-v1.json": "57565272230d7d3da9e1c88e182f7fde32e513f15bd179047ab46e5c20c4383b",
+    "experiments/skylake-packed-v1.json": "098fb1f3569d8eaf53cf4ef3d2eb7d9c30b5674bf34aef5399683ef2ed8e98c6",
+    "scripts/bench_skylake_runtime.py": "0817d1652e9af38c760cc7598a02162aca7df5f4f99544cdcd6a243b33065c4a",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    },
+    "target_status": "本机AMD可行性；不能替代Skylake服务器验收",
+    "gather_data_sampling": "未通过此脚本取得Windows微码/缓解状态；没有修改安全缓解设置"
+  },
+  "purpose": "同模型、同机、固定CPU集合的四进程平衡性能比较；AMD与最终服务器结果分别保存。",
+  "policy": {
+    "schema": 1,
+    "purpose": "唯一56位轴表候选与同次Skylake调度参考库的同模型四级时间比较，完整等价已通过",
+    "plan": {
+      "path": "experiments/skylake-packed-v1.json",
+      "sha256": "098fb1f3569d8eaf53cf4ef3d2eb7d9c30b5674bf34aef5399683ef2ed8e98c6"
+    },
+    "build_path": "artifacts/skylake-packed-build-v1",
+    "build": {
+      "path": "artifacts/skylake-packed-build-v1/build.json",
+      "sha256": "59ee0bb8cea91b2002bfce7542954379947910c60c854f239b9814ffb2a41e16"
+    },
+    "full_acceptance": {
+      "path": "artifacts/skylake-packed-full-v1/results.json",
+      "sha256": "545bc58ad625ec864cae0443f143e6458b5fbb66ffd1b25a4e8b7cbcc33c1715"
+    },
+    "topology": {
+      "path": "artifacts/skylake-packed-build-v1/topology.json",
+      "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+    },
+    "affinity_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "repeats": 5,
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.97,
+      "any_process_apply_ratio_max": 1.02,
+      "median_copy_apply_ratio_max": 1.0
+    },
+    "limits": [
+      "只在AMD本机测量，不将结果外推Skylake",
+      "固定同L3域4个物理核各一个逻辑CPU；仅子进程亲和性，不改全局机器配置",
+      "未控温或锁频",
+      "不含IO/解码/加载/拟合/统计；预载100图235929600字节"
+    ]
+  },
+  "scope": "一次100图完整组，毫秒每图为摊销；不含模型准备/IO/解码"
+}

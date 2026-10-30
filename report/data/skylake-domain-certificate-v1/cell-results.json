@@ -1,0 +1,50 @@
+{
+  "purpose": "按每个可达网格单元推导有符号斜率/坐标区间证书，不改变缓存范围或执行映射。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4"
+  },
+  "inputs": {
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    }
+  },
+  "source_sha256": "fefac81fc846d28ff28ef3e920afe7091a2d1c766d9ddf77b623a426abe10fb2",
+  "io_source_sha256": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+  "plan_sha256": "b661652fd4537613f431002227075b803276d46d8de469a46e6b4e55b6fb2867",
+  "grid_m": 33,
+  "reachable_cells": 32768,
+  "total_cells": 32768,
+  "unproven_cells": 0,
+  "proven_global_difference_min_GB": [
+    -15,
+    -35
+  ],
+  "proven_global_difference_max_GB": [
+    2,
+    2
+  ],
+  "existing_cache_difference_min_GB": [
+    -16,
+    -36
+  ],
+  "existing_cache_difference_max_GB": [
+    3,
+    3
+  ],
+  "certificate_eligible": true,
+  "first_unproven_cells": [],
+  "all_cells_sha256": "c4d38556bd7795a2208a43809986e81cf0cdaddede97fa5fd9fef88f1fc7a081",
+  "proof": "同单元共同R坐标的节点差凸界，加G/B函数沿三轴从R坐标移到自身坐标的分段线性有符号斜率积分界；每轴对四种斜率端点×偏移端点取完整区间；RGB8差下/上界分别floor/ceil。",
+  "policy": "仅一次逐单元有符号细化；未改变原两码边界/缓存预算/模型，若仍不成立则停止省检查方向，不再细分或扫描。",
+  "project_native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0,
+  "scope": "保守数学证书；未证明的单元不是实际miss或输出错误，不代替任何新C++实现正确性/速度。"
+}

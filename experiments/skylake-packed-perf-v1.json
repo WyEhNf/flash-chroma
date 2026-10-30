@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "purpose": "唯一56位轴表候选与同次Skylake调度参考库的同模型四级时间比较，完整等价已通过",
+  "plan": {
+    "path": "experiments/skylake-packed-v1.json",
+    "sha256": "098fb1f3569d8eaf53cf4ef3d2eb7d9c30b5674bf34aef5399683ef2ed8e98c6"
+  },
+  "build_path": "artifacts/skylake-packed-build-v1",
+  "build": {
+    "path": "artifacts/skylake-packed-build-v1/build.json",
+    "sha256": "59ee0bb8cea91b2002bfce7542954379947910c60c854f239b9814ffb2a41e16"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-packed-full-v1/results.json",
+    "sha256": "545bc58ad625ec864cae0443f143e6458b5fbb66ffd1b25a4e8b7cbcc33c1715"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0
+  },
+  "limits": [
+    "只在AMD本机测量，不将结果外推Skylake",
+    "固定同L3域4个物理核各一个逻辑CPU；仅子进程亲和性，不改全局机器配置",
+    "未控温或锁频",
+    "不含IO/解码/加载/拟合/统计；预载100图235929600字节"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "status": "Proposed，尚未实现、编译或运行",
+  "base_commit": "b990f4f17d1b3a415634a5d052e6266674ce32ca",
+  "purpose": "以已通过的delta+cache为参考，用整数范围证明减少缓存边界检查及YMM活跃值；静态依据充分才测试一次",
+  "preconditions": [
+    "缓存R最小/最大值必须来自首级全部节点R，不能缩小范围",
+    "首级为当前合法Q16四面体插值，四权重非负且和65536，每级half-up到RGB8",
+    "R/G/B都是0..255，缓存dg/db边界夹在[-255,255]，同预算和表语义"
+  ],
+  "proof": [
+    "首级R是四个R节点的凸组合；节点值整数，half-up后仍在全节点Rmin..Rmax内，因此两条R比较冗余",
+    "gOffset=G-R-dg_min，bOffset=B-R-db_min，均在[-510,510]，可用有符号packs_epi32精确压成16位",
+    "spanG=dg_max-dg_min，spanB=db_max-db_min，均在[0,510]；以相同packs顺序构造span向量",
+    "负offset作为uint16至少65026，大于span；非负offset最多510；subs_epu16(offset,span)==0恰好等价于0<=offset<=span",
+    "一个vptest测试全部16字段均零，等价于所有8像素的dg/db范围检查；有效R保证索引安全",
+    "命中直接以rOffset*wg*wb+gOffset*wb+bOffset索引；未命中复原R=rOffset+rmin，G=gOffset+gmin+R，B=bOffset+bmin+R，再计算原后缀"
+  ],
+  "liveness": "首级后直接用Rgb结构保存三个offset，命中路径不保留旧RGB；未命中时重建。缓存常量约6个YMM降为4个，避免先把六条界限跨首级保持活跃。",
+  "static_policy": "冻结一种实现，保留全部同形循环，比较指令/gather/rsp/调用及Skylake MCA；信号不足即停，不扫阈值或块大小",
+  "new_fencepost_contract": {
+    "first_model": "m17，节点R/G/B均等于R轴灰度0..255；缓存R0..255、dg/db均±2",
+    "input": [6,0,0],
+    "r_fraction_at_middle": 32768,
+    "fraction_for_target_t": "t*4096，使灰度节点0/16间输出整数t；8周边包中7个零输入加1个目标输入",
+    "first_output_targets": [[8,5,8],[8,6,8],[8,10,8],[8,11,8],[8,8,5],[8,8,6],[8,8,10],[8,8,11]],
+    "expected": ["G低侧刚超界","G低侧恰命中","G高侧恰命中","G高侧刚超界","B低侧刚超界","B低侧恰命中","B高侧恰命中","B高侧刚超界"],
+    "reason": "原交互样例G低/B高同时越界，新增分别单独越界与±1输出码边界，避免packus或宽度+1错误被另一字段掩盖"
+  },
+  "limits": ["尚无实现或性能结论","先核对本地头文件/官方指令语义，避免误用有符号/无符号饱和","仍为AMD本机研究，Skylake实际待验收","保持独立候选，不修改已冻结通过的组合源"]
+}

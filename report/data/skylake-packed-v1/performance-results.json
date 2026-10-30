@@ -1,0 +1,114 @@
+{
+  "measurement_completed": true,
+  "accepted_on_this_host": false,
+  "failed_gates": [
+    "1线程apply中位比未达门槛",
+    "4线程apply中位比未达门槛",
+    "4线程至少一个进程退化超限"
+  ],
+  "summary": [
+    {
+      "variant": "reference",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 10.920805000000001,
+      "process_medians_ms_per_image": [
+        10.93173,
+        10.956,
+        10.877099999999999,
+        10.909880000000001
+      ],
+      "median_copy_apply_ms_per_image": 11.035675000000001,
+      "model_accounting_bytes": 1058292
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 10.602845,
+      "process_medians_ms_per_image": [
+        10.71255,
+        10.5335,
+        10.657540000000001,
+        10.54815
+      ],
+      "median_copy_apply_ms_per_image": 10.72767,
+      "model_accounting_bytes": 1055244
+    },
+    {
+      "variant": "reference",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 3.1488,
+      "process_medians_ms_per_image": [
+        3.1617,
+        3.2557,
+        3.1359,
+        3.10342
+      ],
+      "median_copy_apply_ms_per_image": 3.298685,
+      "model_accounting_bytes": 1058292
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 3.143115,
+      "process_medians_ms_per_image": [
+        3.53726,
+        3.16208,
+        3.02427,
+        3.12415
+      ],
+      "median_copy_apply_ms_per_image": 3.256545,
+      "model_accounting_bytes": 1055244
+    }
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "process_apply_ratios": [
+        0.9799501085372582,
+        0.9614366557137642,
+        0.9798144726075886,
+        0.9668438149640509
+      ],
+      "median_apply_ratio": 0.9733291437858198,
+      "process_copy_apply_ratios": [
+        0.9801677542307312,
+        0.9614020005616816,
+        0.9795132035609149,
+        0.9683049835490797
+      ],
+      "median_copy_apply_ratio": 0.9739090935549972
+    },
+    {
+      "requested_threads": 4,
+      "process_apply_ratios": [
+        1.1187841983742923,
+        0.9712442792640599,
+        0.964402563857266,
+        1.0066797275264063
+      ],
+      "median_apply_ratio": 0.9889620033952331,
+      "process_copy_apply_ratios": [
+        1.0981287056078701,
+        0.9707696186761196,
+        0.9674994574072319,
+        1.008537059802991
+      ],
+      "median_copy_apply_ratio": 0.9896533392395552
+    }
+  ],
+  "worker_sha256": [
+    "64619dfb36ede9a64804ef5edcbb856b8e9999c520826cfc357959ded2db4778",
+    "5e069b4db18edd9a408c4c2dd368577d9a0394c34c53bcafc44b4705081d797f",
+    "8e303654a928535c31a93ab183ff3ec32bca16a84ff8edfa4c15de8195979bf9",
+    "8ba2794909cfab282dd6036e9a3a57f05fcc7e40ddf6291ea04dd5b93da29844"
+  ],
+  "actual_affinity": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "frequency_and_temperature_controlled": false,
+  "sample_unit": "每进程/每配置一次100图完整组，5轮中位；同进程比值后取四进程比值中位",
+  "scope": "本机当前编译、模型与核集合的描述；不作为Skylake服务器实测，不因本机采用而替换公共默认。"
+}

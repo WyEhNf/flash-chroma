@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "purpose": "缓存修订4与隔离域证明修订16的唯一四进程平衡比较；所有80测量轮均核对完整100图SHA",
+  "plan": {
+    "path": "experiments/skylake-domain-isolated-v1.json",
+    "sha256": "259a4368b2ab9e2ee37782c2beb342c4e91f10b23ca425d1ce44c256a3fd5bc3"
+  },
+  "build_path": "artifacts/skylake-domain-isolated-build-v1",
+  "build": {
+    "path": "artifacts/skylake-domain-isolated-build-v1/build.json",
+    "sha256": "bf4ca35f6af26a4ac26c9dec1b231e32e1fd55c954b36d3ba9c9e70c4fd1db1e"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-domain-isolated-full-v1/results.json",
+    "sha256": "293b98b129ac1c1eeafd10997643acefb9652ccc5f3b16dbfcae7e14cf54fea6"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.97,
+    "any_process_apply_ratio_max": 1.02,
+    "median_copy_apply_ratio_max": 1.0,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备"
+  ],
+  "domain_contract": {
+    "path": "artifacts/skylake-domain-isolated-domain-contract-v1/results.json",
+    "sha256": "1445624fa47eb76419b0fe628576a9260b2302b1dd5453dfc72adb6e7adda70d"
+  },
+  "verify_each_measured_round": true
+}

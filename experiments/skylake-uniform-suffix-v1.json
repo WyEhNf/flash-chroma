@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "purpose": "首级八像素RGB8全等时，三个共享后缀只对一个颜色逐级整数计算并广播；无新颜色表",
+  "deadline_shanghai": "2026-10-20T10:00:00+08:00",
+  "base_commit": "3b0874aa260da3af51b437b92bdf0d0ecca03676",
+  "candidate": "固定四级且首级非共享、后三级共享时，先按原AVX2计算首级。若8个RGB8结果逐位全等，则对一个颜色用标量整数计算后三个共享模型，每级RGB8 half-up，然后广播最终结果；否则原AVX2后三层。尾部不变。",
+  "unchanged": [
+    "a399模型及后三模型",
+    "源参考与RGB欧氏误差口径",
+    "17..33网格与节点",
+    "单级Q16及逐级RGB8 half-up",
+    "原始SLUT/侧表磁盘格式",
+    "公共默认与冠军"
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-delta16-runtime/CMakeLists.txt": "43134d9d1710333a62e91aa78f6c8f5345aad48ecc9cf809bcacafb7ff39ef38",
+    "experiments/skylake-delta16-runtime/channel_avx2.cpp": "c9074f9accaecfa4b643ecd0f2386019e81190c244c86a7250378cfe86dbeb37",
+    "experiments/skylake-delta16-runtime/channel_runtime.cpp": "08b97cc99692f879a8e8c4c259c0aefac45a25b80e7fa6f34d1a66d2cd2c1fbc",
+    "experiments/skylake-delta16-runtime/channel_views.hpp": "72c9f4619446e1032f8d5e75f65216431d595fca9179bfb28c56fa0f8adc6673",
+    "experiments/skylake-uniform-suffix-runtime/CMakeLists.txt": "d368cf7f8495be09dcd5ca4c8c99a840d165482f6327234f3c07ff00d7d7c677",
+    "experiments/skylake-uniform-suffix-runtime/channel_avx2.cpp": "20026288cb3c25ae615fd85ea6ed69496a2d295f6d90df956b9694aeb817111a",
+    "experiments/skylake-uniform-suffix-runtime/channel_runtime.cpp": "bc14c91fd60bb7b09e82ff6916d8c42523819bd0b3ecb64a86f8ac5cea5f2da1",
+    "experiments/skylake-uniform-suffix-runtime/channel_views.hpp": "c826c0bb70a929cd48cc466db1dbf0874c3915c9907fadbbcadfd0e1a37aa7d2",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "9a9c32e9cd803efe9b22cde1d53d52f9c9f4f4faac002f967f26bd49a20b1f10",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_runtime.py": "d401f8344fb3190b1fb5581b300e43a777d3e290369be5696dfa9452e053dcef",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_delta16.py": "1bd365f8278dbdad21ca13bc22d64642984d0332635e482f44dce4a24fd04eb4",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1"
+  },
+  "local_compiler": {
+    "path": "E:/mingw64/bin/g++.exe",
+    "sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "compile_policy": {
+    "runtime_dispatch": "标量/CPU检测TU无-mavx2",
+    "simd": "-mavx2 -mtune=skylake -ffp-contract=off；不启用FMA/fast-math",
+    "forbidden": [
+      "-march=native",
+      "-mavx512*",
+      "fast-math",
+      "改变模型以换速度"
+    ]
+  },
+  "fixed_inputs": {
+    "library": {
+      "path": "artifacts/channel-native-specialized-v1/jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    },
+    "build": {
+      "path": "artifacts/channel-native-specialized-v1/build.json",
+      "sha256": "66b05e3986e3988813a03ab5f534469ea3715ee200cb3f4efa5a8852fe512ded"
+    },
+    "contract": {
+      "path": "artifacts/channel-native-specialized-contract-v1/results.json",
+      "sha256": "ecfd23a9e793adf3e7e45b21b16975ed7c4827b56d089b09eb31c6b6a29720f5"
+    },
+    "policy": {
+      "path": "experiments/channel-runtime-specialized-v1.json",
+      "sha256": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839"
+    },
+    "prior_full": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f"
+    },
+    "prior_run": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/run.json",
+      "sha256": "f2cdc12d609814cc313e80e6f84cfbbdfad1c8f4abe89505e24462442964e41a"
+    },
+    "cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    },
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    },
+    "model": {
+      "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+      "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    }
+  },
+  "suffix_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "contract": {
+    "seed": 2026102001,
+    "mixed_m": [
+      17,
+      18,
+      25,
+      33
+    ],
+    "lengths": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      15,
+      16,
+      17,
+      4095,
+      4096,
+      4097
+    ],
+    "byte_offsets": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "paths": [
+      "unshared/shared/shared/shared",
+      "shared/unshared/shared/unshared",
+      "equal-sidecar-but-different-base/shared/shared/shared",
+      "single-unshared",
+      "three-unshared"
+    ],
+    "backend_threads": [
+      [
+        "scalar",
+        1
+      ],
+      [
+        "avx2",
+        1
+      ],
+      [
+        "avx2",
+        4
+      ]
+    ],
+    "edge_fracs": [
+      0,
+      1,
+      32767,
+      32768,
+      32769,
+      65535,
+      65536
+    ],
+    "oracle": "scripts/verify_channel_coordinates.py.integer_oracle，独立uint64逐级输出",
+    "acceptance": "整数全部字节与哨兵零差；先有限集中合同后才一次实际完整域与百图，不重新拟合"
+  },
+  "performance": {
+    "variants": [
+      "reference",
+      "candidate"
+    ],
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "repeats": 5,
+    "scope": "每次完整100图；apply与copy+apply分列，源预载，不含IO/解码/加载/统计；先通过完整正确性",
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.97,
+      "any_process_apply_ratio_max": 1.02,
+      "median_copy_apply_ratio_max": 1.0
+    },
+    "failure_policy": "失败保留不采用；不按噪声继续参数扫描。Skylake服务器结果单独验收，不以AMD本机取代。"
+  },
+  "server_status": "仍未取得具体CPU/系统/连接入口；仅本机研究，最终Skylake单独测试",
+  "evidence_sources": [
+    "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/x86-Options.html",
+    "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/resources/gds-mitigation-performance-analysis.html"
+  ],
+  "limits": [
+    "当前本机是AMD，不能宣称Skylake实测收益",
+    "GDS缓解/微码/NUMA状态须在最终服务器记录，不修改安全缓解设置",
+    "原实验停止条件仅约束其既有阶段，本轮新范围由当前用户目标授权"
+  ],
+  "cmake_project": "experiments/skylake-uniform-suffix-runtime",
+  "cmake_targets": [
+    "jshc_skylake_reference",
+    "jshc_skylake_uniform_suffix"
+  ],
+  "revisions": {
+    "reference": 5,
+    "candidate": 11
+  },
+  "delta16_policy": {
+    "contract_seed": 2026102004,
+    "difference_min": -32768,
+    "difference_max": 32767,
+    "encoding": "R/idx保留原32位；另一u32低半字int16(G-R)、高半字int16(B-R)，签名明确恢复再加R",
+    "eligibility": "逐级检查全部3轴×256码值；仅非共享且所有坐标差可表示时压缩，任一越界全部保留原九表",
+    "disk_format": "原9216字节Q16侧表不变；压缩只在创建后内部内存",
+    "actual_chain_layouts": [
+      2,
+      1,
+      1,
+      1
+    ],
+    "layout_diagnostic": "参考5/候选11均保留原0/1/2坐标诊断，无轴预计算格式",
+    "raw_contract_cases": 55,
+    "extra_contract_layouts": [
+      "delta_single_bounds",
+      "delta_shared_shared_shared",
+      "three_delta",
+      "shared_delta_shared_delta",
+      "delta_unpacked_shared_delta",
+      "over_positive_single",
+      "over_negative_single",
+      "equal_changed_shared"
+    ],
+    "boundary_differences": [
+      -32769,
+      -32768,
+      32767,
+      32768
+    ],
+    "scope": "先静态评估，只有有可解释的实质潜力才一次集中合同/完整域/百图/平衡性能；不扫描位宽、阈值或块大小",
+    "source_range_evidence": {
+      "path": "artifacts/skylake-delta16-design-v1/ranges.json",
+      "sha256": "1760a0e4b907b67d697292730924110876c2fee127f1499e087049643b2c19c9"
+    },
+    "boundary_field_coverage": "R/B轴低-32768高+32767，G轴低+32767高-32768；另检+32768/-32769明确回退"
+  },
+  "test_plan_revision": 2,
+  "test_plan_revision_reason": "静态阶段后、任何数值/性能调用前，补齐不同轴对上下半字交换极值的覆盖与输入夹具哈希；C++源码完全未改，不覆盖v1证据。",
+  "reference_delta16": true,
+  "uniform_suffix_policy": {
+    "purpose": "下一独立候选的方案，不表示已实现或通过验收",
+    "reference_revision": 5,
+    "candidate_revision_planned": 11,
+    "profile_sha256": "456cb87617fdd0c4cbb0679f8ee57c37cd7c51dc4906a3c7683c14d1650a0fe7",
+    "post_first_uniform_packet_fraction_on_seen_photos": 0.16032958984375,
+    "algorithm": "固定四级且首级非共享、后三级共享时，先按原AVX2计算首级。若8个RGB8结果逐位全等，则对一个颜色用标量整数计算后三个共享模型，每级RGB8 half-up，然后广播最终结果；否则原AVX2后三层。尾部不变。",
+    "proof": "逐像素映射确定；8个首级RGB8相等时，以每级确定性和每级RGB8量化作归纳，三个后缀的全部8个结果始终相等。不得改为末级才量化。",
+    "expected_cost": "命中包将后三层21个8-lane gather换为21个标量表读取，仅计算一个RGB。16.03%是已见数据剖面，不是加速承诺。普通路径新增同色检查与分支，必须核对溢出/寄存器成本及真实性能。",
+    "architecture": [
+      "复制已验无缓存delta16修订5，私有命名空间/修订11；不复用停止的预计算轴10或额外颜色表，模型容量应不变。",
+      "根据之前失去融合的证据，预先选一个GNU always_inline的共享标量小函数与必要SIMD小函数；fixed_four可noinline隔离为每4096块一次调用，不能出现每8像素的外部函数调用。不扫描inlining开关。",
+      "标量共享变换复用原idx/Q16及4个节点、非负凸权重，uint32乘加最大255*65536，明确每级half-up，再打包返回。",
+      "首级输出pack为24位颜色，用广播首lane与xor/ptest判定全8相等。fast支路广播最终packed结果并原shuffle写24字节；普通支路按原三层SIMD及原写回。",
+      "只针对结构符合的固定四级；其他布局保持现有分派。没有跨包状态、哈希缓存或线程共享可变数据。"
+    ],
+    "validation_if_static_potential": [
+      "原55+6与88+32合同，参考/候选均delta16且模型内存相同；已有helper按当前SHA冻结，新axis格式诊断在本候选应缺失/None。",
+      "新有限样例包含输入同色、不同色但首级恒色后全等、7个同色1个不同色、first输出差别1LSB、两半区/对齐/尾部/4096边界。必须通过独立u64逐级RGB8，不能只比较旧C++。",
+      "固定a399完整域/100图输出相同；统计已见覆盖不能称盲测精度。",
+      "若静态正常路径开销和同色路径节省形成可观潜力，才一次80轮原门槛，不重测已失败候选或调门槛。"
+    ],
+    "status": "单一实现即将冻结，仍未编译/加载/运行",
+    "project_native_calls": 0,
+    "performance_calls": 0,
+    "implementation_math_update": "测试前选择与旧SIMD一致的三乘伸缩和式，减少标量乘法；任意中间绝对值<4*255*65536<int32上限，末值等价非负凸组合，+32768后右移16；每级立即打包RGB8。",
+    "base_commit": "3b0874aa260da3af51b437b92bdf0d0ecca03676",
+    "selection_gate": "先生成代码检查两种首级的普通/同色路径。循环内不得有外部调用，记录普通路径增量、同色的gather转标量读取、全部寄存器/分支成本，再以固定16.03%剖面判断是否有可观潜力。无明确依据就停止，不扫内联或标量公式。",
+    "per_block_call": "明确每4096块一次额外私有fixed_four调用，实际性能必须计入；MCA循环模型不包含该序言/尾声成本。",
+    "design_sha256": "56261a57ac1d65866dd6024faef3bd1ddbeaf1f91249d9288b87e65f2393cc13",
+    "model_bytes_expected_equal": true,
+    "has_cache": false,
+    "performance_gate": {
+      "median_apply_ratio_max": 0.97,
+      "any_process_apply_ratio_max": 1.02,
+      "median_copy_apply_ratio_max": 1.0,
+      "median_prepare_plus_100_ratio_max": 1.0
+    }
+  }
+}

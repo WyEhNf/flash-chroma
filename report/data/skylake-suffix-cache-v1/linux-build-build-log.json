@@ -1,0 +1,37 @@
+[
+  {
+    "command": [
+      "/usr/bin/cmake",
+      "-S",
+      "/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime",
+      "-B",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-suffix-cache-linux-build-v1",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_CXX_COMPILER=/usr/bin/g++",
+      "-DCMAKE_C_COMPILER=/usr/bin/gcc",
+      "-G",
+      "Ninja"
+    ],
+    "returncode": 0,
+    "stdout": "-- The CXX compiler identification is GNU 15.2.0\n-- The C compiler identification is GNU 15.2.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: /usr/bin/g++ - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: /usr/bin/gcc - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Performing Test JSHC_TARGET_X86\n-- Performing Test JSHC_TARGET_X86 - Success\n-- Performing Test JSHC_COMPILER_HAS_AVX2\n-- Performing Test JSHC_COMPILER_HAS_AVX2 - Success\n-- jshc: C++17 portable baseline; AVX2=ON; OpenMP=ON\n-- jshc optional backends: C++ SIMD=OFF; Zig=OFF; Rust=OFF\n-- jshc C99/structured bridge=ON\n-- Found OpenMP_CXX: -fopenmp (found version \"4.5\")\n-- Found OpenMP: TRUE (found version \"4.5\") found components: CXX\n-- Configuring done (19.7s)\n-- Generating done (0.4s)\n-- Build files have been written to: /mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-suffix-cache-linux-build-v1\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/usr/bin/cmake",
+      "--build",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-suffix-cache-linux-build-v1",
+      "--config",
+      "Release",
+      "--parallel",
+      "4",
+      "--target",
+      "jshc_skylake_reference",
+      "jshc_skylake_suffix_cache"
+    ],
+    "returncode": 0,
+    "stdout": "[1/12] Building C object core/CMakeFiles/jshc_core.dir/portable/src/jshc_portable.c.o\n[2/12] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/portable_bridge.cpp.o\n[3/12] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut_simd_avx2.cpp.o\n[4/12] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut.cpp.o\n[5/12] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/fit_r14.cpp.o\n[6/12] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp.o\n/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp: In function ‘std::vector<unsigned int> {anonymous}::read_fractions(const char*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp:29:47: warning: ignoring attributes on template argument ‘int (*)(FILE*)’ [-Wignored-attributes]\n   29 |   std::unique_ptr<FILE, decltype(&std::fclose)> f(std::fopen(path, \"rb\"), &std::fclose);\n      |                                               ^\n/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp: In function ‘size_t jshc_cc_model_bytes(const void*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp:143:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  143 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime/channel_runtime.cpp:143:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  143 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\n[7/12] Building CXX object CMakeFiles/jshc_skylake_reference.dir/mnt/f/Hackathon/projects/16-lut-color/experiments/channel-runtime-specialized/channel_avx2.cpp.o\n[8/12] Linking CXX static library core/libjshc_core.a\n[9/12] Building CXX object CMakeFiles/jshc_skylake_suffix_cache.dir/channel_avx2.cpp.o\n[10/12] Building CXX object CMakeFiles/jshc_skylake_suffix_cache.dir/channel_runtime.cpp.o\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp: In function ‘std::vector<unsigned int> {anonymous}::read_fractions(const char*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:33:47: warning: ignoring attributes on template argument ‘int (*)(FILE*)’ [-Wignored-attributes]\n   33 |   std::unique_ptr<FILE, decltype(&std::fclose)> f(std::fopen(path, \"rb\"), &std::fclose);\n      |                                               ^\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp: In function ‘size_t jshc_cc_model_bytes(const void*)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:200:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  200 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:200:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  200 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp: In function ‘int jshc_cc_copy_cache(const void*, uint32_t*, size_t)’:\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:212:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  212 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:212:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  212 |   if(!handle)return 1;const auto& table=static_cast<const Handle*>(handle)->cache;\n      |                       ^~~~~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:214:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]\n  214 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |   ^~\n/mnt/f/Hackathon/projects/16-lut-color/experiments/skylake-suffix-cache-runtime/channel_runtime.cpp:214:72: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’\n  214 |   if(entries)std::memcpy(output,table.data(),entries*sizeof(uint32_t));return 0;\n      |                                                                        ^~~~~~\n[11/12] Linking CXX shared library libjshc_skylake_suffix_cache.so\n[12/12] Linking CXX shared library libjshc_skylake_reference.so\n",
+    "stderr": ""
+  }
+]

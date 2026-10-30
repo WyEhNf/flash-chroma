@@ -1,5 +1,21 @@
 # 报告数据索引
 
+[正负斜率快路径补验](skylake-domain-signed-contract-v1/README.md)保存m17/18/25/33四个固定样例、全部证书及48×8203像素的有限整数/哨兵比较；明确启用获证快路径，不把回退通过当新路径覆盖。原二进制/性能数据不变。
+
+[服务器包恢复](skylake-packet-restore-v1/README.md)保存一次114文件/339633805字节恢复的全部落盘SHA，及独立标准库入口。恢复包与已验4/16包身份相同；零新构建、像素或性能，原生候选计数不变。
+
+[单元域证书](skylake-domain-certificate-v1/README.md)、[模板版静态停止](skylake-domain-template-static-v1/README.md)、[隔离版完整验收](skylake-domain-isolated-v1/README.md)保存原缓存覆盖的数学证明及修订16：相对修订4，本机1/4线程apply配对中位下降7.07%/5.10%，1800836字节模型容量保持，80个测量轮均核对完整100图SHA；不是Skylake成绩，不叠乘旧收益。
+
+[坐标与节点局部性](skylake-coordinate-locality-v1/README.md)保存固定100图三项数据资格及一次编译调度比较：八像素组共享排序34.09%、两个端点标志反例、节点R连续逐块仅约1%行数改善、客户端/服务器调度对象逐字节相同。没有新运行库、完整域输出或性能调用。
+
+2026-10-20新增[时间优化阶段](../../docs/stages/2026-10-20-skylake-runtime-delivery.md)：[56位轴表](skylake-packed-v1/README.md)、[精确16位乘加](skylake-madd-v1/README.md)、[精确binary32](skylake-float-v1/README.md)均未达本机速度门槛；[有界精确后缀缓存](skylake-suffix-cache-v1/README.md)在同模型、同核集合的Windows/AMD对照中使1/4线程apply耗时下降约52%，增加742544字节准备容量，准备成本另列。缓存另有WSL/Linux完整字节比较，不代表Skylake实测；派生缓存的题目许可与目标服务器验收仍待办。四候选各自保留冻结计划、原始轮次及源码/二进制身份，不更新默认或历史PDF。
+
+后续[描述符快照静态研究](skylake-snapshot-static-v1/README.md)只完成构建、汇编及MCA建模：热指令减少而栈访存增加，模型信号不一致，未运行新像素、整数正确性或性能测试，不采用。
+
+[按阶段遍历像素块](skylake-stage-major-v1/README.md)保持实际四级字节与准备容量不变，一次比较1/4线程apply配对中位耗时下降6.1047%/3.2690%，但一个4线程进程退化8.6293%，未通过“任一进程退化≤2%”门槛，不采用、不排除该进程或重跑。
+
+[首级/后缀单边界拆分](skylake-prefix-split-v1/README.md)同模型完整字节一致、容量不变；一次比较1线程apply配对中位下降4.3414%，4线程增加0.3322%、最差进程增加5.9418%，门槛失败，不采用。保留聚合绝对中位与同进程比中位的区别，不能挑较好的口径。融合边界族停止，不追加块尺寸/线程扫描。
+
 最新本地汇总见[当前精度结果](../../docs/stages/2026-10-19-precision-latest.md)。`cinema-current-anchor-accept-v1`保存a399真实四级完整域/百图/独立整数与原生终验、逐图退化、约46%成本背景；`channel-runtime-specialized-v1`保存同a399模型的唯一编译期专门化合同、完整原生等价和受控配对速度收益，两个阶段的速度不跨阶段相乘。
 
 `cinema-channel-suffix-coordinates-v1`、`cinema-channel-suffix-joint-nodes-v1`保留两个未入围候选；`cinema-cap-anchor-diagnosis-v1`保留唯一原色的逐级轨迹；`cinema-current-anchor-v1`保留统一收紧191色及唯一整合拟合/选择。`channel-runtime-reuse-v1`保留节点读取减少却变慢的负结果。新格式未接公共默认/GUI/C99，仍无官方数据或Threshold。
@@ -67,3 +83,27 @@
 `velvia-channel-global-nodes-v1`保存一次160步全局连续节点及三轮cap撤销；连续代理改善未转为真实RGB8收益，完整记录失败、离线内存和未执行范围。
 
 `velvia-channel-joint-nodes-v1`保存最后一次8色26方向RGB联合提议及集中独立整数合同；相对3e5选择双mean仅降约0.107%，未入围，节点族收束，未执行新完整精度或性能验收。
+
+`skylake-clang-static-v1`保留同源GCC/Clang对象级比较，信号不一致而未运行。`skylake-delta16-v2`保存无损坐标差压缩的55+88组合同、完整色域/百图零差、唯一80轮性能及门槛复算，本机1/4线程耗时降约12.0%/8.1%；[阶段说明](../../docs/stages/2026-10-20-skylake-delta16.md)。AMD结果不代表Skylake实测，独立缓存候选收益不相乘。
+
+`skylake-server-entry-v1`保存纯标准库服务器入口、固定输入清单、独立Linux构建及12组完整色域/2112次边界比较/百图SHA回执。实际为同AMD的WSL2，正式性能分支未执行；最终本地传输ZIP约188MB，原始流不提交Git。[复现与限制](../../docs/stages/2026-10-20-skylake-server-entry.md)。
+
+`skylake-delta-cache-v1`直接比较已有缓存与同缓存加无损坐标差，保存55/88/55/77组集中合同、完整域/百图、表槽、唯一80轮与参考对象相等证明；本机1/4线程配对耗时再降约21.1%/22.5%，严重波动完整保留。[阶段说明](../../docs/stages/2026-10-20-skylake-delta-cache.md)不把此结果换算为不同基线总加速或Skylake成绩。
+
+`skylake-cache-range-static-v1`保存边界简化的数学条件、构建、全部汇编/MCA与停止决定；一处周期增加、一处减少，吞吐下界仅约1.2%改善，未运行数值/百图/性能。[原型边界](../../docs/stages/2026-10-20-skylake-cache-range-static.md)不作为已验证后端。
+
+`skylake-server-matrix-v1`保存四后端同场的冻结包、独立缓存金标准、两组Linux构建、4224次有限比较、24组完整256³、16组百图及唯一320轮原始性能。缓存单独启用通过本轮四场景门槛；组合的四线程整批及差值的四线程逐图失败，所有严重波动保留，不重测覆盖。[阶段说明](../../docs/stages/2026-10-20-skylake-server-matrix.md)区分程序完成、各比较门槛与最终Skylake待验收。
+
+`skylake-scalar-gather-static-v1`保存软件读取的对象/全部调用预算及固定侧表589824个排序比较；未执行像素/MCA/性能，不采用。`skylake-packed-store-v1`保存直接写回的完整CFG/MCA、集中整数、8组完整色域/百图及唯一80轮；1线程未达3%、4线程回退，保留失败不重测。[软件读取边界](../../docs/stages/2026-10-20-skylake-scalar-gather-static.md)与[写回实测](../../docs/stages/2026-10-20-skylake-packed-store.md)分别说明。
+
+`skylake-axis-preweight-static-v1`保存共享轴索引预计算的可逆条件、修正元数据、构建/完整MCA及静态停止；另保存固定节点与已见100图的结构剖面，首级后整包同色约16.03%支持后续精确后缀快路。[阶段说明](../../docs/stages/2026-10-20-skylake-axis-preweight-static.md)明确未执行修订10运行验收；该阶段记录时修订11尚未实现，不把结构覆盖写成加速。
+
+`skylake-uniform-suffix-static-v1`保存后续修订11的源码/库、完整CFG全部436条MCA和静态停止：同色包便宜但普通包成本上升，固定剖面不足以抵消，没有进入运行测试。[后续说明](../../docs/stages/2026-10-20-skylake-uniform-suffix-static.md)更新提案状态，不把它补记为上一阶段已实施或已验证。
+
+`skylake-restrict-static-v1`保存修订12的不重叠读取域及restrict方案、原字节构建、两类完整循环和静态停止。循环指令下降但rsp操作数增加，两族建模周期改善2.224%/5.477%、吞吐下界均略差，未触发运行测试；新域保护与资源诊断尚未验证。[阶段说明](../../docs/stages/2026-10-20-skylake-restrict-static.md)不把预计568字节当作实测资源，也不升级服务器包。
+
+`skylake-r-contiguous-v1`保存后缀缓存R连续排列的固定访问剖面、全部四族静态模型、初版比较器拒绝及运行前配对修正、集中整数/真实存储/完整域/百图、唯一80组原始性能及门槛复算。中位耗时改善但四线程单进程回退超2%，不采用、不重测；[阶段说明](../../docs/stages/2026-10-20-skylake-r-contiguous.md)区分缓存行结构、实测、波动及Skylake待验收。
+
+`skylake-layout-server-v2`保存4/13双库的独立标准库服务器包、v1依赖漏带拒绝及修正、WSL实际构建、3432次有限比较、12组完整域、209600物理槽与16组逐轮百图的正确性。没有新性能比较，不覆盖Windows失败；[阶段说明](../../docs/stages/2026-10-20-skylake-layout-server.md)给出完整本地传输包SHA和仍待执行的Skylake160组协议。
+
+`skylake-compact-cache-static-v1`保存修订14的半字组合剖面、精确条件、八候选/四参考全部24条MCA及静态停止。实际模型成本已超过预设1.03，未加载候选或运行新正确性/性能；[阶段说明](../../docs/stages/2026-10-20-skylake-compact-cache-static.md)把数学可逆、编译期断言和未验证实现明确分开，不升级默认或服务器包。

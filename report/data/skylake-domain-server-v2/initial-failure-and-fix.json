@@ -1,0 +1,83 @@
+{
+  "purpose": "首包因同名不同模型误绑域诊断而拒绝；修正仅限夹具身份绑定，原生及数值预期不变",
+  "first_failure": {
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/scripts/run_skylake_domain_server.py",
+      "--bundle",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/bundle-manifest.json",
+      "--output",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/artifacts/linux domain-v1/correctness.json",
+      "--child-policy",
+      "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/artifacts/linux domain-v1/policy.json",
+      "--validate"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/scripts/run_skylake_domain_server.py\", line 401, in <module>\n    if __name__=='__main__':main()\n                            ~~~~^^\n  File \"/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/scripts/run_skylake_domain_server.py\", line 337, in main\n    if args.validate:result=validate(policy,bundle)\n                            ~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v1/scripts/run_skylake_domain_server.py\", line 173, in validate\n    if expected_domain and any(detail[k]!=v for k,v in expected_domain.items()):raise AssertionError('有限域证明不同于已验独立区间')\n                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 有限域证明不同于已验独立区间\n"
+  },
+  "old_bundle_sha256": "0d5cb5d432cc5118731108b826657eb3eb984717886258c21760e69e1e6629dd",
+  "new_bundle_sha256": "74649bd457527a55295d03bf3335041aa388cf1b4e090fd36b600eb4321e84b2",
+  "legacy_model_sha256": "78500e7a9ebd6b2bab87fabede4f21172a86056653fa6d2dc787631ef83c109d",
+  "narrow_model_sha256": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+  "models_are_different": true,
+  "native_and_derived_plan_bytes_unchanged": true,
+  "new_bindings": [
+    {
+      "case": "cache_shared_shared",
+      "model_sidecar_sha256": {
+        "server-inputs/layout-fixtures/model0.slut": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+        "server-inputs/layout-fixtures/model1.slut": "a9f9f71b9346c735fca611d99edb0bd5f9016bf531aa288edfde8d3f22785af0",
+        "server-inputs/layout-fixtures/model2.slut": "b4b2f72db1f127c92f8c5f1e61b243cb992023994d9e193ee07272f55d51bdb7",
+        "server-inputs/layout-fixtures/model3.slut": "44d212e035e7b136f8d50f4368e20480d77f4c473d95781d94ba714fccb14efc"
+      }
+    },
+    {
+      "case": "cache_unshared_shared",
+      "model_sidecar_sha256": {
+        "server-inputs/layout-fixtures/model0.slut": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+        "server-inputs/layout-fixtures/model1.slut": "a9f9f71b9346c735fca611d99edb0bd5f9016bf531aa288edfde8d3f22785af0",
+        "server-inputs/layout-fixtures/model2.slut": "b4b2f72db1f127c92f8c5f1e61b243cb992023994d9e193ee07272f55d51bdb7",
+        "server-inputs/layout-fixtures/model3.slut": "44d212e035e7b136f8d50f4368e20480d77f4c473d95781d94ba714fccb14efc",
+        "server-inputs/layout-fixtures/side0.bin": "6f8c8a7c466212212c60e59010c39567dd24191a9924d4af7ba842113fa64ca3"
+      }
+    },
+    {
+      "case": "cache_shared_mixed",
+      "model_sidecar_sha256": {
+        "server-inputs/layout-fixtures/model0.slut": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+        "server-inputs/layout-fixtures/model1.slut": "a9f9f71b9346c735fca611d99edb0bd5f9016bf531aa288edfde8d3f22785af0",
+        "server-inputs/layout-fixtures/model2.slut": "b4b2f72db1f127c92f8c5f1e61b243cb992023994d9e193ee07272f55d51bdb7",
+        "server-inputs/layout-fixtures/model3.slut": "44d212e035e7b136f8d50f4368e20480d77f4c473d95781d94ba714fccb14efc",
+        "server-inputs/layout-fixtures/side1.bin": "9f70f2b1e5aaf376b55aef31fe21410ce118110a55ecb4dbdd4d8317d0f6964a",
+        "server-inputs/layout-fixtures/side3.bin": "df8b3dd8a97885b8697257d1b6efeacbab2ce7b947d1ee04d5d7bacc3075e50e"
+      }
+    },
+    {
+      "case": "cache_unshared_mixed",
+      "model_sidecar_sha256": {
+        "server-inputs/layout-fixtures/model0.slut": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+        "server-inputs/layout-fixtures/model1.slut": "a9f9f71b9346c735fca611d99edb0bd5f9016bf531aa288edfde8d3f22785af0",
+        "server-inputs/layout-fixtures/model2.slut": "b4b2f72db1f127c92f8c5f1e61b243cb992023994d9e193ee07272f55d51bdb7",
+        "server-inputs/layout-fixtures/model3.slut": "44d212e035e7b136f8d50f4368e20480d77f4c473d95781d94ba714fccb14efc",
+        "server-inputs/layout-fixtures/side0.bin": "6f8c8a7c466212212c60e59010c39567dd24191a9924d4af7ba842113fa64ca3",
+        "server-inputs/layout-fixtures/side1.bin": "9f70f2b1e5aaf376b55aef31fe21410ce118110a55ecb4dbdd4d8317d0f6964a",
+        "server-inputs/layout-fixtures/side2.bin": "4f8dc05e1845d471a184365b4e22911289dab8af40a8ee53d0907fa3d8415a17",
+        "server-inputs/layout-fixtures/side3.bin": "df8b3dd8a97885b8697257d1b6efeacbab2ce7b947d1ee04d5d7bacc3075e50e"
+      }
+    },
+    {
+      "case": "cache_equal_changed_shared",
+      "model_sidecar_sha256": {
+        "server-inputs/layout-fixtures/model0.slut": "e54decce379c96a4c0d30c1ad2a317900669d31a6a56b310f23132a8c6c9974c",
+        "server-inputs/layout-fixtures/model1.slut": "a9f9f71b9346c735fca611d99edb0bd5f9016bf531aa288edfde8d3f22785af0",
+        "server-inputs/layout-fixtures/model2.slut": "b4b2f72db1f127c92f8c5f1e61b243cb992023994d9e193ee07272f55d51bdb7",
+        "server-inputs/layout-fixtures/model3.slut": "44d212e035e7b136f8d50f4368e20480d77f4c473d95781d94ba714fccb14efc",
+        "server-inputs/layout-fixtures/equal-changed.bin": "35d283005ba396b68bec7aa7f99cf70ba5c802efde5525ff36b1b6f182a4051d"
+      }
+    }
+  ],
+  "finite_output_bytes_regenerated": false,
+  "native_calls_in_this_archiver": 0,
+  "performance_calls": 0
+}

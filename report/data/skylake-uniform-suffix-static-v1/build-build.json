@@ -1,0 +1,114 @@
+{
+  "purpose": "按冻结输入同时构建Skylake调度的参考库与独立候选，不覆盖既有构建。",
+  "plan_sha256": "6566cf8a2818eff6b52fab9703f8671cbce83a1f03b8e08fabee8b4e0e7c461b",
+  "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-delta16-runtime/CMakeLists.txt": "43134d9d1710333a62e91aa78f6c8f5345aad48ecc9cf809bcacafb7ff39ef38",
+    "experiments/skylake-delta16-runtime/channel_avx2.cpp": "c9074f9accaecfa4b643ecd0f2386019e81190c244c86a7250378cfe86dbeb37",
+    "experiments/skylake-delta16-runtime/channel_runtime.cpp": "08b97cc99692f879a8e8c4c259c0aefac45a25b80e7fa6f34d1a66d2cd2c1fbc",
+    "experiments/skylake-delta16-runtime/channel_views.hpp": "72c9f4619446e1032f8d5e75f65216431d595fca9179bfb28c56fa0f8adc6673",
+    "experiments/skylake-uniform-suffix-runtime/CMakeLists.txt": "d368cf7f8495be09dcd5ca4c8c99a840d165482f6327234f3c07ff00d7d7c677",
+    "experiments/skylake-uniform-suffix-runtime/channel_avx2.cpp": "20026288cb3c25ae615fd85ea6ed69496a2d295f6d90df956b9694aeb817111a",
+    "experiments/skylake-uniform-suffix-runtime/channel_runtime.cpp": "bc14c91fd60bb7b09e82ff6916d8c42523819bd0b3ecb64a86f8ac5cea5f2da1",
+    "experiments/skylake-uniform-suffix-runtime/channel_views.hpp": "c826c0bb70a929cd48cc466db1dbf0874c3915c9907fadbbcadfd0e1a37aa7d2",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "9a9c32e9cd803efe9b22cde1d53d52f9c9f4f4faac002f967f26bd49a20b1f10",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_runtime.py": "d401f8344fb3190b1fb5581b300e43a777d3e290369be5696dfa9452e053dcef",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_delta16.py": "1bd365f8278dbdad21ca13bc22d64642984d0332635e482f44dce4a24fd04eb4",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1"
+  },
+  "libraries": {
+    "reference": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-uniform-suffix-build-v1\\libjshc_skylake_reference.dll",
+      "sha256": "5777f45eaf650680f118cd7eceb05bc07d9d91ee701cdc0ac7b0885113ac9cfd"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-uniform-suffix-build-v1\\libjshc_skylake_uniform_suffix.dll",
+      "sha256": "1e7a2cbb008581d9a175a73d4999c911bb65ef18d7538af18907ed7d81b787dd"
+    }
+  },
+  "dependencies": {
+    "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+    "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "compile_commands_sha256": "a397fabb5e867f8db9cc98315d2a3052d3f7de7250f9599d45d03f178b0a302b",
+  "commands": [
+    {
+      "command": [
+        "C:/Program Files (x86)/CMake/bin/cmake.exe",
+        "-S",
+        "F:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime",
+        "-B",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-uniform-suffix-build-v1",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_CXX_COMPILER=E:/mingw64/bin/g++.exe",
+        "-DCMAKE_C_COMPILER=E:/mingw64/bin/gcc.exe",
+        "-G",
+        "MinGW Makefiles"
+      ],
+      "returncode": 0,
+      "stdout": "-- The CXX compiler identification is GNU 15.2.0\n-- The C compiler identification is GNU 15.2.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: E:/mingw64/bin/g++.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: E:/mingw64/bin/gcc.exe - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Performing Test JSHC_TARGET_X86\n-- Performing Test JSHC_TARGET_X86 - Success\n-- Performing Test JSHC_COMPILER_HAS_AVX2\n-- Performing Test JSHC_COMPILER_HAS_AVX2 - Success\n-- jshc: C++17 portable baseline; AVX2=ON; OpenMP=ON\n-- jshc optional backends: C++ SIMD=OFF; Zig=OFF; Rust=OFF\n-- jshc C99/structured bridge=ON\n-- Found OpenMP_CXX: -fopenmp (found version \"4.5\")\n-- Found OpenMP: TRUE (found version \"4.5\") found components: CXX\n-- Configuring done (12.5s)\n-- Generating done (0.2s)\n-- Build files have been written to: F:/Hackathon/projects/16-lut-color/artifacts/skylake-uniform-suffix-build-v1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:/Program Files (x86)/CMake/bin/cmake.exe",
+        "--build",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-uniform-suffix-build-v1",
+        "--config",
+        "Release",
+        "--parallel",
+        "4",
+        "--target",
+        "jshc_skylake_reference",
+        "jshc_skylake_uniform_suffix"
+      ],
+      "returncode": 0,
+      "stdout": "[ 11%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut.cpp.obj\n[ 22%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/fit_r14.cpp.obj\n[ 33%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/portable_bridge.cpp.obj\n[ 44%] Building C object core/CMakeFiles/jshc_core.dir/portable/src/jshc_portable.c.obj\n[ 55%] Building CXX object core/CMakeFiles/jshc_core.dir/cpp/src/lut_simd_avx2.cpp.obj\n[ 66%] Linking CXX static library libjshc_core.a\n[ 66%] Built target jshc_core\n[ 77%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/projects/16-lut-color/experiments/skylake-delta16-runtime/channel_runtime.cpp.obj\n[ 88%] Building CXX object CMakeFiles/jshc_skylake_reference.dir/F_/Hackathon/projects/16-lut-color/experiments/skylake-delta16-runtime/channel_avx2.cpp.obj\n[100%] Linking CXX shared library libjshc_skylake_reference.dll\n[100%] Built target jshc_skylake_reference\n[ 66%] Built target jshc_core\n[ 77%] Building CXX object CMakeFiles/jshc_skylake_uniform_suffix.dir/channel_runtime.cpp.obj\n[ 88%] Building CXX object CMakeFiles/jshc_skylake_uniform_suffix.dir/channel_avx2.cpp.obj\n[100%] Linking CXX shared library libjshc_skylake_uniform_suffix.dll\n[100%] Built target jshc_skylake_uniform_suffix\n",
+      "stderr": "F:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp: In function 'int jshc_cc_get_layouts(const void*, uint32_t*, size_t)':\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp:172:3: warning: this 'if' clause does not guard... [-Wmisleading-indentation]\n  172 |   if(!handle || !flags)return 1;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp:172:33: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n  172 |   if(!handle || !flags)return 1;const auto& h=*static_cast<const Handle*>(handle);\n      |                                 ^~~~~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp: In function 'size_t jshc_cc_model_bytes(const void*)':\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp:178:3: warning: this 'if' clause does not guard... [-Wmisleading-indentation]\n  178 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-delta16-runtime\\channel_runtime.cpp:178:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n  178 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp: In function 'int jshc_cc_get_layouts(const void*, uint32_t*, size_t)':\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp:172:3: warning: this 'if' clause does not guard... [-Wmisleading-indentation]\n  172 |   if(!handle || !flags)return 1;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp:172:33: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n  172 |   if(!handle || !flags)return 1;const auto& h=*static_cast<const Handle*>(handle);\n      |                                 ^~~~~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp: In function 'size_t jshc_cc_model_bytes(const void*)':\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp:178:3: warning: this 'if' clause does not guard... [-Wmisleading-indentation]\n  178 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |   ^~\nF:\\Hackathon\\projects\\16-lut-color\\experiments\\skylake-uniform-suffix-runtime\\channel_runtime.cpp:178:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n  178 |   if(!handle)return 0;const auto& h=*static_cast<const Handle*>(handle);\n      |                       ^~~~~\n"
+    }
+  ],
+  "abi": 1,
+  "revisions": {
+    "reference": 5,
+    "candidate": 11
+  },
+  "scope": "只完成构建与编译参数核对；尚无新增整数正确性、全色域或性能结论。"
+}

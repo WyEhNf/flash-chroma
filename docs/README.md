@@ -1,5 +1,13 @@
 # 文档索引
 
+[2026-10-20 获证快路径补验](stages/2026-10-20-skylake-domain-signed.md)：四种网格、正负节点斜率与真正非共享坐标的48次有限整数比较通过，沿用原二进制，不重测性能。
+
+[2026-10-20 服务器包恢复入口](stages/2026-10-20-skylake-packet-restore.md)：标准库从版本化小包与三个已有大流恢复114文件/339633805字节，全部SHA与已验包一致；不重复运行像素或性能。
+
+[2026-10-20 完整域证书与隔离快路径](stages/2026-10-20-skylake-domain-proof.md)：不改模型/持久容量，构造时证明后省范围检查，1/4线程本机apply配对中位下降7.07%/5.10%；一次完整域/100图及80轮输出SHA通过，模板版静态失败保留，Skylake待测。
+
+[2026-10-20 坐标与节点局部性](stages/2026-10-20-skylake-coordinate-locality.md)：共享顶点排序覆盖不足、端点压缩条件不成立、首级节点重排仅约1%缓存行改善；仅切换服务器调度生成相同对象，四项均停止，零新增性能调用。
+
 [2026-10-19 最新精度与后端结果](stages/2026-10-19-precision-latest.md)汇总当前已验模型、误差来源和速度代价；新研究方案未自动替换公共默认。
 
 当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列阶段文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。
@@ -113,3 +121,24 @@
 - [旧cap单色解释](stages/2026-10-19-cinema-cap-anchor-diagnosis.md)与[当前锚点修正](stages/2026-10-19-cinema-current-anchor.md)：首级1码值传播及全域统一约束，未把guard反例加入训练。
 - [Cinema完整终验与实际四级成本](stages/2026-10-19-cinema-current-anchor-accept.md)：百图mean全部改善，尾部代价与约46%运行成本分列。
 - [节点读取复用负结果](stages/2026-10-19-channel-runtime-reuse.md)与[固定四级专门化](stages/2026-10-19-channel-runtime-specialized.md)：两项不同假设各自冻结、各一次同机比较，不混合计时或隐去失败。
+
+- [2026-10-20 时间优化阶段交付](stages/2026-10-20-skylake-runtime-delivery.md)：以Skylake为最终目标的本机研究，四候选各自冻结验证；缓存候选本机耗时降约52%，服务器与官方派生缓存许可仍待验收。
+- [轴表打包](stages/2026-10-20-skylake-packed.md)、[精确16位乘加](stages/2026-10-20-skylake-madd.md)、[精确binary32](stages/2026-10-20-skylake-float.md)：保持字节一致但未达本机性能门槛，保留负结果。
+- [有界精确后缀缓存](stages/2026-10-20-skylake-suffix-cache.md)：同模型完整输出一致，Windows/AMD性能、额外容量/准备时间及WSL/Linux可移植性分列。
+- [批入口描述符快照](stages/2026-10-20-skylake-snapshot.md)：静态指令减少却增加栈访存，MCA信号不一致，停止于静态阶段，没有数值或性能测试。
+- [按阶段遍历像素块](stages/2026-10-20-skylake-stage-major.md)：同模型字节一致、中位耗时下降，但一个4线程进程退化超限，按原门槛拒绝，不追加计时。
+- [首级/后缀单边界拆分](stages/2026-10-20-skylake-prefix-split.md)：单线程下降约4.34%，4线程配对中位未改善且单进程退化超限，不采用，停止切点搜索。
+- [同源Clang静态研究](stages/2026-10-20-skylake-clang-static.md)：MCA信号不一致，保留对象与汇编，未进入运行验收。
+- [无损有符号坐标差压缩](stages/2026-10-20-skylake-delta16.md)：完整输出一致，本机1/4线程耗时降约12.0%/8.1%，模型容量减少3072字节，Skylake实测待完成。
+- [服务器固定入口与Linux验证](stages/2026-10-20-skylake-server-entry.md)：标准库入口、整批/逐图原生调度及固定传输包；WSL完成12组完整色域、2112次边界比较与百图SHA核验，正式Skylake性能未执行。
+- [缓存与坐标差的直接组合比较](stages/2026-10-20-skylake-delta-cache.md)：以已有缓存为参考，完整输出一致，本机1/4线程配对耗时再降约21.1%/22.5%；保留进程及首组波动，不乘算不同阶段收益。
+- [缓存范围简化的静态停止](stages/2026-10-20-skylake-cache-range-static.md)：R凸组合界及16位判定减少13条指令，但MCA信号不一致，未执行数值或性能，不采用。
+- [四后端统一入口与同场比较](stages/2026-10-20-skylake-server-matrix.md)：WSL/AMD四库24组完整色域、4224次边界比较及唯一320轮；缓存单独启用通过本轮四场景门槛，组合虽中位耗时下降约55%–63%，仍因四线程整批单进程退化未全面通过，不重测覆盖。
+- [软件gather及坐标排序结构](stages/2026-10-20-skylake-scalar-gather-static.md)：实验SIMD对象消除gather却失去四级融合，静态停止未运行；固定模型存在跨通道严格排序反转，不能无条件共用几何。
+- [缓存直接写回](stages/2026-10-20-skylake-packed-store.md)：完整输出一致、容量不变，唯一80轮1线程未达3%改善，4线程回退且最差进程增加28.13%，不采用；保留完整CFG及MCA与实测差异。
+- [共享轴地址预计算与输入结构](stages/2026-10-20-skylake-axis-preweight-static.md)：少6次乘法但完整静态周期/吞吐下界变差，未运行；固定100图首级后约16.03%的8像素包同色，后续精确后缀方案见下一阶段。
+- [首级同色后缀快路](stages/2026-10-20-skylake-uniform-suffix-static.md)：完整覆盖两类首级各216条同色及一条普通路径；实际普通包成本升约10.26%，16.03%覆盖不足以抵消，静态停止，未执行图像或性能测试。
+- [不重叠读取域与restrict](stages/2026-10-20-skylake-restrict-static.md)：少46/51条循环指令但栈压力上升，两族周期/吞吐信号不一致，未达预定门槛，静态停止，没有运行候选。
+- [缓存沿R连续排列](stages/2026-10-20-skylake-r-contiguous.md)：表值/容量相同，完整输出一致；唯一80组的1/4线程配对中位耗时降3.29%/6.84%，但一个进程回退3.24%超过2%，整体不采用，保留静态比较器修正及全部波动。
+- [缓存布局服务器独立入口](stages/2026-10-20-skylake-layout-server.md)：冻结4/13双库与逐轮输出核验；WSL通过3432次有限比较、12组完整域和16组百图调度，正式160组性能与Skylake未执行，原四方案包不变。
+- [R连续与无损半字组合](stages/2026-10-20-skylake-compact-cache-static.md)：逐块行数再降10%–16%，但实际模型静态周期比1.03746且其他路径也回退；八候选路径全部保留，静态停止，没有加载或计时。

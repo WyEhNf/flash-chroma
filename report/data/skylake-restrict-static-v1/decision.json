@@ -1,0 +1,54 @@
+{
+  "purpose": "按预先冻结完整两族门槛决定是否进入一次运行阶段",
+  "decision": "stop_static",
+  "variants": [
+    {
+      "gathers": 35,
+      "instructions": [
+        575,
+        529
+      ],
+      "rsp_operands": [
+        41,
+        70
+      ],
+      "mca_candidate_over_reference": {
+        "Total Cycles": 0.977756415988554,
+        "Total uOps": 0.9603841536614646,
+        "Block RThroughput": 1.0138504155124655
+      }
+    },
+    {
+      "gathers": 38,
+      "instructions": [
+        570,
+        519
+      ],
+      "rsp_operands": [
+        38,
+        66
+      ],
+      "mca_candidate_over_reference": {
+        "Total Cycles": 0.945228054009994,
+        "Total uOps": 0.9549763033175356,
+        "Block RThroughput": 1.0076335877862594
+      }
+    }
+  ],
+  "gate": "两类完整循环均有至少3%明确潜力；不利时不扫描别名/快照变体",
+  "reason": "实际35-gather仅减少2.224%建模周期，未达3%；38-gather减少5.477%，但两族吞吐下界分别变差1.385%/0.763%，rsp操作数明显增加，信号不一致。",
+  "verified": "只完成一次构建、两族完整反汇编/MCA及参考对象相等；非动态收益",
+  "unexecuted": [
+    "候选动态库加载与C ABI修订/能力读取",
+    "新读取域及独立View导出/拒绝合同",
+    "restrict辅助内存分支",
+    "原55+6、88+32集中整数合同",
+    "实际完整256³和100图输出",
+    "实际模型域新增568字节核验",
+    "任何性能或Skylake实测"
+  ],
+  "native_calls": 0,
+  "performance_calls": 0,
+  "no_retiming": true,
+  "public_default_unchanged": true
+}

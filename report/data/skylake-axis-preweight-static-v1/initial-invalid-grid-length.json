@@ -1,0 +1,124 @@
+{
+  "purpose": "下一候选之前的小表结构资格检查，只读固定3模型；不拟合、不映射LUT像素、不计时",
+  "input_plan_sha256": "51270cb4996f01d52a2b35e02b08d7f2a3fb93a745bf067fe55d20a056ccdfcc",
+  "models": [
+    {
+      "model": {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+        "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+      },
+      "m": 3,
+      "axes": [
+        {
+          "axis": 0,
+          "max_linear_index_contribution": 279,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 1,
+          "max_linear_index_contribution": 93,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 2,
+          "max_linear_index_contribution": 31,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        }
+      ],
+      "all_axes_eligible": true
+    },
+    {
+      "model": {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+        "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+      },
+      "m": 3,
+      "axes": [
+        {
+          "axis": 0,
+          "max_linear_index_contribution": 279,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 1,
+          "max_linear_index_contribution": 93,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 2,
+          "max_linear_index_contribution": 31,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        }
+      ],
+      "all_axes_eligible": true
+    },
+    {
+      "model": {
+        "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+        "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+      },
+      "m": 3,
+      "axes": [
+        {
+          "axis": 0,
+          "max_linear_index_contribution": 279,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 1,
+          "max_linear_index_contribution": 93,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        },
+        {
+          "axis": 2,
+          "max_linear_index_contribution": 31,
+          "fraction_65535_collision_count": 0,
+          "fraction_65536_before_255_count": 0,
+          "fraction_at_255": 65536,
+          "eligible": true
+        }
+      ],
+      "all_axes_eligible": true
+    }
+  ],
+  "hypothesis": "只对已证明共享坐标且所有轴满足条件的模型，把idx*stride预存在高16位，低16位保留fraction，65536用空闲65535哨兵；解码时以输入code==255的掩码恢复端点。保持3次dword gather，减少每共享级两个地址乘法。",
+  "encode": "(idx*stride)<<16 | (fraction==65536 ? 65535 : fraction)",
+  "decode": "base=sum(word>>16); fraction=(word&65535)+(input_code==255)",
+  "eligibility": "模型必须shared；全部3轴*256的贡献<=65535，不含真实frac65535，frac65536仅可位于码255且码255必须为65536。任一不满足则整个模型保留原布局。",
+  "scope": "仅结构资格，未实施编码/解码或任何正确性、MCA/性能验证。",
+  "implementation_notes": [
+    "私有View增加一布尔标志，确认sizeof未变；保持delta16布局诊断不变，另有只读轴格式诊断。",
+    "共享轴新派生表每级3072字节；原core packed tables不修改、不const_cast；实际后三模型预计额外9216字节，要计准备与容量。",
+    "只在h.extended为真时准备新格式，普通无sidecar仍原core。",
+    "fixed_four必须区分后三层全部新格式、全部原格式、部分混合，混合回到逐阶段正确分派；first shared或非四级也逐阶段检查。",
+    "非共享首级及无损delta16保持；必须覆盖合法真实65535与内部65536的全级回退、端点、混合、尾部和对齐。",
+    "先单一候选静态检查；预计算省乘法却增加三个比较和减法，不能预设加速，不扫描哨兵/位宽。"
+  ],
+  "native_calls": 0,
+  "performance_calls": 0,
+  "new_fits": 0
+}
