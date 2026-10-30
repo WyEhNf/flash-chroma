@@ -6,7 +6,7 @@ from pathlib import Path
 import statistics
 import subprocess
 
-from package_final1 import ROOT, DELIVERY, generate
+from package_final1 import ROOT, DELIVERY, generate, generate_legacy
 
 REPORT = ROOT / "report/data/final1-20261030"
 
@@ -36,10 +36,12 @@ def main():
             data = subprocess.check_output(["git", "show", ":" + name], cwd=ROOT)
             require(hashlib.sha256(data).hexdigest() == expected, "Git blob SHA 不匹配：" + name)
     release = read("release-manifest.json")
+    for name, generated in generate_legacy().items():
+        require(hashlib.sha256(generated).hexdigest() == release[name], "内嵌来源与原服务器两文件源码不一致：" + name)
     for name, generated in generate().items():
         data = (DELIVERY / name).read_bytes()
         require(data == generated, "模块生成不一致：" + name)
-        require(hashlib.sha256(data).hexdigest() == release[name], "交付与服务器源码不一致：" + name)
+    require(not (DELIVERY / "flash_chroma_framework.hpp").exists(), "单文件交付中不应有额外头文件")
     for name, expected in release.items():
         path = REPORT / name
         if path.is_file():
@@ -67,6 +69,25 @@ def main():
     receipt = read("evidence/validation-receipt.json")
     require(receipt["complete"] and receipt["sources_and_inputs_unchanged"], "原验收身份检查未通过")
     require(receipt["sources"]["verify_and_benchmark.cpp"] == hashlib.sha256((ROOT / "experiments/final1/verify_and_benchmark.cpp").read_bytes()).hexdigest(), "验收器来源不一致")
+    single = ROOT / "report/data/final1-single-20261030"
+    current = json.loads((single / "validation.json").read_text(encoding="utf-8"))
+    require(current["complete"] and current["sources_and_inputs_unchanged"], "单文件服务器验收未通过")
+    require(current["preprocessed_equal"] and current["binary_equal_to_previous"], "单文件改变了原服务器可执行内容")
+    require(current["inputs"] == receipt["inputs"], "两场数据身份不同")
+    for name, expected in current["sources"].items():
+        path = DELIVERY / name if name == "main.cpp" else ROOT / "experiments/final1" / name
+        require(hashlib.sha256(path.read_bytes()).hexdigest() == expected, "单文件实测源不一致：" + name)
+    audit = json.loads((single / "function-audit.json").read_text(encoding="utf-8"))
+    require(audit["changed"] == ["lut_sparse", "apply_3d_lut", "main"] and len(audit["unchanged"]) == 10, "原函数审计不符合记录")
+    require(audit["timed_block_unchanged"] and all(audit["structs_unchanged"].values()), "原计时区或结构体发生修改")
+    require(audit["single_main_sha256"] == current["sources"]["main.cpp"], "原函数审计未绑定当前源")
+    stage = json.loads((single / "stage-timing.json").read_text(encoding="utf-8"))
+    summary = json.loads((single / "stage-summary.json").read_text(encoding="utf-8"))
+    require(len(stage["per_image"]) == 100, "分段诊断不足百图")
+    close(stage["Start_to_End_seconds"], stage["read_seconds"] + stage["getLut_to_SpareLut_seconds"] + stage["SpareLut_to_End_seconds"])
+    for key, value in summary["per_image_mean_ms"].items():
+        close(statistics.mean(row[key] for row in stage["per_image"]) * 1000, value)
+    close(statistics.mean(row["mean"] for row in stage["per_image"]), selected["photos"]["photos100"]["mean"])
     print(json.dumps({"complete": True, "files": len(manifest["files"]), "staged": args.staged, "images": 104, "timed_images": 500, "median_round_mean_ms": statistics.median(means)}, ensure_ascii=False))
 
 

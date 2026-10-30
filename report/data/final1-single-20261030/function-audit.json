@@ -1,0 +1,123 @@
+{
+  "original_sha256": "d6d9b1817d03c7165931f33d1126500b4ff5e9535ebecfdd4b0cbdbcfb9d0ea5",
+  "single_main_sha256": "50984adc7e75be79bed8fab84de3917e61f60613c2f2caa0a71f51bdfcaaa548",
+  "comparison": "原始C++模板与单文件final1中原框架部分；换行统一LF后逐函数文本比较",
+  "functions": [
+    {
+      "name": "clamp_i",
+      "changed": false,
+      "original_sha256_lf": "c974d2d774fd991f13ce049e34f2bf095d4c68905ad4b97984db7ca4828ccbbf",
+      "final_sha256_lf": "c974d2d774fd991f13ce049e34f2bf095d4c68905ad4b97984db7ca4828ccbbf",
+      "final_line": 4474
+    },
+    {
+      "name": "now_sec",
+      "changed": false,
+      "original_sha256_lf": "4b769d5ee513200bdbfe9c81a06a8e0d1604d00862637952d6d3bd573e49037d",
+      "final_sha256_lf": "4b769d5ee513200bdbfe9c81a06a8e0d1604d00862637952d6d3bd573e49037d",
+      "final_line": 4478
+    },
+    {
+      "name": "image_load_bin",
+      "changed": false,
+      "original_sha256_lf": "c8785096b0ea28e4d8564a6a8fef534acb16f545ed16419fdcc95cb9979611b0",
+      "final_sha256_lf": "c8785096b0ea28e4d8564a6a8fef534acb16f545ed16419fdcc95cb9979611b0",
+      "final_line": 4485
+    },
+    {
+      "name": "lut_read_3dl",
+      "changed": false,
+      "original_sha256_lf": "ceb15551f20d3612540aeaea9ca23e3bff52eadd5f5912426f7308b25755e80b",
+      "final_sha256_lf": "ceb15551f20d3612540aeaea9ca23e3bff52eadd5f5912426f7308b25755e80b",
+      "final_line": 4521
+    },
+    {
+      "name": "lut_sparse",
+      "changed": true,
+      "original_sha256_lf": "4abe74adb560600847fba5399c33a69157aac2762a8520d709775bddc34766ed",
+      "final_sha256_lf": "641ff9531bd6620729839bee7796ba5bd4d49737fbfde0fbd67e1091c4e3ce33",
+      "final_line": 4545,
+      "diff": "--- original/lut_sparse\n+++ final1/lut_sparse\n@@ -1,4 +1,7 @@\n bool lut_sparse(const std::vector<uint16_t>& lut256, int lut_size, Lut3D& out) {\n     // add your code here\n+// FC_DELIVERY_BEGIN sample\n+    if (!fc_delivery::sample(lut256, lut_size, out)) return false;\n+// FC_DELIVERY_END sample\n     return true;\n }"
+    },
+    {
+      "name": "lut_sparse_ref",
+      "changed": false,
+      "original_sha256_lf": "5312a6bb725f6095eb620e639ca214ef3e74b2dceea8faa423bf491ed3f41be3",
+      "final_sha256_lf": "5312a6bb725f6095eb620e639ca214ef3e74b2dceea8faa423bf491ed3f41be3",
+      "final_line": 4553
+    },
+    {
+      "name": "apply_lut256",
+      "changed": false,
+      "original_sha256_lf": "e666de5c55dfa9ecd327eaeafd12d5eeea1cdcc3286fbbf866dd2a3f47837d14",
+      "final_sha256_lf": "e666de5c55dfa9ecd327eaeafd12d5eeea1cdcc3286fbbf866dd2a3f47837d14",
+      "final_line": 4580
+    },
+    {
+      "name": "apply_3d_lut",
+      "changed": true,
+      "original_sha256_lf": "82a0b9bcae9a6e04d255f18476cdbab8768658d1e2b0dcf09a6728130aab5593",
+      "final_sha256_lf": "a3640766edd0d83f19630423393166f40bf1554838dd4d00a85b5c17db035602",
+      "final_line": 4603,
+      "diff": "--- original/apply_3d_lut\n+++ final1/apply_3d_lut\n@@ -4,6 +4,9 @@\n                   Image& out) {\n     // add your code here\n     out = img;\n+// FC_DELIVERY_BEGIN apply\n+    if (!fc_delivery_pipeline.apply(img, l1, l2, l3, l4, out)) return false;\n+// FC_DELIVERY_END apply\n \n     return true;\n }"
+    },
+    {
+      "name": "apply_3d_lut_ref",
+      "changed": false,
+      "original_sha256_lf": "d89638340f7c8d850b0ae9c356043a9fb4f9ee248bbd50bbded666c66acb4ffd",
+      "final_sha256_lf": "d89638340f7c8d850b0ae9c356043a9fb4f9ee248bbd50bbded666c66acb4ffd",
+      "final_line": 4616
+    },
+    {
+      "name": "color_dalta_calc",
+      "changed": false,
+      "original_sha256_lf": "6de9399815349a6d48d3ff2a81068f14cfd4042f5fba4dc3fec406950165aacb",
+      "final_sha256_lf": "6de9399815349a6d48d3ff2a81068f14cfd4042f5fba4dc3fec406950165aacb",
+      "final_line": 4638
+    },
+    {
+      "name": "file_exists",
+      "changed": false,
+      "original_sha256_lf": "effef1b518f70a2d2c592501282084cfb22c335aa967b8e58f9dc2f109155c6d",
+      "final_sha256_lf": "effef1b518f70a2d2c592501282084cfb22c335aa967b8e58f9dc2f109155c6d",
+      "final_line": 4660
+    },
+    {
+      "name": "print_time_now",
+      "changed": false,
+      "original_sha256_lf": "3cfecb6dd17f62751c00ec94349fd454f699e4341dfaf7b589377f8ed00fa229",
+      "final_sha256_lf": "3cfecb6dd17f62751c00ec94349fd454f699e4341dfaf7b589377f8ed00fa229",
+      "final_line": 4665
+    },
+    {
+      "name": "main",
+      "changed": true,
+      "original_sha256_lf": "d90d35ff745388da87c19fa8194cfaf58c0c56c9102562a5a6c734c343fb6d0e",
+      "final_sha256_lf": "7854c264c0788b61d815955396603aa925ab1494ac9daaeb8eb444ea9e491dde",
+      "final_line": 4674,
+      "diff": "--- original/main\n+++ final1/main\n@@ -1,6 +1,8 @@\n int main(int argc, char** argv) {\n-    std::string data_dir = \"../data\";\n+    std::string data_dir = \"data\";\n     if (argc >= 2) data_dir = argv[1];\n+    const int image_count = argc >= 3 ? std::atoi(argv[2]) : 4;\n+    if (image_count < 1 || image_count > MAX_IMAGES) return 1;\n \n     auto join = [&](const std::string& sub) {\n         return data_dir + \"/\" + sub;\n@@ -25,8 +27,11 @@\n     std::array<Lut3D, 4> lut256, lut17;\n     for (int i = 0; i < 4; i++) {\n         if (!lut_sparse_ref(luts_raw[i], 256, lut256[i])) return 1;\n-        if (!lut_sparse(luts_raw[i], 17,  lut17[i]))  return 1;\n+        if (!lut_sparse(luts_raw[i], 33,  lut17[i]))  return 1;\n     }\n+// FC_DELIVERY_BEGIN prepare\n+    if (!fc_delivery_pipeline.prepare(luts_raw, lut17)) return 1;\n+// FC_DELIVERY_END prepare\n     // free raw 16-bit LUTs\n     for (int i = 0; i < 4; i++) std::vector<uint16_t>().swap(luts_raw[i]);\n \n@@ -36,7 +41,7 @@\n     deltas.reserve(MAX_IMAGES);\n     perfs.reserve(MAX_IMAGES);\n \n-    for (int i = 1; i <= 4; i++) {\n+    for (int i = 1; i <= image_count; i++) {\n         std::string path = data_dir + \"/image/\" + std::to_string(i) + \".bin\";\n         if (!file_exists(path)) {\n             deltas.push_back(255);\n"
+    }
+  ],
+  "changed": [
+    "lut_sparse",
+    "apply_3d_lut",
+    "main"
+  ],
+  "unchanged": [
+    "clamp_i",
+    "now_sec",
+    "image_load_bin",
+    "lut_read_3dl",
+    "lut_sparse_ref",
+    "apply_lut256",
+    "apply_3d_lut_ref",
+    "color_dalta_calc",
+    "file_exists",
+    "print_time_now"
+  ],
+  "structs_unchanged": {
+    "Image": true,
+    "Lut3D": true
+  },
+  "timed_block_unchanged": true
+}

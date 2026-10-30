@@ -10,7 +10,7 @@ SOURCES = ROOT / "experiments/final1"
 DELIVERY = ROOT / "submission/final1"
 
 
-def generate():
+def generate_legacy():
     seen = set()
     search = [SOURCES, SOURCES / "prefix_joint", SOURCES / "common/framework", SOURCES / "common/include"]
 
@@ -45,6 +45,18 @@ def generate():
             raise RuntimeError("原入口不符合冻结版本：" + before)
         main = main.replace(before, after)
     return {"main.cpp": main.encode("utf-8"), "flash_chroma_framework.hpp": header.encode("utf-8")}
+
+
+def generate():
+    legacy = generate_legacy()
+    main = legacy["main.cpp"]
+    include = b'#include "flash_chroma_framework.hpp"'
+    if main.count(include) != 1:
+        raise RuntimeError("交付入口头文件引用不唯一")
+    embedded = ("// FC_SINGLE_FILE_BEGIN：内嵌原头文件，算法内容保持原字节\n".encode("utf-8")
+                + legacy["flash_chroma_framework.hpp"]
+                + b"// FC_SINGLE_FILE_END\n")
+    return {"main.cpp": main.replace(include, embedded)}
 
 
 def main():

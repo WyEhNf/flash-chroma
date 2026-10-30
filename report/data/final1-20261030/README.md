@@ -1,5 +1,7 @@
 # final1 证据索引
 
+本目录数值原件来自首轮两文件版；当前单文件版只将原 hpp 内嵌，新增等价性与分段诊断见[新证据目录](../final1-single-20261030)。`manifest.json` 随当前源/文档维护，`release-manifest.json` 保留首轮服务器两文件发布身份。
+
 本目录归档本次选型与服务器复测的原始小文件。实际运行的两份源码见 [submission/final1](../../../submission/final1)，分模块来源与原验收器见 [experiments/final1](../../../experiments/final1)，[阶段报告](../../../docs/stages/2026-10-30-final1.md)说明范围和限制。
 
 - `selection.json`：选择规则、结果与历史覆盖范围。

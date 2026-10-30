@@ -1,6 +1,6 @@
 # final1 冻结源码与复现
 
-这里保存生成服务器交付头文件时实际读取的十个模块、上一交付入口 `base_main.cpp`，以及实际执行的 `verify_and_benchmark.cpp` 原件。保留原字节用于复核；历史源码中的原注释不作事后改写。
+这里保存生成算法时实际读取的十个模块、上一交付入口 `base_main.cpp`、最初框架 `original_main.cpp`，以及实际执行的 `verify_and_benchmark.cpp` 原件。保留原字节用于复核；历史源码中的原注释不作事后改写。维护源可以含 hpp，最终交付仅 `submission/final1/main.cpp`。
 
 - `common/framework`：历史精度迁移分支的拟合、几何、搜索与适配模块。
 - `common/include/flash_chroma.hpp`：最新运行库，包括 DirectRGB24 pair32。
@@ -8,7 +8,9 @@
 - `final_pipeline.hpp`：将末级 chain_ls、前中层优化和运行库串联的交付入口。
 - `base_main.cpp`：生成时的上一版入口，仅作为来源，正式入口在 `submission/final1`。
 
-仓库根目录运行 `python scripts/package_final1.py`，会在内存重建并逐字节比较两份交付源码；`--output 新目录` 可导出一份新包。脚本只依赖 Python 标准库，最终运行不依赖 Python。
+仓库根目录运行 `python scripts/package_final1.py`，会在内存重建并逐字节比较单文件交付；`--output 新目录` 可导出一份仅含 main.cpp 的新包。内部 `generate_legacy()` 用于追溯原两文件哈希。脚本只依赖 Python 标准库，最终运行不依赖 Python。
+
+`stage_timing.cpp` 是额外诊断入口：包含正式 main 后调用相同函数，单独计量读取、参考表、采样、拟合、节点搜索、Direct 构建和百图各阶段。正式 main 不插入这些计时语句。Linux 的 `run_single_validation.py` 在公共 P 核锁内编译、比较新旧预处理字节、检查输入 SHA，并运行分段诊断及正式四图；脚本保留服务器实验目录约定，见新阶段报告。
 
 在 Linux 仓库根目录编译原验收器：
 

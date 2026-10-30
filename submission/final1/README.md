@@ -1,6 +1,6 @@
 # final1：精度与映射速度的历史折中版本
 
-本目录是已上传到服务器 `~/workspace/zmx/final1` 的两个源码文件原件。四级 33³ FrameworkStep，chain_ls 末级拟合后执行 prefix_nodes 前中层整数节点优化，使用 DirectRGB24 与自动 AVX2 pair32 分派。每次启动从四张输入 LUT 生成模型，运行器单线程。
+本目录只需一个 `main.cpp`，原头文件已原样内嵌，无自定义 hpp 依赖。四级 33³ FrameworkStep，chain_ls 末级拟合后执行 prefix_nodes 前中层整数节点优化，使用 DirectRGB24 与自动 AVX2 pair32 分派。每次启动从四张输入 LUT 生成模型，运行器单线程。
 
 ```sh
 cd submission/final1
@@ -21,4 +21,4 @@ python3 ../run_on_pcore.py -- ./lut3d data100 100
 
 已验证服务器 i9-14900K / Ubuntu 24.04 / GCC 13.3 / `-O2 -std=c++17`：完整 RGB8 域平均欧氏误差 **0.679296814**；100 张照片的逐图 mean 平均值 **1.481250064**；五轮百图 TimeCost 均值的中位数 **0.975453 ms/图**（范围 0.950348–0.987877）。`out=img` 复制计入 TimeCost；读图、参考映射、色差和约 21.17 秒拟合/搜索/Direct 准备在外。误差不是 CIEDE2000，照片集不是独立留出集，不宣称未知数据上的最优。
 
-完整选择依据、原入口差异、复现、哈希和限制见[阶段报告](../../docs/stages/2026-10-30-final1.md)及[原始证据](../../report/data/final1-20261030)。重建检查：在仓库根目录运行 `python scripts/package_final1.py`。目前尚未完成正式评分规则、额外 Direct 缓存许可和规定 MinGW 13.2 的验收。
+最新单文件等价性、分段用时及相对原框架的逐函数变更见[单文件报告](../../docs/stages/2026-10-30-final1-single.md)。上述五轮耗时为相同算法的原两文件版本实测，新的分段诊断单列，不能混成同一场次。完整历史选择依据见[原阶段报告](../../docs/stages/2026-10-30-final1.md)及[原始证据](../../report/data/final1-20261030)。重建检查：在仓库根目录运行 `python scripts/package_final1.py`。目前尚未完成正式评分规则、额外 Direct 缓存许可和规定 MinGW 13.2 的验收。
