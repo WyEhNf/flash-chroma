@@ -10,6 +10,9 @@ from .reportio import write_report as _write_report
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "gui":
+        from . import gui
+        return gui.main(argv[1:])
     if argv and argv[0] == "dataset":
         from . import dataset
         return dataset.main(argv[1:])
@@ -56,7 +59,8 @@ def main(argv=None):
                             ("casebook", "maintain evidence-bound per-case champions"),
                             ("hackset", "构造及核对独立压力输入与最小反例候选"),
                             ("hackextend", "追加三维与串联压力配方"),
-                            ("dataset", "读取、重建和核对合并后的版本化数据集")):
+                            ("dataset", "读取、重建和核对合并后的版本化数据集"),
+                            ("gui", "启动本地色彩工作台，进行图片映射与结果对比")):
         commands.add_parser(name, help=help_text)
     for name in ("info", "plan", "apply", "cube", "verify", "bench-models", "validate"):
         command = commands.add_parser(name)

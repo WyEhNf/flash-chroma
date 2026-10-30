@@ -41,6 +41,7 @@ configure-scalar = "cmake --preset scalar"
 build-scalar = { cmd = "cmake --build --preset scalar", depends-on = ["configure-scalar"] }
 test-scalar = { cmd = "python scripts/check_correctness.py --build-dir build-scalar", depends-on = ["build-scalar"] }
 lutlab = { cmd = "python -m lutlab", depends-on = ["build"] }
+gui = "python -m lutlab gui"
 gen-data = "python -m lutlab gen-data"
 fit = { cmd = "python -m lutlab fit", depends-on = ["build"] }
 evaluate = { cmd = "python -m lutlab evaluate", depends-on = ["build"] }

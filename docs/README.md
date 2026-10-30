@@ -16,6 +16,8 @@
 
 ## 当前接口与规则
 
+- [本地色彩工作台 GUI](stages/2026-10-18-local-gui.md)：图片与四级 LUT 配置、稀疏拟合、分割对比、误差热图及结果导出；提供可直接运行的数值示例。
+
 - [合并数据集 v1](../datasets/problem16-unified-v1/README.md)：274 个 LUT case、455 份图片内容；保留原身份和划分，提供分队列清单、哈希核对及原合成图恢复。[第二批压力扩展](../datasets/problem16-hack-v2/README.md)追加三维峰谷、斜薄带、周期与舍入/串联场景。
 
 - [hack image/LUT 压力子集](../datasets/problem16-hack-v1/README.md)：独立的可复现配方、边界图片与小型整数回放；[验收口径](../datasets/problem16-hack-v1/acceptance.json)明确区分运行时差异、近似误差与参考跳变，完整扫描尚未执行。
@@ -27,6 +29,8 @@
 - [日常摄影样本](../assets/photos/README.md)。
 
 ## 算法与验收演进
+
+[下一阶段研究 summary（2026-10-18）](stages/2026-10-18-research-summary.md)：结合 PR #38 双尺寸结果与既有误差证据，按“解释加密退化、解决节点冲突、回到四级验证”说明后续任务及判断标准；仅为研究建议，未开展新实验。
 
 近期阶段： [工程对齐](stages/2026-10-16-engineering-alignment.md)、[四例误差归因](stages/2026-10-16-error-causes.md)、[有界拟合与四级联合选择](stages/2026-10-17-joint-box-objective.md)。最新算法阶段在固定Cinema链取得全色域/100图改善，同时保留两个单级负结果和四张图的max回归；没有替换默认方法。
 

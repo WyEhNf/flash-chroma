@@ -46,6 +46,8 @@ GitHub Actions 对 PR（含 Draft）、`main` push 和手动触发运行默认�
 
 ## 使用四张实际 LUT
 
+也可启动[本地色彩工作台 GUI](docs/stages/2026-10-18-local-gui.md)：`pixi run --locked gui`（已有 Python 环境可用 `PYTHONPATH=python python -m lutlab gui`）。界面支持图片选择/上传、四级 `.lut256`/`.slut` 配置、稀疏拟合、分割对比、误差热图和模型/图片导出；内置数值示例。默认仅监听本机，不需要前端构建。误差只统计当前图片，且必须具备全部完整 LUT 参考。
+
 统一接口为 `python -m lutlab`，Pixi 提供自动构建的 `lutlab` 任务。以下四个输入文件由调用者提供，必须符合仓库的原始 RGB8 LUT 格式：
 
 ```bash

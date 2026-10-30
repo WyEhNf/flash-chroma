@@ -199,6 +199,7 @@ scripts/report_quantile_tail_study.py -text
 
 # Skylake时间研究按实际测量原字节保存，避免平台换行改变证据身份。
 /report/data/skylake-*/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
 # LUT反例诊断按实测字节保存，确保来源与交付SHA一致
 /artifacts/lut-cause-study/20261018/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # 调色板研究源码/冻结计划按实测字节保存，避免换行改变构建与性能身份。
@@ -1303,6 +1304,9 @@ scripts/report_quantile_tail_study.py -text
 /data/p16-frontier/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /report/data/p16-frontier-header-20261027/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 /report/data/p16-header-performance-20261028/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+# PR95审查证据和实际执行脚本保留原字节，防止跨平台换行转换破坏SHA。
+/report/pr95-review-20261028/evidence/** -text linguist-generated=true whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+/scripts/review_pr95_*.py -text whitespace=blank-at-eol,space-before-tab,cr-at-eol
 
 # 保留工作台/赛前交付源码与验证回执的原始字节，支持包和证据SHA复核。
 /gui/server.py -text
