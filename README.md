@@ -74,6 +74,10 @@ pixi run --locked select --scenario isp-0 --m 18 --profiles tetra \
 
 这里的 `2.0` 仅为本地示例，比较使用未舍入统计量和严格 `<`。数据来源与重建说明见 [DATA.md](DATA.md)。性能比较应固定模型、输入、机器、构建参数、线程数和计时边界；CI 通过只证明所覆盖的正确性条件。
 
+## 真实 RAW 工作台（实验）
+
+本地GUI可浏览三家摄影机的真实结果，拖动比较参考/原生画面，查看逐帧SDR/HDR预览、误差和任务日志，并创建独立处理/导出任务。Windows在仓库根目录执行 `.\start-gui.ps1`。依赖、运行范围和当前WSL限制见 [GUI说明](gui/README.md)及[阶段验证](docs/stages/2026-10-23-camera-workflow-gui.md)。这不改变现有RGB8精度合同或代表高精度HDR/三倍性能已验收。
+
 ## Docker
 
 ```bash
