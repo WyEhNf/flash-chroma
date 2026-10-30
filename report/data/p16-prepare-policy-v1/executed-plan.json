@@ -1,0 +1,82 @@
+{
+  "purpose": "88显式完整direct与suffix-only准备策略：精确同模型，区分create+首次处理与稳态，研究小任务准备摊销，原create保持完整direct",
+  "library": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_prepare_policy.dll",
+    "sha256": "f338f19a00b387c48546a245b77c11718670f5ecd6678505e6e4270ff3b4d2fd"
+  },
+  "model_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-final-model-pair-v1.json",
+    "sha256": "163b13ba1d2852d2636995a25bf54db429ca714598f44a9d130a4acb1f2e1894"
+  },
+  "script_sha256": "f5329b9ec36d1d781182df97ebda1b33e816ff09064339fb64c4afb57a2ecefa",
+  "policies": {
+    "0": "完整87直接ID编译",
+    "1": "只准备精确后缀；可能纯映射低于50%，必须独立拒绝不合格配置"
+  },
+  "orders": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "cold_creates_per_policy_case": 3,
+  "images": [
+    1,
+    10,
+    100
+  ],
+  "scales": [
+    1,
+    2
+  ],
+  "scale_rule": "从同一1024x768 RGB8原图按::scale取子采样，scale2为512x384，不插值或新增图片",
+  "steady_repeats": {
+    "1": 64,
+    "10": 16,
+    "100": 4
+  },
+  "control_min": 0.75,
+  "control_max": 1.3333333333333333,
+  "grades": [
+    100,
+    90,
+    80,
+    70,
+    60,
+    50
+  ],
+  "floor_retained": 0.5,
+  "comparison": "同一88库、同模型、每配置3次全新create后首次原生真分离；首组另原生稳态+A/A。4新进程ABBA、各批中位配对；全部原始数组和SHA保留，不从已有样本挑断点",
+  "boundaries": "端到端为底层create(含文件读取/解析校验/缓存/表准备)+首次原生apply_to的计时和；预加载/模型hash/目标分配/destroy/输出hash在计时外。稳态单独，端到端快不自动豁免纯映射低于50%。",
+  "limitations": "热文件缓存且固定已见100图；无锁频/控温，不冒称官方或冷磁盘应用延迟。新策略仍研究ABI，不改87默认。"
+}

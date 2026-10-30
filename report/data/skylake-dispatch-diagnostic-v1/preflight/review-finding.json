@@ -1,0 +1,6 @@
+{
+  "purpose": "未执行阶段的失败留证审计修复",
+  "candidate_calls": 0,
+  "issue": "原生返回后disable失败会少计调用；后续TID读取失败可能丢前面原始读数；finally清理异常可能掩盖原始错误",
+  "correction": "原生返回立即在内存登记；正常路径全部disable后再IO保存，逐TID读后落盘；异常清理追加记录，不覆盖原始异常；事件支持和已验probe字节不改"
+}

@@ -1,0 +1,38 @@
+{
+  "purpose": "离线把原精确16B字典转换为16+1bit双平面，并重建全部16MiB逻辑ID。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "script_sha256": "2b39478b114b5fbb1b9cdacfe0fda10938dc958a367a752c8ca12e9c7024d7c0",
+  "plan_sha256": "46b971e07a722a497de3e041f30570d82670734241a7b45cbcb8993fb081a2b4",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "file_bytes": 3952592,
+  "sha256": "4846058639722811656bd93af7afb977e2dbad5918e6bdb502929cded5d74b1f",
+  "low_bytes": 2097152,
+  "high_bytes": 131072,
+  "pool_bytes": 1723312,
+  "unique_blocks": 107707,
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "before": {
+    "PeakWorkingSetSize": 35643392,
+    "WorkingSetSize": 35643392,
+    "PrivateUsage": 22347776,
+    "PeakPagefileUsage": 22347776
+  },
+  "after": {
+    "PeakWorkingSetSize": 81358848,
+    "WorkingSetSize": 74964992,
+    "PrivateUsage": 56070144,
+    "PeakPagefileUsage": 68063232
+  },
+  "scope": "固定原字典pool及palette顺序；全部256^3个ID重建，未读gold/照片。峰值含Python/NumPy及离线临时对象，不是运行时容量。"
+}

@@ -1,0 +1,95 @@
+{
+  "purpose": "同一65库及同一句柄的A/A负对照；固定16配对每线程，禁止作为优化成绩",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/calibrate_skylake_same_library_pmu.py",
+    "sha256": "41fac018e0f69fb25d24ec887611ade7fe098e0399665c4bf570aaaa2a79c2fe"
+  },
+  "plan": {
+    "path": "experiments/skylake-id-batch4-v1.json",
+    "sha256": "b1b1f26f3e5bbed74bd203cba0e36662efac1c70079065fdcedecafca47641e3"
+  },
+  "build": {
+    "path": "artifacts/skylake-id-batch4-linux-build-v1/build.json",
+    "sha256": "64e46668c1485f9a3389fa6cb3d12605f4d11f260dcb70f660a0a864a42c1f4b"
+  },
+  "full": {
+    "path": "artifacts/skylake-id-batch4-linux-full-v1/results.json",
+    "sha256": "e00ca989d771fbb417b8697187e4d101fcae040829b01d5bf9687f484f88e613"
+  },
+  "library": {
+    "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-id-batch4-linux-build-v1/libjshc_skylake_id_batch4.so",
+    "sha256": "37b8ef8a22805f9bebb701d6a16f5c14cc31219280033e5f70eae7d236936cb8"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "pairs_per_thread": 16,
+  "orders": [
+    [
+      "A",
+      "B"
+    ],
+    [
+      "B",
+      "A"
+    ],
+    [
+      "B",
+      "A"
+    ],
+    [
+      "A",
+      "B"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "python_sources": [
+    "scripts/calibrate_skylake_same_library_pmu.py",
+    "scripts/profile_skylake_chroma_batch4_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "limits": [
+    "64预热和64计数，无新候选、重新拟合或旧失败重评",
+    "一次固定执行，不因范围不利而重跑",
+    "同一句柄前后真实THP诊断落盘后再断言",
+    "额外wall仅用于同库校准，不作为对23吞吐成绩",
+    "不更改系统权限、频率、缓解或全局大页设置"
+  ]
+}

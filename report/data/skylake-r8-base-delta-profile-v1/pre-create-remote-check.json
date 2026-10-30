@@ -1,0 +1,99 @@
+{
+  "utc": "2026-10-23 04:43:42 UTC",
+  "pr77": {
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/77",
+    "number": 77,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "Agent：Codex /root、/root/direct_tile_audit\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对23至少三倍吞吐\nStatus：Failed（82静态、83首轮性能）/ Draft；整体In Progress\n\n本阶段缩短单YMM输入内核的输出存活量：前32像素先形成三段最终值，三结果空asm后只NT写首64B，pending保留；后32全部读取/ID/palette完成后补写剩余128B。仍64像素推进、六NT覆盖192B、循环结束后一次SFENCE，72/40保护与精确24B尾不变，第二组源96..199不回读已写首行。79两个pair48及linear原字节保留，单线程/分离与无BMI回退不变，新多线程只需AVX2；无新表或拟合，不默认采用。\n\n82消除spill，但GCC排成NT+32→源+96→NT+0，未过预定组间顺序，停止像素/性能；独立全部输出标签正确，未发现静态精度错误。83新独立源码仅首两NT后加编译器memory屏障及身份改名；首两/末四组内顺序按集合判断，组间门槛事前冻结。两次构建均保留，不在82上放宽条件重测。83完整64/32区段281/151条，无栈/热常量重载，输入及全部输出字节标签、pending、分组先读后写、旧对象/ISA隔离通过。\n\n83独立16M色物理表、24组完整RGB8原地/分离、2208finite、4416分离/同址、736guard、旧1280align、44/9拒绝和null通过。另65793像素跨两块，actual aligned64base+offset严格0..63的64项输出/哨兵通过；完整域四块覆盖新workers4。model_bytes chain28046644不变，资格getter不冒称实际执行计数。仅冻结模型精度不降，不是新拟合。\n\nRyzen9 8945HX / Windows11宿主WSL2 Ubuntu Linux6.18.33.2 / GCC15.2 / Python3.14.4标准库，Release、通用AVX2/Skylake调优，两个旧pair TU带可选BMI1；不是真实Skylake。完整域后原三倍/A/A/ABBA/16及64内轮/quiet/绑定/精确VMA全THP/唯一条件确认不变。首次四串行新进程1920内轮，48预热及48批末SHA，非每轮SHA；批内均值再四配对比中位：\n\n| 接口 | 1线程耗时比 / 吞吐 | 4线程耗时比 / 吞吐 |\n| --- | ---: | ---: |\n| 纯apply | 0.333838 / **2.995468倍** | 0.477574 / **2.093918倍** |\n| 真正分离输出 | 0.299521 / 3.338669倍 | 0.263971 / 3.788295倍 |\n| 准备+首组输出 | 0.638039 | 0.829819 |\n\nA/A中位0.968368/0.992533、全部单对有效，输出/源/哨兵/TID/THP均过；两档纯apply失败，不能把2.995468舍入为达标。跳过确认，新增系列/调用0，不重试择优，也不跨场归因79/80与本次的独立变化。\n\n另固定R连续8色3bit只读分析：完整重建0差，但异常8包23.50%，主词行比0.997827、含pool1.109098，事前双门槛失败停止。独立汇总审计未重读大输入，采用冻结证据交叉核对，限制保留。主表gather历史27/34及Intel GDS资料不足以支持新组合，未实现。未执行81/82胶水报告常量1280→1281误改初件保留，83从已验80定点身份派生，执行前纠正，不改实际协议或数组。\n\n[阶段说明、完整SHA和复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-input256-deferred-20261021/docs/stages/2026-10-21-skylake-input256-ordered.md) · [166原件/1920轮复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-input256-deferred-20261021/report/data/skylake-input256-ordered-v1)\n\n提交c3efa63a48cd29db36e3b0bc23580bb545996eeb，依赖Draft #76头e2752a8；两套各72源与202暂存冻结blob逐字节一致，语法/空白通过。归档/交付为Windows11/Anaconda Python3.13.12。操作前fetch，完整70份PR正文对前69份仅新增76、其余相同；76全文/全部comment/review/行内刷新为空，最终updated PR/issue查询空。main b19c5a0及337a3dd/876e15b8/397cc367均包含；issue7修复保留，issue8正式接口/预算/实板继续跟踪。Discussion接口缺口保留，不合并或关闭。实际Skylake、缺BMI硬件、官方许可/预算/Threshold及整体三倍仍未完成。",
+    "title": "验证分阶段写入并保留完整精度及三倍验收失败结果",
+    "base": "codex/skylake-input256-20261021",
+    "base_sha": "e2752a80d981ca6901ded376364176f1ee1e40b5",
+    "head": "codex/skylake-input256-deferred-20261021",
+    "head_sha": "c3efa63a48cd29db36e3b0bc23580bb545996eeb",
+    "head_repo_id": 1420743436,
+    "head_repo_full_name": "WyEhNf/flash-chroma",
+    "merge_commit_sha": "9a240bfff5d80014a39296d66315a3fb1e25e3d5",
+    "user": {
+      "login": "WyEhNf",
+      "name": "WyEhNf",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+      "id": 228311419
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-21T14:56:04Z",
+    "updated_at": "2026-10-21T14:56:04Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 1,
+    "changed_files": 205,
+    "additions": 103418,
+    "deletions": 0,
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/77",
+    "display_title": "验证分阶段写入并保留完整精度及三倍验收失败结果"
+  },
+  "pr78": {
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/78",
+    "number": 78,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "固定PR #56的三条四级流水线，在17³、33³六组设置上比较动态恢复入口、展开四级调用及外提阶段数组视图。**正确性通过，但没有满足六组统一采用门槛的优化；保留负结果，不替换默认运行时。**\n\n[阶段报告与结果表](https://github.com/WyEhNf/flash-chroma/blob/d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1/report/data/pipeline-specialization-20261023/report.md) · [第二轮详细指标](https://github.com/WyEhNf/flash-chroma/blob/d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1/report/data/pipeline-specialization-20261023/details.md) · [代码说明](https://github.com/WyEhNf/flash-chroma/blob/d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1/report/data/pipeline-specialization-20261023/report.md#文件与复现入口) · [协作检查](https://github.com/WyEhNf/flash-chroma/blob/d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1/report/data/pipeline-specialization-20261023/collaboration.md)\n\n- 第一轮：耗时降低0.21%～6.04%，仅1/6组达到预设门槛。\n- 第二轮：相对动态基线耗时变化为降低4.84%到增加0.70%；相对同场仅展开调用，外提没有达到额外加速门槛，0/6组通过。\n- 两轮六组均遍历全部256³个RGB8输入，候选与同模型动态基线逐字节一致；完整100图输出SHA保持PR #56结果。没有重新拟合或宣称色差改善。\n- 每轮两个串行新进程，每设置每进程三轮；同内核A/A控制均通过。门槛要求每个进程配对中位耗时至少降低5%、任一对回退不超过2%。保留全部原始样本，不重测择优。\n\n实际环境：Windows 11 / Intel Core Ultra 5 125H / Python 3.12.7 / NumPy 1.26.4 / Numba 0.60.0 / llvmlite 0.43.0，TBB四线程。100张1024×768 RGB8图预载并预热；计入输出分配和四级恢复，排除解码、JIT、模型加载和统计。未锁频/绑核，不外推C++、AMD或Skylake性能。\n\n提交：[d0fc98e](https://github.com/WyEhNf/flash-chroma/commit/d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1)。按用户选择从pipeline的`3d4d6d9`创建performance，本PR为`codex/pipeline-specialization-20261023` → `performance`，差异仅本阶段14个归档文件。可读代码为第二轮实测原字节；两轮原始代码、计划、日志、JSON和报告收进evidence.zip，manifest与独立核验入口保留。\n\n发布验证：Windows 11 / Python 3.12.7完成代码语法、归档SHA、完整域证据、逐轮输出SHA、配对统计和门槛复算，14项Git暂存字节与磁盘一致，差异检查通过。复现命令：`python report/data/pipeline-specialization-20261023/code/verify_archive.py`。这是静态归档验证，未为提交重新测速、拟合或运行全仓数值门禁；CI以实际状态为准。完整重跑仍需本地历史冻结模型/参考表及同SHA输入，单独克隆本PR不足以复跑。\n\n协作检查：检索全部现有PR/issue，读取报告列出的15个相关PR、#7/#8完整正文/评论/review/行内意见，沿#42/#56与#43/#44/#65/#68/#72/#77核对专门化及性能诊断边界；Discussion #4和关键GraphQL审查线程分页完成。创建前再次刷新相关正文、头提交和全部意见，未变化。#7的337a3dd及876e15b8、397cc367实际包含，未改相关实现；历史验证链接见协作说明，不冒称重跑。#8的接口/预算/实板及官方数据仍待处理，不关闭事项。\n\n后续待办：检查LLVM/汇编和实际热点，再设计单一有证据的优化；目标原生后端、线程扩展、其他模型、启动与资源成本尚未验证。保持Draft表明性能采用条件仍未满足；本PR归档已完成的实验，不执行合并。\n\nAgent：Codex /root  \nOperator：本会话授权提交的用户  \nTask：固定四级专门化实验发布到performance  \nStatus：Completed（本阶段实验和归档）；Draft（性能采用条件未达标，待审）\n",
+    "title": "研究：固定四级流水线专门化性能测试及未达标结果",
+    "base": "performance",
+    "base_sha": "3d4d6d9e07df9e24c25f52f733c8535e3d9890e1",
+    "head": "codex/pipeline-specialization-20261023",
+    "head_sha": "d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1",
+    "head_repo_id": 1420743436,
+    "head_repo_full_name": "WyEhNf/flash-chroma",
+    "merge_commit_sha": "99bbf76146868ca6c26d8c88967dcd8e9e2c7f91",
+    "user": {
+      "login": "ShenniApril",
+      "name": "ShenniApril",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/123786170?v=4",
+      "id": 123786170
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-23T04:23:18Z",
+    "updated_at": "2026-10-23T04:23:18Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 1,
+    "changed_files": 14,
+    "additions": 901,
+    "deletions": 0,
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/78",
+    "display_title": "研究：固定四级流水线专门化性能测试及未达标结果"
+  },
+  "comments77": {
+    "comments": [],
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/77",
+    "title": "WyEhNf/flash-chroma PR #77 comments",
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/77",
+    "display_title": "WyEhNf/flash-chroma PR #77 comments"
+  },
+  "reviews77": {
+    "reviews": []
+  },
+  "threads77": {
+    "review_threads": []
+  },
+  "updated_prs": {
+    "issues": []
+  },
+  "updated_issues": {
+    "issues": []
+  },
+  "discussion_gap": "当前连接器无可调用Discussion接口；不合并/关闭"
+}

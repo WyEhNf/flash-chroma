@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "date": "2026-10-29",
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "node": "v24.16.0"
+  },
+  "purpose": "最终前端静态与离线复制回调检查；不调用浏览器、不重建UI、不执行图像或性能测试",
+  "node_syntax": {
+    "passed": true,
+    "command": "node --check gui/static/studio.js"
+  },
+  "copy_callback": {
+    "passed": true,
+    "cases": [
+      {
+        "name": "新参数未计算：不复制旧actual_config",
+        "passed": true,
+        "result_current": false,
+        "actual_config_included": false,
+        "native": false
+      },
+      {
+        "name": "处理中：不复制旧actual_config",
+        "passed": true,
+        "result_current": false,
+        "actual_config_included": false,
+        "native": false
+      },
+      {
+        "name": "修改且处理中：不复制旧actual_config",
+        "passed": true,
+        "result_current": false,
+        "actual_config_included": false,
+        "native": false
+      },
+      {
+        "name": "尚无结果：不宣称actual_config",
+        "passed": true,
+        "result_current": false,
+        "actual_config_included": false,
+        "native": false
+      },
+      {
+        "name": "最新完成：复制当前实际配置",
+        "passed": true,
+        "result_current": true,
+        "actual_config_included": true,
+        "native": false
+      },
+      {
+        "name": "最新Cinema完成：保留native身份，不伪造creative stages",
+        "passed": true,
+        "result_current": true,
+        "actual_config_included": true,
+        "native": true
+      }
+    ],
+    "source": "从最终studio.js抽取单一copy-button回调；Node VM仅绑定最小clipboard spy与参数夹具"
+  },
+  "source_sha256": {
+    "studio.js": "56ab60a6a68f88d7516d35ee97204b9b60f5266b0baca1925f35457f15bfcc99",
+    "studio.html": "dfcc2da6b403e7e1abf58c36470b81fd70a5990de4716f8be9d87a4d02ce666c",
+    "studio.css": "82779328ff80cde37cc223b60800af4281b28dd7a48eb2de1c8bf9f73b7449de"
+  },
+  "limitations": [
+    "未验证浏览器布局、原点权限或真实剪贴板/下载体验；未绕过此前浏览器原点权限拒绝。",
+    "离线回调检查仅证明pending/fresh复制字段绑定，不替代真实HTTP处理和PNG验证。"
+  ],
+  "dom_static": {
+    "passed": true,
+    "html_ids": 100,
+    "static_dom_references": 71,
+    "dynamic_dom_references": 10,
+    "html_aria_svg_references": 29,
+    "duplicate_ids": [],
+    "missing_references": [],
+    "resources": [
+      "/studio.css",
+      "/studio.js"
+    ]
+  },
+  "css_brackets": {
+    "passed": true,
+    "scope": "移除注释与字符串后核对花括号/圆括号闭合；不是浏览器CSS语义验证"
+  }
+}

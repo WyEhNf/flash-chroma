@@ -1,0 +1,506 @@
+{
+  "schema": 1,
+  "purpose": "修订80提案：按有效工作线程选择精确输入/输出路径；仅源码和构建计划冻结，未编译或执行原生",
+  "base_commit": "f82fb2d93edfdbc09b4997eb60a2b52befe5980e",
+  "candidate": "单线程原地及全部真正分离输出保持79 pair48原字节；仅多线程原地采用78 mem32 ANDN、四ID先行、原预排合并、T0和普通对齐写，不交错分块",
+  "unchanged": [
+    "模型、Q16及逐级RGB8整数舍入、230项精确调色板、16MiB format9线性ID表；构造只读原模型，不读照片或gold",
+    "79的andn_inplace/andn_outplace两个pair48 TU含原导出名逐字节复制；单线程原地及真正分离输出仍NTA/NT/SFENCE",
+    "原线性回退TU逐字节保持79；一次构造BMI1检测，未支持BMI或无表时沿原精确回退，无环境强制开关",
+    "65536像素连续schedule(static)块、嵌套OpenMP有效workers=1、64B目标对齐、64像素全部读取后写入及72/40宽读边界",
+    "不新增表、Handle字段或拟合；仅复用既有bool并改名，新只读getter是资格信息而非实际执行路径探针",
+    "fixed_inputs/suffix_models/contract/hardware/screen与79完全一致，纯映射和真实输出各1/4线程三倍及A/A/确认验收规则不变"
+  ],
+  "fixed_inputs": {
+    "library": {
+      "path": "artifacts/channel-native-specialized-v1/jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    },
+    "build": {
+      "path": "artifacts/channel-native-specialized-v1/build.json",
+      "sha256": "66b05e3986e3988813a03ab5f534469ea3715ee200cb3f4efa5a8852fe512ded"
+    },
+    "contract": {
+      "path": "artifacts/channel-native-specialized-contract-v1/results.json",
+      "sha256": "ecfd23a9e793adf3e7e45b21b16975ed7c4827b56d089b09eb31c6b6a29720f5"
+    },
+    "policy": {
+      "path": "experiments/channel-runtime-specialized-v1.json",
+      "sha256": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839"
+    },
+    "prior_full": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f"
+    },
+    "prior_run": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/run.json",
+      "sha256": "f2cdc12d609814cc313e80e6f84cfbbdfad1c8f4abe89505e24462442964e41a"
+    },
+    "cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    },
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    },
+    "model": {
+      "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+      "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    }
+  },
+  "suffix_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "contract": {
+    "seed": 2026102001,
+    "mixed_m": [
+      17,
+      18,
+      25,
+      33
+    ],
+    "lengths": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      15,
+      16,
+      17,
+      31,
+      32,
+      33,
+      39,
+      40,
+      41,
+      63,
+      64,
+      65,
+      71,
+      72,
+      73,
+      127,
+      128,
+      129,
+      191,
+      192,
+      193,
+      255,
+      256,
+      257,
+      341,
+      342,
+      343,
+      405,
+      406,
+      407,
+      4095,
+      4096,
+      4097,
+      65528,
+      65535,
+      65536,
+      65537,
+      65543,
+      131071,
+      131072,
+      131073
+    ],
+    "byte_offsets": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "paths": [
+      "unshared/shared/shared/shared",
+      "shared/unshared/shared/unshared",
+      "equal-sidecar-but-different-base/shared/shared/shared",
+      "single-unshared",
+      "three-unshared"
+    ],
+    "backend_threads": [
+      [
+        "scalar",
+        1
+      ],
+      [
+        "avx2",
+        1
+      ],
+      [
+        "avx2",
+        4
+      ]
+    ],
+    "edge_fracs": [
+      0,
+      1,
+      32767,
+      32768,
+      32769,
+      65535,
+      65536
+    ],
+    "oracle": "scripts/verify_channel_coordinates.py.integer_oracle，独立uint64逐级输出",
+    "acceptance": "整数全部字节与哨兵零差；先有限集中合同后才一次实际完整域与百图，不重新拟合"
+  },
+  "cmake_project": "experiments/skylake-andn-normal-runtime",
+  "cmake_targets": [
+    "jshc_skylake_reference",
+    "jshc_skylake_andn_normal"
+  ],
+  "revisions": {
+    "reference": 23,
+    "candidate": 80
+  },
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-andn-normal-runtime/CMakeLists.txt": "4c8877f398e3daeb0afe6bf3aedaf43e167f1df74b4229f269a1c29a1a9073c3",
+    "experiments/skylake-andn-normal-runtime/aligned_table.hpp": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+    "experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+    "experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+    "experiments/skylake-andn-normal-runtime/channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "experiments/skylake-andn-normal-runtime/channel_runtime.cpp": "762080ef58273d425d3c9049f6518f1324c5696bd9f80b0c2bf4711de005aa5d",
+    "experiments/skylake-andn-normal-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp": "b0c3f432259035dd028105764b2277e5dc025685db3655c28516f7634698fbe7",
+    "experiments/skylake-andn-normal-runtime/outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+    "experiments/skylake-andn-normal-runtime/reference_to.cpp": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+    "experiments/skylake-andn-normal-runtime/suffix_cache.hpp": "c1024c72928c145d58fa5578f5896f210b2a53ee11de064790b50734b9c6f780",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-domain-isolated-runtime/CMakeLists.txt": "bca28de36adab593624707521dd9ee4b8053e2f84e5452b040239b7457e5119f",
+    "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+    "experiments/skylake-domain-isolated-runtime/channel_runtime.cpp": "ee1e91bcd4b2d8ee9bbdbfc49cf12a37cad5f7790d664d6c0817ee42b84a9fd7",
+    "experiments/skylake-domain-isolated-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp": "c77dbb77d076d4dd1b3c897af27d176ebf1e6ba1a484437ac38ba68803343cfa",
+    "experiments/skylake-exception-runtime/CMakeLists.txt": "42afb008406ea1f9e49597b8517593da10f2fb492526a31e6977fe89a172656c",
+    "experiments/skylake-exception-runtime/channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+    "experiments/skylake-exception-runtime/channel_runtime.cpp": "ba539a1c585ddbebb1635bfda6eae49786592a88a4c044d479a42ff272edde3c",
+    "experiments/skylake-exception-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-exception-runtime/suffix_cache.hpp": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c",
+    "experiments/skylake-palette-runtime/CMakeLists.txt": "21bae119cec6c2a0fc60acb1de39f007b9d64b3a01b9abf7cf55392e4fffe344",
+    "experiments/skylake-palette-runtime/channel_avx2.cpp": "1dc798f7220b2e8f41681c1c1f12a29bd983a90eded342bebb924c3b92dafce9",
+    "experiments/skylake-palette-runtime/channel_runtime.cpp": "58e2b0aab846014f0ee534071082b3faff6e8a318dc7be3b57cb27f33351dcaf",
+    "experiments/skylake-palette-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-palette-runtime/suffix_cache.hpp": "232964b7e7af56f585b8421c8f5facd0dbd7faab7dc1edd495c01f81e3da2a1c",
+    "experiments/skylake-suffix-cache-runtime/CMakeLists.txt": "1a1e710d2a584c63753af266adfbe3a4a8ca61a9a2d97759f902b468f4169196",
+    "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp": "fb1ffabd1bad41abf44d1513c4feadd3479392e9cda625b2842db234e519ad79",
+    "experiments/skylake-suffix-cache-runtime/channel_runtime.cpp": "ef4bca4d772ef6d0a6a708d9b5792f062f37911644e55f9e27a5614c004292d6",
+    "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp": "c31d01ead445ab1e3e432061d9cddd59835a70f14052a84d3e2050e06703e17f",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "9adc824542c320c3ddb93a2e6da7f7ba676373e55eaa0fe6f7637e5ff2fb33cf",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_runtime.py": "fc86cd071c3a7180a22b368a5b4c5ed8cc5de3d06be5e14989b3151ae6235bdb",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/domain_cache_support.py": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+    "scripts/inspect_skylake_preweight.py": "c469c4898d98d17fc2aed0737c8221dd34473ecee507aeb9d6df9e63d95da4c1",
+    "scripts/inspect_skylake_rcontiguous.py": "b0f55efc3837304b5752e13f82663b5aa010f8d437781edfebb6b402eade01a4",
+    "scripts/profile_skylake_cache.py": "4b3fd9ec8af15a42b61de9a26315322e24a6410828ea3251d3c9a968f05b8b37",
+    "scripts/restrict_support.py": "1f2fabfd9a277238ac25c3ea321018ad9032c77de437c98598ea78eb2c8877c6",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_domain_cache.py": "bc0e279f8c61d4e24e75364e1044bcd496c5f66d57d7693f45ce616b537eb8a9",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1",
+    "scripts/verify_skylake_rcontiguous.py": "3fbc15ba1739a7aeee864aec25472b19044a93b654981017cfd3d90795b143dc",
+    "scripts/verify_skylake_suffix_cache.py": "75fe91bb10f147095d1c00fce6f62f52df5e002d0a370ad73af481b9d14aefdb"
+  },
+  "screen": {
+    "protocol": "固定原生长批次四进程直接对23并带同库A/A控制",
+    "incremental_pmu": false,
+    "goal": "纯映射和真实输出1/4线程配对中位耗时比各≤1/3",
+    "on_fail": "完整保留并停止，不重复择优"
+  },
+  "hardware": "仅本机WSL2 AMD筛查；实际Skylake未知，编译使用通用AVX2及-mtune=skylake",
+  "required_static_checks": [
+    "三个保留像素TU源码保持79原字节；两个pair48对象全部.text与79对应对象相同，原线性回退对象也逐字节核对，不以文件名代替字节证据",
+    "独立识别新normal原地64/32两个实际可达完整区段，分别64/32条mem32 ANDN（VEX.W0），精确m32输入、地址宽输出与消费时0xff000000掩码有效",
+    "每8像素两组四ID屏障，所有64/32输入与调色板加载均早于该组首输出；全部lane组及预排合并语义维持78",
+    "新normal64主体六个普通32B写，32尾三个普通32B写；只有T0输入提示，整个normal TU无NT/SFENCE；禁止把预排值交给旧普通output_four",
+    "新normal宽区段无真实rsp/frame spill、无额外自MOV零扩展或循环内掩码重载；无外部call/gather/BMI2/EVEX/AVX512，rbp作为普通地址时单独辨别",
+    "新normal m32最大宽读取193/97B分别小于72/40像素的216/120B；精确8像素尾只读24B；1024字节前瞻及406像素保护不变",
+    "有效workers>1且具备BMI/直表的原地才选normal；单线程/嵌套/非OMP选pair48，真正分离始终pair48，无BMI保持原线性；同址apply_to仍委托原地",
+    "仅andn_inplace、andn_outplace、normal_inplace三个TU加-mbmi；其他TU不泄漏BMI，像素TU仍-mavx2/-mtune=skylake/-ffp-contract=off；源哈希/对象字节/compile_commands绑定一致",
+    "任何静态失败停止像素执行；通过后完整RGB8、有限/guard/align/API逐字节验证；完整域每批需>65536像素且4t确实覆盖normal",
+    "小尺寸257像素对齐夹具只选workers=1，80验证须另补大于65536像素的原地偏移覆盖；旧1280项不能宣称覆盖新normal全部对齐"
+  ],
+  "official_references": [
+    {
+      "title": "Intel SDM：ANDN语义、64位操作数形式及BMI1能力",
+      "url": "https://cdrdv2-public.intel.com/825743/325462-sdm-vol-1-2abcd-3abcd-4.pdf"
+    },
+    {
+      "title": "GNU binutils BMI实现及测试：AT&T内存、掩码、目标顺序",
+      "url": "https://ecos.sourceware.org/ml/binutils/2011-01/msg00038.html"
+    },
+    {
+      "title": "GCC15 ISA名称表：bmi与-mbmi",
+      "url": "https://raw.githubusercontent.com/gcc-mirror/gcc/releases/gcc-15/gcc/common/config/i386/i386-isas.h"
+    },
+    {
+      "title": "GCC15 CPU检测初始化与独立TU要求",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/x86-Built-in-Functions.html"
+    },
+    {
+      "title": "GCC15 CPUID位定义：bit_BMI为第7叶EBX[3]",
+      "url": "https://raw.githubusercontent.com/gcc-mirror/gcc/releases/gcc-15/gcc/config/i386/cpuid.h"
+    },
+    {
+      "title": "GCC15 Extended Asm：精确内存输入和cc clobber",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/Extended-Asm.html"
+    },
+    {
+      "title": "GCC15类型属性：typedef aligned(1)及may_alias",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/Common-Type-Attributes.html"
+    },
+    {
+      "title": "Intel SDM卷1第3.4.1.1节：64位模式的32位目的寄存器写入将结果零扩展为64位",
+      "url": "https://cdrdv2-public.intel.com/835781/325462-sdm-vol-1-2abcd-3abcd-4.pdf"
+    },
+    {
+      "title": "GCC15 Extended Asm的x86 operand modifiers：%k打印SImode寄存器名，%q打印DImode寄存器名；修饰符只控制汇编格式",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/Extended-Asm.html#x86-Operand-Modifiers"
+    }
+  ],
+  "preparation": {
+    "state": "源码与构建计划已冻结；未编译、未执行原生或性能",
+    "parent_plan": {
+      "path": "experiments/skylake-pair48-v1.json",
+      "sha256": "a31c77dc7fc966c3314b5e1eda585fd1d11e840050314a78e9eb689b6c85c180"
+    },
+    "normal_source_parent": {
+      "path": "experiments/skylake-andn-split-runtime/andn_inplace/channel_avx2.cpp",
+      "sha256": "dbb416074abf56734a2e894507c572b25e6a10bb30ee9409cbc359bb93fa336d"
+    },
+    "generator": {
+      "path": "artifacts/skylake-andn-normal-preflight-v1/prepare.py",
+      "sha256": "5575874d524092aaee2f1cf2d40288721687ac4892aa5dd24c7a9f9c3b3ff6f2"
+    },
+    "no_performance_claim": true,
+    "conditional_execution": "由主流程先构建和静态审计；通过后独立完整正确性，之后才首次受控长批次，旧失败不重测"
+  },
+  "diagnostic_basis": {
+    "result": {
+      "path": "artifacts/skylake-dispatch-diagnostic-v1/results.json",
+      "sha256": "e68ec3f0ffa05cdfb9d4e3930d65058d7b0ae4cfc7234e100351938b57acdec9"
+    },
+    "independent_audit": {
+      "path": "artifacts/skylake-dispatch-diagnostic-independent-v1/results.json",
+      "sha256": "788f7de92f13d8e10cf1f0051fdd5358a17c9a5cc81c591e994e396cf4e08c20"
+    },
+    "policy": {
+      "path": "experiments/skylake-dispatch-diagnostic-v2.json",
+      "sha256": "7549c82eae9dc5821352dd9043977c6b886931c57538789072da0b034c842865"
+    },
+    "finding": "78本机照片1/4线程LQ受阻约71.11%/72.94%，FE空槽约0.842%/2.425%；两个组分开采样，不能拼接为同时因果分解",
+    "limit": "尚未证明输入load而非随机ID请求占据主要LQ时间；本机WSL Zen4诊断不是Skylake证据，不保证新增算术免费或达到目标",
+    "unavailable_measurement": "64位内存ANDN的uops页面未成功获取，不引用其延迟、吞吐或端口作为已核实性能事实"
+  },
+  "prior_evidence": {
+    "revision79_static": {
+      "path": "artifacts/skylake-pair48-static-v1/results-v2.json",
+      "sha256": "f081ad5e9fd3772c27a1b8900fdfc99d5524108e1947da39361e66fe94010efd"
+    },
+    "revision79_independent_static": {
+      "path": "artifacts/skylake-pair48-static-v1/independent-audit.json",
+      "sha256": "d56c26f6bb43869d0073103b18ff3bf591e98df7292386b22652ddb40323f917"
+    },
+    "revision79_full": {
+      "path": "artifacts/skylake-pair48-linux-full-v1/results.json",
+      "sha256": "41628bf768a3673a3f83afef75879315ea080465aa9ddd40d53e6688d93c108f"
+    },
+    "revision79_initial_long": {
+      "path": "artifacts/skylake-pair48-long-perf-v1/results.json",
+      "sha256": "2d00684c0a0eea66e37227318be3a972ea2e4bae34333c98a42a0eefba1b4db4"
+    },
+    "g_low_protocol": {
+      "path": "artifacts/skylake-g-low-profile-v1/protocol.json",
+      "sha256": "62e0695236d1035fadbd6e5c33e437f57efa523106e18a816bdd859619e4fb6e"
+    },
+    "g_low_result": {
+      "path": "artifacts/skylake-g-low-profile-v1/results.json",
+      "sha256": "43a10810b484a3c2a7f06b4be47e41578a2c65ab8d12203c6a6de08dcdccd0f7"
+    }
+  },
+  "andn_normal": {
+    "linear_format": 9,
+    "entries": 4194304,
+    "physical_bytes": 16777216,
+    "readonly_api": "显式JSHC_CC_API uint32_t jshc_cc_andn_normal_enabled(const void*)；null/无直接表返回0，仅报告BMI1和表资格，不保证当前调用为普通写",
+    "selection": {
+      "inplace_effective_workers_1": "原79 pair48 NTA/NT/SFENCE",
+      "inplace_effective_workers_gt1": "新78 mem32 ANDN T0/普通写/无SFENCE",
+      "true_outplace": "原79 pair48 NTA/NT/SFENCE",
+      "no_bmi": "原79线性回退",
+      "nested_or_no_openmp": "有效workers=1"
+    },
+    "normal_input": {
+      "operand": "mem32 ANDN，mask0xff000000，uintptr_t输出、%k0清高32位，aligned(1),may_alias、cc约束保持78",
+      "offsets_per8": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21
+      ],
+      "input_loads_per8": 8,
+      "requested_input_bytes_per_pixel": 4,
+      "total_input_id_palette_loads_per_pixel": 3,
+      "prior79_total_loads_per_pixel": 2.5
+    },
+    "normal_output": "保留pack_stream_0..3和三条合并；将三个模板存储原语换普通aligned32B写，每64像素展开六次；仅此TU删除streamed和SFENCE",
+    "macroinstructions": "新普通写路径相对79 pair48预计减少输入拆位指令，但每8像素输入load由4恢复8；必须审计实际汇编，不能将输入与缓存提示的历史收益独立相乘",
+    "boundary": {
+      "normal_body64_max_read_bytes": 193,
+      "normal_body32_max_read_bytes": 97,
+      "body64_guard_pixels": 72,
+      "body32_guard_pixels": 40,
+      "preserved_pair48_body64_max_read_bytes": 194,
+      "preserved_pair48_body32_max_read_bytes": 98,
+      "exact_tail_read_bytes": 24,
+      "prefetch_guard_pixels": 406
+    },
+    "expected_single_extra_bytes_vs23": 24,
+    "expected_chain_extra_bytes_vs23": 16777240,
+    "expected_chain_model_bytes": 28046644,
+    "resource_validation": "没有新增表或Handle字段，预计与79相同；实际model_bytes与页状态由主流程验证",
+    "history": [
+      "68所有原地线程采用T0普通写、MOV+AND输入、旧pack/output_four和连续static；单次PMU四线程有正信号但单线程失败",
+      "71仅workers>1采用T0普通写，却同时采用static,1交错；仍为MOV+AND及旧pack，首轮长批次未达标",
+      "74为连续static的PREFETCHW普通写，本机prfchw=1；T0只是不支持时的回退，仍MOV+AND和旧pack，不能把它当作本次ANDN+T0的直接测量",
+      "75至79的ANDN专用宽路径均为NTA/NT；未找到ANDN32+T0普通写+连续static+当前预排的直接已测组合"
+    ],
+    "hypothesis": "仅在多线程原地尝试减少输入拆位/输出合并前端工作并改为缓存内写；保留已验79单线程/分离路径，但新build须重新同场验证，不能拼接旧成绩",
+    "risks": [
+      "79四线程仍明显未达三倍，68旧单次PMU信号不足以预测本组合补足缺口",
+      "T0及普通写可能增加源数据与16MiB随机ID表的缓存竞争；此前SQ计数不能证明store是根因",
+      "mem32输入恢复更多load，LQ占用可能变差；减少宏指令并非后端吞吐保证",
+      "新增TU和调度可能改变寄存器分配，需重新禁止热区spill并核对保留对象",
+      "无BMI/无OMP/嵌套路径仅源级保证仍需如实记录覆盖；本机Zen4结论不可当作Skylake实测"
+    ]
+  },
+  "acceptance_invariants": {
+    "reference_policy": {
+      "path": "experiments/skylake-pair48-long-perf-v1.json",
+      "sha256": "1fed7dae806c2350e345f36306df2e60fb67dea64d5fba6825b1064d309145ab"
+    },
+    "orders": [
+      [
+        "reference",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "candidate",
+        "reference"
+      ],
+      [
+        "reference",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "inner_repeats": {
+      "1": 16,
+      "4": 64
+    },
+    "control_orders": [
+      [
+        "A",
+        "B"
+      ],
+      [
+        "B",
+        "A"
+      ],
+      [
+        "B",
+        "A"
+      ],
+      [
+        "A",
+        "B"
+      ]
+    ],
+    "control_gate": {
+      "any_max": 1.25,
+      "any_min": 0.8,
+      "median_max": 1.1,
+      "median_min": 0.9090909090909091
+    },
+    "adoption_gate": {
+      "median_apply_ratio_max": 0.3333333333333333,
+      "any_process_apply_ratio_max": 0.9,
+      "median_prepare_plus_100_ratio_max": 1,
+      "median_outplace_ratio_max": 0.3333333333333333
+    },
+    "confirmation": "首次完整4进程控制和全部门槛通过后才允许一次独立4进程确认；首次、确认、合并8对均须通过，失败不重试；新输出目录由主流程冻结"
+  }
+}

@@ -22,6 +22,15 @@ git = ">=2.43,<3"
 PYTHONPATH = "$PIXI_PROJECT_ROOT/python"
 
 [tasks]
+configure-header = "cmake -S single_header -B build-single-header -G Ninja -DCMAKE_BUILD_TYPE=Release"
+build-header = { cmd = "cmake --build build-single-header --parallel 2", depends-on = ["configure-header"] }
+test-header = { cmd = "ctest --test-dir build-single-header --output-on-failure --no-tests=error", depends-on = ["build-header"] }
+frontier = "python scripts/p16_frontier.py"
+header-run = "python scripts/run_flash_chroma.py"
+configure-score = "cmake -S experiments/p16-unified-runtime -B build-score -G Ninja -DCMAKE_BUILD_TYPE=Release -DP16_ENABLE_AVX512=OFF"
+build-score = { cmd = "cmake --build build-score --target jshc_unified -j 2", depends-on = ["configure-score"] }
+score = "python scripts/p16_submission.py"
+score-package = "python scripts/p16_submission.py pack --manifest submission/p16-cpu-source-manifest.json --output artifacts/p16-score-package"
 configure = "cmake --preset default"
 build = { cmd = "cmake --build --preset default", depends-on = ["configure"] }
 test = { cmd = "python scripts/check_correctness.py", depends-on = ["build"] }

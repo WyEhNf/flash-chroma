@@ -1,0 +1,1580 @@
+{
+  "pass": true,
+  "purpose": "离线复核56—57的冻结源、48组完整色域与8项计数；不调用像素或重计时。",
+  "script_sha256": "0f8c5cf02dcc42406e50353a6f8d32e2fed88185a027bb10cbe9522f5b64ede3",
+  "cases": [
+    {
+      "revision": 56,
+      "name": "sparsehint",
+      "cycle_ratios": {
+        "1": 0.9801324974608343,
+        "4": 1.0405512438267712
+      },
+      "screen_pass": false,
+      "full_sha256": "6c44ce465caf9fa859199cadfa3be42e8956abd834803f1804101bb37e6ff4d4",
+      "direct_table_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+      "pmu_records": [
+        {
+          "variant": "reference40",
+          "revision": 40,
+          "requested_threads": 1,
+          "actual_team": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 353,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 696,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 697,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 698,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 353,
+              "time_enabled_ns": 61815419,
+              "time_running_ns": 61815419,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 308153377,
+                "instructions": 424754964,
+                "cache_references": 64021494,
+                "cache_misses": 8771455
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 308153377,
+            "instructions": 424754964,
+            "cache_references": 64021494,
+            "cache_misses": 8771455
+          },
+          "cycles_per_pixel": 3.9183728154500326,
+          "instructions_per_pixel": 5.401038665771484,
+          "ipc": 1.3783881524686326,
+          "generic_cache_references_per_pixel": 0.8140753936767579,
+          "generic_cache_misses_per_pixel": 0.11153481801350912,
+          "generic_cache_miss_fraction": 0.13700797110420448,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 126233931153408,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "72cf20a00000-72cf21a00000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "sparsehint56",
+          "revision": 56,
+          "requested_threads": 1,
+          "actual_team": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 353,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 696,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 697,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 698,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 353,
+              "time_enabled_ns": 59582705,
+              "time_running_ns": 59582705,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 302031139,
+                "instructions": 443143793,
+                "cache_references": 64781909,
+                "cache_misses": 9094100
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 302031139,
+            "instructions": 443143793,
+            "cache_references": 64781909,
+            "cache_misses": 9094100
+          },
+          "cycles_per_pixel": 3.840524533589681,
+          "instructions_per_pixel": 5.634864718119303,
+          "ipc": 1.4672122697918244,
+          "generic_cache_references_per_pixel": 0.8237445704142252,
+          "generic_cache_misses_per_pixel": 0.11563746134440105,
+          "generic_cache_miss_fraction": 0.14038024103303284,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 126233958416384,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "72cf22400000-72cf23400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "sparsehint56",
+          "revision": 56,
+          "requested_threads": 4,
+          "actual_team": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 353,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 696,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 697,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 698,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 353,
+              "time_enabled_ns": 18627238,
+              "time_running_ns": 18627238,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 90267751,
+                "instructions": 112493841,
+                "cache_references": 15737301,
+                "cache_misses": 1837242
+              }
+            },
+            {
+              "tid": 696,
+              "time_enabled_ns": 18389776,
+              "time_running_ns": 18389776,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 90767385,
+                "instructions": 111004952,
+                "cache_references": 15830284,
+                "cache_misses": 2876654
+              }
+            },
+            {
+              "tid": 697,
+              "time_enabled_ns": 18469979,
+              "time_running_ns": 18469979,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 90970599,
+                "instructions": 112125645,
+                "cache_references": 14095420,
+                "cache_misses": 2270840
+              }
+            },
+            {
+              "tid": 698,
+              "time_enabled_ns": 18520796,
+              "time_running_ns": 18520796,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 92441920,
+                "instructions": 110855217,
+                "cache_references": 16126450,
+                "cache_misses": 3168014
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 364447655,
+            "instructions": 446479655,
+            "cache_references": 61789455,
+            "cache_misses": 10152750
+          },
+          "cycles_per_pixel": 4.634191576639811,
+          "instructions_per_pixel": 5.677282396952311,
+          "ipc": 1.2250858219954797,
+          "generic_cache_references_per_pixel": 0.7856935501098633,
+          "generic_cache_misses_per_pixel": 0.12909889221191406,
+          "generic_cache_miss_fraction": 0.16431201731751802,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 126233958416384,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "72cf22400000-72cf23400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "reference40",
+          "revision": 40,
+          "requested_threads": 4,
+          "actual_team": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 353,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 696,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 697,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 698,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 353,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 696,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 697,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 698,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 353,
+              "time_enabled_ns": 17950239,
+              "time_running_ns": 17950239,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 87290388,
+                "instructions": 107834494,
+                "cache_references": 15452137,
+                "cache_misses": 1905516
+              }
+            },
+            {
+              "tid": 696,
+              "time_enabled_ns": 17847763,
+              "time_running_ns": 17847763,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 88701368,
+                "instructions": 106552623,
+                "cache_references": 15473148,
+                "cache_misses": 2806341
+              }
+            },
+            {
+              "tid": 697,
+              "time_enabled_ns": 17840139,
+              "time_running_ns": 17840139,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 85803251,
+                "instructions": 107639677,
+                "cache_references": 13784524,
+                "cache_misses": 2279107
+              }
+            },
+            {
+              "tid": 698,
+              "time_enabled_ns": 17881578,
+              "time_running_ns": 17881578,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 88449786,
+                "instructions": 106258012,
+                "cache_references": 15909052,
+                "cache_misses": 3119607
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 350244793,
+            "instructions": 428284806,
+            "cache_references": 60618861,
+            "cache_misses": 10110571
+          },
+          "cycles_per_pixel": 4.453592847188314,
+          "instructions_per_pixel": 5.445922927856445,
+          "ipc": 1.2228156265552248,
+          "generic_cache_references_per_pixel": 0.7708086776733398,
+          "generic_cache_misses_per_pixel": 0.12856255849202475,
+          "generic_cache_miss_fraction": 0.16678919453798383,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 126233958416384,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "72cf22400000-72cf23400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        }
+      ]
+    },
+    {
+      "revision": 57,
+      "name": "qwordpack",
+      "cycle_ratios": {
+        "1": 0.9509677811703532,
+        "4": 1.0266168510960278
+      },
+      "screen_pass": false,
+      "full_sha256": "67a1107e6e6eb7d9b6352d65cee2ba50fc41a45af3ffc622cb8dda4f58a1f140",
+      "direct_table_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+      "pmu_records": [
+        {
+          "variant": "reference40",
+          "revision": 40,
+          "requested_threads": 1,
+          "actual_team": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 805,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 807,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 808,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 809,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 805,
+              "time_enabled_ns": 71668751,
+              "time_running_ns": 71668751,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 341006738,
+                "instructions": 424754948,
+                "cache_references": 63746019,
+                "cache_misses": 9334187
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 341006738,
+            "instructions": 424754948,
+            "cache_references": 63746019,
+            "cache_misses": 9334187
+          },
+          "cycles_per_pixel": 4.336124903361003,
+          "instructions_per_pixel": 5.4010384623209635,
+          "ipc": 1.2455910709893363,
+          "generic_cache_references_per_pixel": 0.8105725479125977,
+          "generic_cache_misses_per_pixel": 0.11869032541910807,
+          "generic_cache_miss_fraction": 0.1464277635910095,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 133084183789568,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "790a13800000-790a14800000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "qwordpack57",
+          "revision": 57,
+          "requested_threads": 1,
+          "actual_team": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 805,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 807,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 808,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 809,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 805,
+              "time_enabled_ns": 68516387,
+              "time_running_ns": 68516387,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 324286421,
+                "instructions": 395296152,
+                "cache_references": 65222959,
+                "cache_misses": 9337113
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 324286421,
+            "instructions": 395296152,
+            "cache_references": 65222959,
+            "cache_misses": 9337113
+          },
+          "cycles_per_pixel": 4.123515078226725,
+          "instructions_per_pixel": 5.026450500488282,
+          "ipc": 1.2189722615613312,
+          "generic_cache_references_per_pixel": 0.8293528111775716,
+          "generic_cache_misses_per_pixel": 0.11872753143310547,
+          "generic_cache_miss_fraction": 0.14315684450930843,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 133084213149696,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "790a15400000-790a16400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "qwordpack57",
+          "revision": 57,
+          "requested_threads": 4,
+          "actual_team": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 805,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 807,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 808,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 809,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 805,
+              "time_enabled_ns": 25600324,
+              "time_running_ns": 25600324,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 95254674,
+                "instructions": 100644118,
+                "cache_references": 15990692,
+                "cache_misses": 2054226
+              }
+            },
+            {
+              "tid": 807,
+              "time_enabled_ns": 25899804,
+              "time_running_ns": 25899804,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 112316825,
+                "instructions": 100640965,
+                "cache_references": 15966082,
+                "cache_misses": 3186183
+              }
+            },
+            {
+              "tid": 808,
+              "time_enabled_ns": 24077452,
+              "time_running_ns": 24077452,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 104398043,
+                "instructions": 100683896,
+                "cache_references": 14550741,
+                "cache_misses": 2539761
+              }
+            },
+            {
+              "tid": 809,
+              "time_enabled_ns": 26728062,
+              "time_running_ns": 26728062,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 110100513,
+                "instructions": 98906690,
+                "cache_references": 16558335,
+                "cache_misses": 3506372
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 422070055,
+            "instructions": 400875669,
+            "cache_references": 63065850,
+            "cache_misses": 11286542
+          },
+          "cycles_per_pixel": 5.366898282368978,
+          "instructions_per_pixel": 5.0973977279663085,
+          "ipc": 0.9497846725942214,
+          "generic_cache_references_per_pixel": 0.8019237518310547,
+          "generic_cache_misses_per_pixel": 0.14351580301920572,
+          "generic_cache_miss_fraction": 0.17896439990898402,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 133084213149696,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "790a15400000-790a16400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        },
+        {
+          "variant": "reference40",
+          "revision": 40,
+          "requested_threads": 4,
+          "actual_team": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 805,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 807,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 808,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 809,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "tasks_before": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "tasks_after": [
+            {
+              "tid": 805,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 807,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 808,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 809,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "thread_counters": [
+            {
+              "tid": 805,
+              "time_enabled_ns": 23923239,
+              "time_running_ns": 23923239,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 100876978,
+                "instructions": 107824164,
+                "cache_references": 16159851,
+                "cache_misses": 1885087
+              }
+            },
+            {
+              "tid": 807,
+              "time_enabled_ns": 23811866,
+              "time_running_ns": 23811866,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 100189598,
+                "instructions": 107068293,
+                "cache_references": 15819404,
+                "cache_misses": 2934650
+              }
+            },
+            {
+              "tid": 808,
+              "time_enabled_ns": 21999253,
+              "time_running_ns": 21999253,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 101692135,
+                "instructions": 108080050,
+                "cache_references": 14386084,
+                "cache_misses": 2328410
+              }
+            },
+            {
+              "tid": 809,
+              "time_enabled_ns": 24069166,
+              "time_running_ns": 24069166,
+              "running_fraction": 1.0,
+              "counts": {
+                "cycles": 108368434,
+                "instructions": 106358311,
+                "cache_references": 16631077,
+                "cache_misses": 3153991
+              }
+            }
+          ],
+          "sum_counts": {
+            "cycles": 411127145,
+            "instructions": 429330818,
+            "cache_references": 62996416,
+            "cache_misses": 10302138
+          },
+          "cycles_per_pixel": 5.22775198618571,
+          "instructions_per_pixel": 5.459223658243815,
+          "ipc": 1.0442774777131294,
+          "generic_cache_references_per_pixel": 0.8010408528645834,
+          "generic_cache_misses_per_pixel": 0.13099845886230468,
+          "generic_cache_miss_fraction": 0.16353530334170122,
+          "multiplexing_acceptable": true,
+          "output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "model_bytes": 28046644,
+          "direct_info": {
+            "version": 1,
+            "enabled": 1,
+            "format": 9,
+            "reserved": 0,
+            "entries": 4194304,
+            "table_capacity_bytes": 16777216,
+            "dg_min": 0,
+            "db_min": 0
+          },
+          "paged_info": {
+            "version": 1,
+            "advised": 1,
+            "reserved0": 0,
+            "reserved1": 0,
+            "base": 133084213149696,
+            "bytes": 16777216,
+            "smaps": {
+              "header": "790a15400000-790a16400000 rw-p 00000000 00:00 0 ",
+              "properties": {
+                "Size": "16384 kB",
+                "KernelPageSize": "4 kB",
+                "MMUPageSize": "4 kB",
+                "Rss": "16384 kB",
+                "Pss": "16384 kB",
+                "Pss_Dirty": "16384 kB",
+                "Shared_Clean": "0 kB",
+                "Shared_Dirty": "0 kB",
+                "Private_Clean": "0 kB",
+                "Private_Dirty": "16384 kB",
+                "Referenced": "16384 kB",
+                "Anonymous": "16384 kB",
+                "KSM": "0 kB",
+                "LazyFree": "0 kB",
+                "AnonHugePages": "16384 kB",
+                "ShmemPmdMapped": "0 kB",
+                "FilePmdMapped": "0 kB",
+                "Shared_Hugetlb": "0 kB",
+                "Private_Hugetlb": "0 kB",
+                "Swap": "0 kB",
+                "SwapPss": "0 kB",
+                "Locked": "0 kB",
+                "THPeligible": "1",
+                "VmFlags": "rd wr mr mw me ac sd hg"
+              },
+              "mapping_bytes": 16777216
+            },
+            "anon_huge_bytes": 16777216,
+            "fully_huge": true,
+            "aligned_2m": true
+          }
+        }
+      ]
+    }
+  ],
+  "new_full_domain_api_configurations": 48,
+  "new_independent_table_checks": 2,
+  "pmu_profiles": 8,
+  "full_wallclock_performance_calls": 0,
+  "threefold_goal_completed": false,
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}

@@ -1,0 +1,107 @@
+{
+  "purpose": "90显式非连续分段入口质量：两模型完整RGB8、非连续100图、拒绝前无写、空批/空段和caller-owned三角色driver",
+  "libraries": {
+    "baseline": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+      "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_segment_batch.dll",
+      "sha256": "8520ed20f891a66669c282ac23d3fd51175eb93a33ba03d0eddd384d52894825"
+    }
+  },
+  "driver": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-segment-driver-build-v1\\libjshc_segment_driver.dll",
+    "sha256": "04d9cba8e3073306fb15e013b5ef2e893ee16424de60f56d35b0289e610d8ff3"
+  },
+  "model_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-final-model-pair-v1.json",
+    "sha256": "163b13ba1d2852d2636995a25bf54db429ca714598f44a9d130a4acb1f2e1894"
+  },
+  "roles": {
+    "direct": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut",
+          "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut",
+          "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+        }
+      ],
+      "sidecars": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin",
+          "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+        },
+        null,
+        null,
+        null
+      ],
+      "oracle": {
+        "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\cube.rgb",
+        "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+      }
+    },
+    "fallback": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\stage1_sweep012\\stage1.slut",
+          "sha256": "af9747e4b396ee8382897cd9af717d7464eccfe066add1262c12ff95582f3fc0"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut",
+          "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+        }
+      ],
+      "sidecars": [
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "role_scales": {
+    "direct": [
+      1,
+      2
+    ],
+    "fallback": [
+      1
+    ]
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "script_sha256": "2d27c713cc4700e197b7f01f7350225c5bd02620a13c5d7334c52fa3bbcab105",
+  "support_sha256": {
+    "scripts/p16_segment_support.py": "d09e8ba75433b5c56950d296a16e891d7db14abeba3a6de24daf24c824534f8f"
+  },
+  "diagnostic_proof": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-call-boundary-v1\\correctness.json",
+    "sha256": "aa059ae79b699e91cc488a7d7ae4415e84e9d3488fbb95965f0dfa5b6e5fd8e8"
+  },
+  "quality_boundary": "不计性能。完整RGB8分成10段含空/非整8/65536边界，scalar/AVX2、1/4线程；100照片真实独立输入输出。driver三角色连贯/非连续N1/10先验，N100正式每组先预热哈希再计时，避免质量与root任务并行时超过1GiB。",
+  "contract": "空批0..100，空段可null；目标与所有源/其它目标不重叠。重复只读源允许。验证、范围/任务构造都在新入口，所有验证拒绝必须不写首目标或任何源。"
+}

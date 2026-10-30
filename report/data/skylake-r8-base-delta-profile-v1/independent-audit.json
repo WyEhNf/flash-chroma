@@ -1,0 +1,143 @@
+{
+  "purpose": "仅以标准库重哈希输入并复算已有JSON；不导入或执行原始profile。",
+  "audit_completed": true,
+  "passed": true,
+  "completed_utc": "2026-10-23T04:33:42.482448+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "executable": "C:\\Users\\admin\\miniconda3\\python.exe",
+    "dependencies": "Python标准库；不导入NumPy"
+  },
+  "audit_script_sha256": "9743f1ac7cfb229002dfa4262bd3608adc7946341745c97817c49f2b100230d7",
+  "manifest_sha256": "5eb240b3dfcdab3d832b6f6c38331165d6337f2c6ce47c7e279b706c5e45c904",
+  "originals": {
+    "analyze.py": "c88f0113f4c1d6e68b4185cdb55f2140f04aa5ecacaf8e2aa390dc45269516ef",
+    "freeze.py": "0f9d1f0d5c07e7aa15085ee436e93d537a32bd787e17a2d415a1ed2e85dba871",
+    "history.json": "5ff8da38c49e8d4ec208177f901c1f8bbb5b3f68cf344ae27f56675762f78a72",
+    "protocol.json": "4a6dd2693d75ce092c509400d164c63c409099eb54da55c54550c6354aca1192",
+    "preparation.json": "9bf69e044237427c9a4c81cf8344d2c0bc19b1ece15f838a58b2d3818c085d15",
+    "execution-start.json": "cc09bd5ebb57eb16e0dcca9f8fde4f98f575ceb22cef6f76365c9361f0d63188",
+    "analysis.json": "31dcb62f0ca647b64554206e46ed761bcbb10e0b83475159af3681ab266d4783",
+    "exit.json": "89909f3a06ace5fc4e83af330460e73cdfe7232bc1fa07f886c70561f49ec946"
+  },
+  "original_byte_copies": 8,
+  "input_rehashes": [
+    {
+      "name": "cache_gold",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/cache-gold.u32",
+      "sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "bytes": 742400
+    },
+    {
+      "name": "cube",
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "bytes": 50331648
+    },
+    {
+      "name": "photos",
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+      "bytes": 235929600
+    },
+    {
+      "name": "manifest",
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "bytes": 101681
+    },
+    {
+      "name": "old_palette_crosscheck",
+      "path": "artifacts/skylake-palette-bank-readonly-v1/palette.u32",
+      "sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "bytes": 1024
+    },
+    {
+      "name": "cache_generation",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/generation.json",
+      "sha256": "c2afd9e81688e8609b52a4862917e0315b05692a0783a512e1bc73d4fd16be95",
+      "bytes": 2058
+    }
+  ],
+  "history_source_rehashes": 10,
+  "previous_profile_rehashed": {
+    "path": "artifacts/skylake-r8-packed-profile-v1/analysis.json",
+    "sha256": "b73099cb170363ee50a266714363f4b74cecf1c86a3f4472dfb0cf87f05e0dc1"
+  },
+  "source_review": {
+    "identity_frozen": true,
+    "ast_parse_passed": true,
+    "coverage": "人工审阅固定int32符号差分、uint64打包、coarse/fine映射、正常通道累加进位及完整R切片/100图循环；审计未调用原脚本函数",
+    "full_domain_reconstruction_in_original": "16,777,216色，R从0到255，每片G/B完整笛卡尔积；索引逆映射、主表行等式及实际通道加法超255检查",
+    "photo_reconstruction_in_original": "100图各786432像素；像素0起不重叠8包，无偏移扫描；逐图像素/字节及输出SHA，合并完整输出SHA"
+  },
+  "summary": {
+    "full_domain_blocks": 2097152,
+    "normal_blocks": 1151995,
+    "exception_blocks": 945157,
+    "failure_reason_counts_overlapping": {
+      "base_R_outside_0_255": 0,
+      "base_G_outside_0_255": 10108,
+      "base_B_outside_0_255": 2535,
+      "base_RGB_equals_ffffff": 0,
+      "delta_R_outside_0_3": 931518,
+      "delta_G_minus_R_outside_0_3": 0,
+      "delta_B_minus_R_outside_0_1": 242230
+    },
+    "full_domain_total_bytes": 47022240,
+    "photos_images": 100,
+    "photo_packets8": 9830400,
+    "photo_exception_packets8": 5255224,
+    "per_image_input_hashes_verified": 100,
+    "worst_image_index": 31,
+    "images_over_gate": 96,
+    "full_domain_histograms_recomputed_from_raw_cube": false,
+    "photo_exception_histograms_recomputed_from_pixels": false
+  },
+  "original_gate_recomputed": {
+    "full_domain_exact": true,
+    "photos_exact": true,
+    "exception_packet8_fraction": 0.5345890299479167,
+    "exception_packet8_fraction_max": 0.05,
+    "exception_packets_pass": false,
+    "any_image_exception_packet8_fraction": 0.9797871907552084,
+    "any_image_exception_packet8_fraction_max": 0.2,
+    "per_image_pass": false,
+    "exception_pool_bytes": 30245024,
+    "exception_pool_bytes_max": 2097152,
+    "exception_pool_pass": false,
+    "passed": false
+  },
+  "split_plane_7bit_resource_bound": {
+    "purpose": "仅复用已有跨度直方图，不构造或执行7bit拆平面方案",
+    "hypothetical_format": "16MiB主表：baseR8加八个3+2+2bit差分；2MiB平面：baseDG4/baseDB3/例外标志；例外块32B",
+    "blocks_exceeding_deltas": {
+      "R": 475327,
+      "G_minus_R": 0,
+      "B_minus_R": 31783
+    },
+    "residual_exception_union_lower_blocks": 475327,
+    "residual_exception_union_upper_blocks": 507110,
+    "exception_pool_lower_bytes": 15210464,
+    "residual_exception_pool_upper_bytes": 16227520,
+    "exception_pool_gate_bytes": 2097152,
+    "fixed_planes_bytes": 18874368,
+    "payload_lower_bytes": 34084832,
+    "decision": "异常池下界已超过2MiB；不实现、不另跑profile；不把上界当作完整格式的精确池大小"
+  },
+  "limitations": [
+    "审计独立重哈希大cube/photos及全部照片输入分片，但未重新编码或解码完整色域、照片。",
+    "完整域/逐图零差与输出SHA核对属于冻结原结果及算法覆盖审阅，不是第二次独立执行的完整精度结论。",
+    "主表、线性RGB32和异常池仅在原profile内存存在；当前只有其SHA与大小，未保存或重建二进制。",
+    "原件x模式回执限定同目录单次执行；不证明未记录的其他路径执行次数，也不构成性能计时证据。",
+    "历史差异判断只覆盖history.json列出的小源码与阶段说明，不能证明全部历史或业界不存在相同机制。",
+    "新7bit方案只得出差分异常并集资源下界，未计算联合直方图、逐图异常率或实现性能。",
+    "没有候选原生、编译、性能、拟合或实际Skylake测试；全局目标仍未达成。"
+  ],
+  "original_analysis_executions_added": 0,
+  "native_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0,
+  "new_fits": 0
+}

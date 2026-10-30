@@ -1,0 +1,11 @@
+{
+  "header_sha256": "9e5fa9ac474c6f9f60c05c19ad859353bf9b6fe88983cc01c3bee21cf1e11953",
+  "default_dispatch": "cached",
+  "explicit_streaming_macro": 1,
+  "dispatch_source": "FC_AVX2 inline void direct_rgb24_run(const std::uint8_t* table,const std::uint8_t* src,\n    std::uint8_t* dst,std::size_t pixels) noexcept {\n#if defined(FLASH_CHROMA_RGB24_LEGACY) && FLASH_CHROMA_RGB24_LEGACY\n    direct_rgb24_gather_run(table,src,dst,pixels);\n#elif defined(FLASH_CHROMA_RGB24_STREAMING) && FLASH_CHROMA_RGB24_STREAMING\n    direct_rgb24_block_run<true>(table,src,dst,pixels);\n#else\n    direct_rgb24_block_run<false>(table,src,dst,pixels);\n#endif\n}\n\n",
+  "previous_binary_sha256": "1d1c65bdc012fefb0f2ecac36831d439e19a795385e8197ee746a9cd0182a1c7",
+  "previous_block_machine_bytes_sha256": {
+    "void fc::detail::direct_rgb24_block_run<false>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": "59c1da3e08393b029823cd5ad92065ea8c350e69010cfd91d58564ef30ba8f3f",
+    "void fc::detail::direct_rgb24_block_run<true>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": "c497238558aa11d3e1c08b44f95550b55b8aeb483e3f94ce4d932a78b8b56f61"
+  }
+}

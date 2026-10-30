@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "purpose": "补验M16P整个ROM末端保护页，并强制映射pool最后字节；不改候选源码。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "script_sha256": "3115e297bcc95c25c54ba026ee2deb87e3b8eb11a33a533952fab4490c546af4",
+  "libraries": {
+    "jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "jshc_dict_c99.dll": "9e896b65571c5aa35946a2ed1c0e27e48c2b899e02b14a6f3fb8effcc95df91b"
+  },
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "input_code": 16777151,
+  "comparisons": 8,
+  "scope": "整个ROM准确末端后PAGE_NOACCESS；使用原u32偏移最大块的末像素，强制pool最后字节，桌面原地/分离1/4线程与独立C99对照。"
+}

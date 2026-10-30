@@ -1,0 +1,4189 @@
+{
+  "measurement_completed": true,
+  "worker_index": 0,
+  "pid": 703,
+  "parent_pid": 303,
+  "order": [
+    "reference",
+    "candidate"
+  ],
+  "thread_order": [
+    1,
+    4
+  ],
+  "control_order": [
+    "A",
+    "B"
+  ],
+  "inner_repeats": {
+    "1": 16,
+    "4": 64
+  },
+  "initial_team": {
+    "requested": 4,
+    "actual": 4,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "main_allowed_cpus_after_openmp": [
+      0
+    ],
+    "task_affinities": [
+      {
+        "tid": 703,
+        "allowed_cpus": [
+          0
+        ]
+      },
+      {
+        "tid": 704,
+        "allowed_cpus": [
+          2
+        ]
+      },
+      {
+        "tid": 705,
+        "allowed_cpus": [
+          4
+        ]
+      },
+      {
+        "tid": 706,
+        "allowed_cpus": [
+          6
+        ]
+      }
+    ]
+  },
+  "selected_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "source_bytes": 235929600,
+  "topology": {
+    "initial_allowed_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "selected_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "rows": [
+      {
+        "cpu": 0,
+        "topology": {
+          "physical_package_id": "0",
+          "core_id": "0",
+          "thread_siblings_list": "0-1"
+        },
+        "caches": [
+          {
+            "level": "1",
+            "type": "Data",
+            "size": "32K",
+            "shared_cpu_list": "0-1"
+          },
+          {
+            "level": "1",
+            "type": "Instruction",
+            "size": "32K",
+            "shared_cpu_list": "0-1"
+          },
+          {
+            "level": "2",
+            "type": "Unified",
+            "size": "1024K",
+            "shared_cpu_list": "0-1"
+          },
+          {
+            "level": "3",
+            "type": "Unified",
+            "size": "32768K",
+            "shared_cpu_list": "0-31"
+          }
+        ],
+        "l3": "0-31",
+        "numa": [
+          "node0"
+        ]
+      },
+      {
+        "cpu": 2,
+        "topology": {
+          "physical_package_id": "0",
+          "core_id": "1",
+          "thread_siblings_list": "2-3"
+        },
+        "caches": [
+          {
+            "level": "1",
+            "type": "Data",
+            "size": "32K",
+            "shared_cpu_list": "2-3"
+          },
+          {
+            "level": "1",
+            "type": "Instruction",
+            "size": "32K",
+            "shared_cpu_list": "2-3"
+          },
+          {
+            "level": "2",
+            "type": "Unified",
+            "size": "1024K",
+            "shared_cpu_list": "2-3"
+          },
+          {
+            "level": "3",
+            "type": "Unified",
+            "size": "32768K",
+            "shared_cpu_list": "0-31"
+          }
+        ],
+        "l3": "0-31",
+        "numa": [
+          "node0"
+        ]
+      },
+      {
+        "cpu": 4,
+        "topology": {
+          "physical_package_id": "0",
+          "core_id": "2",
+          "thread_siblings_list": "4-5"
+        },
+        "caches": [
+          {
+            "level": "1",
+            "type": "Data",
+            "size": "32K",
+            "shared_cpu_list": "4-5"
+          },
+          {
+            "level": "1",
+            "type": "Instruction",
+            "size": "32K",
+            "shared_cpu_list": "4-5"
+          },
+          {
+            "level": "2",
+            "type": "Unified",
+            "size": "1024K",
+            "shared_cpu_list": "4-5"
+          },
+          {
+            "level": "3",
+            "type": "Unified",
+            "size": "32768K",
+            "shared_cpu_list": "0-31"
+          }
+        ],
+        "l3": "0-31",
+        "numa": [
+          "node0"
+        ]
+      },
+      {
+        "cpu": 6,
+        "topology": {
+          "physical_package_id": "0",
+          "core_id": "3",
+          "thread_siblings_list": "6-7"
+        },
+        "caches": [
+          {
+            "level": "1",
+            "type": "Data",
+            "size": "32K",
+            "shared_cpu_list": "6-7"
+          },
+          {
+            "level": "1",
+            "type": "Instruction",
+            "size": "32K",
+            "shared_cpu_list": "6-7"
+          },
+          {
+            "level": "2",
+            "type": "Unified",
+            "size": "1024K",
+            "shared_cpu_list": "6-7"
+          },
+          {
+            "level": "3",
+            "type": "Unified",
+            "size": "32768K",
+            "shared_cpu_list": "0-31"
+          }
+        ],
+        "l3": "0-31",
+        "numa": [
+          "node0"
+        ]
+      }
+    ],
+    "selection": "固定同L3/NUMA的4个不同物理核，不更改系统拓扑"
+  },
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "machine": "x86_64",
+    "cpu": {
+      "processor": "0",
+      "vendor_id": "AuthenticAMD",
+      "cpu family": "25",
+      "model": "97",
+      "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+      "stepping": "2",
+      "microcode": "0xffffffff",
+      "cpu MHz": "2495.237",
+      "cache size": "1024 KB",
+      "physical id": "0",
+      "siblings": "32",
+      "core id": "0",
+      "cpu cores": "16",
+      "apicid": "0",
+      "initial apicid": "0",
+      "fpu": "yes",
+      "fpu_exception": "yes",
+      "cpuid level": "13",
+      "wp": "yes",
+      "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+      "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+      "bogomips": "4990.47",
+      "TLB size": "3584 4K pages",
+      "clflush size": "64",
+      "cache_alignment": "64",
+      "address sizes": "48 bits physical, 48 bits virtual",
+      "power management": ""
+    },
+    "selected_cpu_details": {
+      "0": {
+        "processor": "0",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "0",
+        "cpu cores": "16",
+        "apicid": "0",
+        "initial apicid": "0",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "2": {
+        "processor": "2",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "1",
+        "cpu cores": "16",
+        "apicid": "2",
+        "initial apicid": "2",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "4": {
+        "processor": "4",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "2",
+        "cpu cores": "16",
+        "apicid": "4",
+        "initial apicid": "4",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      },
+      "6": {
+        "processor": "6",
+        "vendor_id": "AuthenticAMD",
+        "cpu family": "25",
+        "model": "97",
+        "model name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+        "stepping": "2",
+        "microcode": "0xffffffff",
+        "cpu MHz": "2495.237",
+        "cache size": "1024 KB",
+        "physical id": "0",
+        "siblings": "32",
+        "core id": "3",
+        "cpu cores": "16",
+        "apicid": "6",
+        "initial apicid": "6",
+        "fpu": "yes",
+        "fpu_exception": "yes",
+        "cpuid level": "13",
+        "wp": "yes",
+        "flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm",
+        "bugs": "sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa",
+        "bogomips": "4990.47",
+        "TLB size": "3584 4K pages",
+        "clflush size": "64",
+        "cache_alignment": "64",
+        "address sizes": "48 bits physical, 48 bits virtual",
+        "power management": ""
+      }
+    },
+    "loadavg": [
+      0.083984375,
+      0.029296875,
+      0.00537109375
+    ],
+    "gather_data_sampling": "Not affected",
+    "thread_environment": {
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_NUM_THREADS": "1",
+      "OMP_PLACES": "{0},{2},{4},{6}",
+      "OMP_PROC_BIND": "TRUE"
+    },
+    "frequency_temperature_security_changes": "本入口不修改频率、温度或安全缓解设置",
+    "target_scope": "报告实际CPU/微码/系统；不根据AVX2、型号数字或编译参数自动认定为Skylake"
+  },
+  "handles": {
+    "reference": {
+      "creation_count": 1,
+      "handle_address": 280357008,
+      "prepare_wall_seconds": 0.12790849000001003,
+      "library_revision": 23,
+      "before": {
+        "direct_info": null,
+        "paged_info": null,
+        "model_accounting_bytes": 11269404
+      },
+      "after": {
+        "direct_info": null,
+        "paged_info": null,
+        "model_accounting_bytes": 11269404
+      }
+    },
+    "candidate": {
+      "creation_count": 1,
+      "handle_address": 280364640,
+      "prepare_wall_seconds": 0.13923326299999417,
+      "library_revision": 73,
+      "before": {
+        "direct_info": {
+          "version": 1,
+          "enabled": 1,
+          "format": 9,
+          "reserved": 0,
+          "entries": 4194304,
+          "table_capacity_bytes": 16777216,
+          "dg_min": 0,
+          "db_min": 0
+        },
+        "paged_info": {
+          "version": 1,
+          "advised": 1,
+          "reserved0": 0,
+          "reserved1": 0,
+          "base": 133347128901632,
+          "bytes": 16777216,
+          "smaps": {
+            "header": "79474c400000-79474d400000 rw-p 00000000 00:00 0 ",
+            "properties": {
+              "Size": "16384 kB",
+              "KernelPageSize": "4 kB",
+              "MMUPageSize": "4 kB",
+              "Rss": "16384 kB",
+              "Pss": "16384 kB",
+              "Pss_Dirty": "16384 kB",
+              "Shared_Clean": "0 kB",
+              "Shared_Dirty": "0 kB",
+              "Private_Clean": "0 kB",
+              "Private_Dirty": "16384 kB",
+              "Referenced": "16384 kB",
+              "Anonymous": "16384 kB",
+              "KSM": "0 kB",
+              "LazyFree": "0 kB",
+              "AnonHugePages": "16384 kB",
+              "ShmemPmdMapped": "0 kB",
+              "FilePmdMapped": "0 kB",
+              "Shared_Hugetlb": "0 kB",
+              "Private_Hugetlb": "0 kB",
+              "Swap": "0 kB",
+              "SwapPss": "0 kB",
+              "Locked": "0 kB",
+              "THPeligible": "1",
+              "VmFlags": "rd wr mr mw me ac sd hg"
+            },
+            "mapping_bytes": 16777216
+          },
+          "anon_huge_bytes": 16777216,
+          "fully_huge": true,
+          "aligned_2m": true
+        },
+        "model_accounting_bytes": 44823884,
+        "tilexy_info": {
+          "version": 1,
+          "enabled": 1,
+          "format": 17,
+          "reserved": 0,
+          "entries": 4194304,
+          "table_capacity_bytes": 16777216,
+          "dg_min": 0,
+          "db_min": 0
+        },
+        "tilexy_paged_info": {
+          "version": 1,
+          "advised": 1,
+          "reserved0": 0,
+          "reserved1": 0,
+          "base": 133347110027264,
+          "bytes": 16777216,
+          "smaps": {
+            "header": "79474b200000-79474c200000 rw-p 00000000 00:00 0 ",
+            "properties": {
+              "Size": "16384 kB",
+              "KernelPageSize": "4 kB",
+              "MMUPageSize": "4 kB",
+              "Rss": "16384 kB",
+              "Pss": "16384 kB",
+              "Pss_Dirty": "16384 kB",
+              "Shared_Clean": "0 kB",
+              "Shared_Dirty": "0 kB",
+              "Private_Clean": "0 kB",
+              "Private_Dirty": "16384 kB",
+              "Referenced": "16384 kB",
+              "Anonymous": "16384 kB",
+              "KSM": "0 kB",
+              "LazyFree": "0 kB",
+              "AnonHugePages": "16384 kB",
+              "ShmemPmdMapped": "0 kB",
+              "FilePmdMapped": "0 kB",
+              "Shared_Hugetlb": "0 kB",
+              "Private_Hugetlb": "0 kB",
+              "Swap": "0 kB",
+              "SwapPss": "0 kB",
+              "Locked": "0 kB",
+              "THPeligible": "1",
+              "VmFlags": "rd wr mr mw me ac sd hg"
+            },
+            "mapping_bytes": 16777216
+          },
+          "anon_huge_bytes": 16777216,
+          "fully_huge": true,
+          "aligned_2m": true
+        }
+      },
+      "after": {
+        "direct_info": {
+          "version": 1,
+          "enabled": 1,
+          "format": 9,
+          "reserved": 0,
+          "entries": 4194304,
+          "table_capacity_bytes": 16777216,
+          "dg_min": 0,
+          "db_min": 0
+        },
+        "paged_info": {
+          "version": 1,
+          "advised": 1,
+          "reserved0": 0,
+          "reserved1": 0,
+          "base": 133347128901632,
+          "bytes": 16777216,
+          "smaps": {
+            "header": "79474c400000-79474d400000 rw-p 00000000 00:00 0 ",
+            "properties": {
+              "Size": "16384 kB",
+              "KernelPageSize": "4 kB",
+              "MMUPageSize": "4 kB",
+              "Rss": "16384 kB",
+              "Pss": "16384 kB",
+              "Pss_Dirty": "16384 kB",
+              "Shared_Clean": "0 kB",
+              "Shared_Dirty": "0 kB",
+              "Private_Clean": "0 kB",
+              "Private_Dirty": "16384 kB",
+              "Referenced": "16384 kB",
+              "Anonymous": "16384 kB",
+              "KSM": "0 kB",
+              "LazyFree": "0 kB",
+              "AnonHugePages": "16384 kB",
+              "ShmemPmdMapped": "0 kB",
+              "FilePmdMapped": "0 kB",
+              "Shared_Hugetlb": "0 kB",
+              "Private_Hugetlb": "0 kB",
+              "Swap": "0 kB",
+              "SwapPss": "0 kB",
+              "Locked": "0 kB",
+              "THPeligible": "1",
+              "VmFlags": "rd wr mr mw me ac sd hg"
+            },
+            "mapping_bytes": 16777216
+          },
+          "anon_huge_bytes": 16777216,
+          "fully_huge": true,
+          "aligned_2m": true
+        },
+        "model_accounting_bytes": 44823884,
+        "tilexy_info": {
+          "version": 1,
+          "enabled": 1,
+          "format": 17,
+          "reserved": 0,
+          "entries": 4194304,
+          "table_capacity_bytes": 16777216,
+          "dg_min": 0,
+          "db_min": 0
+        },
+        "tilexy_paged_info": {
+          "version": 1,
+          "advised": 1,
+          "reserved0": 0,
+          "reserved1": 0,
+          "base": 133347110027264,
+          "bytes": 16777216,
+          "smaps": {
+            "header": "79474b200000-79474c200000 rw-p 00000000 00:00 0 ",
+            "properties": {
+              "Size": "16384 kB",
+              "KernelPageSize": "4 kB",
+              "MMUPageSize": "4 kB",
+              "Rss": "16384 kB",
+              "Pss": "16384 kB",
+              "Pss_Dirty": "16384 kB",
+              "Shared_Clean": "0 kB",
+              "Shared_Dirty": "0 kB",
+              "Private_Clean": "0 kB",
+              "Private_Dirty": "16384 kB",
+              "Referenced": "16384 kB",
+              "Anonymous": "16384 kB",
+              "KSM": "0 kB",
+              "LazyFree": "0 kB",
+              "AnonHugePages": "16384 kB",
+              "ShmemPmdMapped": "0 kB",
+              "FilePmdMapped": "0 kB",
+              "Shared_Hugetlb": "0 kB",
+              "Private_Hugetlb": "0 kB",
+              "Swap": "0 kB",
+              "SwapPss": "0 kB",
+              "Locked": "0 kB",
+              "THPeligible": "1",
+              "VmFlags": "rd wr mr mw me ac sd hg"
+            },
+            "mapping_bytes": 16777216
+          },
+          "anon_huge_bytes": 16777216,
+          "fully_huge": true,
+          "aligned_2m": true
+        }
+      }
+    }
+  },
+  "control_records": [
+    {
+      "purpose": "control",
+      "label": "A",
+      "variant": "candidate",
+      "requested_threads": 1,
+      "mode": "legacy",
+      "inner_repeats": 16,
+      "layout": "linear",
+      "handle_address": 280364640,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "actual_team_before": {
+        "requested": 1,
+        "actual": 1,
+        "cpus": [
+          0
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "task_affinities_before_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "native_return_code": 0,
+      "apply_seconds": [
+        0.047692279,
+        0.057132172,
+        0.046780572,
+        0.047550418,
+        0.053375393,
+        0.056559121,
+        0.056127098,
+        0.062725639,
+        0.061228336,
+        0.069877173,
+        0.066710531,
+        0.058398248,
+        0.050949333,
+        0.047616204,
+        0.054565893,
+        0.051391276
+      ],
+      "legacy_copy_apply_seconds": [
+        0.091587083,
+        0.102641663,
+        0.091955154,
+        0.092687519,
+        0.098053419,
+        0.101817613,
+        0.101931871,
+        0.109611411,
+        0.109278295,
+        0.123055588,
+        0.118656603,
+        0.105867837,
+        0.096081705,
+        0.0929768,
+        0.10314841,
+        0.10007839
+      ],
+      "outplace_seconds": [],
+      "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "source_unchanged": true,
+      "sentinels_unchanged": true,
+      "task_affinities_after_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "actual_team_after": {
+        "requested": 1,
+        "actual": 1,
+        "cpus": [
+          0
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "actual_main_affinity_after": [
+        0
+      ],
+      "mean_apply_seconds": 0.055542480375,
+      "mean_legacy_copy_apply_seconds": 0.1024643350625
+    },
+    {
+      "purpose": "control",
+      "label": "B",
+      "variant": "candidate",
+      "requested_threads": 1,
+      "mode": "legacy",
+      "inner_repeats": 16,
+      "layout": "linear",
+      "handle_address": 280364640,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "actual_team_before": {
+        "requested": 1,
+        "actual": 1,
+        "cpus": [
+          0
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "task_affinities_before_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "native_return_code": 0,
+      "apply_seconds": [
+        0.089357914,
+        0.062406841,
+        0.070772004,
+        0.080432452,
+        0.056978189,
+        0.055327124,
+        0.055563554,
+        0.055068962,
+        0.050106498,
+        0.047696678,
+        0.048632039,
+        0.047731022,
+        0.05575549,
+        0.050384192,
+        0.04981624,
+        0.046855554
+      ],
+      "legacy_copy_apply_seconds": [
+        0.13836684,
+        0.108868956,
+        0.116547782,
+        0.128334214,
+        0.1065878,
+        0.103574811,
+        0.103377514,
+        0.103039511,
+        0.098927958,
+        0.094211032,
+        0.095215245,
+        0.094628266,
+        0.103648261,
+        0.097131821,
+        0.095408839,
+        0.093302841
+      ],
+      "outplace_seconds": [],
+      "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "source_unchanged": true,
+      "sentinels_unchanged": true,
+      "task_affinities_after_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "actual_team_after": {
+        "requested": 1,
+        "actual": 1,
+        "cpus": [
+          0
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "actual_main_affinity_after": [
+        0
+      ],
+      "mean_apply_seconds": 0.0576802970625,
+      "mean_legacy_copy_apply_seconds": 0.1050732306875
+    },
+    {
+      "purpose": "control",
+      "label": "A",
+      "variant": "candidate",
+      "requested_threads": 4,
+      "mode": "legacy",
+      "inner_repeats": 64,
+      "layout": "tilexy",
+      "handle_address": 280364640,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "actual_team_before": {
+        "requested": 4,
+        "actual": 4,
+        "cpus": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "task_affinities_before_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "native_return_code": 0,
+      "apply_seconds": [
+        0.01892265,
+        0.019104216,
+        0.019741956,
+        0.018562985,
+        0.019796747,
+        0.020025221,
+        0.017611959,
+        0.018813326,
+        0.020616698,
+        0.020795463,
+        0.018845558,
+        0.020344869,
+        0.019527513,
+        0.02001456,
+        0.020964551,
+        0.021800954,
+        0.020577507,
+        0.019780434,
+        0.020426214,
+        0.020053575,
+        0.019081143,
+        0.020081347,
+        0.022312598,
+        0.021879423,
+        0.019103795,
+        0.019183777,
+        0.018740843,
+        0.018595216,
+        0.018443006,
+        0.018593347,
+        0.018046071,
+        0.019188481,
+        0.017615791,
+        0.01793889,
+        0.018299813,
+        0.017304122,
+        0.019403381,
+        0.018551122,
+        0.018974786,
+        0.019895599,
+        0.018218479,
+        0.021211942,
+        0.022849679,
+        0.021668912,
+        0.019890414,
+        0.018275608,
+        0.018998033,
+        0.018358586,
+        0.018210974,
+        0.018352845,
+        0.018486309,
+        0.020690027,
+        0.019788387,
+        0.021034586,
+        0.018531605,
+        0.018065346,
+        0.018608722,
+        0.020289343,
+        0.020160253,
+        0.020162171,
+        0.021711355,
+        0.021309777,
+        0.019992828,
+        0.019855288
+      ],
+      "legacy_copy_apply_seconds": [
+        0.06820536,
+        0.066821779,
+        0.066461142,
+        0.063907702,
+        0.065005743,
+        0.064478625,
+        0.062501108,
+        0.065142444,
+        0.065148146,
+        0.066105943,
+        0.064577643,
+        0.068745037,
+        0.070924731,
+        0.070574964,
+        0.07216819,
+        0.069124329,
+        0.067423599,
+        0.068866028,
+        0.070555457,
+        0.070198667,
+        0.069279416,
+        0.069916459,
+        0.073823572,
+        0.076081024,
+        0.066606348,
+        0.06532147,
+        0.062623645,
+        0.063660727,
+        0.064937304,
+        0.064215153,
+        0.064684858,
+        0.065407885,
+        0.063566387,
+        0.062501858,
+        0.063111215,
+        0.061069279,
+        0.064911238,
+        0.064156371,
+        0.063777781,
+        0.064276765,
+        0.066259683,
+        0.069657767,
+        0.069950481,
+        0.074046019,
+        0.071156371,
+        0.066968965,
+        0.067159626,
+        0.066244875,
+        0.066491645,
+        0.066670986,
+        0.067672965,
+        0.064535567,
+        0.064518253,
+        0.066116573,
+        0.067348277,
+        0.062260063,
+        0.062458221,
+        0.065111274,
+        0.065153155,
+        0.06581323,
+        0.069629395,
+        0.069422948,
+        0.066454582,
+        0.06484576
+      ],
+      "outplace_seconds": [],
+      "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "source_unchanged": true,
+      "sentinels_unchanged": true,
+      "task_affinities_after_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "actual_team_after": {
+        "requested": 4,
+        "actual": 4,
+        "cpus": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "actual_main_affinity_after": [
+        0
+      ],
+      "mean_apply_seconds": 0.01956689025,
+      "mean_legacy_copy_apply_seconds": 0.066668938640625
+    },
+    {
+      "purpose": "control",
+      "label": "B",
+      "variant": "candidate",
+      "requested_threads": 4,
+      "mode": "legacy",
+      "inner_repeats": 64,
+      "layout": "tilexy",
+      "handle_address": 280364640,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "actual_team_before": {
+        "requested": 4,
+        "actual": 4,
+        "cpus": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "task_affinities_before_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "native_return_code": 0,
+      "apply_seconds": [
+        0.018948431,
+        0.018067957,
+        0.018627018,
+        0.018264169,
+        0.020008752,
+        0.021460267,
+        0.020094073,
+        0.019348542,
+        0.019750147,
+        0.022091718,
+        0.022439882,
+        0.022303952,
+        0.024375599,
+        0.022933623,
+        0.023310199,
+        0.020015636,
+        0.019068761,
+        0.019786591,
+        0.020459854,
+        0.01937934,
+        0.02102418,
+        0.020673687,
+        0.019307419,
+        0.018623655,
+        0.019119746,
+        0.018518541,
+        0.0208879,
+        0.017500086,
+        0.017054055,
+        0.021552912,
+        0.017128072,
+        0.016798944,
+        0.017317012,
+        0.021748494,
+        0.02301147,
+        0.019036437,
+        0.017047759,
+        0.017219656,
+        0.017613452,
+        0.017200058,
+        0.016834672,
+        0.019372417,
+        0.017333243,
+        0.017598036,
+        0.017228052,
+        0.018519241,
+        0.017975055,
+        0.017973132,
+        0.017530088,
+        0.020387907,
+        0.019200996,
+        0.018522223,
+        0.018098951,
+        0.019699105,
+        0.020112753,
+        0.021488304,
+        0.020647372,
+        0.020524212,
+        0.020154789,
+        0.033128425,
+        0.020060479,
+        0.021497786,
+        0.019861965,
+        0.021386084
+      ],
+      "legacy_copy_apply_seconds": [
+        0.063692194,
+        0.063108559,
+        0.063075359,
+        0.063336065,
+        0.066545168,
+        0.069141405,
+        0.071963191,
+        0.069681002,
+        0.070719782,
+        0.079104266,
+        0.085755127,
+        0.08188377,
+        0.081966258,
+        0.084213399,
+        0.081898517,
+        0.079618355,
+        0.071958254,
+        0.072649913,
+        0.074165592,
+        0.071069923,
+        0.071028205,
+        0.069426453,
+        0.071427194,
+        0.066860879,
+        0.067196771,
+        0.067032667,
+        0.06677946,
+        0.062621368,
+        0.061848395,
+        0.066604853,
+        0.064856367,
+        0.064718589,
+        0.065691572,
+        0.06895525,
+        0.072843257,
+        0.068576889,
+        0.06438849,
+        0.064729715,
+        0.063433185,
+        0.064857473,
+        0.065056442,
+        0.068380104,
+        0.062859953,
+        0.0624364,
+        0.062775717,
+        0.065713379,
+        0.063084756,
+        0.063156463,
+        0.063814822,
+        0.066690741,
+        0.064614511,
+        0.065409184,
+        0.065731799,
+        0.065463488,
+        0.064995506,
+        0.066011863,
+        0.070985348,
+        0.070513668,
+        0.072521875,
+        0.082750362,
+        0.071483517,
+        0.070455608,
+        0.066761992,
+        0.0697321
+      ],
+      "outplace_seconds": [],
+      "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+      "source_unchanged": true,
+      "sentinels_unchanged": true,
+      "task_affinities_after_batch": [
+        {
+          "tid": 703,
+          "allowed_cpus": [
+            0
+          ]
+        },
+        {
+          "tid": 704,
+          "allowed_cpus": [
+            2
+          ]
+        },
+        {
+          "tid": 705,
+          "allowed_cpus": [
+            4
+          ]
+        },
+        {
+          "tid": 706,
+          "allowed_cpus": [
+            6
+          ]
+        }
+      ],
+      "actual_team_after": {
+        "requested": 4,
+        "actual": 4,
+        "cpus": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "main_allowed_cpus_after_openmp": [
+          0
+        ],
+        "task_affinities": [
+          {
+            "tid": 703,
+            "allowed_cpus": [
+              0
+            ]
+          },
+          {
+            "tid": 704,
+            "allowed_cpus": [
+              2
+            ]
+          },
+          {
+            "tid": 705,
+            "allowed_cpus": [
+              4
+            ]
+          },
+          {
+            "tid": 706,
+            "allowed_cpus": [
+              6
+            ]
+          }
+        ]
+      },
+      "actual_main_affinity_after": [
+        0
+      ],
+      "mean_apply_seconds": 0.019753958328125,
+      "mean_legacy_copy_apply_seconds": 0.068919105140625
+    }
+  ],
+  "records": [
+    {
+      "variant": "reference",
+      "requested_threads": 1,
+      "kernel": "avx2",
+      "images": 100,
+      "stages": 4,
+      "inner_repeats": 16,
+      "library_revision": 23,
+      "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+      "handle_address": 280357008,
+      "prepare_wall_seconds": 0.12790849000001003,
+      "model_accounting_bytes": 11269404,
+      "direct_info": null,
+      "paged_info": null,
+      "tilexy_info": null,
+      "tilexy_paged_info": null,
+      "mode_order": [
+        "legacy",
+        "outplace"
+      ],
+      "batches": {
+        "legacy": {
+          "purpose": "comparison",
+          "label": "reference",
+          "variant": "reference",
+          "requested_threads": 1,
+          "mode": "legacy",
+          "inner_repeats": 16,
+          "layout": "reference23",
+          "handle_address": 280357008,
+          "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+          "actual_team_before": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [
+            0.161602355,
+            0.157008507,
+            0.156398676,
+            0.150121837,
+            0.152266072,
+            0.143477423,
+            0.153955644,
+            0.144716809,
+            0.154852201,
+            0.167632297,
+            0.215648845,
+            0.177628192,
+            0.150660714,
+            0.148096682,
+            0.145492069,
+            0.142310025
+          ],
+          "legacy_copy_apply_seconds": [
+            0.206447519,
+            0.204171641,
+            0.203203116,
+            0.198579617,
+            0.199169411,
+            0.190780884,
+            0.199591898,
+            0.189859083,
+            0.199319879,
+            0.215555719,
+            0.266518009,
+            0.227122466,
+            0.195082903,
+            0.19325166,
+            0.190296508,
+            0.186561481
+          ],
+          "outplace_seconds": [],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_apply_seconds": 0.15761677175,
+          "mean_legacy_copy_apply_seconds": 0.204094487125
+        },
+        "outplace": {
+          "purpose": "comparison",
+          "label": "reference",
+          "variant": "reference",
+          "requested_threads": 1,
+          "mode": "outplace",
+          "inner_repeats": 16,
+          "layout": "reference23",
+          "handle_address": 280357008,
+          "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+          "actual_team_before": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [],
+          "legacy_copy_apply_seconds": [],
+          "outplace_seconds": [
+            0.187220606,
+            0.186153776,
+            0.185020094,
+            0.182141771,
+            0.20194158,
+            0.184421514,
+            0.188407019,
+            0.193152743,
+            0.211205121,
+            0.189587225,
+            0.185840416,
+            0.186314395,
+            0.196191135,
+            0.192375136,
+            0.184409581,
+            0.187851771
+          ],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_outplace_seconds": 0.1901396176875
+        }
+      },
+      "apply_seconds": [
+        0.161602355,
+        0.157008507,
+        0.156398676,
+        0.150121837,
+        0.152266072,
+        0.143477423,
+        0.153955644,
+        0.144716809,
+        0.154852201,
+        0.167632297,
+        0.215648845,
+        0.177628192,
+        0.150660714,
+        0.148096682,
+        0.145492069,
+        0.142310025
+      ],
+      "legacy_copy_apply_seconds": [
+        0.206447519,
+        0.204171641,
+        0.203203116,
+        0.198579617,
+        0.199169411,
+        0.190780884,
+        0.199591898,
+        0.189859083,
+        0.199319879,
+        0.215555719,
+        0.266518009,
+        0.227122466,
+        0.195082903,
+        0.19325166,
+        0.190296508,
+        0.186561481
+      ],
+      "outplace_seconds": [
+        0.187220606,
+        0.186153776,
+        0.185020094,
+        0.182141771,
+        0.20194158,
+        0.184421514,
+        0.188407019,
+        0.193152743,
+        0.211205121,
+        0.189587225,
+        0.185840416,
+        0.186314395,
+        0.196191135,
+        0.192375136,
+        0.184409581,
+        0.187851771
+      ],
+      "mean_apply_seconds": 0.15761677175,
+      "mean_legacy_copy_apply_seconds": 0.204094487125,
+      "mean_outplace_seconds": 0.1901396176875,
+      "prepare_plus_first_100_apply_seconds": 0.28951084500001,
+      "prepare_plus_first_100_copy_apply_seconds": 0.33435600900001006,
+      "prepare_plus_first_100_outplace_seconds": 0.31512909600001004
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "kernel": "avx2",
+      "images": 100,
+      "stages": 4,
+      "inner_repeats": 16,
+      "library_revision": 73,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "handle_address": 280364640,
+      "prepare_wall_seconds": 0.13923326299999417,
+      "model_accounting_bytes": 44823884,
+      "direct_info": {
+        "version": 1,
+        "enabled": 1,
+        "format": 9,
+        "reserved": 0,
+        "entries": 4194304,
+        "table_capacity_bytes": 16777216,
+        "dg_min": 0,
+        "db_min": 0
+      },
+      "paged_info": {
+        "version": 1,
+        "advised": 1,
+        "reserved0": 0,
+        "reserved1": 0,
+        "base": 133347128901632,
+        "bytes": 16777216,
+        "smaps": {
+          "header": "79474c400000-79474d400000 rw-p 00000000 00:00 0 ",
+          "properties": {
+            "Size": "16384 kB",
+            "KernelPageSize": "4 kB",
+            "MMUPageSize": "4 kB",
+            "Rss": "16384 kB",
+            "Pss": "16384 kB",
+            "Pss_Dirty": "16384 kB",
+            "Shared_Clean": "0 kB",
+            "Shared_Dirty": "0 kB",
+            "Private_Clean": "0 kB",
+            "Private_Dirty": "16384 kB",
+            "Referenced": "16384 kB",
+            "Anonymous": "16384 kB",
+            "KSM": "0 kB",
+            "LazyFree": "0 kB",
+            "AnonHugePages": "16384 kB",
+            "ShmemPmdMapped": "0 kB",
+            "FilePmdMapped": "0 kB",
+            "Shared_Hugetlb": "0 kB",
+            "Private_Hugetlb": "0 kB",
+            "Swap": "0 kB",
+            "SwapPss": "0 kB",
+            "Locked": "0 kB",
+            "THPeligible": "1",
+            "VmFlags": "rd wr mr mw me ac sd hg"
+          },
+          "mapping_bytes": 16777216
+        },
+        "anon_huge_bytes": 16777216,
+        "fully_huge": true,
+        "aligned_2m": true
+      },
+      "tilexy_info": {
+        "version": 1,
+        "enabled": 1,
+        "format": 17,
+        "reserved": 0,
+        "entries": 4194304,
+        "table_capacity_bytes": 16777216,
+        "dg_min": 0,
+        "db_min": 0
+      },
+      "tilexy_paged_info": {
+        "version": 1,
+        "advised": 1,
+        "reserved0": 0,
+        "reserved1": 0,
+        "base": 133347110027264,
+        "bytes": 16777216,
+        "smaps": {
+          "header": "79474b200000-79474c200000 rw-p 00000000 00:00 0 ",
+          "properties": {
+            "Size": "16384 kB",
+            "KernelPageSize": "4 kB",
+            "MMUPageSize": "4 kB",
+            "Rss": "16384 kB",
+            "Pss": "16384 kB",
+            "Pss_Dirty": "16384 kB",
+            "Shared_Clean": "0 kB",
+            "Shared_Dirty": "0 kB",
+            "Private_Clean": "0 kB",
+            "Private_Dirty": "16384 kB",
+            "Referenced": "16384 kB",
+            "Anonymous": "16384 kB",
+            "KSM": "0 kB",
+            "LazyFree": "0 kB",
+            "AnonHugePages": "16384 kB",
+            "ShmemPmdMapped": "0 kB",
+            "FilePmdMapped": "0 kB",
+            "Shared_Hugetlb": "0 kB",
+            "Private_Hugetlb": "0 kB",
+            "Swap": "0 kB",
+            "SwapPss": "0 kB",
+            "Locked": "0 kB",
+            "THPeligible": "1",
+            "VmFlags": "rd wr mr mw me ac sd hg"
+          },
+          "mapping_bytes": 16777216
+        },
+        "anon_huge_bytes": 16777216,
+        "fully_huge": true,
+        "aligned_2m": true
+      },
+      "mode_order": [
+        "legacy",
+        "outplace"
+      ],
+      "batches": {
+        "legacy": {
+          "purpose": "comparison",
+          "label": "candidate",
+          "variant": "candidate",
+          "requested_threads": 1,
+          "mode": "legacy",
+          "inner_repeats": 16,
+          "layout": "linear",
+          "handle_address": 280364640,
+          "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+          "actual_team_before": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [
+            0.050164211,
+            0.051403047,
+            0.045419271,
+            0.048781963,
+            0.045647046,
+            0.059284807,
+            0.075643606,
+            0.070442803,
+            0.092456982,
+            0.081793557,
+            0.067687914,
+            0.068556327,
+            0.060302664,
+            0.052002831,
+            0.055054786,
+            0.051916808
+          ],
+          "legacy_copy_apply_seconds": [
+            0.095508311,
+            0.098464246,
+            0.090476883,
+            0.094584054,
+            0.09008107,
+            0.104501172,
+            0.134919915,
+            0.139024343,
+            0.158269172,
+            0.159964922,
+            0.133468724,
+            0.128882711,
+            0.120601831,
+            0.101566416,
+            0.101700286,
+            0.100750582
+          ],
+          "outplace_seconds": [],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_apply_seconds": 0.0610349139375,
+          "mean_legacy_copy_apply_seconds": 0.115797789875
+        },
+        "outplace": {
+          "purpose": "comparison",
+          "label": "candidate",
+          "variant": "candidate",
+          "requested_threads": 1,
+          "mode": "outplace",
+          "inner_repeats": 16,
+          "layout": "linear",
+          "handle_address": 280364640,
+          "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+          "actual_team_before": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [],
+          "legacy_copy_apply_seconds": [],
+          "outplace_seconds": [
+            0.060276584,
+            0.056289869,
+            0.066118716,
+            0.064985914,
+            0.063543715,
+            0.06777283,
+            0.077916901,
+            0.075082421,
+            0.073338318,
+            0.079574188,
+            0.066453562,
+            0.066029014,
+            0.071737984,
+            0.076323505,
+            0.084473878,
+            0.072041367
+          ],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 1,
+            "actual": 1,
+            "cpus": [
+              0
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_outplace_seconds": 0.070122422875
+        }
+      },
+      "apply_seconds": [
+        0.050164211,
+        0.051403047,
+        0.045419271,
+        0.048781963,
+        0.045647046,
+        0.059284807,
+        0.075643606,
+        0.070442803,
+        0.092456982,
+        0.081793557,
+        0.067687914,
+        0.068556327,
+        0.060302664,
+        0.052002831,
+        0.055054786,
+        0.051916808
+      ],
+      "legacy_copy_apply_seconds": [
+        0.095508311,
+        0.098464246,
+        0.090476883,
+        0.094584054,
+        0.09008107,
+        0.104501172,
+        0.134919915,
+        0.139024343,
+        0.158269172,
+        0.159964922,
+        0.133468724,
+        0.128882711,
+        0.120601831,
+        0.101566416,
+        0.101700286,
+        0.100750582
+      ],
+      "outplace_seconds": [
+        0.060276584,
+        0.056289869,
+        0.066118716,
+        0.064985914,
+        0.063543715,
+        0.06777283,
+        0.077916901,
+        0.075082421,
+        0.073338318,
+        0.079574188,
+        0.066453562,
+        0.066029014,
+        0.071737984,
+        0.076323505,
+        0.084473878,
+        0.072041367
+      ],
+      "mean_apply_seconds": 0.0610349139375,
+      "mean_legacy_copy_apply_seconds": 0.115797789875,
+      "mean_outplace_seconds": 0.070122422875,
+      "prepare_plus_first_100_apply_seconds": 0.18939747399999418,
+      "prepare_plus_first_100_copy_apply_seconds": 0.23474157399999418,
+      "prepare_plus_first_100_outplace_seconds": 0.19950984699999416
+    },
+    {
+      "variant": "reference",
+      "requested_threads": 4,
+      "kernel": "avx2",
+      "images": 100,
+      "stages": 4,
+      "inner_repeats": 64,
+      "library_revision": 23,
+      "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+      "handle_address": 280357008,
+      "prepare_wall_seconds": 0.12790849000001003,
+      "model_accounting_bytes": 11269404,
+      "direct_info": null,
+      "paged_info": null,
+      "tilexy_info": null,
+      "tilexy_paged_info": null,
+      "mode_order": [
+        "outplace",
+        "legacy"
+      ],
+      "batches": {
+        "outplace": {
+          "purpose": "comparison",
+          "label": "reference",
+          "variant": "reference",
+          "requested_threads": 4,
+          "mode": "outplace",
+          "inner_repeats": 64,
+          "layout": "reference23",
+          "handle_address": 280357008,
+          "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+          "actual_team_before": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [],
+          "legacy_copy_apply_seconds": [],
+          "outplace_seconds": [
+            0.083159471,
+            0.083906524,
+            0.085670906,
+            0.083738124,
+            0.083517394,
+            0.083520689,
+            0.081608838,
+            0.082153946,
+            0.085674343,
+            0.088348758,
+            0.085482908,
+            0.083318101,
+            0.082619504,
+            0.084130181,
+            0.094335904,
+            0.082659889,
+            0.083952792,
+            0.087229225,
+            0.085002703,
+            0.086236252,
+            0.086340662,
+            0.090548008,
+            0.086629622,
+            0.09065493,
+            0.097660559,
+            0.086288292,
+            0.091337191,
+            0.088535824,
+            0.083754154,
+            0.08644996,
+            0.090894453,
+            0.091971956,
+            0.089244393,
+            0.095990692,
+            0.084924369,
+            0.092921389,
+            0.096304895,
+            0.090488512,
+            0.096066551,
+            0.088413369,
+            0.085466055,
+            0.092513309,
+            0.090069948,
+            0.08895909,
+            0.086087108,
+            0.091294368,
+            0.094384306,
+            0.098420925,
+            0.091065883,
+            0.089034474,
+            0.089243933,
+            0.087005638,
+            0.089852261,
+            0.090924153,
+            0.084527627,
+            0.088126544,
+            0.086081206,
+            0.083296998,
+            0.092468074,
+            0.089464036,
+            0.086763337,
+            0.084018668,
+            0.087635658,
+            0.084271249
+          ],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_outplace_seconds": 0.088010329390625
+        },
+        "legacy": {
+          "purpose": "comparison",
+          "label": "reference",
+          "variant": "reference",
+          "requested_threads": 4,
+          "mode": "legacy",
+          "inner_repeats": 64,
+          "layout": "reference23",
+          "handle_address": 280357008,
+          "library_sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e",
+          "actual_team_before": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [
+            0.037236563,
+            0.037085438,
+            0.041221863,
+            0.037625803,
+            0.037532224,
+            0.03687423,
+            0.038168867,
+            0.03717798,
+            0.036269589,
+            0.037044225,
+            0.03917011,
+            0.038593757,
+            0.036198458,
+            0.036936229,
+            0.036289547,
+            0.037629551,
+            0.043704582,
+            0.037730714,
+            0.04063717,
+            0.036688908,
+            0.037503178,
+            0.036233591,
+            0.036410607,
+            0.037759763,
+            0.036343299,
+            0.036641597,
+            0.036780945,
+            0.038518192,
+            0.038114173,
+            0.036899699,
+            0.036333991,
+            0.036646747,
+            0.036340734,
+            0.036607512,
+            0.037065075,
+            0.037618521,
+            0.036021828,
+            0.037867393,
+            0.036085621,
+            0.036497283,
+            0.036825908,
+            0.036308974,
+            0.037811799,
+            0.036349997,
+            0.036594708,
+            0.036860133,
+            0.036259181,
+            0.037564798,
+            0.039123124,
+            0.036749534,
+            0.037940372,
+            0.038611905,
+            0.037435267,
+            0.036892386,
+            0.036183755,
+            0.036379618,
+            0.037592639,
+            0.037680925,
+            0.036667048,
+            0.044027461,
+            0.035669675,
+            0.036426407,
+            0.036632088,
+            0.036908736
+          ],
+          "legacy_copy_apply_seconds": [
+            0.082401048,
+            0.081969663,
+            0.087218934,
+            0.085591805,
+            0.084966644,
+            0.084180365,
+            0.084311506,
+            0.083805401,
+            0.082968186,
+            0.083911313,
+            0.083900042,
+            0.083925054,
+            0.081157011,
+            0.080886319,
+            0.080118607,
+            0.08145756,
+            0.08767934,
+            0.082347205,
+            0.084362302,
+            0.084423188,
+            0.084946875,
+            0.081191961,
+            0.080505896,
+            0.083324765,
+            0.080344847,
+            0.08171024,
+            0.081845078,
+            0.083729947,
+            0.082806919,
+            0.083352308,
+            0.082186356,
+            0.082743518,
+            0.084300244,
+            0.084301225,
+            0.084926217,
+            0.082925305,
+            0.081094906,
+            0.083527502,
+            0.080743458,
+            0.081287614,
+            0.08445078,
+            0.082684917,
+            0.083136246,
+            0.082754769,
+            0.08446106,
+            0.084756783,
+            0.08145326,
+            0.082769437,
+            0.083347037,
+            0.083800653,
+            0.085727072,
+            0.086032002,
+            0.08237281,
+            0.085858144,
+            0.082601226,
+            0.084032424,
+            0.085068808,
+            0.08563316,
+            0.082044388,
+            0.090277752,
+            0.082090333,
+            0.082761312,
+            0.084607286,
+            0.086035148
+          ],
+          "outplace_seconds": [],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_apply_seconds": 0.037400031171875,
+          "mean_legacy_copy_apply_seconds": 0.083470835640625
+        }
+      },
+      "apply_seconds": [
+        0.037236563,
+        0.037085438,
+        0.041221863,
+        0.037625803,
+        0.037532224,
+        0.03687423,
+        0.038168867,
+        0.03717798,
+        0.036269589,
+        0.037044225,
+        0.03917011,
+        0.038593757,
+        0.036198458,
+        0.036936229,
+        0.036289547,
+        0.037629551,
+        0.043704582,
+        0.037730714,
+        0.04063717,
+        0.036688908,
+        0.037503178,
+        0.036233591,
+        0.036410607,
+        0.037759763,
+        0.036343299,
+        0.036641597,
+        0.036780945,
+        0.038518192,
+        0.038114173,
+        0.036899699,
+        0.036333991,
+        0.036646747,
+        0.036340734,
+        0.036607512,
+        0.037065075,
+        0.037618521,
+        0.036021828,
+        0.037867393,
+        0.036085621,
+        0.036497283,
+        0.036825908,
+        0.036308974,
+        0.037811799,
+        0.036349997,
+        0.036594708,
+        0.036860133,
+        0.036259181,
+        0.037564798,
+        0.039123124,
+        0.036749534,
+        0.037940372,
+        0.038611905,
+        0.037435267,
+        0.036892386,
+        0.036183755,
+        0.036379618,
+        0.037592639,
+        0.037680925,
+        0.036667048,
+        0.044027461,
+        0.035669675,
+        0.036426407,
+        0.036632088,
+        0.036908736
+      ],
+      "legacy_copy_apply_seconds": [
+        0.082401048,
+        0.081969663,
+        0.087218934,
+        0.085591805,
+        0.084966644,
+        0.084180365,
+        0.084311506,
+        0.083805401,
+        0.082968186,
+        0.083911313,
+        0.083900042,
+        0.083925054,
+        0.081157011,
+        0.080886319,
+        0.080118607,
+        0.08145756,
+        0.08767934,
+        0.082347205,
+        0.084362302,
+        0.084423188,
+        0.084946875,
+        0.081191961,
+        0.080505896,
+        0.083324765,
+        0.080344847,
+        0.08171024,
+        0.081845078,
+        0.083729947,
+        0.082806919,
+        0.083352308,
+        0.082186356,
+        0.082743518,
+        0.084300244,
+        0.084301225,
+        0.084926217,
+        0.082925305,
+        0.081094906,
+        0.083527502,
+        0.080743458,
+        0.081287614,
+        0.08445078,
+        0.082684917,
+        0.083136246,
+        0.082754769,
+        0.08446106,
+        0.084756783,
+        0.08145326,
+        0.082769437,
+        0.083347037,
+        0.083800653,
+        0.085727072,
+        0.086032002,
+        0.08237281,
+        0.085858144,
+        0.082601226,
+        0.084032424,
+        0.085068808,
+        0.08563316,
+        0.082044388,
+        0.090277752,
+        0.082090333,
+        0.082761312,
+        0.084607286,
+        0.086035148
+      ],
+      "outplace_seconds": [
+        0.083159471,
+        0.083906524,
+        0.085670906,
+        0.083738124,
+        0.083517394,
+        0.083520689,
+        0.081608838,
+        0.082153946,
+        0.085674343,
+        0.088348758,
+        0.085482908,
+        0.083318101,
+        0.082619504,
+        0.084130181,
+        0.094335904,
+        0.082659889,
+        0.083952792,
+        0.087229225,
+        0.085002703,
+        0.086236252,
+        0.086340662,
+        0.090548008,
+        0.086629622,
+        0.09065493,
+        0.097660559,
+        0.086288292,
+        0.091337191,
+        0.088535824,
+        0.083754154,
+        0.08644996,
+        0.090894453,
+        0.091971956,
+        0.089244393,
+        0.095990692,
+        0.084924369,
+        0.092921389,
+        0.096304895,
+        0.090488512,
+        0.096066551,
+        0.088413369,
+        0.085466055,
+        0.092513309,
+        0.090069948,
+        0.08895909,
+        0.086087108,
+        0.091294368,
+        0.094384306,
+        0.098420925,
+        0.091065883,
+        0.089034474,
+        0.089243933,
+        0.087005638,
+        0.089852261,
+        0.090924153,
+        0.084527627,
+        0.088126544,
+        0.086081206,
+        0.083296998,
+        0.092468074,
+        0.089464036,
+        0.086763337,
+        0.084018668,
+        0.087635658,
+        0.084271249
+      ],
+      "mean_apply_seconds": 0.037400031171875,
+      "mean_legacy_copy_apply_seconds": 0.083470835640625,
+      "mean_outplace_seconds": 0.088010329390625,
+      "prepare_plus_first_100_apply_seconds": 0.16514505300001003,
+      "prepare_plus_first_100_copy_apply_seconds": 0.21030953800001004,
+      "prepare_plus_first_100_outplace_seconds": 0.21106796100001002
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "kernel": "avx2",
+      "images": 100,
+      "stages": 4,
+      "inner_repeats": 64,
+      "library_revision": 73,
+      "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+      "handle_address": 280364640,
+      "prepare_wall_seconds": 0.13923326299999417,
+      "model_accounting_bytes": 44823884,
+      "direct_info": {
+        "version": 1,
+        "enabled": 1,
+        "format": 9,
+        "reserved": 0,
+        "entries": 4194304,
+        "table_capacity_bytes": 16777216,
+        "dg_min": 0,
+        "db_min": 0
+      },
+      "paged_info": {
+        "version": 1,
+        "advised": 1,
+        "reserved0": 0,
+        "reserved1": 0,
+        "base": 133347128901632,
+        "bytes": 16777216,
+        "smaps": {
+          "header": "79474c400000-79474d400000 rw-p 00000000 00:00 0 ",
+          "properties": {
+            "Size": "16384 kB",
+            "KernelPageSize": "4 kB",
+            "MMUPageSize": "4 kB",
+            "Rss": "16384 kB",
+            "Pss": "16384 kB",
+            "Pss_Dirty": "16384 kB",
+            "Shared_Clean": "0 kB",
+            "Shared_Dirty": "0 kB",
+            "Private_Clean": "0 kB",
+            "Private_Dirty": "16384 kB",
+            "Referenced": "16384 kB",
+            "Anonymous": "16384 kB",
+            "KSM": "0 kB",
+            "LazyFree": "0 kB",
+            "AnonHugePages": "16384 kB",
+            "ShmemPmdMapped": "0 kB",
+            "FilePmdMapped": "0 kB",
+            "Shared_Hugetlb": "0 kB",
+            "Private_Hugetlb": "0 kB",
+            "Swap": "0 kB",
+            "SwapPss": "0 kB",
+            "Locked": "0 kB",
+            "THPeligible": "1",
+            "VmFlags": "rd wr mr mw me ac sd hg"
+          },
+          "mapping_bytes": 16777216
+        },
+        "anon_huge_bytes": 16777216,
+        "fully_huge": true,
+        "aligned_2m": true
+      },
+      "tilexy_info": {
+        "version": 1,
+        "enabled": 1,
+        "format": 17,
+        "reserved": 0,
+        "entries": 4194304,
+        "table_capacity_bytes": 16777216,
+        "dg_min": 0,
+        "db_min": 0
+      },
+      "tilexy_paged_info": {
+        "version": 1,
+        "advised": 1,
+        "reserved0": 0,
+        "reserved1": 0,
+        "base": 133347110027264,
+        "bytes": 16777216,
+        "smaps": {
+          "header": "79474b200000-79474c200000 rw-p 00000000 00:00 0 ",
+          "properties": {
+            "Size": "16384 kB",
+            "KernelPageSize": "4 kB",
+            "MMUPageSize": "4 kB",
+            "Rss": "16384 kB",
+            "Pss": "16384 kB",
+            "Pss_Dirty": "16384 kB",
+            "Shared_Clean": "0 kB",
+            "Shared_Dirty": "0 kB",
+            "Private_Clean": "0 kB",
+            "Private_Dirty": "16384 kB",
+            "Referenced": "16384 kB",
+            "Anonymous": "16384 kB",
+            "KSM": "0 kB",
+            "LazyFree": "0 kB",
+            "AnonHugePages": "16384 kB",
+            "ShmemPmdMapped": "0 kB",
+            "FilePmdMapped": "0 kB",
+            "Shared_Hugetlb": "0 kB",
+            "Private_Hugetlb": "0 kB",
+            "Swap": "0 kB",
+            "SwapPss": "0 kB",
+            "Locked": "0 kB",
+            "THPeligible": "1",
+            "VmFlags": "rd wr mr mw me ac sd hg"
+          },
+          "mapping_bytes": 16777216
+        },
+        "anon_huge_bytes": 16777216,
+        "fully_huge": true,
+        "aligned_2m": true
+      },
+      "mode_order": [
+        "outplace",
+        "legacy"
+      ],
+      "batches": {
+        "outplace": {
+          "purpose": "comparison",
+          "label": "candidate",
+          "variant": "candidate",
+          "requested_threads": 4,
+          "mode": "outplace",
+          "inner_repeats": 64,
+          "layout": "linear",
+          "handle_address": 280364640,
+          "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+          "actual_team_before": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [],
+          "legacy_copy_apply_seconds": [],
+          "outplace_seconds": [
+            0.018222738,
+            0.017602686,
+            0.018172401,
+            0.017421269,
+            0.016844119,
+            0.017369411,
+            0.017832493,
+            0.017030405,
+            0.019838315,
+            0.020479918,
+            0.019315617,
+            0.016856283,
+            0.017276945,
+            0.016890288,
+            0.016856824,
+            0.016726726,
+            0.016907441,
+            0.017451296,
+            0.017286623,
+            0.017813176,
+            0.0174267,
+            0.017224123,
+            0.016825946,
+            0.017487917,
+            0.01811956,
+            0.018402228,
+            0.018436414,
+            0.018289533,
+            0.017251446,
+            0.017553171,
+            0.01662927,
+            0.017471681,
+            0.018455876,
+            0.016976553,
+            0.01698092,
+            0.017298606,
+            0.017299578,
+            0.017927374,
+            0.018549019,
+            0.017357499,
+            0.01720123,
+            0.017418785,
+            0.017448421,
+            0.017709739,
+            0.017132409,
+            0.017389299,
+            0.017543823,
+            0.01723217,
+            0.016970942,
+            0.017077794,
+            0.017074489,
+            0.017346356,
+            0.016986972,
+            0.017407644,
+            0.017294057,
+            0.017527441,
+            0.017126588,
+            0.016936846,
+            0.017428212,
+            0.017055844,
+            0.017270252,
+            0.017532602,
+            0.018354908,
+            0.017218763
+          ],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_outplace_seconds": 0.01752881209375
+        },
+        "legacy": {
+          "purpose": "comparison",
+          "label": "candidate",
+          "variant": "candidate",
+          "requested_threads": 4,
+          "mode": "legacy",
+          "inner_repeats": 64,
+          "layout": "tilexy",
+          "handle_address": 280364640,
+          "library_sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7",
+          "actual_team_before": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "task_affinities_before_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "warmup_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "native_return_code": 0,
+          "apply_seconds": [
+            0.017514928,
+            0.017272666,
+            0.017570654,
+            0.017144041,
+            0.017726631,
+            0.017149192,
+            0.017580603,
+            0.016815205,
+            0.019749167,
+            0.017251546,
+            0.017742972,
+            0.017526891,
+            0.018427762,
+            0.017703107,
+            0.01727945,
+            0.017554663,
+            0.020028136,
+            0.017950007,
+            0.017997527,
+            0.019537771,
+            0.017523043,
+            0.018041531,
+            0.0177256,
+            0.019097333,
+            0.018552895,
+            0.018331784,
+            0.017303044,
+            0.021482406,
+            0.022195089,
+            0.019514597,
+            0.017669924,
+            0.017897337,
+            0.018069075,
+            0.017995905,
+            0.017109425,
+            0.017314927,
+            0.01694412,
+            0.017076854,
+            0.018966935,
+            0.01747392,
+            0.017617426,
+            0.019221641,
+            0.017060421,
+            0.01703309,
+            0.016927238,
+            0.017228142,
+            0.018179985,
+            0.019322187,
+            0.018293781,
+            0.017367307,
+            0.018553517,
+            0.018146977,
+            0.017404202,
+            0.01837159,
+            0.017532965,
+            0.018763467,
+            0.017931333,
+            0.01711234,
+            0.017151405,
+            0.017245604,
+            0.017826332,
+            0.017824638,
+            0.017556387,
+            0.017195229
+          ],
+          "legacy_copy_apply_seconds": [
+            0.065342404,
+            0.066513906,
+            0.064865707,
+            0.064065452,
+            0.065081257,
+            0.064089889,
+            0.064565294,
+            0.063792742,
+            0.066751409,
+            0.063545526,
+            0.063569166,
+            0.063020572,
+            0.064532276,
+            0.063472232,
+            0.064270813,
+            0.064067796,
+            0.067137635,
+            0.064871387,
+            0.065037644,
+            0.066453231,
+            0.062612782,
+            0.064853775,
+            0.064276875,
+            0.064789221,
+            0.063877742,
+            0.063523499,
+            0.062211129,
+            0.067308492,
+            0.069284835,
+            0.064381004,
+            0.062152598,
+            0.066908349,
+            0.063141402,
+            0.063532185,
+            0.062673378,
+            0.062044652,
+            0.062028421,
+            0.062033621,
+            0.06406318,
+            0.063128835,
+            0.062554786,
+            0.064377315,
+            0.0641274,
+            0.063882304,
+            0.0636288,
+            0.064322522,
+            0.063857506,
+            0.064823296,
+            0.063532987,
+            0.063146121,
+            0.064884723,
+            0.062934402,
+            0.063706033,
+            0.063051671,
+            0.062548021,
+            0.064077874,
+            0.06304525,
+            0.064069459,
+            0.065095454,
+            0.064187584,
+            0.064693779,
+            0.065893625,
+            0.064455966,
+            0.065086999
+          ],
+          "outplace_seconds": [],
+          "batch_final_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+          "source_unchanged": true,
+          "sentinels_unchanged": true,
+          "task_affinities_after_batch": [
+            {
+              "tid": 703,
+              "allowed_cpus": [
+                0
+              ]
+            },
+            {
+              "tid": 704,
+              "allowed_cpus": [
+                2
+              ]
+            },
+            {
+              "tid": 705,
+              "allowed_cpus": [
+                4
+              ]
+            },
+            {
+              "tid": 706,
+              "allowed_cpus": [
+                6
+              ]
+            }
+          ],
+          "actual_team_after": {
+            "requested": 4,
+            "actual": 4,
+            "cpus": [
+              0,
+              2,
+              4,
+              6
+            ],
+            "main_allowed_cpus_after_openmp": [
+              0
+            ],
+            "task_affinities": [
+              {
+                "tid": 703,
+                "allowed_cpus": [
+                  0
+                ]
+              },
+              {
+                "tid": 704,
+                "allowed_cpus": [
+                  2
+                ]
+              },
+              {
+                "tid": 705,
+                "allowed_cpus": [
+                  4
+                ]
+              },
+              {
+                "tid": 706,
+                "allowed_cpus": [
+                  6
+                ]
+              }
+            ]
+          },
+          "actual_main_affinity_after": [
+            0
+          ],
+          "mean_apply_seconds": 0.017979310421875,
+          "mean_legacy_copy_apply_seconds": 0.06421650296875
+        }
+      },
+      "apply_seconds": [
+        0.017514928,
+        0.017272666,
+        0.017570654,
+        0.017144041,
+        0.017726631,
+        0.017149192,
+        0.017580603,
+        0.016815205,
+        0.019749167,
+        0.017251546,
+        0.017742972,
+        0.017526891,
+        0.018427762,
+        0.017703107,
+        0.01727945,
+        0.017554663,
+        0.020028136,
+        0.017950007,
+        0.017997527,
+        0.019537771,
+        0.017523043,
+        0.018041531,
+        0.0177256,
+        0.019097333,
+        0.018552895,
+        0.018331784,
+        0.017303044,
+        0.021482406,
+        0.022195089,
+        0.019514597,
+        0.017669924,
+        0.017897337,
+        0.018069075,
+        0.017995905,
+        0.017109425,
+        0.017314927,
+        0.01694412,
+        0.017076854,
+        0.018966935,
+        0.01747392,
+        0.017617426,
+        0.019221641,
+        0.017060421,
+        0.01703309,
+        0.016927238,
+        0.017228142,
+        0.018179985,
+        0.019322187,
+        0.018293781,
+        0.017367307,
+        0.018553517,
+        0.018146977,
+        0.017404202,
+        0.01837159,
+        0.017532965,
+        0.018763467,
+        0.017931333,
+        0.01711234,
+        0.017151405,
+        0.017245604,
+        0.017826332,
+        0.017824638,
+        0.017556387,
+        0.017195229
+      ],
+      "legacy_copy_apply_seconds": [
+        0.065342404,
+        0.066513906,
+        0.064865707,
+        0.064065452,
+        0.065081257,
+        0.064089889,
+        0.064565294,
+        0.063792742,
+        0.066751409,
+        0.063545526,
+        0.063569166,
+        0.063020572,
+        0.064532276,
+        0.063472232,
+        0.064270813,
+        0.064067796,
+        0.067137635,
+        0.064871387,
+        0.065037644,
+        0.066453231,
+        0.062612782,
+        0.064853775,
+        0.064276875,
+        0.064789221,
+        0.063877742,
+        0.063523499,
+        0.062211129,
+        0.067308492,
+        0.069284835,
+        0.064381004,
+        0.062152598,
+        0.066908349,
+        0.063141402,
+        0.063532185,
+        0.062673378,
+        0.062044652,
+        0.062028421,
+        0.062033621,
+        0.06406318,
+        0.063128835,
+        0.062554786,
+        0.064377315,
+        0.0641274,
+        0.063882304,
+        0.0636288,
+        0.064322522,
+        0.063857506,
+        0.064823296,
+        0.063532987,
+        0.063146121,
+        0.064884723,
+        0.062934402,
+        0.063706033,
+        0.063051671,
+        0.062548021,
+        0.064077874,
+        0.06304525,
+        0.064069459,
+        0.065095454,
+        0.064187584,
+        0.064693779,
+        0.065893625,
+        0.064455966,
+        0.065086999
+      ],
+      "outplace_seconds": [
+        0.018222738,
+        0.017602686,
+        0.018172401,
+        0.017421269,
+        0.016844119,
+        0.017369411,
+        0.017832493,
+        0.017030405,
+        0.019838315,
+        0.020479918,
+        0.019315617,
+        0.016856283,
+        0.017276945,
+        0.016890288,
+        0.016856824,
+        0.016726726,
+        0.016907441,
+        0.017451296,
+        0.017286623,
+        0.017813176,
+        0.0174267,
+        0.017224123,
+        0.016825946,
+        0.017487917,
+        0.01811956,
+        0.018402228,
+        0.018436414,
+        0.018289533,
+        0.017251446,
+        0.017553171,
+        0.01662927,
+        0.017471681,
+        0.018455876,
+        0.016976553,
+        0.01698092,
+        0.017298606,
+        0.017299578,
+        0.017927374,
+        0.018549019,
+        0.017357499,
+        0.01720123,
+        0.017418785,
+        0.017448421,
+        0.017709739,
+        0.017132409,
+        0.017389299,
+        0.017543823,
+        0.01723217,
+        0.016970942,
+        0.017077794,
+        0.017074489,
+        0.017346356,
+        0.016986972,
+        0.017407644,
+        0.017294057,
+        0.017527441,
+        0.017126588,
+        0.016936846,
+        0.017428212,
+        0.017055844,
+        0.017270252,
+        0.017532602,
+        0.018354908,
+        0.017218763
+      ],
+      "mean_apply_seconds": 0.017979310421875,
+      "mean_legacy_copy_apply_seconds": 0.06421650296875,
+      "mean_outplace_seconds": 0.01752881209375,
+      "prepare_plus_first_100_apply_seconds": 0.15674819099999415,
+      "prepare_plus_first_100_copy_apply_seconds": 0.2045756669999942,
+      "prepare_plus_first_100_outplace_seconds": 0.15745600099999416
+    }
+  ],
+  "batches": [
+    {
+      "path": "worker0-sample-control-1-A-legacy.json",
+      "sha256": "182b2aa6ab123629ceab98c0ad8949b95f3f110d42f29ba8f623376d1a434775"
+    },
+    {
+      "path": "worker0-sample-control-1-B-legacy.json",
+      "sha256": "ccc05baba9f2b1636d9e612ff9831993c73b5c0e915ad0cfe07720fcbc54c07b"
+    },
+    {
+      "path": "worker0-sample-comparison-1-reference-legacy.json",
+      "sha256": "a714bc5ce02837562623356aceb9a74e749d8fee30279572914381ef5926a7ea"
+    },
+    {
+      "path": "worker0-sample-comparison-1-reference-outplace.json",
+      "sha256": "1f5b960e318df589fb5292e44643666b231f5843b3e1992e4dd16b65aee278da"
+    },
+    {
+      "path": "worker0-sample-comparison-1-candidate-legacy.json",
+      "sha256": "9d072b5605d3718e2016dba1ca5140af6e2f0650e4dc88145dbcac3a2395ba47"
+    },
+    {
+      "path": "worker0-sample-comparison-1-candidate-outplace.json",
+      "sha256": "0d4dcb1118db2925aacb2d454df57a6be55f4f4ac61dd21a2118a778a2795925"
+    },
+    {
+      "path": "worker0-sample-control-4-A-legacy.json",
+      "sha256": "03c8875e38beb93eaad903527f840d50e6049a8d9d2de8c5e9915038d29dd0f7"
+    },
+    {
+      "path": "worker0-sample-control-4-B-legacy.json",
+      "sha256": "688d652fbc0c1b8d9c5c88c7f9a62ec0eb27a0769a26c0a2801d3f10bf74e7de"
+    },
+    {
+      "path": "worker0-sample-comparison-4-reference-outplace.json",
+      "sha256": "4dd517e72dd3f921640643aadebd4d2726f0b2f291c2fa1eaee061351ae03dbe"
+    },
+    {
+      "path": "worker0-sample-comparison-4-reference-legacy.json",
+      "sha256": "74b2fb629a6a113984a63bad70f153005bb01b646ea1ac256c007ba6db9eb10c"
+    },
+    {
+      "path": "worker0-sample-comparison-4-candidate-outplace.json",
+      "sha256": "516a6b9efb99e7d24a56998809336c9259589a8fdab926a6b96ecc842e024150"
+    },
+    {
+      "path": "worker0-sample-comparison-4-candidate-legacy.json",
+      "sha256": "46bd5b812b3b2b3068a74b188e4f05ce0dfbc649a94c010a9d4b13c46272c1de"
+    }
+  ],
+  "plan_sha256": "9935e28c5c00f1f2479ac02f58f8dd30338c1af6612ec7240a4fd52252ba61f2",
+  "build_sha256": "05f07c34167bf11ca8f78e1f7a40e0b04fe29193986b94b068cb8f9a8dcf6ca4",
+  "full_acceptance_sha256": "563f1f68f722bc04c4625c7b4bec91a6b79bc73a40a27bb86097db1534c69f6c",
+  "validation_sha256": "326952697662f3c3ab8e3eb7984929e527016896c7e1857423d0bef10414d534",
+  "libraries": {
+    "reference": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tilexy-t0-linux-build-v1/libjshc_skylake_reference.so",
+      "sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e"
+    },
+    "candidate": {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tilexy-t0-linux-build-v1/libjshc_skylake_tilexy_t0.so",
+      "sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7"
+    }
+  },
+  "per_inner_round_independent_sha": false,
+  "aggregation": "每原生批次内算术均值；每进程候选/参考，再取四进程配对比值中位数",
+  "loaded_libraries": [
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+      "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tilexy-t0-linux-build-v1/libjshc_skylake_reference.so",
+      "sha256": "b547cd18aa80d686b39a1c969d8006c04aafb2828ea541bc15cf96ce516dee1e"
+    },
+    {
+      "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tilexy-t0-linux-build-v1/libjshc_skylake_tilexy_t0.so",
+      "sha256": "368a88f4435e10c8578f33154faad4d57d6ede5e5b49a6a9da747d97e06d57e7"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "d763925433ff9b757390549e1b20c085f5e6de27ae700fe89194178d96a8a2b0"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0",
+      "sha256": "645478cbe100d1465b9d45f7047bca3965358f4d399937e544f55ac7a924d5a3"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "sha256": "670fb59bd462ee2f833e2ed7c0a1814e0dcdbec0b8bfa048bec46e2e6fd66334"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+      "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+    }
+  ],
+  "actual_affinity": [
+    0
+  ]
+}

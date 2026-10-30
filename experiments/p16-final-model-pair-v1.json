@@ -1,0 +1,140 @@
+{
+  "purpose": "同87库比较最终精度候选与a399，预冻结吞吐底线及无明显退化口径",
+  "library": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+    "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+  },
+  "script_sha256": "d7c07556ab0af7fdde8465174aa3273b3133821f50f1b672d0e10cf7d305d0f0",
+  "data_root": "F:\\Hackathon\\projects\\16-lut-color",
+  "manifest": {
+    "path": "F:\\Hackathon\\projects\\16-lut-color\\assets\\photos\\manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "candidate_acceptance": {
+    "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-last-stage-accept-v1\\results.json",
+    "sha256": "3dc298a27810b95cf0a3385cd2ab23eb44c9d92bdbd42d5a711fd45184f1a2f5"
+  },
+  "roles": {
+    "baseline": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut",
+          "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut",
+          "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+        }
+      ],
+      "sidecars": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin",
+          "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+        },
+        null,
+        null,
+        null
+      ],
+      "oracle": {
+        "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\cube.rgb",
+        "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+      }
+    },
+    "candidate": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-last-stage-v2\\candidate\\candidate-base.slut",
+          "sha256": "73dc15fea4db5fb10a481336e18256cff040ca291a9713dc1c383ad84739b5ad"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-last-stage-v2\\candidate\\stage4.slut",
+          "sha256": "fcc15bc8147bc865e534644460ccda3e51f21e8979e21db2fa5bd7e574ffdb67"
+        }
+      ],
+      "sidecars": [
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-last-stage-v2\\candidate\\channel-frac.bin",
+          "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+        },
+        null,
+        null,
+        null
+      ],
+      "oracle": {
+        "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-last-stage-accept-v1\\candidate.rgb",
+        "sha256": "150bd55ede2419b3ede748705adad388562137e3144de7aaebb929ee4f066c6a"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": {
+    "1": 16,
+    "4": 32
+  },
+  "gates": {
+    "control_any_min": 0.85,
+    "control_any_max": 1.15,
+    "speed_floor_retained": 0.5,
+    "no_obvious_median_time_ratio_max": 1.05,
+    "no_obvious_any_time_ratio_max": 1.1
+  },
+  "timing_scope": "纯apply/真正分离输出1/4线程，准备+首次冷分离100图4线程，所有预加载/IO解码/hash不在映射计时；底层create包含文件读取与解析校验，Python输入hash移出",
+  "sample_unit": "四新进程AB/BA/BA/AB，各角色各线程每批16/32整100图内轮，批内中位后形成同进程配对比，再聚合四比中位；同句柄控制整批重复，最低档按最劣进程吞吐倒数判定"
+}

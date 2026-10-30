@@ -1,5 +1,17 @@
 # flash-chroma · 极速焕彩
 
+2026-10-30：[RGB24热核补齐与同场复测](docs/stages/2026-10-30-rgb24-kernel.md)将八路独立查表、64像素打包与普通/流式写入接入单hpp；同表、同图、单线程长批次对照中，含分配配对耗时下降28.06%，纯核下降35.39%，两侧前后8项A/A均通过。原框架五对确认输出一致，精度与查表内存不变；原首次A/A失败完整保留。
+
+2026-10-30：[赛事框架快速调试](docs/framework-quickstart.md)接入新增的3DL/RGB8 `.bin` 框架，提供单线程、单hpp交付、全LUT域可选链拟合及精度—速度—内存矩阵。新增用户目录 `FlashChroma/run.ps1`，保留原模板和数据；[阶段报告](docs/stages/2026-10-30-framework-adaptation.md)说明四样图/补充百图、原框架计时复核和规定编译器/正式阈值未验证的边界。此入口强制单线程，不沿用旧工作台的四线程配置。
+
+2026-10-29：[赛前快速调试指南](docs/event-quickstart.md)提供统一的 `init / doctor / fit / run` 入口，支持四张新LUT重新拟合、混合网格、固定整批参数、逐图精度门禁和失败回执。Windows运行 `.\start-event.ps1 -Mode studio` 打开[照片工作台](gui/README.md)：20张代表图片、18个LUT、17套组合，参数调整实际调用当前单头CPU库。另提供独立C++连续RGB8接入层和可校验的本机离线调试包；[本阶段验证与交付范围](docs/stages/2026-10-29-studio-event-ready.md)明确已测功能、官方协议/Threshold待确认及旧入口待修复事项。
+
+2026-10-28：[独立单头文件运行库](docs/single-header-runtime.md)提供 C++17 `.hpp` 与可选 C99 `.h`，支持连续三维偏好、硬预算、桌面/移动/嵌入式/可移植裁剪。专用查表、成块写出和并行后缀准备已迁入，见[性能修复与集中验证](docs/stages/2026-10-28-header-performance-repair.md)和[最新实测目录](report/data/p16-header-performance-20261028/catalog.json)。20种配置的本轮目录独立绑定新库；三方对照的A/A失败及与旧库残余差距如实保留，尚不宣称稳定追平。原[单头阶段报告](docs/stages/2026-10-27-p16-frontier-header.md)与历史证据保留。构建/选择入口为 `pixi run --locked build-header`、`pixi run --locked frontier --help`。
+
+当前版本的算法、批次性能与运行内存见[CPU版本性能与方法总结](docs/p16-cpu-performance-summary.md)。
+
+2026-10-27：当前推荐的[CPU评分候选入口](submission/README.md)已整合最新研究，默认373a＋AVX2，均值优先档为max_first；提供固定模型包、百图mean严格门、完整计时和运行内存账单。使用`pixi run --locked build-score`构建，`pixi run --locked score --help`查看入口。固定Cinema模型是回归示例，新LUT必须重新拟合；官方分数和Xeon6140成绩尚未获得。
+
 将四张 `256³` RGB8 LUT 拟合为四张边长 `17–33` 的稀疏 LUT，并在图像上执行逐级整数色彩映射。Python 负责离线拟合和验收，C++17 负责运行时；默认构建提供标量回退、运行时检测的 AVX2 后端、OpenMP 和独立的完整色域拟合库。
 
 本项目源于 2026 Hackathon 第 16 题。仓库中的数据与报告包含模拟场景和历史实验，不能据此推断官方验收结果或比赛分数。题目与待确认规则见 [PROBLEM.md](PROBLEM.md)、[DECISION.md](DECISION.md)。
@@ -73,6 +85,12 @@ pixi run --locked select --scenario isp-0 --m 18 --profiles tetra \
 ```
 
 这里的 `2.0` 仅为本地示例，比较使用未舍入统计量和严格 `<`。数据来源与重建说明见 [DATA.md](DATA.md)。性能比较应固定模型、输入、机器、构建参数、线程数和计时边界；CI 通过只证明所覆盖的正确性条件。
+
+## 真实 RAW 工作台（实验）
+
+本地GUI可浏览三家摄影机的真实结果，拖动比较参考/原生画面，查看逐帧SDR/HDR预览、误差和任务日志，并创建独立处理/导出任务。Windows在仓库根目录执行 `.\start-gui.ps1`。依赖、运行范围和当前WSL限制见 [GUI说明](gui/README.md)及[阶段验证](docs/stages/2026-10-23-camera-workflow-gui.md)。这不改变现有RGB8精度合同或代表高精度HDR/三倍性能已验收。
+
+本机现有[WSL低内存配置与验证](docs/stages/2026-10-23-wsl-memory-budget.md)：1GB、4核、F盘交换，三家首帧的12路输出与原结果SHA一致，空闲后虚拟机自动释放；完整52帧仍需额外空间与单独验收。
 
 ## Docker
 

@@ -1,0 +1,12 @@
+{
+  "purpose": "冻结唯一R连续8色/3bit只读筛查；不启动候选原生或性能。",
+  "script_sha256": "b410ad95dcf8807303ba4a53fa974ef1d2623fcbc7ad683968c3c18589cf430e",
+  "mapping": "R | G<<8 | B<<16；coarse=c>>3、fine=c&7，固定8色/3bit，不扫描轴/尺寸/参数",
+  "gate": {
+    "exception_packet8_fraction_max": 0.05,
+    "mean_word_lines_per64_ratio_max": 0.8
+  },
+  "decision": "只有两个固定只读门槛均过才考虑实现；失败停止；行集合不是硬件miss或吞吐证据。",
+  "native_calls": 0,
+  "performance_calls": 0
+}

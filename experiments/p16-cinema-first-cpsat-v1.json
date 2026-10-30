@@ -1,0 +1,18 @@
+{
+  "schema": "p16_cinema_first_cpsat_v1",
+  "agent": "/root/tail",
+  "operator": "本任务用户",
+  "status": "预注册，实际116热点求解须根代理另grant",
+  "purpose": "检验86首级节点分量±2的共享节点整数耦合，先只116原max50点的精确有限可行性，再完整支撑验解一次",
+  "baseline": "原max_first 0ea0/904e/95cb/5b8及143e输出，不借失败组/八色模型预算",
+  "environment_bridge": "原NumPy1.26/Numba0.60只生成整数JSON和fresh u64验解；隔离p16-cpsat-py312使用ortools9.15.6755，只读JSON求解，不导入lutlab/Numba；实际依赖和全部wheelSHA锁定",
+  "variables": "86×3节点整数delta，原值±2与[0,255]求交；每热点三个首级RGB整数delta z，其domain来自已证精确Q16端点",
+  "allowed_assignments": "每热点枚举原±2首级RGB包围盒，只保留固定suffix到gold平方误差<=49的三元组，再减原首级RGB转为z；不假定盒内RGB可达，由共享节点线性舍入约束连接",
+  "rounding": "实际四面体Q16=65536、half32768。完整acc含固定角贡献。Σw*节点delta-Q16*z落在[原RGB*Q16-half-原acc, (原RGB+1)*Q16-half-1-原acc]，均为精确整数闭区间",
+  "gcd": "每行全部非零系数与Q16取gcd，系数整除，lower用精确ceil、upper用精确floor；不得float除法。逐项审系数、变量域乘积、LHS范围及区间端点int64溢出，额外保守限制绝对值<2^62",
+  "contract": "先有限小节点域完整穷举，与CP AllowedAssignments+精确舍入可行集合逐项一致；含半舍入正好/上下1、fixed角、0/255截断、两个热点共享节点及局部无解样例；另拒绝溢出行",
+  "solve": {"num_search_workers": 1, "random_seed": 20261024, "max_time_in_seconds": 20.0, "objective": "无，单次有限可行性", "runs": 1},
+  "verification": "只有FEASIBLE/OPTIMAL且解的每项为真整数时，回原环境fresh u64核116点以及全部70571完整正支撑，固定cap=max(49,原d²)和原全域/60图mean/RMS/p99/CVaR八预算一次；支撑外固定hist保留且hist[50]==0",
+  "stop": "只一次20sec，不补跑/改seed/增轮；UNKNOWN非无解；INFEASIBLE只记录局部86±2热点子问题的求解器结果，无独立形式证明不能升级全局无解。热点可行而完整支撑/八预算不通过也STOP负例",
+  "scope": "首次热点耦合可行性，不是全70571约束优化；严格49及八预算过才另提四级/native/百图终验，无新性能/RSS结论"
+}

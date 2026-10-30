@@ -1,0 +1,149 @@
+{
+  "purpose": "增量构建线性ROM的原地/分离ANDN入口；字典像素对象沿用首阶段已验版本。",
+  "plan_sha256": "c03d6c372cf7a4b872397f70d2ce3ebf64241cc1fb5150c1da72749c3c5e0143",
+  "base_build": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2",
+    "sha256": "aed48d0fb73c022ab84d73cc96d54824631c4b91b27e3e729c0d6f69a3f3b829"
+  },
+  "sources": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_inplace\\channel_avx2.cpp": "dbb416074abf56734a2e894507c572b25e6a10bb30ee9409cbc359bb93fa336d",
+    "artifacts\\p16-memory-andn-build-v1\\andn_inplace.cpp": "b39b31ffe6593f78119799706632680bb890b2aa819ad53047f31d27d3b59de1",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\skylake-andn-split-runtime\\andn_outplace\\channel_avx2.cpp": "42422ecd00f044d4bd79e0636d1cb3755588c5a7b59ec31ef95c88460048fc1a",
+    "artifacts\\p16-memory-andn-build-v1\\andn_outplace.cpp": "17f52f672809d849d426edbd4ebf556b2ed4798901f413a6a2f441b3436fe044",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.h": "1568e6019824ef3f15e71e91274a20640a79beef0a4ad013bab5034503207b2d"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:\\mingw64\\bin\\gcc.exe",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-fstack-usage",
+        "-Wall",
+        "-Wextra",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom.c",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:\\mingw64\\bin\\gcc.exe",
+        "-shared",
+        "artifacts\\p16-memory-andn-build-v1\\memory_c.o",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\jshc_memory_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-DJSHC_MEM_AVX2=1",
+        "-DJSHC_MEM_ANDN=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_parallel.cpp",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-mavx2",
+        "-mbmi",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "artifacts\\p16-memory-andn-build-v1\\andn_inplace.cpp",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\andn_inplace.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-fstack-usage",
+        "-std=c++17",
+        "-mavx2",
+        "-mbmi",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "artifacts\\p16-memory-andn-build-v1\\andn_outplace.cpp",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\andn_outplace.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "artifacts\\p16-memory-andn-build-v1\\memory_c.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_parallel.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_avx2_0.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_avx2_4.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_avx2_6.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_avx2_8.o",
+        "artifacts\\p16-memory-andn-build-v1\\memory_avx2_10.o",
+        "artifacts\\p16-memory-andn-build-v1\\andn_inplace.o",
+        "artifacts\\p16-memory-andn-build-v1\\andn_outplace.o",
+        "-o",
+        "artifacts\\p16-memory-andn-build-v1\\jshc_memory_rom.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "libraries": {
+    "jshc_memory_c99.dll": "936b26f9076a6218e0bf416f87384bea99a13ea76c861185cba2f1aa5041623c",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_rom.dll": "ec40e1db7faed9a8ce47a01ead6991e2cb306f5833367aae9130a533b46a46bd",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "reused_object_sha256": {
+    "memory_avx2_0.o": "7b996da28d85ce28d80902d1d862de8ef921d8550406bf24bf13c8f0bebde061",
+    "memory_avx2_4.o": "abbceff32bec4c81d4ce65d6adacc664bf6342dbe59db52837871c5c6983f62d",
+    "memory_avx2_6.o": "c9838142e25a336d6ba23404ea95bcf7ce6b681088ad514a976b8219f0251ed8",
+    "memory_avx2_8.o": "e61308b9ac0d982ccb5c3166acecc6898be5b10b9e1c716cc785e37e1d84fba5",
+    "memory_avx2_10.o": "2b6f5329fbaca9137cc8c2957ec4678493bd6a3c820a1b6327a07242567bec9f"
+  }
+}

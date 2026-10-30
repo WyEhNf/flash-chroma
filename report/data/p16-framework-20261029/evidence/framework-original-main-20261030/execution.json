@@ -1,0 +1,131 @@
+{
+  "schema": "framework_delivery_check_v1",
+  "sources_before": [
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\FlashChroma\\main_flash_chroma.exe",
+      "bytes": 2763021,
+      "sha256": "fb0c3a0eebfa41e51927d1ee24c3a40821fb09e7673dd6434c123ad6a3953310"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\FlashChroma\\main.cpp",
+      "bytes": 18398,
+      "sha256": "caf4676ceda9d06109e1807f52fdfa9d77995d48b69393f79f70baac531147cc"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\FlashChroma\\flash_chroma_framework.hpp",
+      "bytes": 130042,
+      "sha256": "bdfb2372e8a257ee97f8a77e9cc2d5a680f8fedfd3c6c113103b301c3cc8e162"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\FlashChroma\\run.ps1",
+      "bytes": 1651,
+      "sha256": "6d51f8187f2bc55f0d4a2516b2483dafaf3350ca318cd0802b06f34b003b395c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\scripts\\check_framework_delivery.py",
+      "bytes": 14117,
+      "sha256": "2ea1c511a57d96e3a78e9d73f0a79790c55a9e94292cccbb85c8d7731891d5c0"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\LUT\\Test1.3DL",
+      "bytes": 254476286,
+      "sha256": "38874daab811418151454542ff442f524f3abc2dd5eebbe83164a8a343b5b891"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\LUT\\Test2.3DL",
+      "bytes": 200623153,
+      "sha256": "a2afb212ab35705ab7c99c059baf343d2d1a162e66b7d3e8f15ed10196040c53"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\LUT\\Test3.3DL",
+      "bytes": 200623153,
+      "sha256": "a2afb212ab35705ab7c99c059baf343d2d1a162e66b7d3e8f15ed10196040c53"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\LUT\\Test4.3DL",
+      "bytes": 200623153,
+      "sha256": "a2afb212ab35705ab7c99c059baf343d2d1a162e66b7d3e8f15ed10196040c53"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\image\\1.bin",
+      "bytes": 2359296,
+      "sha256": "1632fcc81b76a7fd2dffd15283d7181f2f4657aab74c9625b5e78f13b3598d10"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\image\\2.bin",
+      "bytes": 2359296,
+      "sha256": "f805613cc6e34e063049b26ae7ecc4b60957ff47640d090f23fa3aa796f89cd8"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\image\\3.bin",
+      "bytes": 2359296,
+      "sha256": "e78734784363414eb50a2886311a96432157fc04aacd5eadf8c67650ce329bfd"
+    },
+    {
+      "path": "F:\\Hackathon\\极速焕彩测试框架\\data\\image\\4.bin",
+      "bytes": 2359296,
+      "sha256": "4371a8d0611d4390c0681f49e7f4d23ef08e718f07dec8ebc5a95fa97440c899"
+    }
+  ],
+  "configs": [
+    {
+      "id": "sparse33",
+      "m": 33,
+      "mode": "sparse",
+      "backend": "avx2",
+      "grid": "uniform",
+      "fit": "sample"
+    },
+    {
+      "id": "direct33",
+      "m": 33,
+      "mode": "direct_rgb24",
+      "backend": "avx2",
+      "grid": "uniform",
+      "fit": "sample"
+    },
+    {
+      "id": "chain33",
+      "m": 33,
+      "mode": "direct_rgb24",
+      "backend": "avx2",
+      "grid": "uniform",
+      "fit": "chain_ls"
+    }
+  ],
+  "count": 4,
+  "repetitions": 5,
+  "seed": 20261029,
+  "affinity": 16,
+  "randomized_orders": [
+    [
+      "sparse33",
+      "direct33",
+      "chain33"
+    ],
+    [
+      "chain33",
+      "direct33",
+      "sparse33"
+    ],
+    [
+      "sparse33",
+      "chain33",
+      "direct33"
+    ],
+    [
+      "chain33",
+      "direct33",
+      "sparse33"
+    ],
+    [
+      "sparse33",
+      "direct33",
+      "chain33"
+    ]
+  ],
+  "psutil_version": "5.9.0",
+  "timing_scope": "原main的TimeCost，包含输出申请；每配置每重复独立进程，参考/色差保留在原图间调用位置。无额外warmup，不是A/A稳定性结论。",
+  "fit_uses_images": false,
+  "official_score_available": false
+}

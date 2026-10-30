@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "purpose": "独立结构证明、原框架uint16/16转换与轴序、混合网格整数执行和失败契约；非性能测试",
+  "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Iinclude",
+    "-Iframework"
+  ],
+  "openmp_enabled": false,
+  "threads": 1,
+  "command": "E:/mingw64/bin/g++.exe -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -Iinclude -Iframework tests/framework_adapter_contract.cpp -o artifacts/framework-adapter-contract/contract.exe && artifacts/framework-adapter-contract/contract.exe",
+  "coverage": [
+    "公式生成四级非线性分离LUT全256^3证明及独立公式输出",
+    "仅变异未采样节点时全源证明拒绝但m^3不变",
+    "4095/4096/65535除16再uint8回绕、轴/通道反序",
+    "m17/18/25/33及FrameworkStep/UniformRounded混合网格",
+    "耦合源自动回退；标量/CPU支持时AVX2与独立u64四面体一致",
+    "原地、部分重叠、空图、尺寸溢出、2线程拒绝、准备失败失效、工作区预算拒绝"
+  ],
+  "files": {
+    "framework/flash_chroma_adapter.hpp": {
+      "sha256": "951302cf6f4d7a417c81c6694b8eb91c52a258b74aa8fa19c807c8c416b6e617",
+      "bytes": 12255
+    },
+    "tests/framework_adapter_contract.cpp": {
+      "sha256": "2c3a316c3615bfdec1c906443817796f22c9dd2b9d7ed6221e27287eadd64612",
+      "bytes": 9785
+    },
+    "artifacts/framework-adapter-contract/contract.exe": {
+      "sha256": "d37d38aafd6869d0e28737ee866548de22965a714292963c7ea89caa5d7a306d",
+      "bytes": 248507
+    }
+  },
+  "logs": [
+    "artifacts/framework-adapter-contract/build-final.log",
+    "artifacts/framework-adapter-contract/run-final.log"
+  ]
+}

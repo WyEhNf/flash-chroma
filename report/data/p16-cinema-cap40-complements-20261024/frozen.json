@@ -1,0 +1,64 @@
+{
+  "sources_sha256": {
+    "AGENTS.md": "cd4b71e3b6303a779ba0197164615850f7c47f1185416567751026fffcce4bf6",
+    "experiments/p16-cinema-cap40-complement-census-v1.md": "19a405aaa380d1524c34f88d197a8529568ae929b4c09210a645465b4365115d",
+    "scripts/census_cinema_cap40_complements.py": "807dc0bb85303fafcaa6d0ff639505162064c76568a0fd3491e07e44bfd5f64d",
+    "scripts/audit_cinema_cap40_complements.py": "3a7d5198cb8ad652fc88eb3487933cea1d6cb6e77b7aabbe61ec1eb624ec1a57"
+  },
+  "inputs": {
+    "geometry_frozen": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-geometry-v1\\frozen.json",
+      "sha256": "6753527ad70f63659cd93ac29517e68525a39b2375170c4e7ebce3cb1fea8c8a",
+      "bytes": 9416
+    },
+    "geometry_groups": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-geometry-v1\\groups.npz",
+      "sha256": "e0d2ad708d65adac99c7c571b8889c74b85382d4bae3fc410b21745fc4e2bf70",
+      "bytes": 628847
+    },
+    "geometry_summary": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-geometry-v1\\summary.json",
+      "sha256": "76b48dbfd6e6a081148c1048986ffcd0156b033603342a9720d05b7b404c7ec0",
+      "bytes": 1843
+    },
+    "geometry_audit": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-geometry-v1\\independent.json",
+      "sha256": "f3b0dbf4e30fa7dc45baa8b97ed89f435c6faf3576c763d8607b5331c2ccb141",
+      "bytes": 630
+    },
+    "screen_frozen": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-screen-v1\\frozen.json",
+      "sha256": "d1103997455ee40d99381840b00291e102cd9721c1600420af79d71a638bd9fb",
+      "bytes": 11451
+    },
+    "screen_summary": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-screen-v1\\summary.json",
+      "sha256": "faceafb72f5c4d7e2253d1da8840a55a8686fc15a54663f35ef2bcc226794aee",
+      "bytes": 1755
+    },
+    "screen_audit": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-screen-v1\\independent.json",
+      "sha256": "8bd29e5315224c0b658233ae83da2559e3979215386f20eb30dce03ab98b790b",
+      "bytes": 676
+    },
+    "group_stats": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-screen-v1\\group-screen.npz",
+      "sha256": "464b0349c80ef5ee23d992519d43c7359c213868d6a2c1d021e6c11cfae5ffc5",
+      "bytes": 373092
+    },
+    "point_stats": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-box-group-screen-v1\\point-screen.npz",
+      "sha256": "37b00e42e30a5a1a56a8706efde5770b404e00b38855ca1154b59487c3f7e6ec",
+      "bytes": 501150
+    }
+  },
+  "proposal": "# cap40安全关系补集的表示成本：一次有界离线普查\n\nAgent：Codex `/root`；Operator：本会话用户。状态：待冻结/有限合同；本阶段不求解、不构造CP、不改变任何节点、半径、误差门或候选。它不把旧±2安全表的资源STOP改写为通过。\n\n已有同盒筛查的完整安全CSR包含大量安全三元组，但不安全状态可能较少。对一个已证明输出落在完整闭盒D中的point，允许S与禁止D\\S在语义上等价。OR-Tools已安装9.15.6755的cp_model.py明确提供add_forbidden_assignments（666–697行）；本阶段只据此研究关系表示大小，不导入或运行它。官方接口来源见 https://or-tools.github.io/docs/pdoc/ortools/sat/python/cp_model.html 。接口接受单变量仿射表达式，不因此省略原Q16多节点舍入方程或共享节点耦合。\n\n固定消费已独立认证的同273节点±2、171271完整正支撑、27817组的9项JSON/NPZ证据；不加载suffix/gold/LUT/照片，也不再查询RGB状态。已有主/独立2534394次真实suffix查询保持原计数。本轮只读取其已认证query_count/safe_count/max和inverse/multiplicity。\n\n对每个原point，q为盒状态数，s为安全数，不安全数f=q−s。危险point须同时满足f>0与max_squared>40；原17620危险point、1525836安全行和0空安全表必须原样复现，不能改按组计费。分别报告全部正表行Σs、全部禁表行Σf，以及逐point选择较短关系的Σmin(s,f)；相等时固定选禁表。非危险point不创建关系。输出完整171271字节方向表：0无关系、1正表、2禁表；空安全表只是必要条件失败，不把0行正表当可行。\n\n两条路径分别核完整原point及全部group重数。主路径NumPy向量计数；独立审计只用stdlib解NPZ/NPY头和整数数据，逐point、逐group重建方向、频数、三种行数及映射。有限合同覆盖全安全、全不安全、恰相等、1/124边界、非法数及重复组散回，计数不能发生uint8相减下溢。\n\n投影同时给出若保留3个RGB输出变量/危险point的53679个整数变量和52860条舍入方程（另819节点分量），只作这种构造的保守尺寸账单；它不是已建模型的测量。正表8192危险point/500000安全行旧门仍失败。禁表/混合表的行数即便低于500000也只表示一个成本维度较小，不授新资源资格、不自动启动求解、不省掉mean/p99门或后续50%速度门。\n\n先冻结3份新执行源/提案及只读AGENTS、9实际输入，再有限合同、唯一计数和独立审核。任何身份/范围/映射错误保留STOP，不修改执行源覆盖重采。下一阶段如需新关系模型，须另固定完整编码、内存/变量/PB实际字节门与独立整数重放；旧INFEASIBLE只属于±1问题，GAC固定点未判定也不充作证书。\n",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "1.26.4",
+  "psutil": "5.9.0",
+  "byteorder": "little",
+  "actual_suffix_queries": 0,
+  "solver_calls": 0,
+  "native_calls": 0,
+  "performance_samples": 0
+}

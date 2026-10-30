@@ -1,0 +1,125 @@
+{
+  "purpose": "单进程构建唯一M16T C99与普通条件AVX2，保留旧32/3B控制。",
+  "plan_sha256": "ce6384ee8dcdc00516c0c5e324b46a01e31a3dd853065257a71bbe6d8a3ff06b",
+  "source_sha256": {
+    "experiments/tagged-block16-runtime/channel_avx2_tag.cpp": "281209e52882e0716bd5ed859317c9ab728a08f81a8629841c00389b20e62cbb",
+    "experiments/tagged-block16-runtime/generation.json": "11f9ca18f73e5b9e5335229ffff0d97a905afecc6a60e810e272e25202ac09e7",
+    "experiments/tagged-block16-runtime/memory_parallel.cpp": "0d02d7792cc5ce6592b9c064c15fee323110e69d97776a8dca8d2db14108d498",
+    "experiments/tagged-block16-runtime/memory_rom.c": "f9ec14da39a847373bd3d605ee773f788eba7f59bf489f6945189e85e7f1ede1",
+    "experiments/tagged-block16-runtime/memory_rom.h": "f282dab780c3ba96d02cd181b0f515dbf80cc42872417367054abbf6df05e074",
+    "scripts/generate_tagged_block16.py": "a4473ec489ac5cbcf56b76549214c0a9181e5fbb3bcf571db391560780dcec9e",
+    "scripts/export_tagged_block16.py": "fdbc10b29e6e0b05593cbfb4913d8cb0b027f3f30f324b8222c7411d9bce411a",
+    "scripts/build_tagged_block16.py": "b49d50a5dd4712ac0e8af8cca269805b789d7c7900e23167013cea52b10a28b4",
+    "scripts/verify_tagged_block16.py": "f4d2442773b790b61b0b88952e091d42b5cc5135dd5214067503493bba9c1766",
+    "scripts/bench_tagged_block16.py": "3813ed1d92e57b3c1bb721bdca464572826fa6c1405a2dcadb10d0ebf234d32b",
+    "scripts/tagged_block16_bench_prefix.py": "d361c37110f328bc267b8cc93d0f83372b65821908101ac49eb3b24c44a50596",
+    "scripts/tagged_block16_bench_suffix.py": "bd4271e61657f4e2016333621795318431124ecf48e9f19f4f20c634f9da42e8",
+    "scripts/freeze_tagged_block16.py": "2d673d40cea3d1508df46fc61d2fc6e95fe6daeed4f49a79c8301b60eac6503d",
+    "scripts/profile_tagged_block16.py": "f26cd1b8669661f11ff6b59f9591d1ca5a9e8d376c8a2579f4bd05314a2a9289",
+    "scripts/freeze_tagged_block16_census.py": "2f5d6da7ae59c8e1cee9ff95824349206d028cd73ca973028137ac26e4e1cd07",
+    "scripts/bench_le16_block1024.py": "71a01e712c72b1f94c4cbfe55c2d41670d862846aeb322ab8f60c8a2d1f02365",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e"
+  },
+  "compiler_sha256": {
+    "E:/mingw64/bin/gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:/mingw64/bin/g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-O3",
+        "-std=c99",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\tagged-block16-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\jshc_tag16_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\tagged-block16-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\tagged-block16-runtime\\channel_avx2_tag.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\channel_avx2_tag.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\channel_avx2_tag.o",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-tagged-block16-build-v1\\jshc_memory_tag16.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_tag16.dll": "56a001549bdc0e42f585c347cf38a993bafd52a960edfe3a578419c0214ea242",
+    "jshc_tag16_c99.dll": "0efe033288155d2fa909a9cc969c288ce3f8da5d1829890c045b286927653fb8",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "scope": "C99零堆；桌面像素仅AVX2，无masked gather/native/AVX512，旧32/3B及fast控制不重编译。"
+}

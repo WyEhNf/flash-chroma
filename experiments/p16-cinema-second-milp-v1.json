@@ -1,0 +1,12 @@
+{
+  "schema": "p16_cinema_second_milp_v1",
+  "purpose": "跨parity同时移动末级节点，尝试解除单节点/逐批cap造成的平台；从第二级max_first的0.799073807已验收候选起步，不用末级mean-only候选放宽起点。",
+  "input": "完整10633第一级联合支撑经新第二级/原第三级精确再分组的1219行；所有16777216频数及原60图质量保留。",
+  "target_squared": 49,
+  "p99_squared": 9,
+  "node_radius": 2,
+  "solver": "SciPy1.15.2 milp/HiGHS，线程1；最多4次范数合法支撑平面细化，每次20秒/20000节点/gap0；无incumbent、舍入不符、无新增范数割或实际全门通过立即停止，不扩大预算/盒。",
+  "constraints": "Q16 half-up精确整数舍入区间、整数平方分段线性、max49、双mean/双RMS、>9计数不增、阈值3超额不增；新模块参数化p99，旧12阈值模块/数据不改。",
+  "acceptance": "提取整数节点后用独立uint64实际前向全部1219支撑，max<sqrt50、p99<=3、mean/RMS/真实CVaR及原60图mean/RMS不退；通过后才独立新四级全域/native/百图/速度终验。",
+  "limits": "浮点MILP不可行或超时不是整个模型族的形式下界；±2局部盒不含更大移动。没有照片选择节点/新运行时成绩。"
+}

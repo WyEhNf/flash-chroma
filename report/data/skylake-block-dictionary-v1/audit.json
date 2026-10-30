@@ -1,0 +1,58 @@
+{
+  "full_rgb8_pass": true,
+  "dictionary": {
+    "physical_bytes": 8388608,
+    "map_entries": 262144,
+    "map_bytes": 1048576,
+    "block_bytes": 64,
+    "unique_blocks": 88387,
+    "referenced_blocks": 88387,
+    "pool_bytes": 5656768,
+    "used_bytes": 6705344,
+    "zero_tail_bytes": 1683264,
+    "offset_min": 1048576,
+    "offset_max": 6705280,
+    "all_offsets_aligned": true,
+    "all_pool_blocks_referenced": true,
+    "pool_blocks_unique": true,
+    "tail_all_zero": true,
+    "logical_table_bytes": 16777216,
+    "logical_table_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0"
+  },
+  "model_accounting_bytes": {
+    "reference": {
+      "single": 272835,
+      "chain": 11269404
+    },
+    "candidate": {
+      "single": 272859,
+      "chain": 19658036
+    }
+  },
+  "one_thread_cycle_ratio_over65": 1.3306263199047164,
+  "one_thread_screen_pass": false,
+  "completed_counted_samples": 3,
+  "valid_completed_samples": true,
+  "pmu_series_complete": false,
+  "four_thread_ratio": null,
+  "wallclock_executed": false,
+  "failure_receipt": {
+    "purpose": "70单次PMU执行中止回执；不重复计数",
+    "exit_code": 1,
+    "completed_samples": [
+      "sample-1-reference65.json",
+      "sample-1-block_dictionary70.json",
+      "sample-4-block_dictionary70.json"
+    ],
+    "missing_samples": [
+      "sample-4-reference65.json"
+    ],
+    "assertion": "if label!='reference23':assert ds['enabled']==1 and pages['fully_huge'] and pages['bytes']==(2**23 if label=='block_dictionary70' else 2**24)",
+    "phase": "4线程reference65已创建句柄但在预热/计数之前失败",
+    "diagnostic_limit": "失败句柄的ds/pages未落盘，不能精确归因联合条件中哪一项；不得将缺失4线程参考当作零或有效配对",
+    "one_thread_ratio": 1.3306263199047164,
+    "decision": "完整RGB8通过；有效单线程同场周期超过1.03门槛，停止70，无完整墙钟，不重新计数择优",
+    "traceback": "Traceback (most recent call last):\n  File scripts/profile_skylake_block_dictionary_pmu.py, line 86, in <module>\n    main()\n  File scripts/profile_skylake_block_dictionary_pmu.py, line 63, in main\n    assert ds['enabled']==1 and pages['fully_huge'] and pages['bytes']==(2**23 if label=='block_dictionary70' else 2**24)\nAssertionError"
+  },
+  "note": "参考4线程前置状态断言失败；缺失数据不填零、不拼接其他场次，单线程已失败，停止且无补测。"
+}

@@ -1,0 +1,74 @@
+{
+  "purpose": "GUI交付验证汇总，未将受阻的RED/BRAW新GUI运行算作通过",
+  "view_checks": {
+    "purpose": "GUI既有真实数据预览与接口边界；不执行新RAW任务",
+    "checks": [
+      "arri/sdr/reference真实PNG",
+      "arri/sdr/runtime真实PNG",
+      "arri/sdr/difference真实PNG",
+      "arri/hdr/reference真实PNG",
+      "arri/hdr/runtime真实PNG",
+      "arri/hdr/difference真实PNG",
+      "red/sdr/reference真实PNG",
+      "red/sdr/runtime真实PNG",
+      "red/sdr/difference真实PNG",
+      "red/hdr/reference真实PNG",
+      "red/hdr/runtime真实PNG",
+      "red/hdr/difference真实PNG",
+      "blackmagic/sdr/reference真实PNG",
+      "blackmagic/sdr/runtime真实PNG",
+      "blackmagic/sdr/difference真实PNG",
+      "blackmagic/hdr/reference真实PNG",
+      "blackmagic/hdr/runtime真实PNG",
+      "blackmagic/hdr/difference真实PNG",
+      "非法帧拒绝",
+      "无效会话拒绝",
+      "外部Host拒绝",
+      "外部Origin拒绝",
+      "静态路径越界拒绝"
+    ],
+    "all_passed": true
+  },
+  "arri_gui": {
+    "purpose": "GUI重新解码及四级处理与旧首帧逐字节对照，另核对真实导出回执，不是新性能门禁",
+    "job": "20261023-181501-c1d5d7",
+    "baseline_outputs_sha_equal": [
+      "sdr-reference16",
+      "sdr-runtime8",
+      "hdr-reference16",
+      "hdr-runtime8"
+    ],
+    "four_video_files_roundtrip_equal": true,
+    "all_passed": true
+  },
+  "static": {
+    "python_ast": 4,
+    "javascript_syntax": true,
+    "html_unique_ids": 64,
+    "literal_js_dom_references": 40
+  },
+  "remote": {
+    "prior_full_pr_bodies": 76,
+    "current_full_pr_bodies": 77,
+    "added": [
+      83
+    ],
+    "prior_bodies_unchanged": true
+  },
+  "gui_ui_observed": [
+    "三家真实缩略图",
+    "ARRI处理首帧及导出按钮实际完成",
+    "BRAW时间轴52/52与1/52",
+    "分割线52%",
+    "HDR及误差模式",
+    "工程内ARRI素材浏览"
+  ],
+  "blocked": [
+    "WSL启动E_UNEXPECTED/退出1，管理员服务恢复受限",
+    "RED/BRAW新GUI解码",
+    "新导入素材实际处理",
+    "运行中Linux进程组取消",
+    "GUI完整52帧重跑"
+  ],
+  "native_or_models_changed": false
+}

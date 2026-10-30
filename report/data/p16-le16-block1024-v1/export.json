@@ -1,0 +1,40 @@
+{
+  "purpose": "唯一1024B块LE16格式：保留原pool及palette，全16MiB逻辑ID独立重建。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "0d829d42723357da55abfc113bfce8c246fe8dbe487d9d21080ee123e1dea968",
+  "source_rom_sha256": "b36d97216acb7a200cdd95abf66e4c101d0db43d6eed5680487067ef51df58c3",
+  "rom_bytes": 10767392,
+  "rom_sha256": "c0a46fbb4dd359e1bd30767533b763288ca28aaf137a6613e8e3ba018ed64e19",
+  "map_bytes": 32768,
+  "pool_bytes": 10733568,
+  "unique_blocks": 10482,
+  "maximum_id": 10481,
+  "model_expected_bytes": 1056,
+  "resident_expected": 10768448,
+  "saved_bytes": 32768,
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "before": {
+    "PeakWorkingSetSize": 35782656,
+    "WorkingSetSize": 35782656,
+    "PrivateUsage": 22503424,
+    "PeakPagefileUsage": 22503424
+  },
+  "after": {
+    "PeakWorkingSetSize": 68231168,
+    "WorkingSetSize": 64438272,
+    "PrivateUsage": 45563904,
+    "PeakPagefileUsage": 54919168
+  },
+  "scope": "pool与palette原字节保留，仅原map转LE16块ID；无gold/照片选择。离线峰值含Python/NumPy及临时对象，不是运行时RAM。"
+}

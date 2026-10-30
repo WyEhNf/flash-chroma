@@ -1,0 +1,109 @@
+--- experiments/skylake-input256-deferred-runtime/CMakeLists.txt
++++ experiments/skylake-input256-ordered-runtime/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ cmake_minimum_required(VERSION 3.24)
+-project(jshc_skylake_input256_deferred LANGUAGES CXX C)
+-set(SKYLAKE_CANDIDATE_TARGET jshc_skylake_input256_deferred)
++project(jshc_skylake_input256_ordered LANGUAGES CXX C)
++set(SKYLAKE_CANDIDATE_TARGET jshc_skylake_input256_ordered)
+ set(SKYLAKE_RUNTIME_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/channel_runtime.cpp")
+ # 新候选共用构建骨架；既有两个候选的独立CMake保留原执行身份。
+ set(CMAKE_CXX_STANDARD 17)
+@@ -37,7 +37,7 @@
+   "${CMAKE_CURRENT_SOURCE_DIR}/channel_avx2.cpp"
+   "${CMAKE_CURRENT_SOURCE_DIR}/andn_inplace/channel_avx2.cpp"
+   "${CMAKE_CURRENT_SOURCE_DIR}/andn_outplace/channel_avx2.cpp"
+-  "${CMAKE_CURRENT_SOURCE_DIR}/deferred_inplace/channel_avx2.cpp"
++  "${CMAKE_CURRENT_SOURCE_DIR}/ordered_inplace/channel_avx2.cpp"
+   "${JSHC_ROOT}/experiments/skylake-exception-runtime/channel_avx2.cpp"
+   "${JSHC_ROOT}/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp"
+   "${JSHC_ROOT}/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp")
+@@ -53,9 +53,9 @@
+   "${JSHC_ROOT}/experiments/skylake-domain-isolated-runtime/channel_avx2.cpp"
+   "${JSHC_ROOT}/experiments/skylake-suffix-cache-runtime/channel_avx2.cpp"
+   "${CMAKE_CURRENT_SOURCE_DIR}/channel_avx2.cpp"
+-  "${CMAKE_CURRENT_SOURCE_DIR}/deferred_inplace/channel_avx2.cpp"
++  "${CMAKE_CURRENT_SOURCE_DIR}/ordered_inplace/channel_avx2.cpp"
+   PROPERTIES COMPILE_OPTIONS "-mavx2;-mtune=skylake;-ffp-contract=off")
+-# 四个像素TU同名保留审计规则；只有两个原pair48入口获得BMI1，新input256_deferred只需AVX2。
++# 四个像素TU同名保留审计规则；只有两个原pair48入口获得BMI1，新input256_ordered只需AVX2。
+ set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/andn_inplace/channel_avx2.cpp"
+   "${CMAKE_CURRENT_SOURCE_DIR}/andn_outplace/channel_avx2.cpp"
+   PROPERTIES COMPILE_OPTIONS "-mavx2;-mtune=skylake;-ffp-contract=off;-mbmi")
+--- experiments/skylake-input256-deferred-runtime/channel_runtime.cpp
++++ experiments/skylake-input256-ordered-runtime/channel_runtime.cpp
+@@ -218,7 +218,7 @@
+       if(h.cache_info.enabled) {
+         if(!h.direct_index.empty()) {
+           // 新输入路径只需AVX2；依据有效workers分派，不要求BMI1。
+-          if(workers>1)jshc_channel::avx2_chain_input256_deferred_mt(h.direct_index.data(),h.output_palette.data(),data,vectorized);
++          if(workers>1)jshc_channel::avx2_chain_input256_ordered_mt(h.direct_index.data(),h.output_palette.data(),data,vectorized);
+           else if(h.pair48_supported)jshc_channel::avx2_chain_pair48(h.direct_index.data(),h.output_palette.data(),data,vectorized);
+           else jshc_channel::avx2_chain_adaptive_linear(h.direct_index.data(),h.output_palette.data(),data,vectorized);
+         }
+@@ -352,7 +352,7 @@
+ 
+ extern "C" {
+ uint32_t jshc_cc_abi_version(void) {return 1;}
+-uint32_t jshc_cc_revision(void) {return 82;}
++uint32_t jshc_cc_revision(void) {return 83;}
+ uint32_t jshc_cc_capabilities(void) {
+   uint32_t mask=1;
+ #if defined(JSHC_CC_HAVE_AVX2)
+@@ -466,13 +466,13 @@
+ JSHC_CC_API uint32_t jshc_cc_pair48_enabled(const void* handle) {
+   if(!handle)return 0;
+   const auto& h=*static_cast<const Handle*>(handle);
+-  // 仅报告BMI1与直表资格；有效单线程原地及真正分离输出可选pair48，多线程原地走input256_deferred。
++  // 仅报告BMI1与直表资格；有效单线程原地及真正分离输出可选pair48，多线程原地走input256_ordered。
+   return h.pair48_supported && !h.direct_index.empty()?1u:0u;
+ }
+-JSHC_CC_API uint32_t jshc_cc_input256_deferred_enabled(const void* handle) {
++JSHC_CC_API uint32_t jshc_cc_input256_ordered_enabled(const void* handle) {
+   if(!handle)return 0;
+   const auto& h=*static_cast<const Handle*>(handle);
+-  // 只报告AVX2与直表资格；不表示每次调用实际使用input256_deferred，不依赖BMI1。
++  // 只报告AVX2与直表资格；不表示每次调用实际使用input256_ordered，不依赖BMI1。
+   return (jshc_cc_capabilities()&2) && !h.direct_index.empty()?1u:0u;
+ }
+ int jshc_cc_apply_to(void* handle,const uint8_t* source,uint8_t* destination,size_t bytes,int kernel,int threads,char* error,size_t size) {
+--- experiments/skylake-input256-deferred-runtime/deferred_inplace/channel_avx2.cpp
++++ experiments/skylake-input256-ordered-runtime/ordered_inplace/channel_avx2.cpp
+@@ -117,6 +117,8 @@
+     asm volatile("" : : "x"(s0),"x"(s1),"x"(pending) : "memory");
+     _mm256_stream_si256(reinterpret_cast<__m256i*>(destination+3*p),s0);
+     _mm256_stream_si256(reinterpret_cast<__m256i*>(destination+3*p+32),s1);
++    // 阻止第二组输入被编译器前移到首行两次NT之间；这不是硬件栅栏。
++    asm volatile("" : : : "memory");
+     // 第二组源从96B开始，不读取已写首行；全部读取后补写中间行，再完成末行。
+     const __m256i r4=pack_stream_0(read_wide(table,palette,source+3*p+96)),r5=pack_stream_1(read_wide(table,palette,source+3*p+120));
+     const __m256i r6=pack_stream_2(read_wide(table,palette,source+3*p+144)),r7=pack_stream_3(read_wide(table,palette,source+3*p+168));
+@@ -134,5 +136,5 @@
+ 
+ }
+  }
+-void avx2_chain_input256_deferred_mt(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
++void avx2_chain_input256_ordered_mt(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
+ }
+--- experiments/skylake-input256-deferred-runtime/suffix_cache.hpp
++++ experiments/skylake-input256-ordered-runtime/suffix_cache.hpp
+@@ -61,7 +61,7 @@
+ namespace jshc_channel {
+ void avx2_chain_adaptive_linear(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
+ void avx2_chain_pair48(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
+-void avx2_chain_input256_deferred_mt(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
++void avx2_chain_input256_ordered_mt(const uint32_t*,const uint32_t*,uint8_t*,size_t) noexcept;
+ void avx2_chain_pair48_to(const uint32_t*,const uint32_t*,const uint8_t*,uint8_t*,size_t) noexcept;
+ }
+ extern "C" {
+@@ -75,8 +75,8 @@
+ JSHC_CC_API int jshc_cc_get_paged_info(const void*,jshc_cc_paged_info*,size_t);
+ // BMI1与直表资格；有效单线程原地及真正分离输出可选pair48，空句柄或无表返回0。
+ JSHC_CC_API uint32_t jshc_cc_pair48_enabled(const void*);
+-// 只报告AVX2与直表资格，不表示每次调用实际进入input256_deferred；null或无表返回0。
+-JSHC_CC_API uint32_t jshc_cc_input256_deferred_enabled(const void*);
++// 只报告AVX2与直表资格，不表示每次调用实际进入input256_ordered；null或无表返回0。
++JSHC_CC_API uint32_t jshc_cc_input256_ordered_enabled(const void*);
+ }
+ 
+ namespace jshc_channel {

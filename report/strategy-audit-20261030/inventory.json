@@ -1,0 +1,6257 @@
+{
+  "head": "111b0dfd73edd68927642c8dafca69b516285737",
+  "documents": [
+    {
+      "path": "docs/stages/2026-10-16-engineering-alignment.md",
+      "title": "阶段说明：证据链修复与两套 C99 的共同验证",
+      "sha256": "5ebe66604d695b55a46f948426e0846958fe7d1aa360fd9a0c536dc5d57d22b7",
+      "headings": [
+        "阶段说明：证据链修复与两套 C99 的共同验证",
+        "目标及已完成事项",
+        "相关审查记录与当前状态",
+        "测试环境与目的",
+        "集中验证及结果",
+        "标量目录使用相同参数，另设 -DJSHC_ENABLE_AVX2=OFF -DJSHC_ENABLE_OPENMP=OFF。"
+      ],
+      "characters": 4128
+    },
+    {
+      "path": "docs/stages/2026-10-16-error-causes.md",
+      "title": "阶段说明：四级误差来源与热点整数精化",
+      "sha256": "48d3af87a3605c6f33462daeef208cc7cd5c640c8602538457bf82c409fecf68",
+      "headings": [
+        "阶段说明：四级误差来源与热点整数精化",
+        "结论",
+        "固定范围、实现及实验步骤",
+        "1. 已测指标与实际收益/退化",
+        "2. 原因一：陡峭局部变化与固定表示的限制",
+        "3. 原因二：先求解再裁剪会改变已求得的近似",
+        "4. 原因三：小的前级偏差可跨过后级判定边界",
+        "5. 原因四：色域测度与照片测度不同，选择目标也不同",
+        "6. 已有方法对照，避免把较弱基线改善当成突破",
+        "环境、验证及复现",
+        "下一步由本轮证据支持的方向"
+      ],
+      "characters": 8692
+    },
+    {
+      "path": "docs/stages/2026-10-16-pr-and-test-policy.md",
+      "title": "阶段说明：阶段 PR 交付与测试记录规范",
+      "sha256": "03c838365ec974622a423706f6faa85cdff569ab7e9d3afcb6c04b3c6e8c270c",
+      "headings": [
+        "阶段说明：阶段 PR 交付与测试记录规范",
+        "完成事项",
+        "验证记录",
+        "交付"
+      ],
+      "characters": 761
+    },
+    {
+      "path": "docs/stages/2026-10-16-sync-pr-roadmap.md",
+      "title": "阶段说明：同步最新主干与后续工作建议",
+      "sha256": "d0318f05c88c8b69b5e966ca10bc280eab32d6c56d811575db345b28ea2bc8da",
+      "headings": [
+        "阶段说明：同步最新主干与后续工作建议",
+        "1. 本阶段实际完成的工作",
+        "2. 近期 PR 已带来的能力与限制",
+        "操作前协作记录与尚未解决的事项",
+        "3. 决定优先级的具体证据",
+        "4. 建议的后续 PR 与验收顺序",
+        "P0：先闭合整合与复现入口",
+        "P1：真实 LUT 接入与最小反例归档",
+        "P2：小规模、同样本的算法选型",
+        "P3：部署架构收敛与硬件加速",
+        "P4：受控恢复矩阵与发布统一报告",
+        "5. 本次验证记录",
+        "环境与目的",
+        "复现命令",
+        "实际结果与证据边界"
+      ],
+      "characters": 10840
+    },
+    {
+      "path": "docs/stages/2026-10-17-automatic-compensation.md",
+      "title": "自动条件补偿与误差冲突分析",
+      "sha256": "bdb138a2a86ed809122693778476d78f737b011a59264bf87310e4e163be2134",
+      "headings": [
+        "自动条件补偿与误差冲突分析",
+        "目标与冻结范围",
+        "正确性和阶段测试",
+        "使用artifacts/error-study-py312/Scripts/python.exe，并设置上述UTF8/线程环境。",
+        "移除NUMBA_NUM_THREADS，runner自行设置4。",
+        "协作与限制",
+        "冻结实验后的归因范围",
+        "实际结果与误差原因",
+        "验证与归档结论"
+      ],
+      "characters": 6465
+    },
+    {
+      "path": "docs/stages/2026-10-17-cvar-commit.md",
+      "title": "最坏百分之一误差的固定提交门禁",
+      "sha256": "7bb542cb8220b8f8bd999681487c77333db5493fbe76f63264c20cc248043c49",
+      "headings": [
+        "最坏百分之一误差的固定提交门禁",
+        "误差原因与阶段目标",
+        "实现与可审核边界",
+        "冻结实验与验证目的",
+        "使用artifacts/error-study-py312/Scripts/python.exe；先设置上述线程及UTF8环境。",
+        "移除NUMBA_NUM_THREADS后运行，旧目录不覆盖；复现须选择新目录并更新相应参考路径。",
+        "协作与未完成项",
+        "固定队列的实际结果",
+        "误差为何反向变化",
+        "完整指标与剩余问题",
+        "验证、来源及归档"
+      ],
+      "characters": 8254
+    },
+    {
+      "path": "docs/stages/2026-10-17-exact-tail.md",
+      "title": "候选拒绝归因与真实尾部联合搜索",
+      "sha256": "8f143d5279fe5a5efb98964a0ba2125ed89620bcea294c277bfce40844b52ea7",
+      "headings": [
+        "候选拒绝归因与真实尾部联合搜索",
+        "实际执行与收益边界",
+        "真实三节点的局部必要性",
+        "完整精度与误差转移",
+        "正确性、架构与交付"
+      ],
+      "characters": 6448
+    },
+    {
+      "path": "docs/stages/2026-10-17-extreme-cell.md",
+      "title": "最大误差热点的固定单元联合拟合与整数必要界",
+      "sha256": "ff5833f3e8d4342ffae5461de90b3748c7b3b0e38465bd32e2b4127a4cf57f7d",
+      "headings": [
+        "最大误差热点的固定单元联合拟合与整数必要界",
+        "问题与固定范围",
+        "任意合法节点的必要界",
+        "阶段验收口径",
+        "测试目的、环境与复现",
+        "python为artifacts/error-study-py312/Scripts/python.exe；先按前文设置线程/UTF8环境。",
+        "移除NUMBA_NUM_THREADS；计划及源码冻结后运行，输出拒绝覆盖。",
+        "协作与限制",
+        "实际来源、集中检查与首次失败",
+        "固定单元的真实最优最大误差为42",
+        "两种联合候选及真实代价",
+        "证据与复现补充"
+      ],
+      "characters": 7093
+    },
+    {
+      "path": "docs/stages/2026-10-17-feasible-working-set.md",
+      "title": "必要可行性筛查前移与工作集选择",
+      "sha256": "6e4561968323219ba817fb86dbe70a1ea9e30ab33b9c7ebfb8801b9f4c3303e9",
+      "headings": [
+        "必要可行性筛查前移与工作集选择",
+        "目标与依据",
+        "实现和冻结范围",
+        "测试目的、环境和判定",
+        "python为artifacts/error-study-py312/Scripts/python.exe，设置UTF8/PYTHONPATH=python及上述线程环境。",
+        "移除NUMBA_NUM_THREADS，由入口设4。",
+        "工程与边界",
+        "已冻结实验及后续解释范围",
+        "本轮结果：已知误选修复，精度没有改善",
+        "更深的原因：单色乐观区间未表达共享坐标的联合冲突",
+        "最终指标、复现证据和限制"
+      ],
+      "characters": 5771
+    },
+    {
+      "path": "docs/stages/2026-10-17-fractional-fit.md",
+      "title": "保留原权威轴表的完整域拟合与尾部归因",
+      "sha256": "798c581ced60394656167280e8611279a0b3eeadb396a80a3e966a9452a4934a",
+      "headings": [
+        "保留原权威轴表的完整域拟合与尾部归因",
+        "执行前冻结的改进",
+        "集中测试计划及环境",
+        "集中验证与实测来源",
+        "保留原轴表后的配对结果",
+        "仍失败的约束与实际原因",
+        "验收、归档与复现",
+        "合同进程实际另设NUMBA_NUM_THREADS=4；研究入口自行设4线程。"
+      ],
+      "characters": 6837
+    },
+    {
+      "path": "docs/stages/2026-10-17-full-domain-guard.md",
+      "title": "完整RGB域增量保护与整数均值证书",
+      "sha256": "3d6fbb6e67e03f3d8ec7f63162e7d1981367758251aec4e515f159c9307ed5c1",
+      "headings": [
+        "完整RGB域增量保护与整数均值证书",
+        "冻结方案与实现",
+        "阶段测试计划",
+        "实测过程：保留失败，不放宽预算",
+        "双节点为何能越过单节点停滞",
+        "完整域与完整照片结果",
+        "完整域整数证书与独立复核",
+        "环境、内存及原始来源",
+        "复现与交付边界"
+      ],
+      "characters": 7106
+    },
+    {
+      "path": "docs/stages/2026-10-17-full-photo.md",
+      "title": "完整域与照片测度的等质量节点优化",
+      "sha256": "41ba206d6d9567a0026d76268a72be7fe0157d8aac26aa7f741da6c91e120bfd",
+      "headings": [
+        "完整域与照片测度的等质量节点优化",
+        "执行前冻结设计",
+        "集中测试计划",
+        "实测与实际改进",
+        "为什么没有提升为默认",
+        "从失败定位下一步",
+        "正确性与来源范围",
+        "复现与协作记录"
+      ],
+      "characters": 6551
+    },
+    {
+      "path": "docs/stages/2026-10-17-global-quantile.md",
+      "title": "全观测颜色截断下界与候选覆盖修复",
+      "sha256": "d00f2a1918ec3c28320e79ee930dbe17a3c5c9e365f0688cc42531c895a4761c",
+      "headings": [
+        "全观测颜色截断下界与候选覆盖修复",
+        "已执行结果与候选来源",
+        "完整精度与预算代价",
+        "截断下界的误差来源",
+        "验证、来源与工程交付"
+      ],
+      "characters": 5684
+    },
+    {
+      "path": "docs/stages/2026-10-17-joint-box-objective.md",
+      "title": "有界拟合与多测度四级联合选择",
+      "sha256": "b253fbf9daefc9736c8c55cefff3d5eb71dcb628e5320c47c7c525f4d4070f25",
+      "headings": [
+        "有界拟合与多测度四级联合选择",
+        "问题与设计",
+        "测试计划、环境及边界",
+        "实测结论：一条四级链改善，两个单级案例保留基线",
+        "消融限定：主要收益不能归功于箱约束本身",
+        "两个真实单级案例：箱约束和均值目标均不能消除尾部",
+        "验证、归档与落地边界",
+        "协作记录与阶段交付"
+      ],
+      "characters": 7146
+    },
+    {
+      "path": "docs/stages/2026-10-17-joint-interval.md",
+      "title": "反例驱动的整数区间联合求解",
+      "sha256": "8707cf37638dd4124e150056ed04eb08d0a70cea4e724be5a21206ec274095fd",
+      "headings": [
+        "反例驱动的整数区间联合求解",
+        "问题、范围与算法",
+        "环境、阶段验证与复现",
+        "使用artifacts/error-study-py312/Scripts/python.exe及上述UTF8/线程环境。",
+        "移除NUMBA_NUM_THREADS，由runner设置4。",
+        "工程、协作与未完成事项",
+        "实际联合解与完整证书",
+        "全域和100图终验",
+        "正确性、来源和交付"
+      ],
+      "characters": 6089
+    },
+    {
+      "path": "docs/stages/2026-10-17-joint-minimax.md",
+      "title": "联合质量目标与源参考独立核验",
+      "sha256": "d8c018407d39f3f0e97909cbe6c2a042b382763f5a2b1fcd604250be64a2ed52",
+      "headings": [
+        "联合质量目标与源参考独立核验",
+        "问题及改动",
+        "源参考审计",
+        "阶段验证、环境与复现",
+        "python使用artifacts/error-study-py312/Scripts/python.exe，并设置上述UTF8/线程环境。",
+        "移除NUMBA_NUM_THREADS，由runner设置4。",
+        "协作与限制",
+        "实际源审计：陡变存在于原节点",
+        "质量目标的完整覆盖结果",
+        "一次完整终验与误差分布",
+        "来源、正确性及交付"
+      ],
+      "characters": 6671
+    },
+    {
+      "path": "docs/stages/2026-10-17-local-compensation.md",
+      "title": "热点主改与邻近节点的重叠联合补偿",
+      "sha256": "371f744a2edccc7531f0b1881baf46e948bb5b2704875d0afb1c0533a38873db",
+      "headings": [
+        "热点主改与邻近节点的重叠联合补偿",
+        "阶段问题与算法",
+        "固定验收与复现",
+        "python使用artifacts/error-study-py312/Scripts/python.exe；先设置上述线程/UTF8环境。",
+        "移除NUMBA_NUM_THREADS，由runner设置；输出拒绝覆盖。",
+        "协作与边界",
+        "首轮结果揭示的证书误拒与修复计划",
+        "修复后的真实联合结果",
+        "一次完整终验",
+        "证据、来源和交付"
+      ],
+      "characters": 7666
+    },
+    {
+      "path": "docs/stages/2026-10-17-lut-dual-baseline.md",
+      "title": "LUT双尺寸基础评测计划",
+      "sha256": "0a9f14b8d843d2f7623414d5f266cfc309cf83c92d168630b73835ad56a85f81",
+      "headings": [
+        "LUT双尺寸基础评测计划",
+        "目标",
+        "冻结的测试范围",
+        "复用与实测边界",
+        "关联意见与已知限制",
+        "交付与验证",
+        "实验完成记录（已通过用户审核）"
+      ],
+      "characters": 2631
+    },
+    {
+      "path": "docs/stages/2026-10-17-primary-batch.md",
+      "title": "预算可行主修改的有限联合批次",
+      "sha256": "2199b5a9beb0577b76da6c9f5221f9c8babb0cd727d0efbef0324ea8bb694f20",
+      "headings": [
+        "预算可行主修改的有限联合批次",
+        "问题与实现",
+        "冻结实验与测试目的",
+        "固定实验结果",
+        "独立七子集与真实误差",
+        "四指标保护以外的最坏1%代价",
+        "可复现证据与架构边界",
+        "协作状态与限制"
+      ],
+      "characters": 8286
+    },
+    {
+      "path": "docs/stages/2026-10-17-primary-budget.md",
+      "title": "逐组预算感知的全局主提案",
+      "sha256": "59c3d99b832718df672a47cea3267db16251da282e1719851bc752fc927a35e5",
+      "headings": [
+        "逐组预算感知的全局主提案",
+        "从已验证问题到本阶段实现",
+        "冻结测试与环境",
+        "固定实验结果",
+        "精度、收益来源与反例",
+        "架构、证据与复现",
+        "协作状态与下一步"
+      ],
+      "characters": 7465
+    },
+    {
+      "path": "docs/stages/2026-10-17-quantile-tail.md",
+      "title": "逐图分位预算与完整域保护的节点联合修复",
+      "sha256": "c881c772d24074a13433c5d8acd3b999fbfacba4d7cd173a656c07fb9c35fca6",
+      "headings": [
+        "逐图分位预算与完整域保护的节点联合修复",
+        "执行前冻结的算法",
+        "阶段验证计划",
+        "两次冻结执行与算法修正",
+        "最终结果与代价",
+        "运行时错误、搜索错误与表示能力的区分",
+        "验证与可复现交付",
+        "协作与工程对齐"
+      ],
+      "characters": 8352
+    },
+    {
+      "path": "docs/stages/2026-10-17-review-stack-integration.md",
+      "title": "协作者意见审计与研究栈集成",
+      "sha256": "79f35d8cb509be7e969feeaceef3c4d5bc501bef589cb7ad6ccf334ef5c6d7b7",
+      "headings": [
+        "协作者意见审计与研究栈集成",
+        "范围与结论",
+        "逐项对齐",
+        "集成方式和验证目的",
+        "引用复测与未完成工作"
+      ],
+      "characters": 3700
+    },
+    {
+      "path": "docs/stages/2026-10-17-rounded-budget.md",
+      "title": "真实舍入预算统计与联合辅助排序",
+      "sha256": "fdae250a0cc3f121b28eeb16346498dbd0ff247e25de2eee3038487c2a9fc53a",
+      "headings": [
+        "真实舍入预算统计与联合辅助排序",
+        "已完成的固定两臂对照",
+        "完整精度、残余失败与代价",
+        "联合补偿为何通过",
+        "正确性、内存与交付"
+      ],
+      "characters": 6648
+    },
+    {
+      "path": "docs/stages/2026-10-17-stable-tail.md",
+      "title": "固定参照下的尾部误差转移分析",
+      "sha256": "f38c312a11177ab5cbdc7ec5a67a47b7578910b392da43c5287662cd547cf64e",
+      "headings": [
+        "固定参照下的尾部误差转移分析",
+        "问题与本阶段范围",
+        "实现",
+        "冻结实验与测试目的",
+        "两臂结果",
+        "真实退化还是保守界限",
+        "验证、内存与可复现证据",
+        "工程与协作状态"
+      ],
+      "characters": 6561
+    },
+    {
+      "path": "docs/stages/2026-10-17-tail-grid.md",
+      "title": "边界与窄峰网格分配的误差研究",
+      "sha256": "2f10453161e529752c66e9fd8999c03221b75e175d1bdc51f2927bbe144dc619",
+      "headings": [
+        "边界与窄峰网格分配的误差研究",
+        "执行前冻结的设计",
+        "测试目的、环境与边界",
+        "实测结果",
+        "误差原因及本轮确立的边界",
+        "正确性、来源与验收范围",
+        "复现与后续实质工作",
+        "合同进程另设NUMBA_NUM_THREADS=4；数值入口自行设4线程，原环境变量未设。",
+        "操作前协作记录"
+      ],
+      "characters": 6750
+    },
+    {
+      "path": "docs/stages/2026-10-17-tail-repair.md",
+      "title": "完整训练颜色约束与局部节点修复",
+      "sha256": "3f05a783035cd8f795bd95b93c03368572dfd1c16f93580344dec47655ad2faa",
+      "headings": [
+        "完整训练颜色约束与局部节点修复",
+        "冻结方案",
+        "测试目的与实际环境",
+        "已执行结果：5个节点修复14种训练反例",
+        "权衡及原因：共享顶点扩大了局部修复的影响",
+        "正确性、输入绑定修补与源码来源",
+        "复现、交付与未完成项"
+      ],
+      "characters": 6067
+    },
+    {
+      "path": "docs/stages/2026-10-17-working-set.md",
+      "title": "尾部反馈工作集的同中心受控比较",
+      "sha256": "e72915095a8421b61de152bf1871e00d87fdfa965caf63bbdc7ce6c95397fc79",
+      "headings": [
+        "尾部反馈工作集的同中心受控比较",
+        "问题与单一实验范围",
+        "实现与独立正确性",
+        "测试目的、环境和复现",
+        "python使用artifacts/error-study-py312/Scripts/python.exe，设置上述UTF8/线程环境。",
+        "移除NUMBA_NUM_THREADS，由入口设4。",
+        "协作与边界",
+        "冻结实验后的解释范围",
+        "同中心双箱结果：本次替换没有收益",
+        "误差原因：探针收益与可补偿能力分离",
+        "终态、验证与归档"
+      ],
+      "characters": 5946
+    },
+    {
+      "path": "docs/stages/2026-10-18-cinema-rounded.md",
+      "title": "Cinema末级的真实到达分布与整数精化",
+      "sha256": "45a17c201d9410db503941b9a39c602a71056955cc5e102fb627aa9ce848be73",
+      "headings": [
+        "Cinema末级的真实到达分布与整数精化",
+        "本阶段要解决什么",
+        "冻结的做法",
+        "怎样判断有进展",
+        "环境、验证目的与交付边界",
+        "首轮实际结果",
+        "第二轮：保住整链大误差，再争取均值和p99",
+        "第二轮完整验收：mean与p99同时改善",
+        "为什么下一步需要改前面阶段"
+      ],
+      "characters": 5587
+    },
+    {
+      "path": "docs/stages/2026-10-18-joint-grid.md",
+      "title": "联合网格与节点的精度研究",
+      "sha256": "e8795f1ad1ee0c68659ab87bf1a62f8f0afa95e6be98c4017a6d05895ff47c6f",
+      "headings": [
+        "联合网格与节点的精度研究",
+        "目标与依据",
+        "实际改动",
+        "测试目的、环境与边界",
+        "当前结果",
+        "第二批：已有完整验收的改善",
+        "第三批：针对采样差距继续研究，尚未终验",
+        "第四批：同方法扩到Lomo，未入围"
+      ],
+      "characters": 4626
+    },
+    {
+      "path": "docs/stages/2026-10-18-rounded-grid.md",
+      "title": "新网格上的真实RGB8加权整数精化",
+      "sha256": "4999cc0602f2ea10392b2923363af3d8629adb33d8820ef108ea7a9df3bec991",
+      "headings": [
+        "新网格上的真实RGB8加权整数精化",
+        "目的与已有工作",
+        "变更与冻结范围",
+        "测试目的、环境与记录",
+        "当前结果和限制",
+        "第二批：消除训练照片测度的抽样近似",
+        "第三批：只试一个照片优先的质量点，未入围",
+        "后续：用已有强尾部网格检验不同解的可能性",
+        "冻结研究候选的独立完整验证"
+      ],
+      "characters": 3976
+    },
+    {
+      "path": "docs/stages/2026-10-19-axis-calibration.md",
+      "title": "单调坐标校准：让插值权重适应真实RGB8阈值",
+      "sha256": "297ccda3bbde6cd5f3941dfc8e5ba8f023930e9ce09638fd28add8222fa77f0d",
+      "headings": [
+        "单调坐标校准：让插值权重适应真实RGB8阈值",
+        "为什么改这个",
+        "冻结方案",
+        "执行与验证口径",
+        "实际结果：达到原门禁，完整验收通过"
+      ],
+      "characters": 3400
+    },
+    {
+      "path": "docs/stages/2026-10-19-calibrated-nodes.md",
+      "title": "在校准坐标上继续降低首级量化误差",
+      "sha256": "e58b30431a3cd280e5fbd0c78de519ecf1f9b8c69130fcba0c661b7040feef6b",
+      "headings": [
+        "在校准坐标上继续降低首级量化误差",
+        "实际结果：没有入围，不执行完整验收"
+      ],
+      "characters": 2121
+    },
+    {
+      "path": "docs/stages/2026-10-19-calibrated-performance.md",
+      "title": "精确17³控制链的同机速度与内存比较",
+      "sha256": "4cb01f72d40150575e2667cbc4cb331aa1024068620a5128511bfe181820843a",
+      "headings": [
+        "精确17³控制链的同机速度与内存比较",
+        "实际结果：容量下降，速度按两个参照分开解释"
+      ],
+      "characters": 2146
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-archive-bytes.md",
+      "title": "测量档案原字节交付修正",
+      "sha256": "a98ea45d72b5e1a488f4c56668823d465002fca8a94d4c9965eb2ee812bfb7b6",
+      "headings": [
+        "测量档案原字节交付修正"
+      ],
+      "characters": 935
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-continuous-floor.md",
+      "title": "固定分通道几何的连续节点空间诊断",
+      "sha256": "d164e46d35cd41ff13e43703d909ff2f12e1578dc695c36d5c3abbf982655c45",
+      "headings": [
+        "固定分通道几何的连续节点空间诊断"
+      ],
+      "characters": 1278
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-frequency-transfer.md",
+      "title": "两张固定照片的频数与阶段归因",
+      "sha256": "864f8ce00d7f7dcafa1f845c86de51729e69bfa6ab3779f2b247d1a991ea4ca4",
+      "headings": [
+        "两张固定照片的频数与阶段归因"
+      ],
+      "characters": 940
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-global-nodes.md",
+      "title": "固定分通道几何的单次全局节点提议",
+      "sha256": "c30d4a0f0c83971bdfe3e490f611580798f7e7d8af28de6438c98bf66adf464d",
+      "headings": [
+        "固定分通道几何的单次全局节点提议"
+      ],
+      "characters": 950
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-joint-nodes.md",
+      "title": "固定分通道几何的一次RGB联合节点研究",
+      "sha256": "2ff3e6577b844ca0b03720ca4d61b022fdebdc468eb1f7853d64e277d8e3ac7b",
+      "headings": [
+        "固定分通道几何的一次RGB联合节点研究"
+      ],
+      "characters": 808
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-native.md",
+      "title": "分通道坐标：精度收益、原生落地与实际代价",
+      "sha256": "0cb17c051ca0f126ef26c65baaaf653a7e44ef77668cfdc218436a94139c30d0",
+      "headings": [
+        "分通道坐标：精度收益、原生落地与实际代价",
+        "当前结果",
+        "实现方面",
+        "正确性及四级范围",
+        "内存、环境和复现"
+      ],
+      "characters": 4021
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-runtime-reuse.md",
+      "title": "节点读取复用的受控实验",
+      "sha256": "d2a9c3a03a278285d9872b41d8c22a88b3df367607d7e9033e888f69240304d0",
+      "headings": [
+        "节点读取复用的受控实验"
+      ],
+      "characters": 1984
+    },
+    {
+      "path": "docs/stages/2026-10-19-channel-runtime-specialized.md",
+      "title": "固定四级分通道首级的AVX2专门化候选",
+      "sha256": "e9a837465dd6dc292e1638b165ba2b6bcf29563971d3f89a16b6a150dc9930f4",
+      "headings": [
+        "固定四级分通道首级的AVX2专门化候选"
+      ],
+      "characters": 4369
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-cap-anchor-diagnosis.md",
+      "title": "f139照片max退化的最小解释",
+      "sha256": "35bf320ab264a081568a0e28bc0dc82f5b8dc9486a17331c2d060ef336084630",
+      "headings": [
+        "f139照片max退化的最小解释"
+      ],
+      "characters": 672
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-channel-suffix-coordinates.md",
+      "title": "Cinema首级分输出坐标九块研究",
+      "sha256": "f9fdcd74ce3efe3f042ca9bc0254ef74bb9cb224a2e3ff73bca45edf84addb51",
+      "headings": [
+        "Cinema首级分输出坐标九块研究"
+      ],
+      "characters": 950
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-channel-suffix-joint-nodes.md",
+      "title": "Cinema固定新坐标的单轮RGB联合节点耦合",
+      "sha256": "8052ddd3306128340af8b4b02cbec5d72c9055b34f74ff2f57d1c7412ee22d94",
+      "headings": [
+        "Cinema固定新坐标的单轮RGB联合节点耦合"
+      ],
+      "characters": 947
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-current-anchor-accept.md",
+      "title": "当前锚点候选的完整准确性与实际四级成本",
+      "sha256": "56187f9113dfda8ae35ac09f3ed06bfd828391e0b0bbed6aa277e181640c5e36",
+      "headings": [
+        "当前锚点候选的完整准确性与实际四级成本"
+      ],
+      "characters": 2911
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-current-anchor.md",
+      "title": "Cinema当前已验收基线锚定的约束修正",
+      "sha256": "e36d47b5c77cfaadab8184d0d73d2a508a55817a23e356b09e9ecb266603e7fb",
+      "headings": [
+        "Cinema当前已验收基线锚定的约束修正"
+      ],
+      "characters": 1005
+    },
+    {
+      "path": "docs/stages/2026-10-19-cinema-prefix.md",
+      "title": "Cinema前级：减少量化混叠，同时保住已经取得的精度",
+      "sha256": "480e448b42658ea46975405eebe8754c1da680e758e57707a526f01f59dd0cd8",
+      "headings": [
+        "Cinema前级：减少量化混叠，同时保住已经取得的精度",
+        "要解决什么",
+        "本轮具体方法",
+        "冻结与验收",
+        "第一轮实际结果：本级改善不等于整链改善",
+        "第二轮：让同一本级标签承担后缀保持度量",
+        "第三轮：只增加一个有训练依据的照片质量点"
+      ],
+      "characters": 4252
+    },
+    {
+      "path": "docs/stages/2026-10-19-emerald-calibrated.md",
+      "title": "Emerald Malaise：17³模型兑现精确校准",
+      "sha256": "03d6e0fec74b73d0d1e2fe9cdb0562554d84c80afbda4ce546342a15bdb30ce0",
+      "headings": [
+        "Emerald Malaise：17³模型兑现精确校准"
+      ],
+      "characters": 3047
+    },
+    {
+      "path": "docs/stages/2026-10-19-exact-axis.md",
+      "title": "在相同坐标范围内搜索全部舍入事件",
+      "sha256": "cdb8a4b8a321f8fe594c14d129ead241696f67bb0a547158f468b74d5c024188",
+      "headings": [
+        "在相同坐标范围内搜索全部舍入事件",
+        "实际结果：同范围搜索已经接近平台"
+      ],
+      "characters": 2091
+    },
+    {
+      "path": "docs/stages/2026-10-19-filmic-calibration.md",
+      "title": "Filmic06：补偿整数节点的坐标误差",
+      "sha256": "cb3dbc62adf845f98239c9e84927a538dceab8b60258a76091e1b60b8297489f",
+      "headings": [
+        "Filmic06：补偿整数节点的坐标误差"
+      ],
+      "characters": 1172
+    },
+    {
+      "path": "docs/stages/2026-10-19-filmic-chain-calibrated.md",
+      "title": "将解析校准接入统一入口并验证四级链",
+      "sha256": "ed25050588bba75080735864f8fbed4f7e5ba6a4e42a4b28749145a5071c47ad",
+      "headings": [
+        "将解析校准接入统一入口并验证四级链",
+        "实际结果：原链已经精确，停止完整验收"
+      ],
+      "characters": 2319
+    },
+    {
+      "path": "docs/stages/2026-10-19-filmic-direct-monotone.md",
+      "title": "Filmic06：去掉保守搜索界后17³精确恢复",
+      "sha256": "81b890cb5621084a2264419eb7423d0a7a7962045449dd3edd1c609f1742de0e",
+      "headings": [
+        "Filmic06：去掉保守搜索界后17³精确恢复"
+      ],
+      "characters": 888
+    },
+    {
+      "path": "docs/stages/2026-10-19-filmic-isometric-chain.md",
+      "title": "用等距后缀核对四级精度改善",
+      "sha256": "53020bb8d35e5bbe2d02964fbac89479d91475616c3a50ceaa8a0471f106593c",
+      "headings": [
+        "用等距后缀核对四级精度改善",
+        "完整验收结果"
+      ],
+      "characters": 2375
+    },
+    {
+      "path": "docs/stages/2026-10-19-lomo-rounded.md",
+      "title": "Lomo：真实RGB8全节点精化与完整训练频数",
+      "sha256": "6ddf07483339c3cb2173ba1d99befce829442eb5e859854ac74131d5c49fa315",
+      "headings": [
+        "Lomo：真实RGB8全节点精化与完整训练频数"
+      ],
+      "characters": 1414
+    },
+    {
+      "path": "docs/stages/2026-10-19-precision-checkpoint.md",
+      "title": "凌晨精度研究检查点",
+      "sha256": "cbac10508d6a1db7c4c1e766b61573fd58e071cb7c370fce2c6b35f95fd3a202",
+      "headings": [
+        "凌晨精度研究检查点",
+        "已取得的实际收益",
+        "难例的现状与原因",
+        "环境、证据与剩余事项"
+      ],
+      "characters": 2075
+    },
+    {
+      "path": "docs/stages/2026-10-19-precision-latest.md",
+      "title": "当前精度结果与真正的瓶颈",
+      "sha256": "017b4a82aad6b0ecb85ae80be1cfa77a839411554be3f2dfb850dbf101cc0580",
+      "headings": [
+        "当前精度结果与真正的瓶颈"
+      ],
+      "characters": 2565
+    },
+    {
+      "path": "docs/stages/2026-10-19-precision-performance.md",
+      "title": "三版已验收模型的同机运行成本比较",
+      "sha256": "47a75aa8910a053450079a50314945b84cb8551a12b293e6d21bc623d923ba26",
+      "headings": [
+        "三版已验收模型的同机运行成本比较",
+        "实际测量"
+      ],
+      "characters": 2276
+    },
+    {
+      "path": "docs/stages/2026-10-19-precision-pr-delivery.md",
+      "title": "精度与后端优化的统一 PR 交付说明",
+      "sha256": "d972431ccc791d6f3b90b931dba3e2d7efa6dfbe00bf225871696bb2de77bfef",
+      "headings": [
+        "精度与后端优化的统一 PR 交付说明",
+        "本次具体完成了什么",
+        "验证目的、环境与证据",
+        "相关意见的处理状态",
+        "主要提交与尚未完成事项"
+      ],
+      "characters": 4824
+    },
+    {
+      "path": "docs/stages/2026-10-19-separable-calibration-api.md",
+      "title": "精确单调坐标入口：能精确才接收",
+      "sha256": "6c7f0e0100924b9d47eb6c75f10ec730a98cce67d225f69c1444b231b9902e3e",
+      "headings": [
+        "精确单调坐标入口：能精确才接收"
+      ],
+      "characters": 1087
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-alternating-integer.md",
+      "title": "Velvia：直接整数目标的节点与坐标交替",
+      "sha256": "addaa9c82914551619ee851792a06e1569f5ff1534e2c454c53b4b9aa56c66af",
+      "headings": [
+        "Velvia：直接整数目标的节点与坐标交替",
+        "实际结果"
+      ],
+      "characters": 1857
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-channel-blocks.md",
+      "title": "固定分通道坐标的整块节点平移",
+      "sha256": "1df67075dd96eae507a1f081bf23cf33206618c0069c197a88ccba21561b9834",
+      "headings": [
+        "固定分通道坐标的整块节点平移",
+        "环境、目的与复现"
+      ],
+      "characters": 1916
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-channel-coordinates-accept.md",
+      "title": "分通道坐标的完整精度验收通过",
+      "sha256": "5f9ff46e4434feaffb43a22a1025f5c0f3bf62a37363c476b383cc4c6aa5fd2a",
+      "headings": [
+        "分通道坐标的完整精度验收通过"
+      ],
+      "characters": 1075
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-channel-coordinates.md",
+      "title": "分输出通道坐标的唯一候选入围",
+      "sha256": "173e9c494ff15d8d7deb035f76c17ed4223020a95c36ec740898798991f8760f",
+      "headings": [
+        "分输出通道坐标的唯一候选入围"
+      ],
+      "characters": 953
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-channel-nodes.md",
+      "title": "固定分通道坐标的单轮节点精化",
+      "sha256": "9dc26be4c57e8f7a9eba3d7a3b26b043cbadd15f4d2a85d2b958fe7c24d9a5d8",
+      "headings": [
+        "固定分通道坐标的单轮节点精化"
+      ],
+      "characters": 1029
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-cubic-lagrange.md",
+      "title": "唯一Q16 cubic Lagrange基研究",
+      "sha256": "3070e75c922d5cf6ae2a1eef028af3b2ab04b72f0699cb770a168e1e5298d750",
+      "headings": [
+        "唯一Q16 cubic Lagrange基研究"
+      ],
+      "characters": 717
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-error-mass.md",
+      "title": "Velvia残差分布：均值和尾部需要分别处理",
+      "sha256": "ae831af6b3a66ccac87d1b263792c6bfcd69fb29a309d0e0050dd02e6bccd142",
+      "headings": [
+        "Velvia残差分布：均值和尾部需要分别处理"
+      ],
+      "characters": 852
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-exact-axis.md",
+      "title": "Velvia：用坐标自由度处理剩余量化误差",
+      "sha256": "dff1e668c69aa5df331cf51d9d3ab5bc872b93d7b2be53878f5ac7ece54b104f",
+      "headings": [
+        "Velvia：用坐标自由度处理剩余量化误差",
+        "实际结果：不入围，停止该方向的有限搜索"
+      ],
+      "characters": 1843
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-fixed-tetra-bound.md",
+      "title": "Velvia固定坐标表达能力的严格证据",
+      "sha256": "b8501c631582cf2c7fec94b9b7f4f569d6725adfd6096185021e122b15c3017e",
+      "headings": [
+        "Velvia固定坐标表达能力的严格证据"
+      ],
+      "characters": 897
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-guarded-pair.md",
+      "title": "Velvia共享节点协同调整：逐色包络下的固定4+1方案",
+      "sha256": "24e16bdb10086ec00e98adf2d4d930a959d4bd7e1cf0a29a4f23bc7ed3b45c67",
+      "headings": [
+        "Velvia共享节点协同调整：逐色包络下的固定4+1方案",
+        "实际结果"
+      ],
+      "characters": 2104
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-interpolation.md",
+      "title": "Velvia插值误差归因",
+      "sha256": "ae6a6317d1e2b230817b28d15cb676fc4e182231d57b8d7e7de0b5db77f6fc42",
+      "headings": [
+        "Velvia插值误差归因"
+      ],
+      "characters": 333
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-matched-operators.md",
+      "title": "Velvia匹配拟合的算子归因",
+      "sha256": "386142b84f364d331e5dc064c71516b070139c48aac26a7d0dd1375fd65e2317",
+      "headings": [
+        "Velvia匹配拟合的算子归因"
+      ],
+      "characters": 825
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-monotone-dp.md",
+      "title": "完整单元内的单调坐标DP",
+      "sha256": "357899f099203ef65c5f2b47439ac8c05c487ecab541ac9c14334b06b9efa862",
+      "headings": [
+        "完整单元内的单调坐标DP",
+        "实际结果"
+      ],
+      "characters": 2130
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-output-clipping.md",
+      "title": "Velvia误差是否主要出在裁剪附近",
+      "sha256": "05f4af95b5395c729166d8d2bfc45764b4128b464cd33c1df07639f29a7ba118",
+      "headings": [
+        "Velvia误差是否主要出在裁剪附近"
+      ],
+      "characters": 759
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-photo-priority.md",
+      "title": "Velvia照片均值：一个固定测度取舍点",
+      "sha256": "c7023e861ff2fa5fa2da5fc81118441efcf44dda4b577dbbda38258daad9001a",
+      "headings": [
+        "Velvia照片均值：一个固定测度取舍点",
+        "实际结果"
+      ],
+      "characters": 1640
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-r-reflection.md",
+      "title": "唯一R反射改变四面体划分的负结果",
+      "sha256": "90c43d6583e027ccb711b862e7027a0d14c5a262ea5b75b6f4b07018a4c2d5e3",
+      "headings": [
+        "唯一R反射改变四面体划分的负结果"
+      ],
+      "characters": 808
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-rgb-joint.md",
+      "title": "Velvia单节点三个通道同时调整",
+      "sha256": "8878b85bcf695d5578b969d35df37d26c6e425c207461cb755a3cca1485a97f8",
+      "headings": [
+        "Velvia单节点三个通道同时调整"
+      ],
+      "characters": 2103
+    },
+    {
+      "path": "docs/stages/2026-10-19-velvia-rounding-interval.md",
+      "title": "Velvia舍入区间目标：固定设计的连续协同提议",
+      "sha256": "ae2d66320379c2619ffee5900403a18f21d8550fcc1585e2a7c3d20fa5999ebc",
+      "headings": [
+        "Velvia舍入区间目标：固定设计的连续协同提议",
+        "实际结果与失败项"
+      ],
+      "characters": 2208
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-axis-preweight-static.md",
+      "title": "共享轴地址预计算：少了乘法，完整静态成本反而上升",
+      "sha256": "ebe2c4cb93bde3fadb87cb32aa34ff4783ed95d7175ff74448d35327e0bbf0c8",
+      "headings": [
+        "共享轴地址预计算：少了乘法，完整静态成本反而上升",
+        "准备阶段预计算了什么",
+        "完整生成代码与停止依据",
+        "两项结构剖面决定下一步"
+      ],
+      "characters": 3622
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-cache-hints.md",
+      "title": "修订38—42：精确缓存访问与300%吞吐研究",
+      "sha256": "9c3f5d8767516e8b17d6fbd05bc71477c31a36458d5da4635c0d47fc8e0714b3",
+      "headings": [
+        "修订38—42：精确缓存访问与300%吞吐研究",
+        "本阶段改动及取舍",
+        "实际环境和判定口径",
+        "正确性与失败保留",
+        "计数器研究与环境限制",
+        "审计、复现与交付"
+      ],
+      "characters": 8193
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-cache-range-static.md",
+      "title": "缓存范围检查的数学简化：静态收益不足，未执行数值或性能",
+      "sha256": "12d873fdda09d884713db4b13e8e2ab8d68cf859cae84b3c88ef2af7fcb83f22",
+      "headings": [
+        "缓存范围检查的数学简化：静态收益不足，未执行数值或性能",
+        "证明条件与实现",
+        "静态检查与停止决定"
+      ],
+      "characters": 2663
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-clang-static.md",
+      "title": "同源Clang编译：静态信号不一致，未进入运行验收",
+      "sha256": "d950d0ca2e135b9025cece450d083775c62f195bfb6839c5bd77fdbef14c993a",
+      "headings": [
+        "同源Clang编译：静态信号不一致，未进入运行验收"
+      ],
+      "characters": 1333
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-compact-cache-static.md",
+      "title": "R连续半字缓存：工作集更小，静态解码成本仍未达门槛",
+      "sha256": "a13ffa03eec1326ebac40a116062503a3e87c8d988b943d0cc8374433f65250d",
+      "headings": [
+        "R连续半字缓存：工作集更小，静态解码成本仍未达门槛",
+        "精确编码与代码组织",
+        "固定剖面与所有路径的静态结果",
+        "交付与范围"
+      ],
+      "characters": 2902
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-coordinate-locality.md",
+      "title": "坐标读取与节点局部性：四个方向在实现前停止",
+      "sha256": "b9ae6a196be3eec6e5f9fe0f06d4793619fc0705c01fb2056344c90ab088ef26",
+      "headings": [
+        "坐标读取与节点局部性：四个方向在实现前停止",
+        "想省掉什么，为什么没有继续",
+        "环境、覆盖与复现"
+      ],
+      "characters": 3280
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-delta-cache.md",
+      "title": "无损坐标差与已有缓存组合：本机配对耗时再降约21%至23%",
+      "sha256": "e34c4fc0d284c6bc1717b3238be169de1970ea8c7b22aa3296da241081535da9",
+      "headings": [
+        "无损坐标差与已有缓存组合：本机配对耗时再降约21%至23%",
+        "静态潜力与集中正确性",
+        "唯一一次性能比较",
+        "复现与限制"
+      ],
+      "characters": 3376
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-delta16.md",
+      "title": "有符号坐标差压缩：输出不变，本机耗时下降约8%至12%",
+      "sha256": "d0869a464a6d3a419f4b8d9e8e3659f65f5fb42be1a3bc31e7db96811fea021c",
+      "headings": [
+        "有符号坐标差压缩：输出不变，本机耗时下降约8%至12%",
+        "静态依据与测试冻结",
+        "正确性与性能",
+        "复现与边界"
+      ],
+      "characters": 3017
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-domain-proof.md",
+      "title": "先证明不会出界，再省去缓存范围判断",
+      "sha256": "2eedd1544d7de66746df04bf706dafb41c0dcdbaf250b95f55222713bc1c88e2",
+      "headings": [
+        "先证明不会出界，再省去缓存范围判断",
+        "检查为什么可以提前做",
+        "保留第一版失败，隔离新路径",
+        "一次集中正确性与严格比较",
+        "复现与目标端边界"
+      ],
+      "characters": 4366
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-domain-signed.md",
+      "title": "获证快路径的正负斜率与四种网格补验",
+      "sha256": "2c2e95c2a944d83eb912a3dda77b2b0d1ee51066608e3f953656baa58c8ba2a2",
+      "headings": [
+        "获证快路径的正负斜率与四种网格补验"
+      ],
+      "characters": 1212
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-exception.md",
+      "title": "精确例外池：相对修订22再提升超过50%吞吐",
+      "sha256": "c177fe9fed68f13138e539b9ab7c30a9a56ed7c0622f83b90c9d629558ee6246",
+      "headings": [
+        "精确例外池：相对修订22再提升超过50%吞吐",
+        "优化内容",
+        "唯一同场性能比较",
+        "准备成本与容量",
+        "正确性与移植验证",
+        "文件、复现与协作"
+      ],
+      "characters": 7726
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-float.md",
+      "title": "精确binary32四权重：保持字节一致，未获本机加速",
+      "sha256": "44f9375040e07c52407e957536f7adcd58f671b654714f0a80393ece9568feef",
+      "headings": [
+        "精确binary32四权重：保持字节一致，未获本机加速",
+        "一次验证与性能比较",
+        "交付与下一步"
+      ],
+      "characters": 1966
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-instruction-study.md",
+      "title": "中值网络、EVEX-256与坐标地址：五个候选的静态停止结果",
+      "sha256": "949682a9d2ebcc5292c73a928e57fe8a86550f38c6d317eae9c803b861af7909",
+      "headings": [
+        "中值网络、EVEX-256与坐标地址：五个候选的静态停止结果"
+      ],
+      "characters": 7021
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-layout-server.md",
+      "title": "给Skylake准备缓存布局验收包：Linux正确性通过，正式性能未执行",
+      "sha256": "e09f8f2e55a379d044df4995eb891b1073a87f858863f09c9fedc9de1cf18138",
+      "headings": [
+        "给Skylake准备缓存布局验收包：Linux正确性通过，正式性能未执行",
+        "入口具体做什么",
+        "实际环境、目的与覆盖",
+        "传输与复现"
+      ],
+      "characters": 3217
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-load-packing.md",
+      "title": "相对修订23的三倍目标：字典、载荷、输出与硬件计数",
+      "sha256": "11f057121be5948ccc3dbd5a7c8cc62b3539e21b4088a857c906bb48fb7c4885",
+      "headings": [
+        "相对修订23的三倍目标：字典、载荷、输出与硬件计数",
+        "路线与完整结果",
+        "环境、绑定修正与保留的失败",
+        "完整域、内存边界与精度",
+        "结构筛选与硬件计数",
+        "归档、复现与协作"
+      ],
+      "characters": 7508
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-madd.md",
+      "title": "两次16位乘加：整数精确，但本机更慢",
+      "sha256": "efbfc10b2aadb08f2800bcd82084cee930660899c729df727e991d8c1f448ba6",
+      "headings": [
+        "两次16位乘加：整数精确，但本机更慢",
+        "验证与结果",
+        "复现与证据"
+      ],
+      "characters": 2878
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-packed-store.md",
+      "title": "缓存命中直接写回：输出不变，实测未通过时间门槛",
+      "sha256": "a4be2293298fd03e7638ad3c5246967c1f79745f12f208f348773f8b3fe2cb98",
+      "headings": [
+        "缓存命中直接写回：输出不变，实测未通过时间门槛",
+        "实现为何保持字节语义",
+        "静态检查完整覆盖两条命中路径",
+        "集中验证的范围与实际结果",
+        "唯一性能比较及停止结论"
+      ],
+      "characters": 3753
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-packed.md",
+      "title": "56位轴表：读取更少，但尚不足以采用",
+      "sha256": "e773e6cd3ded525b4b54b4b278e9e9cbaf4ff476f27458545a9d2212ba736161",
+      "headings": [
+        "56位轴表：读取更少，但尚不足以采用",
+        "实现与数学边界",
+        "集中验证",
+        "唯一性能比较：未过门槛",
+        "文件、复现和后续"
+      ],
+      "characters": 3995
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-packet-restore.md",
+      "title": "用小包和旧数据恢复同一份服务器输入",
+      "sha256": "920c633deab0026009e6975c05dd33c2335dd00b834878ea93371506568b8756",
+      "headings": [
+        "用小包和旧数据恢复同一份服务器输入"
+      ],
+      "characters": 1295
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-palette.md",
+      "title": "精确调色板编译：相对修订16的吞吐提升",
+      "sha256": "e91c3258daefc379e9e175aa9f38a28cae3bbcabe71e4b5c62bddaf3d387079b",
+      "headings": [
+        "精确调色板编译：相对修订16的吞吐提升",
+        "原理与适用范围",
+        "性能结果与代价",
+        "精度、合同与可移植性",
+        "复现与交付"
+      ],
+      "characters": 6890
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-prefix-split.md",
+      "title": "首级与共享后缀只拆一次：单线程改善，四线程未获加速",
+      "sha256": "c7ee7421f3249422e76ec1a5592d24e5acdf7ae740ec4ab8fb6735138f39ab99",
+      "headings": [
+        "首级与共享后缀只拆一次：单线程改善，四线程未获加速",
+        "一次集中验证"
+      ],
+      "characters": 1960
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-r-contiguous.md",
+      "title": "调整缓存排列：中位耗时改善，单进程回退保护未通过",
+      "sha256": "ba264d9ecedfa5376552a475ec2c7854c35a2372bc272e699c2e2be32ee5c999",
+      "headings": [
+        "调整缓存排列：中位耗时改善，单进程回退保护未通过",
+        "从数据找原因，而非只缩小表",
+        "实现、证明与静态比较器修正",
+        "一次集中正确性与唯一性能比较",
+        "交付与后续"
+      ],
+      "characters": 4063
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-restrict-static.md",
+      "title": "不重叠内存域与restrict：少读元数据，仍不足以进入实测",
+      "sha256": "3a73c540da5a0986d8abc6c5ff02cd9143221bef012fef1d2e5056c2a95f6f4b",
+      "headings": [
+        "不重叠内存域与restrict：少读元数据，仍不足以进入实测",
+        "为什么需要先检查不重叠",
+        "一次构建与两条完整循环的结果",
+        "复现、交付与后续"
+      ],
+      "characters": 3465
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-runtime-delivery.md",
+      "title": "时间性能优化：四个候选的阶段交付",
+      "sha256": "b388f9a5f2980283f896cbb14efc1228e4178d75cf6dc8e8bc194f8f3f6e2750",
+      "headings": [
+        "时间性能优化：四个候选的阶段交付",
+        "这一阶段做了什么",
+        "验证分别证明什么",
+        "协作意见与交付边界",
+        "接下来优先做什么",
+        "后续三项检查与候选"
+      ],
+      "characters": 5482
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-scalar-gather-static.md",
+      "title": "软件gather与通道几何复用：先排除不成立的提速前提",
+      "sha256": "5b759e1ea9344cbf51697f0dfb20e87d945d848727f281f300aa2af76c061d4c",
+      "headings": [
+        "软件gather与通道几何复用：先排除不成立的提速前提",
+        "为什么研究软件gather",
+        "实际生成代码与停止决定",
+        "通道几何能否共用"
+      ],
+      "characters": 2804
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-server-entry.md",
+      "title": "服务器固定入口：Linux正确性已验，目标机器性能待测",
+      "sha256": "a47e3742c1b60c21a2681136ab036a131e532916929d3dae25414369437a24b3",
+      "headings": [
+        "服务器固定入口：Linux正确性已验，目标机器性能待测",
+        "做了哪些工作",
+        "一次集中验证",
+        "复现与证据"
+      ],
+      "characters": 3487
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-server-matrix.md",
+      "title": "四后端同场比较：缓存通过本机门槛，组合仍有退化样本",
+      "sha256": "b2e2e8c0fe2a3ab923adcb529b5358bcce0a839fb831cf15350c64c5d646f2d3",
+      "headings": [
+        "四后端同场比较：缓存通过本机门槛，组合仍有退化样本",
+        "改了哪些东西",
+        "输入、环境与计时范围",
+        "集中正确性证明",
+        "直接比较与失败门槛",
+        "复现、证据与下一步"
+      ],
+      "characters": 5578
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-snapshot.md",
+      "title": "批入口描述符值快照：静态阶段停止",
+      "sha256": "0c0c6b369a9f50c3ad00a61744c40454d22a63ea56a56f33f9089ee23c8e5bd2",
+      "headings": [
+        "批入口描述符值快照：静态阶段停止"
+      ],
+      "characters": 1380
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-stage-major.md",
+      "title": "按阶段遍历像素块：中位耗时下降，单进程退化超限",
+      "sha256": "96c14041ad416094f5ca38ebad770365d4c39b6cbe6fa95ad21ef57d69739a1f",
+      "headings": [
+        "按阶段遍历像素块：中位耗时下降，单进程退化超限",
+        "一次验证与时间对照"
+      ],
+      "characters": 1989
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-suffix-cache.md",
+      "title": "有界精确后缀缓存：本机映射耗时下降约52%",
+      "sha256": "0c9952232923900800f745b4bcb01108ac18f07bbc6ee7b87f2cb01b2e2ba925",
+      "headings": [
+        "有界精确后缀缓存：本机映射耗时下降约52%",
+        "范围如何确定",
+        "正确性与可移植性",
+        "一次性能比较",
+        "复现与限制"
+      ],
+      "characters": 3649
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-threefold.md",
+      "title": "相对修订23的三倍目标：修订24—30研究检查点",
+      "sha256": "2c41917770b2bba274d894770808efeeefd6ff3e5202504a01711ace50b1ac8d",
+      "headings": [
+        "相对修订23的三倍目标：修订24—30研究检查点",
+        "七条路线及结果",
+        "计时范围与新输出接口",
+        "正确性、精度及限制",
+        "证据、复现与协作"
+      ],
+      "characters": 6597
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-uniform-suffix-static.md",
+      "title": "首级同色包只算一次后缀：普通包的代价抵消了收益",
+      "sha256": "3aa019b271c6a8f5eaed74b8effa0f15a5f9441a8ac366d3df5aa6e85ae08ce1",
+      "headings": [
+        "首级同色包只算一次后缀：普通包的代价抵消了收益",
+        "算法与代码组织",
+        "完整CFG分析及实际静态成本",
+        "交付和下一步"
+      ],
+      "characters": 2744
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-adaptive-dictionary.md",
+      "title": "双表示分派与首次受控长批次失败",
+      "sha256": "794c39447014c413a4dcfa708c24132b09dc649c802be90ae618b9b3f03c3f23",
+      "headings": [
+        "双表示分派与首次受控长批次失败"
+      ],
+      "characters": 4591
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-andn-normal.md",
+      "title": "有效多线程原地普通写",
+      "sha256": "1dbf02eb6727359e0a281fe560e4575944d02438b32a814ab8a9c002e2b4cdf7",
+      "headings": [
+        "有效多线程原地普通写"
+      ],
+      "characters": 5134
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-andn-split.md",
+      "title": "ANDN内存输入与分入口编译的精确运行时研究",
+      "sha256": "f353c386a66054c795c1b7ecaae57ad9c1eed1a35378801e0e103a0afd2f1940",
+      "headings": [
+        "ANDN内存输入与分入口编译的精确运行时研究"
+      ],
+      "characters": 6839
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-block-dictionary.md",
+      "title": "精确块字典：容量减半，单线程依赖成本增加",
+      "sha256": "a4930f5e48826dab4126817dfabb1ce06274321b56c35656853d4809ac624120",
+      "headings": [
+        "精确块字典：容量减半，单线程依赖成本增加"
+      ],
+      "characters": 2579
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-chroma-2op.md",
+      "title": "两指令通道差索引：指令减少但周期未改善",
+      "sha256": "50b245c49600aaecc159f813e9083cd4608006755bda463ebe2c141c0fd2ac22",
+      "headings": [
+        "两指令通道差索引：指令减少但周期未改善"
+      ],
+      "characters": 2091
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-chroma-delta.md",
+      "title": "RGB通道差直表：完整精度通过，周期筛查未过",
+      "sha256": "f721a4083ffba4d86eac0e4017eb8d43dd91d4e4616b0aa64031cd57c446406a",
+      "headings": [
+        "RGB通道差直表：完整精度通过，周期筛查未过",
+        "验证"
+      ],
+      "characters": 2688
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-chroma-scheduling.md",
+      "title": "通道差组合、原地缓存与交错调度：三倍门槛仍未完成",
+      "sha256": "0b1bd3e81922fdf9ea63c0937632bf9dd4f28cdb44949673fefc02384a67bc5a",
+      "headings": [
+        "通道差组合、原地缓存与交错调度：三倍门槛仍未完成"
+      ],
+      "characters": 2981
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-deferred-palette.md",
+      "title": "六十四像素ID先行查表：精度保持，性能回退",
+      "sha256": "0545d63241f9681b144487d3d0580de4f445ad4a4dd011c84787401b835e4b86",
+      "headings": [
+        "六十四像素ID先行查表：精度保持，性能回退"
+      ],
+      "characters": 2033
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-direct-tiles.md",
+      "title": "直接颜色表、二维分块与同源编译器研究",
+      "sha256": "d6d3a8dfefcbf56f2adecd554b379dfa1b2eb9006831dd7280620eec753c6960",
+      "headings": [
+        "直接颜色表、二维分块与同源编译器研究",
+        "改动及静态依据",
+        "环境、精度与完整记录",
+        "档案与复现",
+        "协作与待办"
+      ],
+      "characters": 5896
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-dispatch-diagnostic.md",
+      "title": "修订78的发射槽及队列资源诊断",
+      "sha256": "af64321bc5c4186c77b29512e5ba52e579b4296fc0f964585a449054817b73cd",
+      "headings": [
+        "修订78的发射槽及队列资源诊断"
+      ],
+      "characters": 4482
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-four-thread-diagnostic.md",
+      "title": "四线程逐TID访存诊断",
+      "sha256": "559c4edeb088033c0400db72588e3dd4f8514b951ab6b9699123e9b1bbb1b1da",
+      "headings": [
+        "四线程逐TID访存诊断"
+      ],
+      "characters": 3539
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-g-low-profile.md",
+      "title": "G低字节布局只读筛查",
+      "sha256": "31ede594df58afba28b3370c8f113e355051afa86fc5c3e3ebb60c839a8cf856",
+      "headings": [
+        "G低字节布局只读筛查"
+      ],
+      "characters": 1907
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-id-batch.md",
+      "title": "四项ID先行：单线程过三倍，四线程仍未过线",
+      "sha256": "d1e9fa522f56783947fcd590b37c37991fac03709ae4fd427d44c516c4aff520",
+      "headings": [
+        "四项ID先行：单线程过三倍，四线程仍未过线"
+      ],
+      "characters": 2789
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-inplace-path.md",
+      "title": "原地输出、加载重叠与独立进程评估",
+      "sha256": "42a3a507f6cd725162ad6c3251797c6c6076ae3d94f5813b80afddc51a427f61",
+      "headings": [
+        "原地输出、加载重叠与独立进程评估",
+        "实现及停止依据",
+        "正确性与精度",
+        "三种协议的结果分别保存",
+        "单次画像、失败分析与归档",
+        "协作状态和剩余工作"
+      ],
+      "characters": 7586
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-input-path.md",
+      "title": "线性输入读取与小调色板gather研究",
+      "sha256": "058fa137579fd5698a63e684fed3e398769fed6478a4ee677f9ecf91788f9d88",
+      "headings": [
+        "线性输入读取与小调色板gather研究",
+        "三项独立变量",
+        "环境与精度",
+        "预定筛查与全部负结果",
+        "档案、复现和协作"
+      ],
+      "characters": 6175
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-input256-ordered.md",
+      "title": "分阶段输出与编译器顺序约束",
+      "sha256": "be032b2cebbd2f70572cb34e8dc630bec1809b878b0fa4f1ade3f85d6ffb6970",
+      "headings": [
+        "分阶段输出与编译器顺序约束"
+      ],
+      "characters": 6018
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-input256.md",
+      "title": "单YMM输入组合因热区栈spill停止",
+      "sha256": "81346ff557f91336a789e34176b79068ce464bc6c8e1eb6e91b75c57ae3be202",
+      "headings": [
+        "单YMM输入组合因热区栈spill停止"
+      ],
+      "characters": 2940
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-lookup-overlap.md",
+      "title": "查表等待诊断与输入输出固定组合",
+      "sha256": "6d84ebdb77999e0b07ceb16c62a4057b57790ba247b8e35b81892a21d6608231",
+      "headings": [
+        "查表等待诊断与输入输出固定组合",
+        "诊断与设计",
+        "验证与结果"
+      ],
+      "characters": 3367
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-output-path.md",
+      "title": "稀疏预取与输入输出编排研究",
+      "sha256": "280335ac9c27e8ca9dcebe7a31635f6b72dc4a509dc33e6228d59d40964c7ef5",
+      "headings": [
+        "稀疏预取与输入输出编排研究",
+        "实现与静态依据",
+        "验证环境及结果",
+        "失败记录、档案与复现",
+        "协作检查与后续"
+      ],
+      "characters": 5595
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-pack5.md",
+      "title": "八色五位无损直表：容量缩小但周期显著回退",
+      "sha256": "2fd11a5c56652e8a6aefa50ad21901c0cf8caafaa39512815e6eeaa597438c90",
+      "headings": [
+        "八色五位无损直表：容量缩小但周期显著回退"
+      ],
+      "characters": 2336
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-pair48-input.md",
+      "title": "双像素64位输入读取",
+      "sha256": "7e2d91376d50e18cbc4feb617493ec0b9a365a258c1d2fede151eab757d30535",
+      "headings": [
+        "双像素64位输入读取"
+      ],
+      "characters": 5623
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-prefetchw.md",
+      "title": "写预取的完整精度与受控三倍验收",
+      "sha256": "61a764d280bc4b5489501e97efd904f7bd5c2e2d953f5f88d1550548a66e98fb",
+      "headings": [
+        "写预取的完整精度与受控三倍验收"
+      ],
+      "characters": 4538
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-screen-calibration.md",
+      "title": "同库负对照：单次PMU不足以可靠识别小幅收益",
+      "sha256": "9365cf808e0a009cce1c0596c78d0cf45fcbf130a1cd0eebf1bc3257dae1f542",
+      "headings": [
+        "同库负对照：单次PMU不足以可靠识别小幅收益"
+      ],
+      "characters": 2360
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-thread-joint.md",
+      "title": "多线程缓存策略组合：受控长批次仍未过三倍",
+      "sha256": "f461a77adf1499f318b9a363960e7575ccc180f1aad3599d785ffeb253699fcf",
+      "headings": [
+        "多线程缓存策略组合：受控长批次仍未过三倍"
+      ],
+      "characters": 3766
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-tiles.md",
+      "title": "同容量颜色分块与索引成本研究",
+      "sha256": "b3d7fe755b93621ced6cb49895ca8fcc1c485ac1b5222d85147f6f125bc525ed",
+      "headings": [
+        "同容量颜色分块与索引成本研究",
+        "研究变量与实现",
+        "实际环境与精度验收",
+        "单次计数与停止决定",
+        "复现、协作和交付"
+      ],
+      "characters": 6528
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-tilexy-t0.md",
+      "title": "二维ID布局、四ID先行与普通写组合未通过验收",
+      "sha256": "125a086074766117ead23d665908c47e672991cfd9da53cb32dd5b0d36c525cb",
+      "headings": [
+        "二维ID布局、四ID先行与普通写组合未通过验收"
+      ],
+      "characters": 4579
+    },
+    {
+      "path": "docs/stages/2026-10-23-camera-raw-workflow.md",
+      "title": "三家真实 RAW 的四级 LUT 工作流验证",
+      "sha256": "493e0ddbfba0df71d06069a44fbf7dc96ea7de2cb4ab4816affc58c7f3d00a13",
+      "headings": [
+        "三家真实 RAW 的四级 LUT 工作流验证",
+        "素材与真实解码边界",
+        "四级链路与三种结果",
+        "精度结果与实际快速路径",
+        "环境、覆盖与计时",
+        "输出与复现",
+        "审计与尚未完成的目标"
+      ],
+      "characters": 10280
+    },
+    {
+      "path": "docs/stages/2026-10-23-camera-workflow-gui.md",
+      "title": "真实 RAW 工作流的本地 GUI",
+      "sha256": "ca16ab2604b3ffb12bb14ae0b7338996d9e80a7804e5ac4ac108090c34d46ea7",
+      "headings": [
+        "真实 RAW 工作流的本地 GUI",
+        "已实现的操作",
+        "实际验证与证据",
+        "当前阻塞与未覆盖",
+        "协作与阶段交付"
+      ],
+      "characters": 3690
+    },
+    {
+      "path": "docs/stages/2026-10-23-memory-rom-tiers.md",
+      "title": "同模型精确ROM的六档内存与可移植性研究",
+      "sha256": "7314e31a51769d2b0b386e96862d4f304fd916ebbce833ecdac72cebe4a8457f",
+      "headings": [
+        "同模型精确ROM的六档内存与可移植性研究",
+        "实现与实际容量",
+        "同场性能与六档选择",
+        "RSS、scratch与验证范围",
+        "复现、资料与后续"
+      ],
+      "characters": 6613
+    },
+    {
+      "path": "docs/stages/2026-10-23-p16-speed-prepare-outplace.md",
+      "title": "第16题速度研究：直接编译ID与通用分离输出",
+      "sha256": "bdf8fbe13cfeb4dacf74a960872770bdebc06996b9285b2e0b44c076adb87ace",
+      "headings": [
+        "第16题速度研究：直接编译ID与通用分离输出",
+        "直接编译ID（85）",
+        "通用分离输出（86）",
+        "实际环境、依据与复现"
+      ],
+      "characters": 5704
+    },
+    {
+      "path": "docs/stages/2026-10-23-skylake-base-delta-profile.md",
+      "title": "局部RGB差分与异或地址布局的失败筛查",
+      "sha256": "6f97fccb590ffcc5c8fa3a879c9966394270a59ef37075c51e9b3f5bd35f92b9",
+      "headings": [
+        "局部RGB差分与异或地址布局的失败筛查",
+        "目标与固定方案",
+        "原始结果与事前门槛",
+        "输入身份与环境",
+        "独立审计与归档",
+        "7bit拆平面设想的资源下界",
+        "新增一次相邻通道异或布局筛查",
+        "远端检查与交付"
+      ],
+      "characters": 6644
+    },
+    {
+      "path": "docs/stages/2026-10-23-skylake-brick2-hybrid.md",
+      "title": "修订84：正常块直接RGB，异常整包精确回退",
+      "sha256": "d80c620812ccffc2455f4f35bc1ae41e07ec48c84331f15d31637eda29e276e2",
+      "headings": [
+        "修订84：正常块直接RGB，异常整包精确回退",
+        "机制与资源",
+        "静态与完整正确性",
+        "唯一首轮性能失败",
+        "文件、复现与交付"
+      ],
+      "characters": 6033
+    },
+    {
+      "path": "docs/stages/2026-10-23-skylake-brick2-rgb-base.md",
+      "title": "2³输入块两种RGB差分编码的离线筛查",
+      "sha256": "3f5d014735948b1922120c4dc8f213d024d2ef99928ffa8e2f6e7ef5c158b156",
+      "headings": [
+        "2³输入块两种RGB差分编码的离线筛查",
+        "两种固定编码与判定",
+        "验证、证据与范围"
+      ],
+      "characters": 2838
+    },
+    {
+      "path": "docs/stages/2026-10-23-skylake-recent-rgb1024.md",
+      "title": "精确输入色备忘的离线筛查失败",
+      "sha256": "1ecc71494970fdb726e30bbcc7855159c1f22c93e1a3156aa4ce068eae3aaa64",
+      "headings": [
+        "精确输入色备忘的离线筛查失败",
+        "方案、执行与结果",
+        "证据、独立复核与边界"
+      ],
+      "characters": 2376
+    },
+    {
+      "path": "docs/stages/2026-10-23-tail-nodes.md",
+      "title": "四级真实整数尾部目标：均值与p99改善，max仍未降低",
+      "sha256": "85dc8d36d4721a642328f6bed8f8b18080e4f1a91f726db2c801803cefff94f7",
+      "headings": [
+        "四级真实整数尾部目标：均值与p99改善，max仍未降低"
+      ],
+      "characters": 3294
+    },
+    {
+      "path": "docs/stages/2026-10-23-wsl-memory-budget.md",
+      "title": "WSL内存预算与真实工作流恢复",
+      "sha256": "e4d3dcc732323ffc0de3b4afc760316b78a16afc977904df41be7da95b5cc6c3",
+      "headings": [
+        "WSL内存预算与真实工作流恢复",
+        "已应用的配置与复现",
+        "默认只预览；应用时检查本机GUI无活动任务，备份原始配置并关闭WSL。",
+        "需要本机已恢复的素材/工具及运行中的GUI；每次使用新的输出目录。",
+        "实际结果",
+        "边界与协作记录"
+      ],
+      "characters": 3458
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-arrival-budget.md",
+      "title": "16题：完整联合支撑与已取得均值预算的末级尾部交换",
+      "sha256": "5a057d8bbe8e507efa49fa45dbd85591e3ef06019b5a16696d8a2054859b4c3b",
+      "headings": [
+        "16题：完整联合支撑与已取得均值预算的末级尾部交换",
+        "前缀不可区分组检查",
+        "联合支撑完整压缩",
+        "两个分别冻结的试验",
+        "终验、身份与边界"
+      ],
+      "characters": 3996
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-fixed-prefix-bound.md",
+      "title": "16题：max57的精确前缀下界及局部整数规划负例",
+      "sha256": "8b3f6d2c51256740794e02647dfcdf7f1c8de3b8ab8caa099d3fc3e653e42a40",
+      "headings": [
+        "16题：max57的精确前缀下界及局部整数规划负例",
+        "精确原色对",
+        "局部MILP试验"
+      ],
+      "characters": 1979
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-last-stage.md",
+      "title": "末级联合节点把全域max从√66降到√59",
+      "sha256": "4a2b5849164b3a72d2802f17fb4b55639d610ff5467ef1e0e3ba71e00f27487f",
+      "headings": [
+        "末级联合节点把全域max从√66降到√59"
+      ],
+      "characters": 4193
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-second-nodes.md",
+      "title": "Cinema第二级完整支撑单扫：p99与max同时下降，速度资格尚未通过",
+      "sha256": "18bc3826d757f7e1a4d353899b1ecece241d8a2514a35fb7065815a31bc322f6",
+      "headings": [
+        "Cinema第二级完整支撑单扫：p99与max同时下降，速度资格尚未通过",
+        "目标与边界",
+        "精度结果",
+        "旧87资格损失与未完成事项",
+        "环境、重放与证据"
+      ],
+      "characters": 6416
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-second-refinement.md",
+      "title": "新第二级后的两项末级补充：单扫未降尾部，局部MILP超时",
+      "sha256": "a8ca6bf65e1056d9a3f3954224ddd9fb54d329064206679c54686180d172ba2a",
+      "headings": [
+        "新第二级后的两项末级补充：单扫未降尾部，局部MILP超时",
+        "问题与起点",
+        "末级单扫",
+        "跨parity局部MILP",
+        "环境与重放"
+      ],
+      "characters": 2983
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-training-cycles.md",
+      "title": "四次有界训练尾部扫描：第四轮停滞，p99仍未下降",
+      "sha256": "b84cb81ff702663e0fb77c60cb32c45578f558e987f45b290fa508a05d187284",
+      "headings": [
+        "四次有界训练尾部扫描：第四轮停滞，p99仍未下降"
+      ],
+      "characters": 2229
+    },
+    {
+      "path": "docs/stages/2026-10-24-cinema-training-tail.md",
+      "title": "原60图尾部单扫未降p99，固定前缀覆盖下界未排除目标",
+      "sha256": "af4ead11fe29c782c7135c5050926dc3658676418fbebac9d19352d17385521a",
+      "headings": [
+        "原60图尾部单扫未降p99，固定前缀覆盖下界未排除目标",
+        "先确认固定阈值适用",
+        "十一项预算与有限合同",
+        "实际单扫结果与停止",
+        "固定前三级的覆盖下界",
+        "环境、重放及原件"
+      ],
+      "characters": 3167
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-banked-dictionary.md",
+      "title": "16题内存第十一阶段：连续bank的LE16局部字典",
+      "sha256": "109d67d4988ca904be33ae9214acfcf6066af6b816b111bc91013b91a28cec60",
+      "headings": [
+        "16题内存第十一阶段：连续bank的LE16局部字典",
+        "离线选择及跨bank重复代价",
+        "唯一native实现和真实ABI",
+        "已执行质量与环境",
+        "正式性能与有效性边界",
+        "旧3B的有效反例与推荐范围收缩"
+      ],
+      "characters": 8463
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-clang-c99-store.md",
+      "title": "16题：同一C99源码的通用x64编译器试验",
+      "sha256": "f5705c24a49a2c00c8fd81984d6b82e0f63a3e9222f39d5153f5b0f16ff4be74",
+      "headings": [
+        "16题：同一C99源码的通用x64编译器试验",
+        "同源、工具链与ISA",
+        "正确性与同场吞吐",
+        "内存、可移植边界和证据"
+      ],
+      "characters": 3723
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-color-dictionary.md",
+      "title": "16题内存第十三阶段：RGB32预展开精确块",
+      "sha256": "139b583cdedc7aa30786b4c95acaf0eace51f8e9def8ab7065705001f2cd31a8",
+      "headings": [
+        "16题内存第十三阶段：RGB32预展开精确块",
+        "格式与容量",
+        "已执行质量",
+        "正式性能与失效场次",
+        "新进程RSS与限制",
+        "证据与复现"
+      ],
+      "characters": 5982
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-compact-dictionary.md",
+      "title": "16题：精确16B字典的3B与17bit索引",
+      "sha256": "052439544d66bc244041a148e7c837bd65b972d77fd67fcdfac60e74b7a57039",
+      "headings": [
+        "16题：精确16B字典的3B与17bit索引",
+        "格式、解码与生命周期",
+        "完整域、拒绝和边界",
+        "暂态与首轮同场测量",
+        "旧控制的跨场差异及确认要求",
+        "独立进程RSS与重放"
+      ],
+      "characters": 6289
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-compact-sparse.md",
+      "title": "16题：通用冻结稀疏句柄的无损容量优化",
+      "sha256": "2bfe742c0a48b53a510b170c675b2f3259b1235b3e3876a2c96f1e62123c28f9",
+      "headings": [
+        "16题：通用冻结稀疏句柄的无损容量优化",
+        "表示与生命周期",
+        "正确性证据",
+        "同场吞吐与六档",
+        "容量、暂态与工作集",
+        "重放与证据"
+      ],
+      "characters": 4433
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-dictionary-confirmation.md",
+      "title": "16题：精确字典的预冻结独立确认",
+      "sha256": "32dfc597aa3e77e03f4926e34c70b45b5e90877d8c52be09c28fceeb6b62b83a",
+      "headings": [
+        "16题：精确字典的预冻结独立确认",
+        "预案、技术失败与一次正式执行",
+        "合并8个worker，保留负例",
+        "证据封存"
+      ],
+      "characters": 2659
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-dictionary-drift.md",
+      "title": "16题内存第十二阶段：原3B字典的无干预变动诊断",
+      "sha256": "f306b55056769aaecd537ce16d8fde32d39c16441222b327201b193aec8b464a",
+      "headings": [
+        "16题内存第十二阶段：原3B字典的无干预变动诊断",
+        "事前冻结及实际对象",
+        "按冻结规则的结论",
+        "原件、复算与未完成事项"
+      ],
+      "characters": 3846
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-evidence-overview.md",
+      "title": "16题内存方向：容量、六档与可移植证据索引",
+      "sha256": "e061c20f279f8370ce72b9548a7036b14c10b72fb7bbb8bd2c323b91e29e9428",
+      "headings": [
+        "16题内存方向：容量、六档与可移植证据索引",
+        "固定分母与结论边界",
+        "最新P4同场六乘六矩阵",
+        "保留：palette阶段的同场六乘六矩阵",
+        "无损表示的实际容量与失败保留",
+        "小容量通用句柄：另一适用域",
+        "可移植性究竟验证到哪一步",
+        "容量、暂态和RSS不可混用"
+      ],
+      "characters": 9563
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-le16-block1024.md",
+      "title": "16题内存第十四阶段：固定1024B块的LE16 map",
+      "sha256": "95ddfe2f0955b606d8a559f135eda64f95d197980b00829d8ff99264c9570e99",
+      "headings": [
+        "16题内存第十四阶段：固定1024B块的LE16 map",
+        "冻结、格式和质量",
+        "首次冻结前确定的受控性能环境",
+        "正式受控测量与有限收益",
+        "实际RSS及交付"
+      ],
+      "characters": 6531
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-luminance-palette.md",
+      "title": "16题内存独立分支：固定亮度16bank/7bit精确palette普查失败",
+      "sha256": "b3cf6e5f0e0861448ecc93c5de8e27dc557d2c6754e757831007da838557c2ab",
+      "headings": [
+        "16题内存独立分支：固定亮度16bank/7bit精确palette普查失败",
+        "唯一假设、查重与执行边界",
+        "唯一完整域结果",
+        "容量、算术与环境",
+        "文件、复核与限制"
+      ],
+      "characters": 3902
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-page-alias-census.md",
+      "title": "16题内存独立分支：固定4KiB精确页别名唯一普查",
+      "sha256": "352f8efedc1e2848ebe5b190e051ddba38fb70839040481865ef0b7ef8b3c5b1",
+      "headings": [
+        "16题内存独立分支：固定4KiB精确页别名唯一普查",
+        "目的和固定边界",
+        "唯一普查与独立复核",
+        "地址与成本边界",
+        "原件、复现和未完成项"
+      ],
+      "characters": 3431
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-page-alias-front.md",
+      "title": "2026-10-24：固定4KiB页别名部署前置停止于句柄合同",
+      "sha256": "1a11834d3fce6aca193db0d1f608cc08f52abdb535cc2adb6dcbea6132af9795",
+      "headings": [
+        "2026-10-24：固定4KiB页别名部署前置停止于句柄合同",
+        "不变基线与执行边界",
+        "三个fresh的真实观察",
+        "v1合同停止及观测不足",
+        "独立最小观察再次停止",
+        "最后metadata观察：文件已关，额外身份仍未知",
+        "原始身份"
+      ],
+      "characters": 5564
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-page-id16-copy4.md",
+      "title": "16题：P4 C99四字节原样复制的独立验证",
+      "sha256": "bebc7e136306458e96c1231bcf252f27c011db8c673a0205570687b0fa7ada86",
+      "headings": [
+        "16题：P4 C99四字节原样复制的独立验证",
+        "从实汇编提出唯一改动",
+        "冻结、真实机器码及质量",
+        "正式计时前协议",
+        "唯一真实1040调用与判定",
+        "每进程真实依赖与内存",
+        "已执行入口与交付边界"
+      ],
+      "characters": 6321
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-page-id16.md",
+      "title": "16题：4KiB页字典的真实容量与双阶段速度门",
+      "sha256": "080cf95f27dfd3ce535a6dc9a816da35f7e0212cf1ce23c0dc6265f3a9bd07ed",
+      "headings": [
+        "16题：4KiB页字典的真实容量与双阶段速度门",
+        "固定同源与一次实现",
+        "唯一质量及独立离线核",
+        "环境与已执行命令",
+        "正式协议：保留旧草稿，增加各角色自己的控制",
+        "本场36格与限制",
+        "实际依赖加载与fresh内存"
+      ],
+      "characters": 7233
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-page-native-pages.md",
+      "title": "16题：调用者页指针视图质量通过，唯一正式性能拒绝50档",
+      "sha256": "881983d28f1bfe40d5b87f489cd7c6e33fb3a81e0e76f2b03c8e95db24029445",
+      "headings": [
+        "16题：调用者页指针视图质量通过，唯一正式性能拒绝50档",
+        "真实表示与生命周期",
+        "冻结和机器码误判",
+        "有限合同、夹具修正和独立日志审计",
+        "完整域与百图",
+        "复现与交付",
+        "唯一六角色近邻正式场",
+        "正式环境和六fresh内存"
+      ],
+      "characters": 9231
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-readonly-loader.md",
+      "title": "16题内存独立分支：原线性ROM的真正只读部署加载",
+      "sha256": "b4465124c3f7b699227190aa0bbafc04499533041a6a8931c61ec48f99a5bd8d",
+      "headings": [
+        "16题内存独立分支：原线性ROM的真正只读部署加载",
+        "机制与边界",
+        "预冻结与唯一提交实验",
+        "生命周期与完整质量",
+        "唯一正式协议与宿主前置观察",
+        "辅助配对与提交额度",
+        "原件、复现与未完成事项"
+      ],
+      "characters": 7212
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rgb24-sparse.md",
+      "title": "16题：通用节点RGB24无损存储",
+      "sha256": "ac4d7e733315123c764f10477b883795650ec14f530177ab1ef217e098065da1",
+      "headings": [
+        "16题：通用节点RGB24无损存储",
+        "读取合同与参考依据",
+        "正确性与边界",
+        "冻结性能协议",
+        "容量暂态与真实工作集",
+        "精简证据与重放"
+      ],
+      "characters": 4989
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rgb3d-palette6.md",
+      "title": "16题内存独立分支：512个三维输入bank的6bit精确palette失败",
+      "sha256": "840bdae2be11fbb106e4ee9f0ec79dbe57c96fb935be18c9148334c578e2f991",
+      "headings": [
+        "16题内存独立分支：512个三维输入bank的6bit精确palette失败",
+        "固定协议与实现范围",
+        "实际完整域结果：54个bank失败",
+        "容量、有限合同与资源口径",
+        "归档、复核与交付"
+      ],
+      "characters": 3224
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rgb3d-palette7.md",
+      "title": "16题内存独立分支：512bank/7bit精确palette实际实现与正式拒绝",
+      "sha256": "e92b33b2a639da6e73bd7576bf2db4e74be8d1de6486f499591a8ecb50b0894f",
+      "headings": [
+        "16题内存独立分支：512bank/7bit精确palette实际实现与正式拒绝",
+        "依据与单版选择",
+        "实际格式与容量",
+        "C99/AVX实现与已执行环境",
+        "质量与边界",
+        "离线临时与独立RSS",
+        "唯一正式同场与独立Decimal复算",
+        "同场六份独立RSS",
+        "原件与复现"
+      ],
+      "characters": 7836
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rom-andn.md",
+      "title": "线性ROM接入原78的两种ANDN入口",
+      "sha256": "d59dde8ab9df27d9e902a037860274515d1886b2d335759658f40ab851181489",
+      "headings": [
+        "线性ROM接入原78的两种ANDN入口"
+      ],
+      "characters": 2361
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rom-c99-ilp.md",
+      "title": "固定8像素C99批读取仍未达50%吞吐底线",
+      "sha256": "3c440078993feeef619d799cea41dd80aaa6bebdd915d0fefe3607d6467e1594",
+      "headings": [
+        "固定8像素C99批读取仍未达50%吞吐底线"
+      ],
+      "characters": 2317
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-rom-c99-store.md",
+      "title": "C99组内重叠写取得限定场景的50%吞吐档",
+      "sha256": "1f2665eb2584eac30a0faf436b1eaf07847074c592f7a5bfa67e53757202d34b",
+      "headings": [
+        "C99组内重叠写取得限定场景的50%吞吐档"
+      ],
+      "characters": 2544
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-split-dictionary.md",
+      "title": "16题内存第十阶段：17bit 块 ID 的 16+1bit 分平面表示",
+      "sha256": "2df11f172e777e52d72ed0b6c4c6e8c617def6ccb5395395138c71ca7631b13f",
+      "headings": [
+        "16题内存第十阶段：17bit 块 ID 的 16+1bit 分平面表示",
+        "目标、改动与容量",
+        "已执行的正确性和环境",
+        "同场性能、六档和限制",
+        "RSS解释纠正与复现"
+      ],
+      "characters": 8310
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-store-portability.md",
+      "title": "C99存储核的独立wasm32执行与跨目标编译",
+      "sha256": "bc217ef451d6c93e1beb375e5382f83ea9855f6f8a019f002c0800bd5dba8a90",
+      "headings": [
+        "C99存储核的独立wasm32执行与跨目标编译"
+      ],
+      "characters": 1554
+    },
+    {
+      "path": "docs/stages/2026-10-24-memory-tagged-block16.md",
+      "title": "16题内存独立分支：固定16B块的直接RGB常量tag",
+      "sha256": "025efdbcac9e78f94079c49995f6354804b1bc06626c7899e504d6e0bcfdaa93",
+      "headings": [
+        "16题内存独立分支：固定16B块的直接RGB常量tag",
+        "目标、资料与预先选择",
+        "一次固定普查与实际容量",
+        "实现与质量",
+        "正式性能：预注册一次执行，全部拒绝"
+      ],
+      "characters": 7296
+    },
+    {
+      "path": "docs/stages/2026-10-24-node-precision-portability.md",
+      "title": "节点位宽的真实退化与C99跨目标核验",
+      "sha256": "18335e909000158c7833bfbfceafbc469e92d55bd0436329f1cde445e0c5e83b",
+      "headings": [
+        "节点位宽的真实退化与C99跨目标核验",
+        "已得到的结论",
+        "冻结输入、指标与质量结果",
+        "实际执行与边界",
+        "文件、复现与后续"
+      ],
+      "characters": 4648
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-arrival-model-triple.md",
+      "title": "修订87：三条固定精度模型同场速度验收",
+      "sha256": "b88d0e6caeadee1c173f58506b5241c02a9cbe5f60e367d5b652e0b74e3f2284",
+      "headings": [
+        "修订87：三条固定精度模型同场速度验收",
+        "固定对象与证据身份",
+        "预冻结方法与实际边界",
+        "稳态同场配对结果",
+        "首次准备与首批百图，单独报告",
+        "环境与复核"
+      ],
+      "characters": 4092
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-b2-packed-axis.md",
+      "title": "修订99：packed-axis B2精确布局的窄正例与成本",
+      "sha256": "a50c90544fe0b0fda4dc026f19b0bb3f6c997deb3b53e84c5188d4b6d2896385",
+      "headings": [
+        "修订99：packed-axis B2精确布局的窄正例与成本",
+        "唯一机制与容量",
+        "证明、构建与质量",
+        "正式边界和结果",
+        "审计和证据"
+      ],
+      "characters": 3922
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-call-boundary.md",
+      "title": "同87整批与逐图调用边界：下一批API的诊断依据",
+      "sha256": "1ad354f9287d8898b2eef4ef6661b897a9b1dd6104241a8ac2bd655fd8a55ea4",
+      "headings": [
+        "同87整批与逐图调用边界：下一批API的诊断依据",
+        "原生探针及正确性",
+        "四进程冻结测量",
+        "环境、证据与下一阶段"
+      ],
+      "characters": 3473
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-cap40-complements-git-bytes.md",
+      "title": "补集封存Git检查器的机械V2说明",
+      "sha256": "099d0e5074abea5441d53d0dd682ea3f4943fa3a9089763edd26876a251b8c86",
+      "headings": [
+        "补集封存Git检查器的机械V2说明"
+      ],
+      "characters": 469
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-cap40-complements.md",
+      "title": "cap40完整关系的补集成本普查",
+      "sha256": "ff1734cddda2b68b483d5768c598e6a682196894ffbfbb7ed7275d2cf00e7c63",
+      "headings": [
+        "cap40完整关系的补集成本普查",
+        "目的与实际结果",
+        "验证与环境",
+        "资料与使用边界"
+      ],
+      "characters": 2680
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-all-max-unit.md",
+      "title": "同一最劣点支撑的±1独立缩域与安全表规模",
+      "sha256": "1beb90fb5bbfb7e8f7d3ac570892ec899761743c237923e68101e1d03acb949e",
+      "headings": [
+        "同一最劣点支撑的±1独立缩域与安全表规模"
+      ],
+      "characters": 2370
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-box-group.md",
+      "title": "完全相同盒的查询共享：几何门通过，完整安全表仍超门",
+      "sha256": "fae33c44f08dac3bd6626a23560af6c0c2ca90d26808250e6b6198e7776ecd3e",
+      "headings": [
+        "完全相同盒的查询共享：几何门通过，完整安全表仍超门",
+        "只改变枚举表示",
+        "先几何计数，再单独授权真实查询",
+        "原point规模仍须完整计算",
+        "身份与运行记录"
+      ],
+      "characters": 5743
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-cap40-feasible.md",
+      "title": "固定273节点±1完整安全模型的唯一首解求解",
+      "sha256": "4f510303566c63273d8ced23f784fa27111e2f23bcc64eff415abd7957d59b70",
+      "headings": [
+        "固定273节点±1完整安全模型的唯一首解求解",
+        "原环境",
+        "隔离ORTools环境",
+        "原环境",
+        "隔离环境，预检与真实求解分别授权，真实只执行一次"
+      ],
+      "characters": 2844
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-cap40-gac.md",
+      "title": "固定cap40模型的无搜索GAC删值与独立重放",
+      "sha256": "917495c08f8c1d7c128ae0758a9c68ad23b44000c681f5094bbd8a5aa7a676d7",
+      "headings": [
+        "固定cap40模型的无搜索GAC删值与独立重放",
+        "真实传播独立授权后仅一次"
+      ],
+      "characters": 2288
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-feasible-cpsat.md",
+      "title": "当前完整安全无目标首解：max²41通过公共初门",
+      "sha256": "ec7885c95ba998c92210802e00a605731c414972176c6591aab1345cf3527b28",
+      "headings": [
+        "当前完整安全无目标首解：max²41通过公共初门",
+        "独立新实验及约束恒等",
+        "唯一首解与真实整数验收",
+        "环境、资源和复现",
+        "后续仍未完成"
+      ],
+      "characters": 5013
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-full-quality.md",
+      "title": "91d模型完整双DLL与百图质量：max²41及实际代价",
+      "sha256": "4f21dba69614ee46f4eb5b4de1506af4f1d2102c3bff77c9b4bd91ae99e7fb8e",
+      "headings": [
+        "91d模型完整双DLL与百图质量：max²41及实际代价",
+        "固定对象与独立性",
+        "v1失败与机械v2修正",
+        "整体精度与三个分母",
+        "首级忠实度与固定节点下界",
+        "运行时资格断崖",
+        "证据、环境与复现"
+      ],
+      "characters": 5797
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-outside-max-scale.md",
+      "title": "当前最优点的固定外域下界与全部最劣点支撑扩展",
+      "sha256": "24da9c214204cbecf2de9829eaf0c727a2d49670471a63b57c51ff60b6c6cae2",
+      "headings": [
+        "当前最优点的固定外域下界与全部最劣点支撑扩展"
+      ],
+      "characters": 2999
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-current-safe-cpsat.md",
+      "title": "当前122节点完整安全minL1：唯一20秒求解未决",
+      "sha256": "cf2ebd8981fc0742db7282e09a9726989a21b784b3e6d7e44211b690a629ac23",
+      "headings": [
+        "当前122节点完整安全minL1：唯一20秒求解未决",
+        "与前序预算表的关系",
+        "目标与事先候选初门",
+        "完整前置验证",
+        "唯一实际搜索及限制",
+        "实际环境、复现和证据",
+        "下一步仅独立提案"
+      ],
+      "characters": 4459
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-box.md",
+      "title": "首级节点分量±2盒的必要误差下界",
+      "sha256": "3d3a52439c36518887c478fe6cb6430b3d3f126f7837879751791a589f1c99e0",
+      "headings": [
+        "首级节点分量±2盒的必要误差下界",
+        "必要下界及适用范围",
+        "实际结果",
+        "参考与边界"
+      ],
+      "characters": 2651
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-cpsat.md",
+      "title": "首级热点整数耦合：可行见证与完整支撑失败",
+      "sha256": "15f683f889a039164d72dfca5cf8373d72dc31f8e9ee7c139e08cb1c91da91f0",
+      "headings": [
+        "首级热点整数耦合：可行见证与完整支撑失败",
+        "精确模型和环境桥",
+        "唯一求解与完整代价"
+      ],
+      "characters": 3452
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-direct-budget.md",
+      "title": "首级窄域直接八预算CP：有界无解状态与固定外域下界",
+      "sha256": "768f2d3d8e7d2d46916d4afd1a2f920a0c282e33d1fbc41e9cd05577ec393b3e",
+      "headings": [
+        "首级窄域直接八预算CP：有界无解状态与固定外域下界",
+        "模型与合同",
+        "V1失败与V2唯一执行",
+        "独立编码审计与后续方向"
+      ],
+      "characters": 4995
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-error-cost-census.md",
+      "title": "完整误差预算的整数成本合同与规模边界",
+      "sha256": "7628d11f6e4d5ebb04ea85b59348c6d21b22197dda2ae4fe1eb4eea0a7ecca61",
+      "headings": [
+        "完整误差预算的整数成本合同与规模边界"
+      ],
+      "characters": 3037
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-group.md",
+      "title": "固定86节点的52项同方向组探针",
+      "sha256": "efe3a523034a7408f99e00ab46ba593a0b6d03f074f17afb6156e7dd1c8977d5",
+      "headings": [
+        "固定86节点的52项同方向组探针"
+      ],
+      "characters": 2172
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-hotspot.md",
+      "title": "Cinema 当前最优首级热点的完整正支撑有限证书",
+      "sha256": "7468737dfd78c66f4bff28081dd1833b3635816276fb2f00f5ec776b0dcf2e11",
+      "headings": [
+        "Cinema 当前最优首级热点的完整正支撑有限证书",
+        "范围与完整性",
+        "实现与资源",
+        "完整域结果与单节点覆盖边界"
+      ],
+      "characters": 4290
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-joint.md",
+      "title": "首级完整正支撑上的一次八色联合尝试",
+      "sha256": "307efa28f0aa4b61c91c6369553f8f32d9f34a0a1cd0a148ce476e13acab3c0c",
+      "headings": [
+        "首级完整正支撑上的一次八色联合尝试"
+      ],
+      "characters": 2765
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-narrow-cost-census.md",
+      "title": "首级逐分量窄域的完整成本规模普查",
+      "sha256": "325e32c934b8c620f8b6bf8576170618dce6dbcb91baf8393cb93b82fd87d002",
+      "headings": [
+        "首级逐分量窄域的完整成本规模普查",
+        "固定对象与数学边界",
+        "实际检查与规模",
+        "精度成本与资源计账"
+      ],
+      "characters": 3479
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-risk.md",
+      "title": "全正支撑的鲁棒危险筛查",
+      "sha256": "3635c14c58f68693482605bed4dbb5408a244fce0decfccce10061929ef54567",
+      "headings": [
+        "全正支撑的鲁棒危险筛查"
+      ],
+      "characters": 2706
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-first-safe-cpsat.md",
+      "title": "完整危险表的最小L1整数耦合",
+      "sha256": "da22ebfa815cbc1fddb076dc46e9469f31b6080e7f5b33027f187ecfd862cc64",
+      "headings": [
+        "完整危险表的最小L1整数耦合"
+      ],
+      "characters": 4198
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-max48-first-box.md",
+      "title": "从当前145个max48输入重选首级节点的必要证书",
+      "sha256": "efc249b20296a52a489d21669c8a31c6cffc453e81b04e82356330dd326c2c05",
+      "headings": [
+        "从当前145个max48输入重选首级节点的必要证书"
+      ],
+      "characters": 2333
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-max48-pareto-quality.md",
+      "title": "max48见证对三个固定基线的独立质量资格",
+      "sha256": "354256fe19b79c8e2b66da5351118e089f379315608fff86ecb07dc97eecabdd",
+      "headings": [
+        "max48见证对三个固定基线的独立质量资格",
+        "验证覆盖",
+        "聚合质量和逐图代价",
+        "首级忠实度和运行时代价"
+      ],
+      "characters": 4312
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-max48-risk-upper.md",
+      "title": "当前122个首级节点完整风险与公共误差上界",
+      "sha256": "64b31b4987035871e6a01b4ce579fcc7c6c6754ca173d3954fdd7d1db7e0fac3",
+      "headings": [
+        "当前122个首级节点完整风险与公共误差上界",
+        "固定起点、实际范围与资源门",
+        "条件上界及三个分母",
+        "验证、环境与复现",
+        "边界与下一步"
+      ],
+      "characters": 4359
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-cinema-max48-training-bridge.md",
+      "title": "公共训练mean/p99两预算桥：安全表规模超门停止",
+      "sha256": "f7cc60b04975359762354d1a061cd1b093082d8044ee7da496ea67e102e5f9a0",
+      "headings": [
+        "公共训练mean/p99两预算桥：安全表规模超门停止",
+        "为什么只补训练两预算",
+        "固定分类及数学预算",
+        "事前门与唯一普查",
+        "环境、验证与证据",
+        "后续边界"
+      ],
+      "characters": 4126
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-constant-prepare-policy.md",
+      "title": "恒色头筛查与显式准备策略：两种失败边界",
+      "sha256": "cd8109f2cd1b52fa7024d62123400c72c35bf316d3e59f4fd051c0f457207570",
+      "headings": [
+        "恒色头筛查与显式准备策略：两种失败边界",
+        "既有证据与两个新假设",
+        "A：恒色RGB头只读筛查失败",
+        "B：88显式准备策略的完整正确性",
+        "B：12场景完整摊销矩阵",
+        "环境、限制与下一步"
+      ],
+      "characters": 3951
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-default-layout.md",
+      "title": "修订93：默认单图路径的布局与角色分块原因辨别",
+      "sha256": "e5c582ab77048431447cd6a67f9898d50b6857dcdbd02de13e49e0da7be83c16",
+      "headings": [
+        "修订93：默认单图路径的布局与角色分块原因辨别",
+        "为什么要做这个窄诊断",
+        "单版预注册与完整合同",
+        "全部配对cell",
+        "全部因素交互",
+        "地址与CPU端点观察",
+        "结论与归档"
+      ],
+      "characters": 7490
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-active-packed-git-bytes.md",
+      "title": "9位离线证据的Git字节检查说明",
+      "sha256": "a069d356f5f3c1d3c3cf0889e2cc872d803725a5a10334e3b974e80a822f1811",
+      "headings": [
+        "9位离线证据的Git字节检查说明"
+      ],
+      "characters": 348
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-active-packed.md",
+      "title": "max41实际命中颜色与精确9位表示：离线可表示性通过",
+      "sha256": "3fde33c5ac40631c1618fe38b29f60ef39a51767a5a4cec102c90f4abcd3157b",
+      "headings": [
+        "max41实际命中颜色与精确9位表示：离线可表示性通过",
+        "结果与适用范围",
+        "实际调用、成本与失败记录",
+        "原件与复核"
+      ],
+      "characters": 2248
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-axis-banks.md",
+      "title": "max41均匀轴分bank：24种完整域表示均被拒绝",
+      "sha256": "40d26777fcfd602ea4e833457c36dff911f2b04a2afc5f56e4315fb04aa372df",
+      "headings": [
+        "max41均匀轴分bank：24种完整域表示均被拒绝",
+        "结果与停止范围",
+        "数据、算法与独立覆盖",
+        "环境、复现与身份"
+      ],
+      "characters": 3319
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-cache2-performance-v2.md",
+      "title": "293/294 双线程策略正式性能：局部热吞吐通过，完整冷热资格未通过",
+      "sha256": "6a8fc71e2cec7d705ffdb3b7c3fe09a52133bd389bbe521b5d3ef359f47ee769",
+      "headings": [
+        "293/294 双线程策略正式性能：局部热吞吐通过，完整冷热资格未通过",
+        "固定对象、环境与计数",
+        "时间边界与判定",
+        "主U与辅助P分别报告",
+        "表表示、容量与RSS边界",
+        "证据、封存与未完成项"
+      ],
+      "characters": 6034
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-cache2.md",
+      "title": "RGB24、固定分区负例与2MiB缓存资格",
+      "sha256": "4c962e8c8816cad073d9cf377d4d477f5b3f0aa16381d203e8b04ecb64e51f76",
+      "headings": [
+        "RGB24、固定分区负例与2MiB缓存资格",
+        "目标与实现",
+        "新版本实际资格与容量",
+        "失败原件与修正边界",
+        "复现与证据"
+      ],
+      "characters": 2636
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-sentinel.md",
+      "title": "8位热点表与精确回算：290故障、291质量通过、性能底线失败",
+      "sha256": "cd9f6b4b9809cdfb4ebc7e8cb99a9b0927689022292a89f010e21e698745a92f",
+      "headings": [
+        "8位热点表与精确回算：290故障、291质量通过、性能底线失败",
+        "目的、机制与原模型",
+        "290实际故障与291最小修复",
+        "质量、实际线程覆盖与容量",
+        "一次正式性能与严格拒绝",
+        "证据、复现与后续"
+      ],
+      "characters": 4189
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-u10.md",
+      "title": "16题289固定10bit索引：质量无损、容量下降，正式速度低于50%而拒绝",
+      "sha256": "1bc5c15237442740d027de92d1c14ca4bdec159a1965a574172b82c8cd430e5b",
+      "headings": [
+        "16题289固定10bit索引：质量无损、容量下降，正式速度低于50%而拒绝",
+        "正确性与真实容量",
+        "正式同场结果：硬线失败",
+        "原件与复现"
+      ],
+      "characters": 3860
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-u16-ilp-native.md",
+      "title": "16题288复用既有apply调度：质量及实际RSS完成，吞吐待测",
+      "sha256": "ebd63f07a44385acfd7082cb039667857af31b071cf12c51282d3fe2ce7cb548",
+      "headings": [
+        "16题288复用既有apply调度：质量及实际RSS完成，吞吐待测"
+      ],
+      "characters": 3088
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-u16-ilp-perf.md",
+      "title": "16题288八角色正式比较：有效子集改善，整体AA未证",
+      "sha256": "cb551bdfc0d1fbfc8af648d0d824b43ecc12d8dbd801be3e34433b77ad5ecba6",
+      "headings": [
+        "16题288八角色正式比较：有效子集改善，整体AA未证",
+        "联合提交记录"
+      ],
+      "characters": 4479
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-u16-native.md",
+      "title": "16题精确16bit直接ID：完整质量通过，性能待测",
+      "sha256": "51662ad108ab0ad64ace319c786f58b28907aaaa55c57cf8b78bdca8909742f1",
+      "headings": [
+        "16题精确16bit直接ID：完整质量通过，性能待测"
+      ],
+      "characters": 2741
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-direct-u16-perf.md",
+      "title": "16题287六角色正式性能：两新模型低于50%拒绝",
+      "sha256": "8882983e20551a49f502f04100420d45b3876c3922341a57484c99c1af0b5a49",
+      "headings": [
+        "16题287六角色正式性能：两新模型低于50%拒绝"
+      ],
+      "characters": 2617
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-early-index-finite.md",
+      "title": "第16题速度研究：准备索引展开的有限阶段（修订101）",
+      "sha256": "b485312d7dc07f04ce17e321f317a99bdb78f4945780aa3066c80bbf46bae2b9",
+      "headings": [
+        "第16题速度研究：准备索引展开的有限阶段（修订101）",
+        "目标与改动",
+        "唯一构建与实际负证据",
+        "唯一有限合同与计数",
+        "RSS缺口与结论边界",
+        "交付"
+      ],
+      "characters": 3259
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-final-model-speed.md",
+      "title": "最终精度模型在共同87后端的速度验收",
+      "sha256": "e2ea644d2c48b75f085cc1f84547c4284812d83e26a5130afea08c9feec2d8f5",
+      "headings": [
+        "最终精度模型在共同87后端的速度验收",
+        "事前冻结与实际环境",
+        "完整结果"
+      ],
+      "characters": 2231
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-first-structure.md",
+      "title": "修订98：首级结构反证与固定B2节点地址普查",
+      "sha256": "664597ed14721ee9a4766685fbae9c42662ec18a19dfdb07696e118613ffcd64",
+      "headings": [
+        "修订98：首级结构反证与固定B2节点地址普查",
+        "范围和身份",
+        "严格排除的结构",
+        "core已有捷径与当前路线",
+        "B2唯一地址普查",
+        "独立复核与下一合同边界"
+      ],
+      "characters": 3796
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-lazy-pages-lifecycle.md",
+      "title": "输入页覆盖率与准备对象生命周期的静态评估",
+      "sha256": "f156acbd01e690f3909e3cfaab87be62244c1b4c45a91ea7329687a997c75a96",
+      "headings": [
+        "输入页覆盖率与准备对象生命周期的静态评估",
+        "固定4KiB页的只读证据",
+        "显式prepared plan复用的独立机制",
+        "环境、验证与交付边界"
+      ],
+      "characters": 2781
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-omp-affinity-control.md",
+      "title": "逐OpenMP线程控制：独立质量与两项失败证据",
+      "sha256": "0a4a3ce6c4550e51ec26726ab53e86d19197f6428d3ea8edf3fba89b62dd1795",
+      "headings": [
+        "逐OpenMP线程控制：独立质量与两项失败证据",
+        "范围与环境",
+        "工具合同",
+        "实际结果与失败保留",
+        "复现与证据",
+        "一手依据与未完成项"
+      ],
+      "characters": 3853
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-omp-policy.md",
+      "title": "修订96：逐线程绑核未证明能消除默认小作业漂移",
+      "sha256": "2246a211c8fe9561a5b6f33832448588c3b2f1122717106c391e6cafcb5185fe",
+      "headings": [
+        "修订96：逐线程绑核未证明能消除默认小作业漂移",
+        "独立控制与实际边界",
+        "helper来源与质量",
+        "正式冻结、统计与限制",
+        "全部同policy角色比较",
+        "全部同句柄P/U比较",
+        "全部交互比较",
+        "归档与独立核对"
+      ],
+      "characters": 12563
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-palette-prepare.md",
+      "title": "修订95：固定小字典减少准备中的排序工作",
+      "sha256": "6fd4bfef22a7ed326859ca6c9dfc952f3a9dee6de6ab8bec3c9e0065661485ab",
+      "headings": [
+        "修订95：固定小字典减少准备中的排序工作",
+        "精确机制及回退",
+        "质量与身份",
+        "内存与实际栈帧",
+        "正式范围和统计边界",
+        "全部热场：95/87",
+        "全部冷指标：95/87",
+        "全部热场：95/94",
+        "全部冷指标：95/94",
+        "十二个新进程RSS",
+        "原字节证据"
+      ],
+      "characters": 13896
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-prepared-plan.md",
+      "title": "显式准备对象共享：生命周期收益与热像素退化",
+      "sha256": "e76c7babfe4a4967ee9ccde9930a2acfd7eac18ec62e7ef80ba4d20ade134c16",
+      "headings": [
+        "显式准备对象共享：生命周期收益与热像素退化",
+        "实现与使用契约",
+        "已完成正确性",
+        "冻结的性能与内存账单",
+        "实际结果：构造、工作集与热像素分开"
+      ],
+      "characters": 4848
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-scanline-prepare.md",
+      "title": "第16题速度研究：固定枚举扫描线准备器（修订100）",
+      "sha256": "5a37f4879a91da64ac960ee713a15f42a1cccd8b43ebca8ae9f879ceca7d5870",
+      "headings": [
+        "第16题速度研究：固定枚举扫描线准备器（修订100）",
+        "问题与机制",
+        "实际构建及成本",
+        "唯一有限合同",
+        "新增完整质量",
+        "正式计时与门槛",
+        "内存与边界",
+        "交付与后续"
+      ],
+      "characters": 6647
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-segment-batch.md",
+      "title": "修订90：显式非连续批处理接口",
+      "sha256": "845e961191503f8546285568d396cc685df28713cd8ec590365100db732c73b0",
+      "headings": [
+        "修订90：显式非连续批处理接口",
+        "新入口与成本合同",
+        "正确性与实际输出边界",
+        "冻结三角色与布局",
+        "完整36场景",
+        "身份、可移植性与复核"
+      ],
+      "characters": 6845
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-segment-confirm.md",
+      "title": "90独立确认：31轮、镜像角色时序",
+      "sha256": "b2f7ce419d26082e06bdc447decab98363078dc588b0322fed427d58735f69ac",
+      "headings": [
+        "90独立确认：31轮、镜像角色时序",
+        "预先依据与协议",
+        "全部结果",
+        "边界、环境与复核"
+      ],
+      "characters": 2871
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-sentinel-census.md",
+      "title": "精确255色哨兵路线：两固定排名的完整模型普查",
+      "sha256": "4232cd75a9662ab2e2211dfdcb023845ce6f22552943a995361808e97e4e88a3",
+      "headings": [
+        "精确255色哨兵路线：两固定排名的完整模型普查",
+        "方法与口径",
+        "实际覆盖",
+        "准备成本与下一步边界",
+        "环境、复现与证据"
+      ],
+      "characters": 3543
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-shared-domain.md",
+      "title": "修订91：共享首级的精确直接编译资格扩展",
+      "sha256": "0694c666fa5c33aba0b08f749dbd735a0d4b3fd642a006c4126477195b944835",
+      "headings": [
+        "修订91：共享首级的精确直接编译资格扩展",
+        "单一机制与精度证据",
+        "性能冻结与计时边界",
+        "全部热场",
+        "全部准备与首次作业",
+        "模型容量、临时账单与独立RSS",
+        "环境、归档与当前结论"
+      ],
+      "characters": 7870
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-shared-prepare.md",
+      "title": "修订94：共享首级准备复用已有几何",
+      "sha256": "ae24b64edbaa0782f37cf099740fae8fcc6c6a0a536b220fcab2bff36ae35775",
+      "headings": [
+        "修订94：共享首级准备复用已有几何",
+        "单版机制与比较分母",
+        "精度、字节身份和接口合同",
+        "正式冻结与计时边界",
+        "内存与适用边界",
+        "全部热场：94/87",
+        "全部冷指标：94/87",
+        "全部热场：94/92",
+        "全部冷指标：94/92",
+        "十二个独立RSS进程",
+        "证据与复现"
+      ],
+      "characters": 16302
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-shared-proven.md",
+      "title": "修订97：隔离共享已证域核的局部收益与首作业代价",
+      "sha256": "72dd4494d57021fa5d697482b0e3f310f55a409633702f4187b1bc7ee6369777",
+      "headings": [
+        "修订97：隔离共享已证域核的局部收益与首作业代价",
+        "只新增隔离的像素路由",
+        "旧负证据与实际构建边界",
+        "完整质量及内存",
+        "唯一正式协议和环境",
+        "全部热场：97/87",
+        "全部冷指标：97/87",
+        "全部热场：97/95",
+        "全部冷指标：97/95",
+        "真实RSS独立描述",
+        "归档及独立复算"
+      ],
+      "characters": 13845
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-simd-prepare.md",
+      "title": "第16题速度第二阶段：后缀缓存准备复用AVX2",
+      "sha256": "38951ef4ada3bc777d187b874b51cf32b649faf61eadad291ce90ef1da60bf8c",
+      "headings": [
+        "第16题速度第二阶段：后缀缓存准备复用AVX2",
+        "完整整数与资源验证",
+        "同场完整prepare确认"
+      ],
+      "characters": 2646
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-tail-frontier-git-bytes.md",
+      "title": "精度比较图的Git字节保存补记",
+      "sha256": "e96e2f763053fdd10554821f820ed95f12d5ba18fd3dd8b6094a99cbff0c91d3",
+      "headings": [
+        "精度比较图的Git字节保存补记"
+      ],
+      "characters": 549
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-tail-frontier-plot.md",
+      "title": "既有精度候选的比较图与边界",
+      "sha256": "9c68a8a17c67954f8d377f5a463d428a79912a6c6b546e4cf9ba753b622baf42",
+      "headings": [
+        "既有精度候选的比较图与边界"
+      ],
+      "characters": 1263
+    },
+    {
+      "path": "docs/stages/2026-10-24-p16-workload-hint.md",
+      "title": "修订92：显式预计总像素门控共享首级准备",
+      "sha256": "2ff8fb9630cc8ffc91204c46ea8392d9d08487efcedf83c1c15b1e72bc8af4a5",
+      "headings": [
+        "修订92：显式预计总像素门控共享首级准备",
+        "机制、默认接口和成本",
+        "精度和接口质量",
+        "正式冻结、环境和完整边界",
+        "全部热场",
+        "全部冷metric",
+        "独立进程内存",
+        "归档与使用边界"
+      ],
+      "characters": 11790
+    },
+    {
+      "path": "docs/stages/2026-10-24-palette-input-precision.md",
+      "title": "有损palette与输入近邻量化的逐图精度边界",
+      "sha256": "815f6b73a099a262d066757258c6c7c32bcad7d0b34ce148ab3f91e876693b5f",
+      "headings": [
+        "有损palette与输入近邻量化的逐图精度边界",
+        "调色板量化",
+        "输入近邻派生网格",
+        "两个7bit候选的真实部署格式与正确性",
+        "同场性能及双六档"
+      ],
+      "characters": 4792
+    },
+    {
+      "path": "docs/stages/2026-10-24-precision-stage-commit-boundary.md",
+      "title": "精度两个阶段的联合提交边界与原件核对",
+      "sha256": "93875370b91a42b1a18e062fba29d0e649ad023526f610533af072928c801147",
+      "headings": [
+        "精度两个阶段的联合提交边界与原件核对"
+      ],
+      "characters": 1108
+    },
+    {
+      "path": "docs/stages/2026-10-24-protected-tail-cases.md",
+      "title": "完整支撑节点法在普通四级 SLUT 与 Velvia 难例上的边界",
+      "sha256": "201cbfcdcfaa648421187b146cc67c08e8657e2b76ac5f3365f3be46c94f9726",
+      "headings": [
+        "完整支撑节点法在普通四级 SLUT 与 Velvia 难例上的边界",
+        "起点、方法与语义",
+        "完整域与百图结果",
+        "已验证范围和未完成门禁",
+        "文件与复现"
+      ],
+      "characters": 5103
+    },
+    {
+      "path": "docs/stages/2026-10-24-tail-max-extensions.md",
+      "title": "max平台的有限突破、失败边界与最快后端资格",
+      "sha256": "f91f34cec8ddb1aa9f2003b13742b15b3645895fa3c162d2377a0b4acc389ff1",
+      "headings": [
+        "max平台的有限突破、失败边界与最快后端资格"
+      ],
+      "characters": 2093
+    },
+    {
+      "path": "docs/stages/2026-10-24-three-directions-collaboration.md",
+      "title": "三方向独立分支的协作核对",
+      "sha256": "07d13802559a4dbf7475146943f429492d8f1ed5f7fcb85764d6705bd4688607",
+      "headings": [
+        "三方向独立分支的协作核对"
+      ],
+      "characters": 1629
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-body-diagonals.md",
+      "title": "Velvia 四种全局体对角线的冻结探针",
+      "sha256": "a0812506e416a7463a6fcae01103b8cf3a169bbdeaf328f758835d96328df8aa",
+      "headings": [
+        "Velvia 四种全局体对角线的冻结探针",
+        "机制、合同和覆盖",
+        "结果与拒绝依据",
+        "文件、复现和边界"
+      ],
+      "characters": 2973
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-bubble-accept.md",
+      "title": "固定两cell的边界归零混合：完整质量验收",
+      "sha256": "faadfd7948c7ed67eb0e5debc314ef91bf3a7c7ab553af660d8d72e3146cad79",
+      "headings": [
+        "固定两cell的边界归零混合：完整质量验收"
+      ],
+      "characters": 3492
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-bubble-native.md",
+      "title": "固定κ3两cell的187原生正确性与容量边界",
+      "sha256": "1f09706885bec7ebc589ed949ceebbbb03983b1cef61d7c49c44821f2ff7ba49",
+      "headings": [
+        "固定κ3两cell的187原生正确性与容量边界"
+      ],
+      "characters": 3136
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-bubble-perf.md",
+      "title": "187原生性能：百图80档，密集命中低于50%拒绝",
+      "sha256": "7168979bc6ee339f09429d60cdd0a3978410e91748e7926bfd4437b4d5f6ed6a",
+      "headings": [
+        "187原生性能：百图80档，密集命中低于50%拒绝"
+      ],
+      "characters": 2577
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-bubble-probe.md",
+      "title": "边界消失局部混合的最小可行性探针",
+      "sha256": "be661da597d386881d6078b61ac2fa597018554b54d277c80ece1e69e1c632bf",
+      "headings": [
+        "边界消失局部混合的最小可行性探针"
+      ],
+      "characters": 1894
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-bubble-slope.md",
+      "title": "以整数舍入区间推导局部混合的最小斜率",
+      "sha256": "2419a008beadf6797d7d4c3221f255d21e05ee32164ce192526e5338b87d978e",
+      "headings": [
+        "以整数舍入区间推导局部混合的最小斜率"
+      ],
+      "characters": 1865
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-cell-diagonals.md",
+      "title": "Velvia 局部方向收益与面不连续的完整证据",
+      "sha256": "5a392d2bbc1bbd30e76f0cd318060083ef8cdbe5911708591ef6d9517df3b535",
+      "headings": [
+        "Velvia 局部方向收益与面不连续的完整证据",
+        "可行性证书与冻结选项",
+        "接缝是实质限制",
+        "表示、环境和复现"
+      ],
+      "characters": 3195
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-mean-first.md",
+      "title": "对齐双mean与p99/max目标的独立节点试验",
+      "sha256": "dc6d61c226d224e22f31fedccf3585a4dce82070664e5f669d2bd1570db6010d",
+      "headings": [
+        "对齐双mean与p99/max目标的独立节点试验",
+        "为什么重定向及冻结内容",
+        "真实结果与拒绝",
+        "内存、环境与文件"
+      ],
+      "characters": 2887
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-stripe-diagonals.md",
+      "title": "面相容 stripe 方向场的有限可行性搜索",
+      "sha256": "d7ef6b1fe308bc0f4ccf5b9623fea2ca604800cc30c4ceabbe1f94c2b3053583",
+      "headings": [
+        "面相容 stripe 方向场的有限可行性搜索",
+        "构造及面相容依据",
+        "冻结预算与结果",
+        "环境、文件及复现"
+      ],
+      "characters": 2334
+    },
+    {
+      "path": "docs/stages/2026-10-24-velvia-stripe-nodes.md",
+      "title": "固定连续方向场后的节点一轮重拟合",
+      "sha256": "93a2abd81009d5bdf0f97ccc16fbb2fb71a0f200fb59133ac580b5ce19e69f12",
+      "headings": [
+        "固定连续方向场后的节点一轮重拟合",
+        "冻结预算及实现",
+        "结果和失败归因",
+        "内存、环境和验证边界",
+        "文件与复现"
+      ],
+      "characters": 2939
+    },
+    {
+      "path": "docs/stages/2026-10-26-p16-unified-avx512.md",
+      "title": "第16题三方向整合与AVX-512首轮实施",
+      "sha256": "388e04e9826f9a510dea3a5d27383e44b14e8ade992c2541a30826762692f952",
+      "headings": [
+        "第16题三方向整合与AVX-512首轮实施",
+        "交付结果与选择",
+        "AVX-512实际实现",
+        "实际环境、质量对象与覆盖",
+        "百图批次总时间",
+        "运行内存",
+        "复现、封存及协作记录",
+        "未完成范围"
+      ],
+      "characters": 7359
+    },
+    {
+      "path": "docs/stages/2026-10-26-p16-unified-research.md",
+      "title": "第16题三方向研究汇总与统一实现选择",
+      "sha256": "bac570aa87c20fa4c17b4bfaa36c736838674b19ae0eefd273c112505102a992",
+      "headings": [
+        "第16题三方向研究汇总与统一实现选择",
+        "本轮评估口径",
+        "推荐统一配置及备选",
+        "速度方向可吸收的成果",
+        "宽表与内存研究的取舍",
+        "固定模型路径与SHA256",
+        "合并边界与AVX-512实施要求",
+        "本文静态核对记录"
+      ],
+      "characters": 7879
+    },
+    {
+      "path": "docs/stages/2026-10-27-joint-lut-avx2.md",
+      "title": "LUT 联合调优与本机 AVX2 候选筛查",
+      "sha256": "e179a83e61620be1b49fed49e48dc63de090972d8c2e330f9fc6391ded8cbb27",
+      "headings": [
+        "LUT 联合调优与本机 AVX2 候选筛查",
+        "阶段目标与边界",
+        "联合方案判断",
+        "联合存储结果",
+        "两套四级配置",
+        "68 个既有最佳模型",
+        "AVX2 候选与验证方法",
+        "实际环境",
+        "主要文件与证据",
+        "复现入口",
+        "下一步建议与未完成事项"
+      ],
+      "characters": 5634
+    },
+    {
+      "path": "docs/stages/2026-10-27-p16-frontier-header.md",
+      "title": "第16题：独立单头运行库、连续三维目标与部署裁剪",
+      "sha256": "31131eaac0a44d615f48c88054bb7fe16261cb0b1639221a943be1d5c2465ab9",
+      "headings": [
+        "第16题：独立单头运行库、连续三维目标与部署裁剪",
+        "目标及完成范围",
+        "主要文件与接口",
+        "模型与三维实际结果",
+        "选择到输出的实际验证",
+        "验证环境与覆盖",
+        "原始记录、失败保留及复现",
+        "协作检查与剩余边界"
+      ],
+      "characters": 9133
+    },
+    {
+      "path": "docs/stages/2026-10-27-p16-score-candidate.md",
+      "title": "第16题：同步研究后的CPU评分候选",
+      "sha256": "9301f4670f2cd678512c0f9132c9fc92c247cf412d81a37e6119029a416668b5",
+      "headings": [
+        "第16题：同步研究后的CPU评分候选",
+        "最终选择与依据",
+        "仓库同步与实现范围",
+        "实际验证与证据",
+        "批次时间与取舍",
+        "内存、包体及新LUT边界",
+        "复现入口及协作状态"
+      ],
+      "characters": 7531
+    },
+    {
+      "path": "docs/stages/2026-10-27-p16-score-selection.md",
+      "title": "第16题评分导向的研究选择依据",
+      "sha256": "b28734ee2b4acda5a2c620ada419ad3f5ead0d38b8a5328fe2a3ecf835b8aa10",
+      "headings": [
+        "第16题评分导向的研究选择依据",
+        "应冻结的当前版本",
+        "固定Cinema模型的精度与实际代价",
+        "四套固定模型的可用身份",
+        "pipeline逐级插值成果究竟改变了什么",
+        "对未知LUT的通用选择边界",
+        "CPU后端、评分选择和下一次集中验证",
+        "本轮静态核对记录"
+      ],
+      "characters": 7595
+    },
+    {
+      "path": "docs/stages/2026-10-28-header-performance-repair.md",
+      "title": "单头运行库性能修复与集中验证",
+      "sha256": "b21c021162a1b3428fab210b00a17a4a2d7d9c0c5c67c8f21d1226a4bbab0578",
+      "headings": [
+        "单头运行库性能修复与集中验证",
+        "问题、修复与交付边界",
+        "集中正确性与部署检查",
+        "三方同场性能结果",
+        "复现入口与证据",
+        "协作记录与操作依据"
+      ],
+      "characters": 7063
+    },
+    {
+      "path": "docs/stages/2026-10-29-studio-event-ready.md",
+      "title": "2026-10-29 照片工作台与赛前调试集成",
+      "sha256": "b385efeaaa58fef521abc7a9a12370abda7691ac6461dc7d0151699270bb316c",
+      "headings": [
+        "2026-10-29 照片工作台与赛前调试集成",
+        "目标与本阶段变化",
+        "实际环境与身份",
+        "已执行验证",
+        "调试包及现场使用",
+        "协作记录与未完成事项"
+      ],
+      "characters": 6094
+    },
+    {
+      "path": "docs/stages/2026-10-30-framework-adaptation.md",
+      "title": "赛事框架适配与单线程优化（2026-10-29至30日）",
+      "sha256": "8299bae99de8bac55a732b67e8310c4c7a8b07268930436df820f63ef4c7d361",
+      "headings": [
+        "赛事框架适配与单线程优化（2026-10-29至30日）",
+        "交付与实现",
+        "数据与独立验证",
+        "实测环境与方法",
+        "四张样图的受控结果",
+        "补充100张照片",
+        "原框架与最终程序",
+        "可复现证据与边界",
+        "协作记录与未完成项"
+      ],
+      "characters": 6157
+    },
+    {
+      "path": "docs/stages/2026-10-30-rgb24-kernel.md",
+      "title": "RGB24查表热核补齐与同场复测",
+      "sha256": "b7ebd53a58be8b8337dc65306f0f53a3c78f600fc95b2758b185efb53d3a9c04",
+      "headings": [
+        "RGB24查表热核补齐与同场复测",
+        "修改范围",
+        "正确性检查",
+        "有限选型",
+        "性能判定规则",
+        "首场控制失败与原框架确认",
+        "最终长批次结果",
+        "协作与交付边界"
+      ],
+      "characters": 4509
+    },
+    {
+      "path": "report/data/chain-error-v1/README.md",
+      "title": "四例误差归因与整数精化的冻结证据",
+      "sha256": "c639012048a12d6a2b8a0a198b19944b1f58380f228b4899cbf36692e6045bf2",
+      "headings": [
+        "四例误差归因与整数精化的冻结证据"
+      ],
+      "characters": 1108
+    },
+    {
+      "path": "report/data/channel-archive-bytes-v1/README.md",
+      "title": "测量档案原字节交付修正",
+      "sha256": "e8b45db95ec127dc965cd3d2991a239d3d66bafc6cf25c80f167e455007aee88",
+      "headings": [
+        "测量档案原字节交付修正"
+      ],
+      "characters": 638
+    },
+    {
+      "path": "report/data/channel-continuous-floor-v1/README.md",
+      "title": "固定分通道几何连续空间诊断归档",
+      "sha256": "213a97ab4b9289740110c520dde67d831bd2c483438d0b2897d97460d64359ce",
+      "headings": [
+        "固定分通道几何连续空间诊断归档"
+      ],
+      "characters": 266
+    },
+    {
+      "path": "report/data/channel-continuous-floor-v1/report.md",
+      "title": "固定分通道几何的连续节点空间与精确下界",
+      "sha256": "79658a45ed0aedcfac1e13eb1864e032817caee7e823eed85743ed94a1770c98",
+      "headings": [
+        "固定分通道几何的连续节点空间与精确下界",
+        "同目标数值",
+        "精确证书与范围",
+        "实际执行与可复现身份"
+      ],
+      "characters": 4211
+    },
+    {
+      "path": "report/data/channel-delivery-audit-v1/README.md",
+      "title": "本轮研究档案交付静态检查",
+      "sha256": "cad97ad48265373bffc9510a705fde5fdba74a4690dcb91f32df503816c5af5b",
+      "headings": [
+        "本轮研究档案交付静态检查"
+      ],
+      "characters": 672
+    },
+    {
+      "path": "report/data/channel-frequency-transfer-v1/README.md",
+      "title": "固定两图频数归因归档",
+      "sha256": "815dbbce08412cefcc8cae229b77679d2f860b8b754c431ed43cc154376e8b6a",
+      "headings": [
+        "固定两图频数归因归档"
+      ],
+      "characters": 740
+    },
+    {
+      "path": "report/data/channel-frequency-transfer-v1/report.md",
+      "title": "两张固定照片的颜色频数与退化来源",
+      "sha256": "71894c5e2ca9c5dad5ba58f9ff96825ee08cc89f0733020bd99a0508387167f7",
+      "headings": [
+        "两张固定照片的颜色频数与退化来源",
+        "固定对象与严格范围",
+        "整图指标与正负误差变化",
+        "0843：低频和未见组反而净改善",
+        "0841：主要改善同样发生在≥32组",
+        "只在top反例上拆分中间阶段",
+        "主导RGB与坐标偏移",
+        "来源、环境、复现和停止"
+      ],
+      "characters": 5734
+    },
+    {
+      "path": "report/data/channel-native-v1/README.md",
+      "title": "分输出坐标的原生/性能证据",
+      "sha256": "6218c420fb21f68ae94017d963ac92a941bd0484d7bdd7d16c98a35a8af0568c",
+      "headings": [
+        "分输出坐标的原生/性能证据"
+      ],
+      "characters": 575
+    },
+    {
+      "path": "report/data/channel-native-v1/report.md",
+      "title": "分通道坐标：精度收益、原生落地与实际代价",
+      "sha256": "2a05c378c7b3f911d24ffb12d9a6f627426d42a77b8653c7eb6c96b54374e68e",
+      "headings": [
+        "分通道坐标：精度收益、原生落地与实际代价",
+        "当前结果",
+        "实现方面",
+        "正确性及四级范围",
+        "内存、环境和复现"
+      ],
+      "characters": 4030
+    },
+    {
+      "path": "report/data/channel-runtime-reuse-v1/README.md",
+      "title": "内点地址复用的固定实验档案",
+      "sha256": "34215812b23cb3118ba6be43b72c9754d6178c4f73e98b6f2e831bd22eae0042",
+      "headings": [
+        "内点地址复用的固定实验档案"
+      ],
+      "characters": 770
+    },
+    {
+      "path": "report/data/channel-runtime-specialized-v1/README.md",
+      "title": "固定四级AVX2专门化：同一a399模型的后端验收",
+      "sha256": "f4b3599d1ad14c2328361f49c6dddc9e1247e68a321a8fa718b767b622da22b3",
+      "headings": [
+        "固定四级AVX2专门化：同一a399模型的后端验收"
+      ],
+      "characters": 1925
+    },
+    {
+      "path": "report/data/channel-tail-extensions-20261024/README.md",
+      "title": "max负结果与运行时资格",
+      "sha256": "795539fe5d7ed871f2dc5076679299ea4cde153ee11b1e09899e0254d01f78c7",
+      "headings": [
+        "max负结果与运行时资格"
+      ],
+      "characters": 1466
+    },
+    {
+      "path": "report/data/channel-tail-nodes-20261023/README.md",
+      "title": "a399之后的真实四级尾部节点研究",
+      "sha256": "5f867dba1369a82e6d48484f2c5136c53a88e8cda4d8a22331b6569333e39c7f",
+      "headings": [
+        "a399之后的真实四级尾部节点研究"
+      ],
+      "characters": 1611
+    },
+    {
+      "path": "report/data/cinema-axis-calibration-v1/report.md",
+      "title": "Cinema四级链：实际到达频数与整链尾部保护",
+      "sha256": "c4d9814bf9f2e30675068021d08891296ab9692cdc523ddb3d63922df4a0dd7b",
+      "headings": [
+        "Cinema四级链：实际到达频数与整链尾部保护"
+      ],
+      "characters": 1593
+    },
+    {
+      "path": "report/data/cinema-calibrated-nodes-v1/report.md",
+      "title": "Cinema拟合：未入围",
+      "sha256": "fda853fd8afbfcf1d852f4623d1f181793c9930d271841ecc3ba04aee95d73a9",
+      "headings": [
+        "Cinema拟合：未入围"
+      ],
+      "characters": 189
+    },
+    {
+      "path": "report/data/cinema-cap-anchor-diagnosis-v1/README.md",
+      "title": "f139 max单色解释",
+      "sha256": "cdec2f67fcd1e078df9183007881dde99fc2010185533af1ee04c8bbda80a6fe",
+      "headings": [
+        "f139 max单色解释"
+      ],
+      "characters": 171
+    },
+    {
+      "path": "report/data/cinema-cap-anchor-diagnosis-v1/report.md",
+      "title": "f139照片max回退的单色根因解释",
+      "sha256": "2a0567792287e54982498bae133ab8dce6c5af60456fbd1a57115aafd6b64be6",
+      "headings": [
+        "f139照片max回退的单色根因解释",
+        "确定性逐级轨迹",
+        "为何cap通过但photos.max失败",
+        "来源、执行范围与环境"
+      ],
+      "characters": 2137
+    },
+    {
+      "path": "report/data/cinema-channel-suffix-coordinates-v1/README.md",
+      "title": "Cinema首级分输出坐标固定九块归档",
+      "sha256": "e6341e28de366c93eb8c95fec631fe3f8c9734b78b3f1dbf33affa12a77bbd14",
+      "headings": [
+        "Cinema首级分输出坐标固定九块归档"
+      ],
+      "characters": 144
+    },
+    {
+      "path": "report/data/cinema-channel-suffix-coordinates-v1/report.md",
+      "title": "Cinema首级分输出坐标：固定九块研究",
+      "sha256": "42db57de14200e569c867a538d1259a55f9b740de4944f9922956050731c11c6",
+      "headings": [
+        "Cinema首级分输出坐标：固定九块研究",
+        "标签、后缀与约束",
+        "唯一最终候选选择",
+        "集中合同、环境和边界"
+      ],
+      "characters": 3301
+    },
+    {
+      "path": "report/data/cinema-channel-suffix-joint-nodes-v1/README.md",
+      "title": "Cinema固定aed几何后一次RGB联合节点归档",
+      "sha256": "126a383394305934f264e8f81e8879b3d49525a7945380bcb5fb4d64e78734cf",
+      "headings": [
+        "Cinema固定aed几何后一次RGB联合节点归档"
+      ],
+      "characters": 174
+    },
+    {
+      "path": "report/data/cinema-channel-suffix-joint-nodes-v1/report.md",
+      "title": "Cinema固定新坐标后的单轮RGB联合节点耦合",
+      "sha256": "7af008213f5c0622269447ec2fb13b4ec6d5d194d0c18ae6894ae096bed4aab9",
+      "headings": [
+        "Cinema固定新坐标后的单轮RGB联合节点耦合",
+        "冻结方法、目标与身份",
+        "实际结果与门禁",
+        "集中合同、环境与边界"
+      ],
+      "characters": 3741
+    },
+    {
+      "path": "report/data/cinema-current-anchor-accept-v1/README.md",
+      "title": "a399完整准确性与真实四级性能",
+      "sha256": "9e73b7013692dc3701fec2d093e309e1e8b14d409dafa0ef543af9620cf24057",
+      "headings": [
+        "a399完整准确性与真实四级性能"
+      ],
+      "characters": 829
+    },
+    {
+      "path": "report/data/cinema-current-anchor-v1/README.md",
+      "title": "Cinema当前基线cap锚定约束修正：选择阶段",
+      "sha256": "6eb9246911ad0f7b700fb28911b7bbc967f50abf040c342b67ffbe8a8c3f9a44",
+      "headings": [
+        "Cinema当前基线cap锚定约束修正：选择阶段"
+      ],
+      "characters": 275
+    },
+    {
+      "path": "report/data/cinema-current-anchor-v1/report.md",
+      "title": "Cinema当前已验收基线锚定的约束修正",
+      "sha256": "2e1b1bda6a76da090c6a48475d4e634ac6eed68d4085fb2b7e271a96b46e9e48",
+      "headings": [
+        "Cinema当前已验收基线锚定的约束修正",
+        "新旧约束与数据身份",
+        "唯一整合执行与来源",
+        "唯一最终选择",
+        "环境、复现与未覆盖范围"
+      ],
+      "characters": 3724
+    },
+    {
+      "path": "report/data/cinema-envelope-v1/report.md",
+      "title": "Cinema四级链：实际到达频数与整链尾部保护",
+      "sha256": "e3c3b8091d83f929dd924246351fa5826c547ee5256c575827774bf91d21491f",
+      "headings": [
+        "Cinema四级链：实际到达频数与整链尾部保护"
+      ],
+      "characters": 1203
+    },
+    {
+      "path": "report/data/cinema-exact-axis-v1/report.md",
+      "title": "Cinema拟合：未入围",
+      "sha256": "b84af7bda62561ca23fe3fbcce5fc5a957439df3a46da183d6c49ae0a954cf55",
+      "headings": [
+        "Cinema拟合：未入围"
+      ],
+      "characters": 193
+    },
+    {
+      "path": "report/data/cinema-last-stage-20261024/README.md",
+      "title": "末级联合优化与严格图级阈值复算",
+      "sha256": "b5c2d79732226b53083b32127e87391d04c42cd91ab78f5fdacd1da76e33897c",
+      "headings": [
+        "末级联合优化与严格图级阈值复算"
+      ],
+      "characters": 1728
+    },
+    {
+      "path": "report/data/cinema-prefix-stage1-v1/report.md",
+      "title": "Cinema拟合：未入围",
+      "sha256": "90f2b064d073794de8654a01e73a4fbb3a16f1554ec4021e613fa5af1391d96f",
+      "headings": [
+        "Cinema拟合：未入围"
+      ],
+      "characters": 79
+    },
+    {
+      "path": "report/data/cinema-runtime-v1/report.md",
+      "title": "三版四级模型：同机运行成本",
+      "sha256": "5f5fc005c637106b528831e5f2bf75a2315e0f8550b8e90262656f5f917fdbc7",
+      "headings": [
+        "三版四级模型：同机运行成本"
+      ],
+      "characters": 990
+    },
+    {
+      "path": "report/data/cinema-suffix-metric-v1/report.md",
+      "title": "Cinema拟合：未入围",
+      "sha256": "90f2b064d073794de8654a01e73a4fbb3a16f1554ec4021e613fa5af1391d96f",
+      "headings": [
+        "Cinema拟合：未入围"
+      ],
+      "characters": 79
+    },
+    {
+      "path": "report/data/cinema-suffix-photo-v1/report.md",
+      "title": "Cinema拟合：未入围",
+      "sha256": "90f2b064d073794de8654a01e73a4fbb3a16f1554ec4021e613fa5af1391d96f",
+      "headings": [
+        "Cinema拟合：未入围"
+      ],
+      "characters": 79
+    },
+    {
+      "path": "report/data/emerald-calibrated-v1/report.md",
+      "title": "Emerald Malaise：17³模型兑现精确校准",
+      "sha256": "20b80361fa6c4fdb0ec5455a37a1b19b2158345004667affc4b47eb0e37b51b3",
+      "headings": [
+        "Emerald Malaise：17³模型兑现精确校准"
+      ],
+      "characters": 3007
+    },
+    {
+      "path": "report/data/exact-tail-v1/README.md",
+      "title": "Velvia两节点拒绝与三节点块证据",
+      "sha256": "9711252a00f0c59e96ea9ffd9dd1a0088f54792fc2886c225cdb748f8229b5bd",
+      "headings": [
+        "Velvia两节点拒绝与三节点块证据"
+      ],
+      "characters": 1834
+    },
+    {
+      "path": "report/data/filmic-calibration-v1/README.md",
+      "title": "Filmic06静态坐标校准的精简证据",
+      "sha256": "8f72887bc7c356730cce58518b245f422a9f0593c2b51e436c2e8a55f2fcd621",
+      "headings": [
+        "Filmic06静态坐标校准的精简证据"
+      ],
+      "characters": 460
+    },
+    {
+      "path": "report/data/filmic-calibration-v1/report.md",
+      "title": "Filmic06：固定整数节点下的解析坐标校准",
+      "sha256": "c91d6a4d2c16ab58f124eaf10fe0be5497b0adda5f498eac72ad12cb70f9dc7b",
+      "headings": [
+        "Filmic06：固定整数节点下的解析坐标校准",
+        "结果与范围",
+        "来源和方法",
+        "17³残余原因",
+        "阶段验证",
+        "文件与复现"
+      ],
+      "characters": 4394
+    },
+    {
+      "path": "report/data/filmic-chain-calibrated-v1/report.md",
+      "title": "四级解析校准的统一入口证据",
+      "sha256": "415420a5e27df845d5e83c9586a34dccc3da42face9f35ecf699aa63edf4217f",
+      "headings": [
+        "四级解析校准的统一入口证据"
+      ],
+      "characters": 829
+    },
+    {
+      "path": "report/data/filmic-direct-monotone-v1/README.md",
+      "title": "Filmic06直接单调约束的独立证据",
+      "sha256": "0546ac4d1ce64bb6b42a867757a10b6cec6242eed9d7e8537b10b375543b56c4",
+      "headings": [
+        "Filmic06直接单调约束的独立证据"
+      ],
+      "characters": 443
+    },
+    {
+      "path": "report/data/filmic-direct-monotone-v1/report.md",
+      "title": "Filmic06第二阶段：直接单调约束下的17³精确恢复",
+      "sha256": "eec11a0fdddef213f506a9754363e92f2478e9f86392a3743087b96c647f2af3",
+      "headings": [
+        "Filmic06第二阶段：直接单调约束下的17³精确恢复",
+        "独立阶段的结果",
+        "为什么只改三处就够",
+        "实际验收和环境",
+        "身份和复现",
+        "必须保留的边界"
+      ],
+      "characters": 3064
+    },
+    {
+      "path": "report/data/filmic-isometric-chain-v1/report.md",
+      "title": "四级解析校准的统一入口证据",
+      "sha256": "f305d936ea0edf254f67494e5800253f09c76b4efb02174c5f585695b3e52d74",
+      "headings": [
+        "四级解析校准的统一入口证据"
+      ],
+      "characters": 1596
+    },
+    {
+      "path": "report/data/filmic-isometric-runtime-v1/report.md",
+      "title": "精确17³控制链的同机速度与内存比较",
+      "sha256": "4cb01f72d40150575e2667cbc4cb331aa1024068620a5128511bfe181820843a",
+      "headings": [
+        "精确17³控制链的同机速度与内存比较",
+        "实际结果：容量下降，速度按两个参照分开解释"
+      ],
+      "characters": 2146
+    },
+    {
+      "path": "report/data/fractional-fit-v1/README.md",
+      "title": "原轴表完整域拟合证据",
+      "sha256": "122f11dcbc5b122e72fc080b4eb62cc11b9b127e8fce1fb3f44073c395318f9e",
+      "headings": [
+        "原轴表完整域拟合证据"
+      ],
+      "characters": 1420
+    },
+    {
+      "path": "report/data/frozen-pareto-v1/report.md",
+      "title": "已冻结研究候选的完整验收",
+      "sha256": "eb48c8564e24bdc9105082d13481134ab88693f899a1794946d983f19af2ca5c",
+      "headings": [
+        "已冻结研究候选的完整验收"
+      ],
+      "characters": 1501
+    },
+    {
+      "path": "report/data/full-domain-guard-v1/README.md",
+      "title": "完整域保护与双节点前瞻证据",
+      "sha256": "5d2fa0087d5a65850e46258446aebde3b6319e39e1fc55ef9f7d84f622d9ca5e",
+      "headings": [
+        "完整域保护与双节点前瞻证据",
+        "复核与恢复"
+      ],
+      "characters": 2632
+    },
+    {
+      "path": "report/data/full-photo-v1/README.md",
+      "title": "完整域与照片等质量优化证据",
+      "sha256": "56caa759fcf1e6aab550c996393b0d467719558eb916e08cd110bbd2f044c828",
+      "headings": [
+        "完整域与照片等质量优化证据"
+      ],
+      "characters": 1287
+    },
+    {
+      "path": "report/data/hack-v1/README.md",
+      "title": "hack-v1 数据完善与有限回放证据",
+      "sha256": "a8d27c177897d6411dc5d06057150c581510b9f44d43345cb7c7bb92e7b5fc91",
+      "headings": [
+        "hack-v1 数据完善与有限回放证据"
+      ],
+      "characters": 1248
+    },
+    {
+      "path": "report/data/joint-box-v1/README.md",
+      "title": "有界拟合与四级联合选择证据",
+      "sha256": "3a6140b531533a05eab7420b6e2e39a625de49881b66b432eddd5df96e25f788",
+      "headings": [
+        "有界拟合与四级联合选择证据",
+        "复现与模型使用"
+      ],
+      "characters": 2033
+    },
+    {
+      "path": "report/data/joint-grid-through-v3/report.md",
+      "title": "联合网格与节点：已完成验收结果",
+      "sha256": "91961a0f8ed9a6e12b878b5176f1a99af8edf79528de255abe259f8deb1fa24a",
+      "headings": [
+        "联合网格与节点：已完成验收结果"
+      ],
+      "characters": 770
+    },
+    {
+      "path": "report/data/joint-grid-v2/report.md",
+      "title": "联合网格与节点：已完成验收结果",
+      "sha256": "91961a0f8ed9a6e12b878b5176f1a99af8edf79528de255abe259f8deb1fa24a",
+      "headings": [
+        "联合网格与节点：已完成验收结果"
+      ],
+      "characters": 770
+    },
+    {
+      "path": "report/data/joint-lut-avx2-20261027/library-storage/report.md",
+      "title": "68个LUT最佳模型的联合差分存储分析",
+      "sha256": "82854983ec45f4426ab6d02f9545d8a75708200489fec5c591e2f7b77a38e2f1",
+      "headings": [
+        "68个LUT最佳模型的联合差分存储分析",
+        "m17",
+        "m33",
+        "结论"
+      ],
+      "characters": 509
+    },
+    {
+      "path": "report/data/joint-lut-avx2-20261027/pipeline-storage/report.md",
+      "title": "四级LUT联合存储与差分可行性分析",
+      "sha256": "5b3bf4257acaa929eaea121051768a8c72f6a428264a3ebef42d8bef76180b4d",
+      "headings": [
+        "四级LUT联合存储与差分可行性分析",
+        "跨配置精确去重",
+        "default 四级链",
+        "max41 四级链",
+        "解释"
+      ],
+      "characters": 1373
+    },
+    {
+      "path": "report/data/joint-lut-avx2-20261027/publication.md",
+      "title": "pipeline 发布范围与协作核对",
+      "sha256": "7e78f9595b4877d2e2334d61f91ca163968a72f44231fb5e8ba6e62aa75b6e57",
+      "headings": [
+        "pipeline 发布范围与协作核对",
+        "范围和来源",
+        "复现依赖与已知限制",
+        "协作检查"
+      ],
+      "characters": 2866
+    },
+    {
+      "path": "report/data/p16-arrival-model-triple-v1/README.md",
+      "title": "三模型同87同场原始证据",
+      "sha256": "88a2edd5cebda0a7ab8cb2a203d329a6f629e4a21c55834ff8238100ce882524",
+      "headings": [
+        "三模型同87同场原始证据"
+      ],
+      "characters": 621
+    },
+    {
+      "path": "report/data/p16-call-boundary-v1/README.md",
+      "title": "同87调用边界原始证据",
+      "sha256": "7e85dcb062386c7f6083aae3399718cb87e39cee8181c7c9e74f73b21d533ac5",
+      "headings": [
+        "同87调用边界原始证据"
+      ],
+      "characters": 1528
+    },
+    {
+      "path": "report/data/p16-cinema-arrival-budget-v1/README.md",
+      "title": "Cinema完整联合支撑与整体预算证据",
+      "sha256": "94a40ace4a72fb054fe4c9a0b6ad2ca796bfb9e26439f3ac14349f1b221ce6cb",
+      "headings": [
+        "Cinema完整联合支撑与整体预算证据"
+      ],
+      "characters": 2197
+    },
+    {
+      "path": "report/data/p16-cinema-prefix-bound-followup-v1/README.md",
+      "title": "固定前缀max57下界与局部MILP原件",
+      "sha256": "350cb6a23127e36113625055bfef158d49409d70f963e455fe6134a18e021c85",
+      "headings": [
+        "固定前缀max57下界与局部MILP原件"
+      ],
+      "characters": 865
+    },
+    {
+      "path": "report/data/p16-cinema-second-nodes-v1/README.md",
+      "title": "Cinema第二级两候选完整质量与旧87资格",
+      "sha256": "afbae4764339b82e07dbf466dc3a6819619d344085635de3f45dd0552f9fc514",
+      "headings": [
+        "Cinema第二级两候选完整质量与旧87资格"
+      ],
+      "characters": 917
+    },
+    {
+      "path": "report/data/p16-cinema-second-refinement-v1/README.md",
+      "title": "新第二级之后的末级单扫与局部MILP原件",
+      "sha256": "702895f81d7f68d83ff38b471ddb66b75ecf0ddf8730fd2b68f371f7308d98d5",
+      "headings": [
+        "新第二级之后的末级单扫与局部MILP原件"
+      ],
+      "characters": 479
+    },
+    {
+      "path": "report/data/p16-cinema-training-cycles-v1/README.md",
+      "title": "最多四次训练尾部扫描原件",
+      "sha256": "c21fa5c298aba038e56e958f5394ad5b76d5f54eac13e6a14410f753b1a6b7a5",
+      "headings": [
+        "最多四次训练尾部扫描原件"
+      ],
+      "characters": 301
+    },
+    {
+      "path": "report/data/p16-cinema-training-tail-v1/README.md",
+      "title": "原60图尾部单扫和固定前缀覆盖原件",
+      "sha256": "5b3b30d4d959398c3acab0495bbe25a8b706a01636ef36dedf55be11e27895e0",
+      "headings": [
+        "原60图尾部单扫和固定前缀覆盖原件"
+      ],
+      "characters": 370
+    },
+    {
+      "path": "report/data/p16-constant2-profile-v1/README.md",
+      "title": "2³恒色RGB头只读筛查证据",
+      "sha256": "6db0ba1c3a9b2f3b2b4156a8086918cd7e53da451745831cd6b18616f6ee2201",
+      "headings": [
+        "2³恒色RGB头只读筛查证据"
+      ],
+      "characters": 756
+    },
+    {
+      "path": "report/data/p16-default-layout-v1/README.md",
+      "title": "93默认小N原因辨别原字节",
+      "sha256": "afc794eb07b1da20a27edcc22e7775221cbeed900f4ff1050c50a715fe2e0d62",
+      "headings": [
+        "93默认小N原因辨别原字节"
+      ],
+      "characters": 506
+    },
+    {
+      "path": "report/data/p16-final-model-pair-v1/README.md",
+      "title": "最终模型同87后端配对原件",
+      "sha256": "0fcef273087381c6183370a403c8023a9d97ccfe1dd62c06ecad64353594bc37",
+      "headings": [
+        "最终模型同87后端配对原件"
+      ],
+      "characters": 642
+    },
+    {
+      "path": "report/data/p16-framework-20261029/delivery/README.md",
+      "title": "Flash Chroma 框架适配",
+      "sha256": "419200c6b99076299eb540b01def84f75da10711052f27afb408298ba1f4a735",
+      "headings": [
+        "Flash Chroma 框架适配"
+      ],
+      "characters": 1158
+    },
+    {
+      "path": "report/data/p16-framework-20261029/evidence/framework-integration-probe-20261029/README.md",
+      "title": "Flash Chroma 框架适配",
+      "sha256": "da045cb251b90ddb16984650f5201adc47b4d20e5df1ab0d58ba7ce23db47366",
+      "headings": [
+        "Flash Chroma 框架适配"
+      ],
+      "characters": 722
+    },
+    {
+      "path": "report/data/p16-frontier-header-20261027/README.md",
+      "title": "单头文件三维配置交付证据",
+      "sha256": "cf4da1a9dd306d25b577f387695679394d219dfaae648cf21a9ca452e20981bc",
+      "headings": [
+        "单头文件三维配置交付证据"
+      ],
+      "characters": 707
+    },
+    {
+      "path": "report/data/p16-header-performance-20261028/README.md",
+      "title": "单头性能修复：本机实测与原始证据",
+      "sha256": "ee4b6f67d94b885db9b04f3f80523b731a2ab0a64ba3492822700fd3e43d0461",
+      "headings": [
+        "单头性能修复：本机实测与原始证据"
+      ],
+      "characters": 1360
+    },
+    {
+      "path": "report/data/p16-lazy-pages-profile-v1/README.md",
+      "title": "固定4KiB输入页覆盖率证据",
+      "sha256": "71a3fd4d656a1349df3a7cf430b8f43b5fdc1f027debd85cc308b159a64ff2bb",
+      "headings": [
+        "固定4KiB输入页覆盖率证据"
+      ],
+      "characters": 911
+    },
+    {
+      "path": "report/data/p16-memory-andn-v3/README.md",
+      "title": "线性ROM ANDN阶段证据",
+      "sha256": "b6cdd021e10d38f012669acf0b269d4084bce3ad8a4a07ffd8c6faeaccdf9055",
+      "headings": [
+        "线性ROM ANDN阶段证据"
+      ],
+      "characters": 465
+    },
+    {
+      "path": "report/data/p16-memory-ilp-v1/README.md",
+      "title": "固定8像素C99批读取证据",
+      "sha256": "2a99fa8c2755f97dd12c4ae003b9e0a62cb0e1759efa93488cc55a389a722741",
+      "headings": [
+        "固定8像素C99批读取证据"
+      ],
+      "characters": 350
+    },
+    {
+      "path": "report/data/p16-memory-rom-v1/README.md",
+      "title": "精确ROM内存阶段证据",
+      "sha256": "3c33cc30a956cd44c0ef0351dbf936af2c1dbf421964dbf3c13d7966e981281e",
+      "headings": [
+        "精确ROM内存阶段证据"
+      ],
+      "characters": 652
+    },
+    {
+      "path": "report/data/p16-memory-store-portability-v1/README.md",
+      "title": "",
+      "sha256": "0a12f03e4258dde25e794b683845dc9684c90a9659e7ce1dd11392986ae868f2",
+      "headings": [],
+      "characters": 288
+    },
+    {
+      "path": "report/data/p16-memory-store-v1/README.md",
+      "title": "C99组内重叠写证据",
+      "sha256": "868b5f76fe3fbe43e2d17c00a214c3ff74983a6a52be96444eed99af42972061",
+      "headings": [
+        "C99组内重叠写证据"
+      ],
+      "characters": 449
+    },
+    {
+      "path": "report/data/p16-node-precision-portability-v1/README.md",
+      "title": "位宽曲线与C99跨目标核验",
+      "sha256": "c4b657a4218c7d7b4b6f00602efee06c723a91c52b8edbd2386592fabf11dacc",
+      "headings": [
+        "位宽曲线与C99跨目标核验"
+      ],
+      "characters": 301
+    },
+    {
+      "path": "report/data/p16-omp-policy-v2/README.md",
+      "title": "96逐线程绑定的独立原因诊断证据",
+      "sha256": "2e35873e7100c6a1192f4c5fc1b3bf503fb52b7a0e9d19e6ee5def8afd45318e",
+      "headings": [
+        "96逐线程绑定的独立原因诊断证据"
+      ],
+      "characters": 761
+    },
+    {
+      "path": "report/data/p16-palette-input-v1/README.md",
+      "title": "",
+      "sha256": "dd7859ff28382c1a4bc8cfc338457f148a6c9847c419c3fa76e7e352b9171b9a",
+      "headings": [],
+      "characters": 375
+    },
+    {
+      "path": "report/data/p16-palette-prepare-v1/README.md",
+      "title": "95固定字典准备原字节证据",
+      "sha256": "bb0996a35dd538a3e85b32cfeb0bfdd7cc541084ecbfd5b7ea183557c04853ea",
+      "headings": [
+        "95固定字典准备原字节证据"
+      ],
+      "characters": 599
+    },
+    {
+      "path": "report/data/p16-prepare-policy-v1/README.md",
+      "title": "88显式准备策略的完整原始证据",
+      "sha256": "5b89ed4a10d3ffe42a8ca045e8b29ba18888dad684cb9cf04403c015739960d3",
+      "headings": [
+        "88显式准备策略的完整原始证据"
+      ],
+      "characters": 1438
+    },
+    {
+      "path": "report/data/p16-prepare-simd-v1/README.md",
+      "title": "后缀准备AVX2的精简证据",
+      "sha256": "0a0ddad36ad6964a5f2d645f7b47748cfb3f972ccbf54fda994da5c79211290b",
+      "headings": [
+        "后缀准备AVX2的精简证据"
+      ],
+      "characters": 678
+    },
+    {
+      "path": "report/data/p16-prepared-plan-v1/README.md",
+      "title": "显式准备对象共享的完整原件",
+      "sha256": "702b76c33becfe0e6546982d50c84d6c77ba0b19c50489ad2c1515b72308b78e",
+      "headings": [
+        "显式准备对象共享的完整原件"
+      ],
+      "characters": 1665
+    },
+    {
+      "path": "report/data/p16-rgb24-optimization-20261030/delivery/README.md",
+      "title": "Flash Chroma 框架适配",
+      "sha256": "06ce44b25f0d7481efcb7e54987b81695abf3f5173a8307db5e010178bf420a5",
+      "headings": [
+        "Flash Chroma 框架适配"
+      ],
+      "characters": 1324
+    },
+    {
+      "path": "report/data/p16-rgb24-optimization-20261030/evidence/rgb24-optimization-20261030/previous-delivery/README.md",
+      "title": "Flash Chroma 框架适配",
+      "sha256": "419200c6b99076299eb540b01def84f75da10711052f27afb408298ba1f4a735",
+      "headings": [
+        "Flash Chroma 框架适配"
+      ],
+      "characters": 1158
+    },
+    {
+      "path": "report/data/p16-segment-batch-v1/README.md",
+      "title": "90显式分段接口：完整证据",
+      "sha256": "38181dbc075e48f3d9c3ce00d1435866041a82f9c6a3987fbdeb107604c2fcea",
+      "headings": [
+        "90显式分段接口：完整证据"
+      ],
+      "characters": 737
+    },
+    {
+      "path": "report/data/p16-segment-confirm-v1/README.md",
+      "title": "90独立镜像确认原始证据",
+      "sha256": "f347484f688268dc2a037467905c0f00dbd11825314447eb8c69541eaf354383",
+      "headings": [
+        "90独立镜像确认原始证据"
+      ],
+      "characters": 615
+    },
+    {
+      "path": "report/data/p16-shared-domain-v1/README.md",
+      "title": "91共享首级资格扩展：完整原件",
+      "sha256": "f366b60b49f3b0f7928ae86445387cf931ad0815c6c23c8dc8ab5350e74c691b",
+      "headings": [
+        "91共享首级资格扩展：完整原件"
+      ],
+      "characters": 738
+    },
+    {
+      "path": "report/data/p16-shared-prepare-v1/README.md",
+      "title": "94共享prepare原字节证据",
+      "sha256": "f153925c6271609fc1a1f0ef6d9c2f99a70e706e7f3d89a8e8acb0f8b58d45d4",
+      "headings": [
+        "94共享prepare原字节证据"
+      ],
+      "characters": 521
+    },
+    {
+      "path": "report/data/p16-shared-proven-v1/README.md",
+      "title": "97隔离共享已证域路径的完整证据",
+      "sha256": "7a37bdf0b5b105d9dc4d8e37cd60f05aceaa0f7ecb5ce966b18377c2531d197d",
+      "headings": [
+        "97隔离共享已证域路径的完整证据"
+      ],
+      "characters": 767
+    },
+    {
+      "path": "report/data/p16-speed-prepare-outplace-v1/README.md",
+      "title": "速度阶段精简证据",
+      "sha256": "b4c61e97c5613a9aaab1bbfbc2c4c89bf66bc7fd3f9ee02bc261b0de0dd8c5f3",
+      "headings": [
+        "速度阶段精简证据"
+      ],
+      "characters": 1592
+    },
+    {
+      "path": "report/data/p16-studio-event-20261029/README.md",
+      "title": "工作台与赛前集成证据",
+      "sha256": "757afe7f129a0c546319125e143dd2deccf6d3c082c4d7eb8c6822d1d9b27807",
+      "headings": [
+        "工作台与赛前集成证据"
+      ],
+      "characters": 540
+    },
+    {
+      "path": "report/data/p16-tail-frontier-plot-20261024/data.md",
+      "title": "精度候选图的精确聚合数据",
+      "sha256": "78c83fa4e7852433ebdad8453a1d1668101a4737de2954a9e81f81dbf905f72c",
+      "headings": [
+        "精度候选图的精确聚合数据"
+      ],
+      "characters": 1342
+    },
+    {
+      "path": "report/data/p16-three-directions-collaboration/README.md",
+      "title": "三分支发布前协作原文",
+      "sha256": "1f728b940f81a59fd2048c77df1b49e56d4aee6a5b55ca90658b664681aee1c4",
+      "headings": [
+        "三分支发布前协作原文"
+      ],
+      "characters": 321
+    },
+    {
+      "path": "report/data/p16-workload-v1/README.md",
+      "title": "92原字节证据",
+      "sha256": "e4926ebe0023dcc3722e684ecdcd7d78f20f009d06d4111b13218c440694bb3d",
+      "headings": [
+        "92原字节证据"
+      ],
+      "characters": 616
+    },
+    {
+      "path": "report/data/paired-grid-contract-v1/report.md",
+      "title": "相邻节点成对整数提议：实现与集中合同",
+      "sha256": "0a8e10c788777d66e5af7895abda4e27a2c17cef69852c32c95b6fd14f2799a4",
+      "headings": [
+        "相邻节点成对整数提议：实现与集中合同",
+        "实现与边界",
+        "测试环境与目的",
+        "集中结果",
+        "接入说明与已知限制"
+      ],
+      "characters": 3254
+    },
+    {
+      "path": "report/data/pipeline-interpolation-20261021/report.md",
+      "title": "统一插值与四级分别匹配插值的精度、耗时对照",
+      "sha256": "4bbaf398471d3abe4b1209ea9ddc38fe0afe2c8da67a0e71f044a74e63ec7bd7",
+      "headings": [
+        "统一插值与四级分别匹配插值的精度、耗时对照",
+        "2. 四级流水线：实验设计",
+        "3. 四级结果",
+        "统一入口与逐级派发的实现代价",
+        "尾部误差",
+        "4. 验证与环境",
+        "协作检查与本次提交范围",
+        "代码、证据与复现"
+      ],
+      "characters": 7170
+    },
+    {
+      "path": "report/data/precision-checkpoint-v1/report.md",
+      "title": "凌晨精度研究检查点",
+      "sha256": "cbac10508d6a1db7c4c1e766b61573fd58e071cb7c370fce2c6b35f95fd3a202",
+      "headings": [
+        "凌晨精度研究检查点",
+        "已取得的实际收益",
+        "难例的现状与原因",
+        "环境、证据与剩余事项"
+      ],
+      "characters": 2075
+    },
+    {
+      "path": "report/data/protected-tail-cases-20261024/README.md",
+      "title": "普通四级与 Velvia 单级的完整支撑验证",
+      "sha256": "e5f565f95306c69d7e6d3366a44bf938372e59252a00d17dde95d7d8947d419c",
+      "headings": [
+        "普通四级与 Velvia 单级的完整支撑验证"
+      ],
+      "characters": 767
+    },
+    {
+      "path": "report/data/quantile-global-v1/README.md",
+      "title": "全颜色分位提案及下界松弛证据",
+      "sha256": "4689b13db293f92faf3bd860fb5158dfa09a84a3590785ed7c000d1f8722bdab",
+      "headings": [
+        "全颜色分位提案及下界松弛证据"
+      ],
+      "characters": 1906
+    },
+    {
+      "path": "report/data/quantile-tail-v1/README.md",
+      "title": "逐图分位预算与全节点补偿证据",
+      "sha256": "e8ba18b42a7c610bbe4effa4658b4d9ca19f32b10f18e47709fcd59974037cec",
+      "headings": [
+        "逐图分位预算与全节点补偿证据"
+      ],
+      "characters": 2056
+    },
+    {
+      "path": "report/data/r19/README.md",
+      "title": "R17–R19 验收归档",
+      "sha256": "12b3089a8c18d0ecd57e55c83475c9805dbb2b861f0d49a816ede914ffc75077",
+      "headings": [
+        "R17–R19 验收归档"
+      ],
+      "characters": 1563
+    },
+    {
+      "path": "report/data/r20/README.md",
+      "title": "R20 可核验记录",
+      "sha256": "7312a2bae7c89cada730a8f6192d6f71c6828c0e8b8f57e1bc2612cbcaadb30e",
+      "headings": [
+        "R20 可核验记录"
+      ],
+      "characters": 395
+    },
+    {
+      "path": "report/data/r21/README.md",
+      "title": "R21 可核验记录",
+      "sha256": "09d545f6b981be1fd2a0a7c654a52b8ba03605f751deded4d962f1c6c2378749",
+      "headings": [
+        "R21 可核验记录"
+      ],
+      "characters": 371
+    },
+    {
+      "path": "report/data/r22/README.md",
+      "title": "R22 可核验记录",
+      "sha256": "5d0f212d55b13213969a1511e647722711a258f81363657e884eb0f3a0e5b681",
+      "headings": [
+        "R22 可核验记录"
+      ],
+      "characters": 467
+    },
+    {
+      "path": "report/data/r23/README.md",
+      "title": "R23 可核验记录",
+      "sha256": "af090cd240a5a7dd84b38a2aabbb3dc4b76a5935e2ce9370b1f1e29dead83d52",
+      "headings": [
+        "R23 可核验记录"
+      ],
+      "characters": 406
+    },
+    {
+      "path": "report/data/r24/README.md",
+      "title": "R24 可核验记录",
+      "sha256": "c4d30b99b94befc0eb68ab2de42bafe45eb1eff3ae82d0098fdaaa7f44be727d",
+      "headings": [
+        "R24 可核验记录"
+      ],
+      "characters": 547
+    },
+    {
+      "path": "report/data/r25/README.md",
+      "title": "R25 可核验记录",
+      "sha256": "6708771eacd9aa0b636ec6ecd2fa8d172a81b2e7ec67c69de9be2b807d8efe71",
+      "headings": [
+        "R25 可核验记录"
+      ],
+      "characters": 608
+    },
+    {
+      "path": "report/data/r26/README.md",
+      "title": "R26 可核验记录",
+      "sha256": "45bbe9837bcdecdb4b4f62355f72ef8f3540fae25468d57ab5a9d538586786c9",
+      "headings": [
+        "R26 可核验记录"
+      ],
+      "characters": 523
+    },
+    {
+      "path": "report/data/r27/README.md",
+      "title": "R27 可核验记录",
+      "sha256": "53a8ee732ec380e4ebbe8ac4cb3f50bf78907ac9fe28c0472f571a57aba16de7",
+      "headings": [
+        "R27 可核验记录"
+      ],
+      "characters": 637
+    },
+    {
+      "path": "report/data/r28/README.md",
+      "title": "R28 数据与账本阶段证据",
+      "sha256": "6e070f18084d59ae9b058bc1a052593a30bd0030aea7a51bd1e3b9c9baa39967",
+      "headings": [
+        "R28 数据与账本阶段证据"
+      ],
+      "characters": 356
+    },
+    {
+      "path": "report/data/r29/README.md",
+      "title": "R29 首个完整case对照快照",
+      "sha256": "e4d2786f73094e6a9c5d2e9634ebe53679596fda21df14edb05c5c9031149877",
+      "headings": [
+        "R29 首个完整case对照快照"
+      ],
+      "characters": 455
+    },
+    {
+      "path": "report/data/r30/README.md",
+      "title": "R30 独立C99运行时阶段证据",
+      "sha256": "165490fe18add441a02e69b9cc7204884d13b094e26de69cb4692562c62cf190",
+      "headings": [
+        "R30 独立C99运行时阶段证据"
+      ],
+      "characters": 370
+    },
+    {
+      "path": "report/data/r31/README.md",
+      "title": "R31 AArch64大小端实际模拟执行",
+      "sha256": "62195fed8f9b18523caec84cbc65e59a6ca244ce1dfff22b28017ccec28d7a22",
+      "headings": [
+        "R31 AArch64大小端实际模拟执行"
+      ],
+      "characters": 380
+    },
+    {
+      "path": "report/data/r32/README.md",
+      "title": "R32 可核验记录",
+      "sha256": "10735bb15f699f51ce22a311a08278eccc1711b87d2a0fe05991b840083f4636",
+      "headings": [
+        "R32 可核验记录"
+      ],
+      "characters": 394
+    },
+    {
+      "path": "report/data/r33/README.md",
+      "title": "R33 可核验记录",
+      "sha256": "b01d7ff9e3ae39fd7ea5c13e139f5b745ede4842d05497b6f226c0f4ef38f773",
+      "headings": [
+        "R33 可核验记录"
+      ],
+      "characters": 496
+    },
+    {
+      "path": "report/data/r34/README.md",
+      "title": "R34 可核验记录",
+      "sha256": "21e8b67e4f36c3c31e87c679957e41d9f3c52502001ad195e3ed629e5dabd4f1",
+      "headings": [
+        "R34 可核验记录"
+      ],
+      "characters": 484
+    },
+    {
+      "path": "report/data/r35/README.md",
+      "title": "R35 可核验记录",
+      "sha256": "19896092efa35c8e982eef0fc7cf3cc36307d463cb62b90abcb96c47702360b0",
+      "headings": [
+        "R35 可核验记录"
+      ],
+      "characters": 425
+    },
+    {
+      "path": "report/data/r37/README.md",
+      "title": "R37 可核验记录",
+      "sha256": "9cf3fb5c50044d0046b63a292f7f4ad6631a5d1ffe26556898627a76d84cac83",
+      "headings": [
+        "R37 可核验记录"
+      ],
+      "characters": 379
+    },
+    {
+      "path": "report/data/r39/README.md",
+      "title": "R39 可核验记录",
+      "sha256": "73360c30fc820f50fe85e1224009ab3598d35150ba3809a3c1a5abc6237390b4",
+      "headings": [
+        "R39 可核验记录"
+      ],
+      "characters": 418
+    },
+    {
+      "path": "report/data/r40/README.md",
+      "title": "R40 可核验记录",
+      "sha256": "beeb5ac9f170a80bfa76f6b0cb32ec2ecf0cf14ea18d52820fa54248c4771ad1",
+      "headings": [
+        "R40 可核验记录"
+      ],
+      "characters": 397
+    },
+    {
+      "path": "report/data/r42/README.md",
+      "title": "R42 可核验记录",
+      "sha256": "da78f6017fe381ca0bcf169cd48b5c24a3df986b3847292a787c7899849c1866",
+      "headings": [
+        "R42 可核验记录"
+      ],
+      "characters": 405
+    },
+    {
+      "path": "report/data/r43/README.md",
+      "title": "R43 可核验记录",
+      "sha256": "26f6ef8560c0ec527bc40c0d547c125170b6cdb824a17b9e569ef9db83bd561a",
+      "headings": [
+        "R43 可核验记录"
+      ],
+      "characters": 393
+    },
+    {
+      "path": "report/data/r44/README.md",
+      "title": "R44 可核验记录",
+      "sha256": "0985883a7f2d6fc6151206e96ff727de9ec6267c62fb8a53bd30b143a61f338f",
+      "headings": [
+        "R44 可核验记录"
+      ],
+      "characters": 414
+    },
+    {
+      "path": "report/data/r45/README.md",
+      "title": "R45 可核验记录",
+      "sha256": "136275523298238237eb880d2fd50a94d3572c61859fe22d636f3c12d3a9fafa",
+      "headings": [
+        "R45 可核验记录"
+      ],
+      "characters": 398
+    },
+    {
+      "path": "report/data/r47/README.md",
+      "title": "R47 可核验记录",
+      "sha256": "372d7130dcf52db8884dfff51e85245e3ee8c41c91912737dd2f2a9e3542a266",
+      "headings": [
+        "R47 可核验记录"
+      ],
+      "characters": 439
+    },
+    {
+      "path": "report/data/r50/README.md",
+      "title": "R50 可核验记录",
+      "sha256": "ba15db41f4fc448a5cd976312f10eefd1d903ce03d3896d5509df414a787991a",
+      "headings": [
+        "R50 可核验记录"
+      ],
+      "characters": 402
+    },
+    {
+      "path": "report/data/r51/README.md",
+      "title": "R51 可核验记录",
+      "sha256": "3a5bf76400532ea57e4f8d7945eeda4ebc10001bdc99ccfaa07409d6013e263b",
+      "headings": [
+        "R51 可核验记录"
+      ],
+      "characters": 738
+    },
+    {
+      "path": "report/data/r52/README.md",
+      "title": "R52 远端整合与验证证据",
+      "sha256": "2ccd7fe1e475c1c7ec0cc6f154d1c79f0239ed532908a90b87552ca70b9908cd",
+      "headings": [
+        "R52 远端整合与验证证据"
+      ],
+      "characters": 626
+    },
+    {
+      "path": "report/data/rounded-budget-v1/README.md",
+      "title": "真实舍入预算补偿的固定对照",
+      "sha256": "f860be224c462f8f3bff1d5fcd0f941258bf9618f2477d49419fe087e3cfa0ce",
+      "headings": [
+        "真实舍入预算补偿的固定对照"
+      ],
+      "characters": 1858
+    },
+    {
+      "path": "report/data/rounded-grid-v1/report.md",
+      "title": "联合网格与节点：已完成验收结果",
+      "sha256": "1a8f4d308fd0f5972c471b727024259484babdb4e3a47efb6426b5562a56313f",
+      "headings": [
+        "联合网格与节点：已完成验收结果"
+      ],
+      "characters": 891
+    },
+    {
+      "path": "report/data/rounded-lomo-fullphotos-v1/report.md",
+      "title": "网格与整数节点：冻结选择和完整验收记录",
+      "sha256": "332fefd52e8beae0c51043e29675dbb3c370bea83509d829377a29d0adc2671f",
+      "headings": [
+        "网格与整数节点：冻结选择和完整验收记录"
+      ],
+      "characters": 686
+    },
+    {
+      "path": "report/data/separable-calibration-api-v1/README.md",
+      "title": "通用精确单调坐标入口的集中合同",
+      "sha256": "ad394b7a7645d0aaf5398eb9a32bea1103e9555193f79f091325d42731d40c37",
+      "headings": [
+        "通用精确单调坐标入口的集中合同"
+      ],
+      "characters": 474
+    },
+    {
+      "path": "report/data/skylake-adaptive-dictionary-v1/README.md",
+      "title": "修订72双表示实验原始档案",
+      "sha256": "e823d3e62c0a91812b0f197139d17a297852db65cd0dd39f70e54b9d8a3ab53b",
+      "headings": [
+        "修订72双表示实验原始档案"
+      ],
+      "characters": 900
+    },
+    {
+      "path": "report/data/skylake-andn-normal-v1/README.md",
+      "title": "修订80：普通写组合未达到四线程三倍",
+      "sha256": "0b4fa0c06eb94507da9e2414afa067950ab84c631e97422368a327921a5b0d1b",
+      "headings": [
+        "修订80：普通写组合未达到四线程三倍"
+      ],
+      "characters": 924
+    },
+    {
+      "path": "report/data/skylake-andn-split-v1/README.md",
+      "title": "ANDN分入口编译：完整精度通过，整体三倍失败",
+      "sha256": "a65828bf35a5b029ded388fba7d7c7e01fe1e51f807071acb2d450612fede2dd",
+      "headings": [
+        "ANDN分入口编译：完整精度通过，整体三倍失败"
+      ],
+      "characters": 1421
+    },
+    {
+      "path": "report/data/skylake-axis-preweight-static-v1/README.md",
+      "title": "共享轴预计算的静态停止与后续结构剖面",
+      "sha256": "be2996bebb3c392493f15f76106177d0d0c016c19845329c16e0d7ea41cd165a",
+      "headings": [
+        "共享轴预计算的静态停止与后续结构剖面"
+      ],
+      "characters": 705
+    },
+    {
+      "path": "report/data/skylake-block-dictionary-v1/README.md",
+      "title": "精确块字典原始档案",
+      "sha256": "f1b1d048f9772fe47f8fb0968fb15703080d710d0afe5f402e6e1ab4adab9bfb",
+      "headings": [
+        "精确块字典原始档案"
+      ],
+      "characters": 1035
+    },
+    {
+      "path": "report/data/skylake-brick2-header15-profile-v1/README.md",
+      "title": "header15／残差6／tag63：两项照片门槛失败",
+      "sha256": "be9739fa2c4c6795afa7932a879b00abc8f35bc99911bece7c85fec0c0e2545f",
+      "headings": [
+        "header15／残差6／tag63：两项照片门槛失败"
+      ],
+      "characters": 1002
+    },
+    {
+      "path": "report/data/skylake-brick2-hybrid-v1/README.md",
+      "title": "修订84混合RGB解码：完整精度通过，四线程性能失败",
+      "sha256": "e9b8f20cf1e383f89feec8b872e24207c01f5ff00828929a210cd4202834d324",
+      "headings": [
+        "修订84混合RGB解码：完整精度通过，四线程性能失败"
+      ],
+      "characters": 1151
+    },
+    {
+      "path": "report/data/skylake-brick2-rgb-base-profile-v1/README.md",
+      "title": "2³输入/RGB基值差分：唯一离线筛查失败",
+      "sha256": "d557cf0b8e65b2b672d74cb37660233705c1b43c169f416ef8dac982810cd90f",
+      "headings": [
+        "2³输入/RGB基值差分：唯一离线筛查失败"
+      ],
+      "characters": 896
+    },
+    {
+      "path": "report/data/skylake-cache-hints-v1/README.md",
+      "title": "修订38—42原始证据",
+      "sha256": "8383ab871b0ab246542eda07de54c975cf38f5761a7fd9622a467e5e3bd3bac7",
+      "headings": [
+        "修订38—42原始证据"
+      ],
+      "characters": 1136
+    },
+    {
+      "path": "report/data/skylake-cache-range-delivery-v1/README.md",
+      "title": "范围判断静态停止阶段交付",
+      "sha256": "107a3ad2a6a22fef44d2074e6072e3915e771e9bdf036609335114468451c759",
+      "headings": [
+        "范围判断静态停止阶段交付"
+      ],
+      "characters": 481
+    },
+    {
+      "path": "report/data/skylake-cache-range-static-v1/README.md",
+      "title": "范围判断简化的静态停止证据",
+      "sha256": "0c89cb5d03185a5aa673f57ddd0fd74065995249442261a8465f5a53d46af3af",
+      "headings": [
+        "范围判断简化的静态停止证据"
+      ],
+      "characters": 605
+    },
+    {
+      "path": "report/data/skylake-chroma-2op-v1/README.md",
+      "title": "两指令通道差索引61原始档案",
+      "sha256": "07995e6ff4c545714efd9f788abb04cf39ffc981fa075b13d316779a1f08b4f8",
+      "headings": [
+        "两指令通道差索引61原始档案"
+      ],
+      "characters": 327
+    },
+    {
+      "path": "report/data/skylake-chroma-delta-v1/README.md",
+      "title": "通道差直表60原始档案",
+      "sha256": "583213e471083c8f304e27cac9835dcc2876ff442453278a5307d0cd0d0cbd51",
+      "headings": [
+        "通道差直表60原始档案"
+      ],
+      "characters": 408
+    },
+    {
+      "path": "report/data/skylake-chroma-scheduling-v1/README.md",
+      "title": "66—69原始研究档案",
+      "sha256": "ea8c2f20d4e1a569ab0f30f4393d838c78f1bdb052376fbfe3cd15f7f6f50094",
+      "headings": [
+        "66—69原始研究档案"
+      ],
+      "characters": 1234
+    },
+    {
+      "path": "report/data/skylake-clang-static-v1/README.md",
+      "title": "同源Clang对象级研究",
+      "sha256": "723df0ffd7070ff6d9bd32ba7e00411f97860c16630441bc11d422444c31a057",
+      "headings": [
+        "同源Clang对象级研究"
+      ],
+      "characters": 437
+    },
+    {
+      "path": "report/data/skylake-compact-cache-delivery-v1/README.md",
+      "title": "半字缓存静态阶段的交付核对",
+      "sha256": "67d68a84ea58ffa428a8f987f6d51d1a5e876c78931bcb611d34fea5a2d0a134",
+      "headings": [
+        "半字缓存静态阶段的交付核对"
+      ],
+      "characters": 592
+    },
+    {
+      "path": "report/data/skylake-compact-cache-static-v1/README.md",
+      "title": "无损半字缓存组合的静态停止证据",
+      "sha256": "7e57c68544aeec112157407c274229ec10690afcd7aa9c1ee27dc729541693eb",
+      "headings": [
+        "无损半字缓存组合的静态停止证据"
+      ],
+      "characters": 573
+    },
+    {
+      "path": "report/data/skylake-coordinate-delivery-v1/README.md",
+      "title": "坐标与局部性阶段交付核对",
+      "sha256": "65225d6a81a69e1d79bdb760c6b2cc1168dfff71b23a26a385599f49379b3653",
+      "headings": [
+        "坐标与局部性阶段交付核对"
+      ],
+      "characters": 682
+    },
+    {
+      "path": "report/data/skylake-coordinate-locality-v1/README.md",
+      "title": "坐标与节点局部性停止证据",
+      "sha256": "6d9eb3754b1afe3111bece9812a3af8930c5b58bc403d7d84762baaa8223f579",
+      "headings": [
+        "坐标与节点局部性停止证据"
+      ],
+      "characters": 678
+    },
+    {
+      "path": "report/data/skylake-deferred-palette-v1/README.md",
+      "title": "延迟调色板63原始档案",
+      "sha256": "efeda20e382596fb51fe2a62e52cb8ae1dee413d676727217e28a42ff8aa5a28",
+      "headings": [
+        "延迟调色板63原始档案"
+      ],
+      "characters": 364
+    },
+    {
+      "path": "report/data/skylake-delta-cache-delivery-v1/README.md",
+      "title": "缓存与差值组合阶段交付",
+      "sha256": "bd4eb10267fa4345551dae7be6507bdfa719f9969d16b847250a7862d5f30d1c",
+      "headings": [
+        "缓存与差值组合阶段交付"
+      ],
+      "characters": 489
+    },
+    {
+      "path": "report/data/skylake-delta-cache-v1/README.md",
+      "title": "已有缓存与同缓存加无损差值编码的直接比较",
+      "sha256": "e563331ea9d7a2f8cef586b5a6d1a299c9d64f1bd978d5228991665a57e713f5",
+      "headings": [
+        "已有缓存与同缓存加无损差值编码的直接比较"
+      ],
+      "characters": 943
+    },
+    {
+      "path": "report/data/skylake-delta16-delivery-v1/README.md",
+      "title": "坐标差值与Clang静态研究交付核对",
+      "sha256": "5bbbd148756fed38bf0a10343e3559a29fcc0a24bd83ddf2a9a7b7b1e4b8261e",
+      "headings": [
+        "坐标差值与Clang静态研究交付核对"
+      ],
+      "characters": 620
+    },
+    {
+      "path": "report/data/skylake-delta16-v2/README.md",
+      "title": "有符号坐标差无损压缩的完整证据",
+      "sha256": "5115eaef4997070a00663cae90a799962d354dda390e92286364a01e4fc668a1",
+      "headings": [
+        "有符号坐标差无损压缩的完整证据"
+      ],
+      "characters": 959
+    },
+    {
+      "path": "report/data/skylake-direct-tiles-v1/README.md",
+      "title": "修订53—55原始证据",
+      "sha256": "0d1ba264011f974a82eb8b0083d55851d17b1181dfccc7141821d1f53072abf3",
+      "headings": [
+        "修订53—55原始证据"
+      ],
+      "characters": 850
+    },
+    {
+      "path": "report/data/skylake-dispatch-diagnostic-v1/README.md",
+      "title": "修订78两组发射诊断档案",
+      "sha256": "c2f42018499c274445ea07b8fb2b278e95518cb308246e7a3dd2610f7a5eaf93",
+      "headings": [
+        "修订78两组发射诊断档案"
+      ],
+      "characters": 690
+    },
+    {
+      "path": "report/data/skylake-domain-certificate-v1/README.md",
+      "title": "完整输入域的单元区间证书",
+      "sha256": "a50237fb46af2068c461400bd50e151d53539a716a84144f5ca934a41ec32459",
+      "headings": [
+        "完整输入域的单元区间证书"
+      ],
+      "characters": 471
+    },
+    {
+      "path": "report/data/skylake-domain-delivery-v1/README.md",
+      "title": "完整域证书阶段的交付核对",
+      "sha256": "2af87dab4398443100a54370df657206b9a3b7ac2c4d41d227b03307298988d4",
+      "headings": [
+        "完整域证书阶段的交付核对"
+      ],
+      "characters": 716
+    },
+    {
+      "path": "report/data/skylake-domain-isolated-v1/README.md",
+      "title": "修订16：逐单元证明及隔离快路径的完整本机验收",
+      "sha256": "f956e8a6465611f5c04dcd3af8469a0b286a21395247b040df06747b53457533",
+      "headings": [
+        "修订16：逐单元证明及隔离快路径的完整本机验收"
+      ],
+      "characters": 886
+    },
+    {
+      "path": "report/data/skylake-domain-server-v2/README.md",
+      "title": "修订4/16服务器包与WSL正确性",
+      "sha256": "50e741334f3511d5d46dc1413135e3801cafa61b31435380bdb6016ade0d6ac1",
+      "headings": [
+        "修订4/16服务器包与WSL正确性"
+      ],
+      "characters": 1745
+    },
+    {
+      "path": "report/data/skylake-domain-signed-contract-v1/README.md",
+      "title": "四网格正负斜率的获证路径有限补验",
+      "sha256": "638af5aa922df2ee5d9e0d66d0619d8f1051937239c5d7e304968ef4495048d4",
+      "headings": [
+        "四网格正负斜率的获证路径有限补验"
+      ],
+      "characters": 479
+    },
+    {
+      "path": "report/data/skylake-domain-signed-delivery-v1/README.md",
+      "title": "四网格有限补验的交付核对",
+      "sha256": "ae4a346e80bad0700f6496b95449a837170c34202844870c40b3919dce8f8bcb",
+      "headings": [
+        "四网格有限补验的交付核对"
+      ],
+      "characters": 447
+    },
+    {
+      "path": "report/data/skylake-domain-template-static-v1/README.md",
+      "title": "修订15：域证明模板方案的静态停止",
+      "sha256": "96d9bbda8f3070787ab66053d8692e257d8ca679d6b000905d643236e4a03b1d",
+      "headings": [
+        "修订15：域证明模板方案的静态停止"
+      ],
+      "characters": 431
+    },
+    {
+      "path": "report/data/skylake-exception-v1/README.md",
+      "title": "修订23对22：精确例外池的原始证据",
+      "sha256": "32b3c58db8d60ecd01ac20d190537315b1daf9b520d37a336135308b7448a97d",
+      "headings": [
+        "修订23对22：精确例外池的原始证据"
+      ],
+      "characters": 1327
+    },
+    {
+      "path": "report/data/skylake-float-v1/README.md",
+      "title": "精确binary32四权重候选",
+      "sha256": "98d179480ead53374154ba20989cc1237f4fe85e8d680c97ae71f0338a3bca09",
+      "headings": [
+        "精确binary32四权重候选"
+      ],
+      "characters": 297
+    },
+    {
+      "path": "report/data/skylake-four-thread-diagnostic-v1/README.md",
+      "title": "六案例逐TID诊断档案",
+      "sha256": "8eff894e99e8da06b03a1b1b2832334c4a3894e79757ff6422d9847a94c8e8ed",
+      "headings": [
+        "六案例逐TID诊断档案"
+      ],
+      "characters": 519
+    },
+    {
+      "path": "report/data/skylake-g-low-profile-v1/README.md",
+      "title": "固定G低布局：行集合筛查失败",
+      "sha256": "de646e7051d85ae0c115ea852e0018fb298206d5026090e0b42e2a152e89fd83",
+      "headings": [
+        "固定G低布局：行集合筛查失败"
+      ],
+      "characters": 470
+    },
+    {
+      "path": "report/data/skylake-id-batch-v1/README.md",
+      "title": "四项ID先行64/65原始档案",
+      "sha256": "ecc6178ee272465f444e7e587e0fbb8c8b006ef65cfbcebfb64b8c28eb6af178",
+      "headings": [
+        "四项ID先行64/65原始档案"
+      ],
+      "characters": 392
+    },
+    {
+      "path": "report/data/skylake-inplace-path-v1/README.md",
+      "title": "原地路径阶段证据",
+      "sha256": "30983fab02c7dd2aca6e8e73c31afa02e657d86e80e82ebf1188f296df7a3b5c",
+      "headings": [
+        "原地路径阶段证据"
+      ],
+      "characters": 620
+    },
+    {
+      "path": "report/data/skylake-input-path-v1/README.md",
+      "title": "输入路径研究证据",
+      "sha256": "96da6802d46cae9105addfad68cb2512230c4ed8d49ff2eecb49590c7d74ec70",
+      "headings": [
+        "输入路径研究证据"
+      ],
+      "characters": 530
+    },
+    {
+      "path": "report/data/skylake-input256-ordered-v1/README.md",
+      "title": "修订82静态停止、83完整精度通过但性能未达三倍",
+      "sha256": "49e7a72932d62c01b132c8b945389703df42ecf0fbe8cf92b3e05a6f00b7117d",
+      "headings": [
+        "修订82静态停止、83完整精度通过但性能未达三倍"
+      ],
+      "characters": 1063
+    },
+    {
+      "path": "report/data/skylake-input256-v1/README.md",
+      "title": "修订81：单YMM输入因热区spill停止",
+      "sha256": "cb63e08fd97ae29cd7ce00939a93ef41e3e1c4c0bad8d67e1545e1cad0c192b9",
+      "headings": [
+        "修订81：单YMM输入因热区spill停止"
+      ],
+      "characters": 1072
+    },
+    {
+      "path": "report/data/skylake-instruction-study-v1/README.md",
+      "title": "五个指令级研究候选的静态证据",
+      "sha256": "1fbaeab459facb91b1e51637beee4356036887ad2305d05bf3283aa7c212606b",
+      "headings": [
+        "五个指令级研究候选的静态证据"
+      ],
+      "characters": 1355
+    },
+    {
+      "path": "report/data/skylake-layout-server-delivery-v1/README.md",
+      "title": "布局服务器入口阶段的交付核对",
+      "sha256": "3cdb91c6d0a32c69b6f9bb5a6d7e1c5587dff8d60942e12331933122ef2fe59c",
+      "headings": [
+        "布局服务器入口阶段的交付核对"
+      ],
+      "characters": 618
+    },
+    {
+      "path": "report/data/skylake-layout-server-v2/README.md",
+      "title": "布局双库服务器包与WSL正确性证据",
+      "sha256": "3048d1989404691f167fcdeeffdff8695c2ab931eee59a026bcba2a1a8a6aa75",
+      "headings": [
+        "布局双库服务器包与WSL正确性证据"
+      ],
+      "characters": 903
+    },
+    {
+      "path": "report/data/skylake-load-packing-v1/README.md",
+      "title": "字典、载荷与非临时输出：31—37证据",
+      "sha256": "7b9e72635d7078579a0aa45f2610d5b91cda72ecd3f6d59e726d63d94a77c291",
+      "headings": [
+        "字典、载荷与非临时输出：31—37证据"
+      ],
+      "characters": 1018
+    },
+    {
+      "path": "report/data/skylake-load-store-delivery-v1/README.md",
+      "title": "软件读取与直接写回研究的交付核对",
+      "sha256": "e808a8488c060d09076fce7bf6ea381293b6f450f0ad4922430d2a68f57d4fd9",
+      "headings": [
+        "软件读取与直接写回研究的交付核对"
+      ],
+      "characters": 578
+    },
+    {
+      "path": "report/data/skylake-lookup-overlap-v1/README.md",
+      "title": "查表等待与59固定组合原始档案",
+      "sha256": "414bf2df9690b17f9f1e0be48d8c49541696b179997520fa15638312d555fae3",
+      "headings": [
+        "查表等待与59固定组合原始档案"
+      ],
+      "characters": 515
+    },
+    {
+      "path": "report/data/skylake-madd-v1/README.md",
+      "title": "精确两次VPMADDWD候选",
+      "sha256": "9486211c7b8d9761d32d85ebb205f6361ff72e7e7fb686c0e09ff4e5011cffcc",
+      "headings": [
+        "精确两次VPMADDWD候选"
+      ],
+      "characters": 311
+    },
+    {
+      "path": "report/data/skylake-matrix-delivery-v1/README.md",
+      "title": "四后端矩阵的交付核对",
+      "sha256": "6a4c441dfca556124ab828693fd22c60ede579ad574ec9c05791cdb6dc421dc7",
+      "headings": [
+        "四后端矩阵的交付核对"
+      ],
+      "characters": 552
+    },
+    {
+      "path": "report/data/skylake-output-path-v1/README.md",
+      "title": "输入输出编排研究档案",
+      "sha256": "c0414274ed4bc9d3e9686d7664282bd301772e3d5f3b73b3500ea0020701e7bc",
+      "headings": [
+        "输入输出编排研究档案"
+      ],
+      "characters": 463
+    },
+    {
+      "path": "report/data/skylake-pack5-v1/README.md",
+      "title": "五位无损直表62原始档案",
+      "sha256": "ef4bae8b301890c8baf3099e3da434717f6da7fb44d865f144ffde91e8cb227f",
+      "headings": [
+        "五位无损直表62原始档案"
+      ],
+      "characters": 339
+    },
+    {
+      "path": "report/data/skylake-packed-store-v1/README.md",
+      "title": "缓存直接写回的集中验证与负性能结果",
+      "sha256": "ab0e1fa42b83357212356f2fb6a05e40743333167d1169ada03832aab548c00b",
+      "headings": [
+        "缓存直接写回的集中验证与负性能结果"
+      ],
+      "characters": 848
+    },
+    {
+      "path": "report/data/skylake-packed-v1/README.md",
+      "title": "56位轴表候选的完整证据",
+      "sha256": "e3de5d1e7e6f280684e9d10df4072dd2a298030aa7cb6e4cad22cc6aacb27c3f",
+      "headings": [
+        "56位轴表候选的完整证据"
+      ],
+      "characters": 727
+    },
+    {
+      "path": "report/data/skylake-packet-restore-delivery-v1/README.md",
+      "title": "服务器包恢复阶段的交付核对",
+      "sha256": "a6d4331451bc52fb6722811db6b2133b7f8a61386bbc944c64750a5485f63133",
+      "headings": [
+        "服务器包恢复阶段的交付核对"
+      ],
+      "characters": 594
+    },
+    {
+      "path": "report/data/skylake-packet-restore-v1/README.md",
+      "title": "标准库服务器包恢复的唯一数据验证",
+      "sha256": "b388fa37670a1f8c3eabd59948b9cac066cc5f59305480f45bfdcea187177e3c",
+      "headings": [
+        "标准库服务器包恢复的唯一数据验证"
+      ],
+      "characters": 454
+    },
+    {
+      "path": "report/data/skylake-pair48-v1/README.md",
+      "title": "修订79：完整精度通过，四线程三倍未通过",
+      "sha256": "1419494f50f711f9892837bbf623b7f19f1c119a3145d74919122364740615ba",
+      "headings": [
+        "修订79：完整精度通过，四线程三倍未通过"
+      ],
+      "characters": 1087
+    },
+    {
+      "path": "report/data/skylake-palette-v1/README.md",
+      "title": "修订22对16：原始证据与复现边界",
+      "sha256": "edb56c4a7d627d6628a07bb570ee859ee8655caf3f96835f7fd3680e07f147ed",
+      "headings": [
+        "修订22对16：原始证据与复现边界"
+      ],
+      "characters": 1515
+    },
+    {
+      "path": "report/data/skylake-prefetchw-v1/README.md",
+      "title": "修订74写预取原始档案",
+      "sha256": "57d4943acf02dde43bf2ddeaf7aa03f609ffd256a97ca9bb2d3d86cac5620c35",
+      "headings": [
+        "修订74写预取原始档案"
+      ],
+      "characters": 691
+    },
+    {
+      "path": "report/data/skylake-prefix-split-v1/README.md",
+      "title": "首级/后缀单边界拆分的原始证据",
+      "sha256": "51010a7564c4f69cd63ac8c13d0d086fc5972f9a8977c21bac09b6706bfb519a",
+      "headings": [
+        "首级/后缀单边界拆分的原始证据"
+      ],
+      "characters": 607
+    },
+    {
+      "path": "report/data/skylake-r-contiguous-delivery-v1/README.md",
+      "title": "R连续缓存阶段的交付核对",
+      "sha256": "e9a956b75b90fae1f5b619d20219fad182644c116b36e9961fd638a382c43633",
+      "headings": [
+        "R连续缓存阶段的交付核对"
+      ],
+      "characters": 644
+    },
+    {
+      "path": "report/data/skylake-r-contiguous-v1/README.md",
+      "title": "R连续精确后缀缓存：完整正确，唯一性能比较未通过",
+      "sha256": "f3db7bce54f2c725d90134429bebf807dc1a38fa0ad75f9fcb9643251e3024b1",
+      "headings": [
+        "R连续精确后缀缓存：完整正确，唯一性能比较未通过"
+      ],
+      "characters": 973
+    },
+    {
+      "path": "report/data/skylake-r8-base-delta-profile-v1/README.md",
+      "title": "局部RGB基值加固定5bit差分：只读筛查失败",
+      "sha256": "49dd64ae89b7b98491e646a33530525447207acb222b84dda344f6eb37e6a6fa",
+      "headings": [
+        "局部RGB基值加固定5bit差分：只读筛查失败"
+      ],
+      "characters": 1069
+    },
+    {
+      "path": "report/data/skylake-recent-rgb1024-profile-v1/README.md",
+      "title": "精确输入色备忘：唯一离线筛查失败",
+      "sha256": "8e614d19595a5fd07d828ae7fd2845dc8993680b19a48371a3adf637f0a8de0f",
+      "headings": [
+        "精确输入色备忘：唯一离线筛查失败"
+      ],
+      "characters": 1010
+    },
+    {
+      "path": "report/data/skylake-restrict-delivery-v1/README.md",
+      "title": "不重叠域与restrict阶段的交付核对",
+      "sha256": "3a2e23a200d3a6ad62dfaa8d57a892088466d049f35100a66d91515454877fdb",
+      "headings": [
+        "不重叠域与restrict阶段的交付核对"
+      ],
+      "characters": 587
+    },
+    {
+      "path": "report/data/skylake-restrict-static-v1/README.md",
+      "title": "不重叠读取域候选的静态停止证据",
+      "sha256": "b224fd93b947fbeab4c5ea8e1dabd4fbe8a26450c75e6226e43816260570055f",
+      "headings": [
+        "不重叠读取域候选的静态停止证据"
+      ],
+      "characters": 525
+    },
+    {
+      "path": "report/data/skylake-scalar-gather-static-v1/README.md",
+      "title": "软件gather与固定坐标排序的静态停止证据",
+      "sha256": "a2e093a8fca0e450cb5908718af7ed017662039d36edcd7da55dc662f9281ece",
+      "headings": [
+        "软件gather与固定坐标排序的静态停止证据"
+      ],
+      "characters": 498
+    },
+    {
+      "path": "report/data/skylake-screen-calibration-v1/README.md",
+      "title": "同库筛查校准档案",
+      "sha256": "517827ecf2fb8f4b0c42828b8cb07eb24cf538a3ac8a994bd7900551ec1066f4",
+      "headings": [
+        "同库筛查校准档案"
+      ],
+      "characters": 688
+    },
+    {
+      "path": "report/data/skylake-server-delivery-v1/README.md",
+      "title": "服务器入口阶段的协作与静态交付核对",
+      "sha256": "678827ac68831d89c51a2a50c0ce5faf3783310a62a938cc3dbb912e82194193",
+      "headings": [
+        "服务器入口阶段的协作与静态交付核对"
+      ],
+      "characters": 527
+    },
+    {
+      "path": "report/data/skylake-server-entry-v1/README.md",
+      "title": "Linux服务器入口与固定字节包证据",
+      "sha256": "097b5ff55609533e52745a4a1c47b2580cfa0e323672cd99eb1b7ce9d1ccc957",
+      "headings": [
+        "Linux服务器入口与固定字节包证据"
+      ],
+      "characters": 968
+    },
+    {
+      "path": "report/data/skylake-server-matrix-v1/README.md",
+      "title": "原版、无损坐标差、精确缓存及组合的同场证据",
+      "sha256": "7f72f994ba64b4eabb606046ea8b4a9858af24dceb580b8f9d5e724dbb8ce10e",
+      "headings": [
+        "原版、无损坐标差、精确缓存及组合的同场证据"
+      ],
+      "characters": 952
+    },
+    {
+      "path": "report/data/skylake-snapshot-static-v1/README.md",
+      "title": "描述符快照的静态研究证据",
+      "sha256": "8be77bd9a2f1fe3ec2ce54d823e8e7edc2f1043edfad5f53bb8086d884b2bf00",
+      "headings": [
+        "描述符快照的静态研究证据"
+      ],
+      "characters": 467
+    },
+    {
+      "path": "report/data/skylake-stage-major-v1/README.md",
+      "title": "按阶段遍历像素块的原始证据",
+      "sha256": "50082bff09794fd946d7fd19bc2c56963a50da03436f552846ebe2fb8bc903ae",
+      "headings": [
+        "按阶段遍历像素块的原始证据"
+      ],
+      "characters": 612
+    },
+    {
+      "path": "report/data/skylake-suffix-cache-v1/README.md",
+      "title": "有界精确后缀缓存的原始证据",
+      "sha256": "31c87154f55da543c0b3a0a008a83850df425aecd7ccdfdebc6df5bd5f1f000a",
+      "headings": [
+        "有界精确后缀缓存的原始证据"
+      ],
+      "characters": 2589
+    },
+    {
+      "path": "report/data/skylake-thread-joint-v1/README.md",
+      "title": "71原始完整域与受控长批次档案",
+      "sha256": "d3126f3b0a3b0be95af572929c9f9b221f8910ccf4184ed1f80ae6d0fc43333a",
+      "headings": [
+        "71原始完整域与受控长批次档案"
+      ],
+      "characters": 1098
+    },
+    {
+      "path": "report/data/skylake-threefold-v1/README.md",
+      "title": "三倍目标的24—30研究档案",
+      "sha256": "0d470beb0e175358df03b41dcaa3d62861c5b594c3ebc4948297606effcd5ce3",
+      "headings": [
+        "三倍目标的24—30研究档案"
+      ],
+      "characters": 949
+    },
+    {
+      "path": "report/data/skylake-tiles-v1/README.md",
+      "title": "颜色分块研究证据",
+      "sha256": "ef9053f37edf0f14ef0c05973971f724d29bb2bca25a65aab9167041170f9193",
+      "headings": [
+        "颜色分块研究证据"
+      ],
+      "characters": 569
+    },
+    {
+      "path": "report/data/skylake-tilexy-t0-v1/README.md",
+      "title": "修订73二维布局与普通写组合原始档案",
+      "sha256": "91c94b6ff3b219b6f9da2c487387183680ade4b70248510870e181907aca3580",
+      "headings": [
+        "修订73二维布局与普通写组合原始档案"
+      ],
+      "characters": 1288
+    },
+    {
+      "path": "report/data/skylake-uniform-suffix-delivery-v1/README.md",
+      "title": "共享轴与同色后缀两阶段的合并交付核对",
+      "sha256": "181bfef540ba03ba6849709f8dc3c01f902f4b46a4ef1233cf3fae6d5f1f7f96",
+      "headings": [
+        "共享轴与同色后缀两阶段的合并交付核对"
+      ],
+      "characters": 727
+    },
+    {
+      "path": "report/data/skylake-uniform-suffix-static-v1/README.md",
+      "title": "首级同色后缀快路的完整静态停止证据",
+      "sha256": "66a49cca12fc857dddade85d102708f7ddae49cb15ed92b12770c7c71e8abeb2",
+      "headings": [
+        "首级同色后缀快路的完整静态停止证据"
+      ],
+      "characters": 657
+    },
+    {
+      "path": "report/data/skylake-xor-chroma-profile-v1/README.md",
+      "title": "相邻通道异或布局只读筛查",
+      "sha256": "ec1855c884fbd55f9b189b4bd2d34b7859056578b1ced56eba9e184c15adaaa6",
+      "headings": [
+        "相邻通道异或布局只读筛查"
+      ],
+      "characters": 1002
+    },
+    {
+      "path": "report/data/tail-grid-v1/README.md",
+      "title": "固定m33网格误差研究证据",
+      "sha256": "2dca280722bf509a07f5e61567b4db2e6642141710d742793b6563e3bdea2bbf",
+      "headings": [
+        "固定m33网格误差研究证据"
+      ],
+      "characters": 1236
+    },
+    {
+      "path": "report/data/tail-repair-v1/README.md",
+      "title": "逐图上限与局部节点修复证据",
+      "sha256": "9ad25c91e71d46cc0c92ca76efe1f68fc890de3414f915066090f1ad0d71606e",
+      "headings": [
+        "逐图上限与局部节点修复证据"
+      ],
+      "characters": 1936
+    },
+    {
+      "path": "report/data/unified-v1/README.md",
+      "title": "数据扩展与合并阶段证据",
+      "sha256": "a56a4ea07c698a29a4e83307e0f8a99cdafb40bf9753916d36cc791e90556fd1",
+      "headings": [
+        "数据扩展与合并阶段证据"
+      ],
+      "characters": 1278
+    },
+    {
+      "path": "report/data/velvia-alternating-integer-v1/report.md",
+      "title": "Velvia：直接整数目标的节点与坐标交替",
+      "sha256": "addaa9c82914551619ee851792a06e1569f5ff1534e2c454c53b4b9aa56c66af",
+      "headings": [
+        "Velvia：直接整数目标的节点与坐标交替",
+        "实际结果"
+      ],
+      "characters": 1857
+    },
+    {
+      "path": "report/data/velvia-body-diagonals-20261024/README.md",
+      "title": "Velvia 全局体对角线质量探针",
+      "sha256": "51b7f10fc0ee6c3ba7334831e35d8629b6334204990bc2ff60b696fbdda7cef8",
+      "headings": [
+        "Velvia 全局体对角线质量探针"
+      ],
+      "characters": 502
+    },
+    {
+      "path": "report/data/velvia-bubble-accept-20261024/README.md",
+      "title": "固定κ3两cell的完整质量证据",
+      "sha256": "e5013ca361236a9d334787fcddfeddba7a316abe80fd04687c95edd51ea35937",
+      "headings": [
+        "固定κ3两cell的完整质量证据"
+      ],
+      "characters": 883
+    },
+    {
+      "path": "report/data/velvia-bubble-native-20261024/README.md",
+      "title": "187固定两cell原生正确性证据",
+      "sha256": "b1359a3a0a1a4627331867bc8144ebfa56670e92330012f489fba5ea16959c57",
+      "headings": [
+        "187固定两cell原生正确性证据"
+      ],
+      "characters": 745
+    },
+    {
+      "path": "report/data/velvia-bubble-perf-20261024/README.md",
+      "title": "187正式性能负例",
+      "sha256": "9db7226adf94da4966bd5e0f635a4892c74c54ac8342db600a48b19cb5367139",
+      "headings": [
+        "187正式性能负例"
+      ],
+      "characters": 777
+    },
+    {
+      "path": "report/data/velvia-bubble-probe-20261024/README.md",
+      "title": "κ=2边界消失权重局部负例",
+      "sha256": "a5f0e0c070fe02434c93e94a03874cca849577231069458c5d3c726202774ac5",
+      "headings": [
+        "κ=2边界消失权重局部负例"
+      ],
+      "characters": 264
+    },
+    {
+      "path": "report/data/velvia-bubble-slope-20261024/README.md",
+      "title": "解析κ3与一次612支撑验证",
+      "sha256": "1acae072b5bc91bcfc667d469e61d4fb96c18bf642ad75780370f56966f5412d",
+      "headings": [
+        "解析κ3与一次612支撑验证"
+      ],
+      "characters": 364
+    },
+    {
+      "path": "report/data/velvia-cell-diagonals-20261024/README.md",
+      "title": "自由 cell 方向的收益与接缝限制",
+      "sha256": "0cfec5882e60f33edf955ec911b3064e4ee2deafbd9fab71a4d24b4142a379da",
+      "headings": [
+        "自由 cell 方向的收益与接缝限制"
+      ],
+      "characters": 589
+    },
+    {
+      "path": "report/data/velvia-channel-blocks-v1/README.md",
+      "title": "分通道坐标的整块节点提议",
+      "sha256": "21174ab572482c234a88bf78ab42f37869c8c479e87256dd0ac56e98c93c7df8",
+      "headings": [
+        "分通道坐标的整块节点提议"
+      ],
+      "characters": 231
+    },
+    {
+      "path": "report/data/velvia-channel-blocks-v1/report.md",
+      "title": "固定分通道坐标的整块节点平移",
+      "sha256": "9ec964aa385473ffdb445fd8606ae1b33d91da4321507192ae71af9ae89975d9",
+      "headings": [
+        "固定分通道坐标的整块节点平移",
+        "环境、目的与复现"
+      ],
+      "characters": 1873
+    },
+    {
+      "path": "report/data/velvia-channel-coordinates-accept-v1/README.md",
+      "title": "分通道坐标完整精度验收归档",
+      "sha256": "6879d3c8ec22d377c54a547ab02556374d26348d9557f70fdb6e148072faddca",
+      "headings": [
+        "分通道坐标完整精度验收归档"
+      ],
+      "characters": 863
+    },
+    {
+      "path": "report/data/velvia-channel-coordinates-accept-v1/report.md",
+      "title": "分通道坐标候选的完整精度验收",
+      "sha256": "5e64720eadd64bcfcaa0e05dc2066a8c11483b2da57dae6ac251033dd8b1baa5",
+      "headings": [
+        "分通道坐标候选的完整精度验收",
+        "同一个冻结模型、同一个强基线",
+        "完整256³与独立整数真值",
+        "原100张照片",
+        "60/20/20分组与逐图退化",
+        "环境、复现和未覆盖范围"
+      ],
+      "characters": 5076
+    },
+    {
+      "path": "report/data/velvia-channel-coordinates-v1/README.md",
+      "title": "分输出通道坐标实验归档",
+      "sha256": "6c7f0342cb2c10dcd974e2ff75c811936caad3b26a88f51209f904fa1f04529a",
+      "headings": [
+        "分输出通道坐标实验归档"
+      ],
+      "characters": 896
+    },
+    {
+      "path": "report/data/velvia-channel-coordinates-v1/report.md",
+      "title": "分输出通道Q16坐标：唯一候选入围",
+      "sha256": "4e60acd520d3302c2f841f5a4e6b86b4e06c57879e0c6aa03c0bfe7e20a43ff3",
+      "headings": [
+        "分输出通道Q16坐标：唯一候选入围",
+        "新表示和实际起点",
+        "冻结数据、目标与预算",
+        "集中正确性合同",
+        "唯一实际拟合",
+        "固定选择样本及局限",
+        "表示、资源与后续边界",
+        "环境和复现"
+      ],
+      "characters": 5237
+    },
+    {
+      "path": "report/data/velvia-channel-global-nodes-v1/README.md",
+      "title": "单次全局盒节点提议归档",
+      "sha256": "66999f66eea48f37e85d3a39143dfee067cc73eba16042407407042f141f2e94",
+      "headings": [
+        "单次全局盒节点提议归档"
+      ],
+      "characters": 163
+    },
+    {
+      "path": "report/data/velvia-channel-global-nodes-v1/report.md",
+      "title": "固定分通道几何的单次全局节点提议",
+      "sha256": "6e1a96182c804805394ab6a2702c42e2cccfe9bc4dce03b362a6a8eecdb12d62",
+      "headings": [
+        "固定分通道几何的单次全局节点提议",
+        "冻结方法",
+        "连续下降与真实整数结果分离",
+        "唯一最终候选的原固定选择",
+        "集中合同与执行环境"
+      ],
+      "characters": 3499
+    },
+    {
+      "path": "report/data/velvia-channel-joint-nodes-v1/README.md",
+      "title": "固定分通道几何26方向节点联合归档",
+      "sha256": "a95f7547677ba69f47ae57c79c1eefb996a68abc1374e95742afd8dc21aa3e66",
+      "headings": [
+        "固定分通道几何26方向节点联合归档"
+      ],
+      "characters": 154
+    },
+    {
+      "path": "report/data/velvia-channel-joint-nodes-v1/report.md",
+      "title": "固定分通道几何的单轮26方向RGB联合节点精化",
+      "sha256": "12e767b8b04715a22c1415cf46bc961c841816581c0e46f871d5ce57aed5e13e",
+      "headings": [
+        "固定分通道几何的单轮26方向RGB联合节点精化",
+        "实现与合法性",
+        "真实结果",
+        "一次集中合同与环境"
+      ],
+      "characters": 2964
+    },
+    {
+      "path": "report/data/velvia-channel-nodes-v1/README.md",
+      "title": "单轮固定分通道坐标节点精化归档",
+      "sha256": "3347bb91ad09b2e340ed929f5cf6b2eba6f1abe69e92f4a16af284f455fd318e",
+      "headings": [
+        "单轮固定分通道坐标节点精化归档"
+      ],
+      "characters": 194
+    },
+    {
+      "path": "report/data/velvia-channel-nodes-v1/report.md",
+      "title": "固定分通道坐标后的单轮节点精化",
+      "sha256": "c721d3a3175b10d632ec146b0319a01768532fb28fb3affb435a0232d7e7d77f",
+      "headings": [
+        "固定分通道坐标后的单轮节点精化",
+        "实际方法与身份",
+        "固定选择样本结果",
+        "集中正确性合同与环境"
+      ],
+      "characters": 3101
+    },
+    {
+      "path": "report/data/velvia-cubic-lagrange-v1/README.md",
+      "title": "唯一Q16 cubic Lagrange基负结果归档",
+      "sha256": "f819d04552472d7740d14b02692e00e16fd142b200ba2768f715ed98f8364f8b",
+      "headings": [
+        "唯一Q16 cubic Lagrange基负结果归档"
+      ],
+      "characters": 829
+    },
+    {
+      "path": "report/data/velvia-cubic-lagrange-v1/report.md",
+      "title": "唯一Q16 cubic Lagrange基：未达到预声明训练MSE门槛",
+      "sha256": "7be5d6c4c13d53824a08d64c951ac14cd148608d8c0063fdeb0efa7c60a7d314",
+      "headings": [
+        "唯一Q16 cubic Lagrange基：未达到预声明训练MSE门槛",
+        "研究对象与坐标语义",
+        "先行权重与累加器审计",
+        "环境、近似LS和停止口径",
+        "容量、交付和限制"
+      ],
+      "characters": 3518
+    },
+    {
+      "path": "report/data/velvia-error-mass-v1/report.md",
+      "title": "Velvia误差质量归因：照片均值与cube尾部由哪些颜色承载",
+      "sha256": "6d289f338c374857fc568383eca71061b0d5c7963f6a0693d284ef3394e55bfa",
+      "headings": [
+        "Velvia误差质量归因：照片均值与cube尾部由哪些颜色承载",
+        "环境、输入与统计口径",
+        "照片误差主要是广泛的小误差",
+        "cube尾部与照片均值承载区不同",
+        "G顶两内knots局部移动的上界",
+        "结论与复现"
+      ],
+      "characters": 4608
+    },
+    {
+      "path": "report/data/velvia-exact-axis-v1/report.md",
+      "title": "网格与整数节点：冻结选择和完整验收记录",
+      "sha256": "5abab5a76dfc3eac92e1b79939bd68196e4b8c9f7003b6f57fa51a469b2f7fbe",
+      "headings": [
+        "网格与整数节点：冻结选择和完整验收记录"
+      ],
+      "characters": 799
+    },
+    {
+      "path": "report/data/velvia-fixed-tetra-bound-v1/README.md",
+      "title": "固定坐标表达能力的有理证书归档",
+      "sha256": "b04bdbd754f5c8cd195cbf9abf0be6c2a0e621da785df4fb346ee32cc2163533",
+      "headings": [
+        "固定坐标表达能力的有理证书归档"
+      ],
+      "characters": 786
+    },
+    {
+      "path": "report/data/velvia-fixed-tetra-bound-v1/report.md",
+      "title": "固定Velvia坐标的严格表达能力下界",
+      "sha256": "f3771705e040c3c3260359e28d5aafe86a59f228d413ddbddaf97bb362a85fbd",
+      "headings": [
+        "固定Velvia坐标的严格表达能力下界",
+        "固定对象和执行范围",
+        "整数矩和正定下界",
+        "精确有理残差界",
+        "为什么能推出RGB8零误差不可能",
+        "环境、复现与局限"
+      ],
+      "characters": 4555
+    },
+    {
+      "path": "report/data/velvia-guarded-pair-v1/report.md",
+      "title": "Velvia共享节点协同调整：逐色包络下的固定4+1方案",
+      "sha256": "24e16bdb10086ec00e98adf2d4d930a959d4bd7e1cf0a29a4f23bc7ed3b45c67",
+      "headings": [
+        "Velvia共享节点协同调整：逐色包络下的固定4+1方案",
+        "实际结果"
+      ],
+      "characters": 2104
+    },
+    {
+      "path": "report/data/velvia-interpolation-diagnosis-v1/report.md",
+      "title": "Velvia剩余误差与插值表达：固定探针归因",
+      "sha256": "f9d057bd7c8010e742acde94c8b52efdc8140d873b1e8a152a3f1d31415faf58",
+      "headings": [
+        "Velvia剩余误差与插值表达：固定探针归因",
+        "测试目的、环境和冻结范围",
+        "固定探针结果",
+        "旧全域最坏点与八顶点",
+        "对后续研究的判断",
+        "证据身份"
+      ],
+      "characters": 5183
+    },
+    {
+      "path": "report/data/velvia-matched-operators-v1/README.md",
+      "title": "Velvia匹配算子归因精简归档",
+      "sha256": "cd74a7b9d8e0544218905edad482022391ae51bab7f496670d45ad30a87ff487",
+      "headings": [
+        "Velvia匹配算子归因精简归档"
+      ],
+      "characters": 775
+    },
+    {
+      "path": "report/data/velvia-matched-operators-v1/report.md",
+      "title": "Velvia匹配算子归因：同设计、同完整域L2的四面体与三线性",
+      "sha256": "9fd13d369f97f6cdb2830945049ffe4e660d3ed53598e5313b65b5e63c776bf8",
+      "headings": [
+        "Velvia匹配算子归因：同设计、同完整域L2的四面体与三线性",
+        "冻结对象与执行环境",
+        "连续L2求解与节点范围",
+        "原冻结探针的全部主要指标",
+        "整数正确性与证据边界",
+        "结论和复现"
+      ],
+      "characters": 4854
+    },
+    {
+      "path": "report/data/velvia-mean-first-20261024/README.md",
+      "title": "cap1600、双mean优先的独立失败记录",
+      "sha256": "c94b7536cd6803070543a93b9792599b64fc0c859e51091a9d3df151da4668cb",
+      "headings": [
+        "cap1600、双mean优先的独立失败记录"
+      ],
+      "characters": 471
+    },
+    {
+      "path": "report/data/velvia-monotone-dp-v1/report.md",
+      "title": "完整单元内的单调坐标DP",
+      "sha256": "357899f099203ef65c5f2b47439ac8c05c487ecab541ac9c14334b06b9efa862",
+      "headings": [
+        "完整单元内的单调坐标DP",
+        "实际结果"
+      ],
+      "characters": 2130
+    },
+    {
+      "path": "report/data/velvia-output-clipping-v1/README.md",
+      "title": "输出裁剪相关性归因归档",
+      "sha256": "9024302c7f17c31dedfda06817396711e2c00484a8858c78ebaa6d44a3b6874f",
+      "headings": [
+        "输出裁剪相关性归因归档"
+      ],
+      "characters": 712
+    },
+    {
+      "path": "report/data/velvia-output-clipping-v1/report.md",
+      "title": "Velvia剩余误差与输出端点的关系",
+      "sha256": "a9c479429124b695dac4d975f0f6f2ef745b29a15ae87cd9d6f059737e9d5a45",
+      "headings": [
+        "Velvia剩余误差与输出端点的关系",
+        "对象、分组和口径",
+        "完整cube",
+        "原60训练照片完整频数",
+        "哪个输出通道在出错",
+        "结论与停止范围",
+        "来源、环境与复现"
+      ],
+      "characters": 5263
+    },
+    {
+      "path": "report/data/velvia-photo-priority-v1/report.md",
+      "title": "Velvia照片均值：一个固定测度取舍点",
+      "sha256": "c7023e861ff2fa5fa2da5fc81118441efcf44dda4b577dbbda38258daad9001a",
+      "headings": [
+        "Velvia照片均值：一个固定测度取舍点",
+        "实际结果"
+      ],
+      "characters": 1640
+    },
+    {
+      "path": "report/data/velvia-r-reflection-v1/README.md",
+      "title": "唯一R反射负结果归档",
+      "sha256": "2594084b5abe7cbc823406b0a95a197a91fb8247c00bb04dce0083544194812a",
+      "headings": [
+        "唯一R反射负结果归档"
+      ],
+      "characters": 698
+    },
+    {
+      "path": "report/data/velvia-r-reflection-v1/report.md",
+      "title": "唯一R轴反射的匹配拟合负结果",
+      "sha256": "3e95b31fc185c4204ece860a303cede277dd8aa0b940481350da2ae50c22454e",
+      "headings": [
+        "唯一R轴反射的匹配拟合负结果",
+        "对比如何保持公平",
+        "实际拟合和完整域矩",
+        "门槛和没有执行的内容",
+        "环境和复现"
+      ],
+      "characters": 3636
+    },
+    {
+      "path": "report/data/velvia-rgb-joint-v1/report.md",
+      "title": "Velvia单节点三个通道同时调整",
+      "sha256": "8878b85bcf695d5578b969d35df37d26c6e425c207461cb755a3cca1485a97f8",
+      "headings": [
+        "Velvia单节点三个通道同时调整"
+      ],
+      "characters": 2103
+    },
+    {
+      "path": "report/data/velvia-rounding-interval-v1/report.md",
+      "title": "Velvia舍入区间目标：固定设计的连续协同提议",
+      "sha256": "ae2d66320379c2619ffee5900403a18f21d8550fcc1585e2a7c3d20fa5999ebc",
+      "headings": [
+        "Velvia舍入区间目标：固定设计的连续协同提议",
+        "实际结果与失败项"
+      ],
+      "characters": 2208
+    },
+    {
+      "path": "report/data/velvia-stripe-diagonals-20261024/README.md",
+      "title": "面相容方向场的固定预算负结果",
+      "sha256": "25e8974aff03dc7fbed9b4f3258ffe22ae84fe2566018e37f3fe900daef312fc",
+      "headings": [
+        "面相容方向场的固定预算负结果"
+      ],
+      "characters": 401
+    },
+    {
+      "path": "report/data/velvia-stripe-nodes-20261024/README.md",
+      "title": "相容stripe场固定后的单轮节点负结果",
+      "sha256": "369eb85796c91e50430684f83547e0039d95d26a6da2966df84e7a4a0c57595e",
+      "headings": [
+        "相容stripe场固定后的单轮节点负结果"
+      ],
+      "characters": 466
+    },
+    {
+      "path": "report/README.md",
+      "title": "冻结报告与重建",
+      "sha256": "53355203c60a069d83e39500af9d412429494e2b2c12471f08b19efe08bfb6af",
+      "headings": [
+        "冻结报告与重建",
+        "阅读与查证",
+        "编译历史 Typst 报告",
+        "重新生成历史表格和图片",
+        "其他历史生成器"
+      ],
+      "characters": 1508
+    }
+  ],
+  "remote_branches": [
+    {
+      "ref": "github",
+      "sha": "b19c5a0c8f67c3b4822692682698fb06462b7ed7",
+      "date": "2026-10-20 15:08:07 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/Luts",
+      "sha": "e8d15af36f687c11fae06bdfb34ea6a9b6cbd09c",
+      "date": "2026-10-21 13:33:58 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "e8d15af 研究：测试PR42在68个LUT中的可分离校准效果"
+      ]
+    },
+    {
+      "ref": "github/codex/analyze-chain-error",
+      "sha": "641a54eecee1ace725b2686fce7f12ddbbc154ba",
+      "date": "2026-10-17 13:56:28 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "641a54e 合并阶段研究 #14：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/automatic-local-compensation",
+      "sha": "bee74844009383ed8743e030ca1cf78eb332e6e8",
+      "date": "2026-10-17 13:58:29 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "bee7484 合并阶段研究 #31：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/camera-raw-workflow-20261023",
+      "sha": "19ea512cd1cbf7b6d2e73bfa295649d4c4104e61",
+      "date": "2026-10-23 17:30:54 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/camera-workflow-gui-20261023",
+      "sha": "57e935cea832aeef0147c99673e64cf8e11cb564",
+      "date": "2026-10-23 18:54:08 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/constraint-aware-primary",
+      "sha": "c3d27d0dd76cade1ac31d9b93ababcc09acadc41",
+      "date": "2026-10-17 13:58:00 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "c3d27d0 合并阶段研究 #26：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/cvar-commit-guard",
+      "sha": "8f7605273d331f1b3adfeec1d3f5ec77ee59ac88",
+      "date": "2026-10-17 13:58:13 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "8f76052 合并阶段研究 #28：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/exact-tail-joint-search",
+      "sha": "a3bc954170de0a524ea1be2679f67e4f8f39bf51",
+      "date": "2026-10-17 13:57:45 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "a3bc954 合并阶段研究 #24：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/extreme-cell-joint",
+      "sha": "47596964d23d3c5c85c741742b6abbb59299f8b4",
+      "date": "2026-10-17 13:58:19 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "4759696 合并阶段研究 #29：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/feasible-primary-batches",
+      "sha": "ff26c51433177e42a9bc38609973f8a3f3e07901",
+      "date": "2026-10-17 13:58:08 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "ff26c51 合并阶段研究 #27：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/feasible-working-set",
+      "sha": "e8e36299c58e3ec2118cbca0b3adf27bd5a4cb98",
+      "date": "2026-10-17 10:20:58 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/fractional-full-fit",
+      "sha": "66c0c666eed61bcdbb7b58fde9583c16fc18efcf",
+      "date": "2026-10-17 13:57:12 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "66c0c66 合并阶段研究 #20：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/full-domain-guard",
+      "sha": "068436a520f485a7012953c9adeb7f4298b03e8b",
+      "date": "2026-10-17 13:56:50 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "068436a 合并阶段研究 #17：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/full-photo-objective",
+      "sha": "9f27866acd3cc885b58aaed1eef3b5670043b833",
+      "date": "2026-10-17 13:57:05 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "9f27866 合并阶段研究 #19：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/global-quantile-proposals",
+      "sha": "df35569e4551f64691c5173fdc4e00d1f810cd41",
+      "date": "2026-10-17 13:57:29 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "df35569 合并阶段研究 #22：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/joint-avx2-pipeline-20261027",
+      "sha": "b685a3b2210eb1cfe021da3dff3b724c9e0a53d4",
+      "date": "2026-10-27 11:43:10 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/joint-box-objective",
+      "sha": "62060d167d10771a5287e7fa560f94bed2e8703c",
+      "date": "2026-10-17 13:56:35 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "62060d1 合并阶段研究 #15：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/joint-grid-precision-20261018",
+      "sha": "59586f7bd6dd248cf0b68bcbdff8e41cf95ac572",
+      "date": "2026-10-19 10:03:26 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/joint-interval-compensation",
+      "sha": "39059f37a1cba7e244c5cffc2dff8614bee0de8a",
+      "date": "2026-10-17 13:58:35 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "39059f3 合并阶段研究 #32：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/joint-minimax-objective",
+      "sha": "993d3bf871fab1ddfb3583969f5d026ae6199953",
+      "date": "2026-10-17 13:58:41 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "993d3bf 合并阶段研究 #33：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/local-gui",
+      "sha": "3997c2a5540ab62a29c1f74d602da6eca027f647",
+      "date": "2026-10-18 15:44:48 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "3997c2a 界面：新增本地四级LUT色彩工作台并完成接入验收"
+      ]
+    },
+    {
+      "ref": "github/codex/official-pr95-tests-20261029",
+      "sha": "65d46799b3c5e7279e29154175dca3456f75a8f6",
+      "date": "2026-10-29 23:57:40 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 2,
+      "latest_unique_subjects": [
+        "65d4679 归档：保留报告原始行尾以匹配证据清单",
+        "febf656 测试：按官方框架验证PR95的双网格单线程精度与性能"
+      ]
+    },
+    {
+      "ref": "github/codex/overlap-photo-compensation",
+      "sha": "64b1e80d32bb578086a01bbb3d609720564718b6",
+      "date": "2026-10-17 13:58:24 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "64b1e80 合并阶段研究 #30：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/p16-framework-adapter-20261029",
+      "sha": "5fb94fc63a5c39e545b0631a22797e7d85727acb",
+      "date": "2026-10-30 00:23:14 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-frontier-header-20261027",
+      "sha": "fb7e195215f14df9f635394d75cde0e0e69c82c9",
+      "date": "2026-10-28 14:47:36 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-memory-20261023",
+      "sha": "70ff43605ddf1caf671a4d124bacd91103f01d88",
+      "date": "2026-10-24 18:35:13 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-rgb24-kernel-20261030",
+      "sha": "111b0dfd73edd68927642c8dafca69b516285737",
+      "date": "2026-10-30 01:27:55 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-score-candidate-20261027",
+      "sha": "b7d7e3ed0b3f95e9a2fcf68341b360debeb6f55e",
+      "date": "2026-10-27 20:48:33 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-speed-20261023",
+      "sha": "8d421c197c083566f9b089e93fcdc203c4833ae8",
+      "date": "2026-10-24 12:02:50 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-studio-ui-20261028",
+      "sha": "9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d",
+      "date": "2026-10-29 22:32:06 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-tail-20261023",
+      "sha": "725835e69e9bd62e6a7dc3088aefa81de70042ac",
+      "date": "2026-10-24 18:33:16 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/p16-unified-avx512-20261026",
+      "sha": "4a8b27f4f8b4403986bf53b71f01f8616b53327a",
+      "date": "2026-10-26 15:15:23 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/pipeline-specialization-20261023",
+      "sha": "d0fc98ed680c6c2d41e3e3ff2d4377c5802d2bf1",
+      "date": "2026-10-23 12:20:43 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "d0fc98e 研究：归档固定四级专门化实验与性能未达标结果"
+      ]
+    },
+    {
+      "ref": "github/codex/quantile-tail-repair",
+      "sha": "520dd3ea8bfffd82204c0563741fb95802f45388",
+      "date": "2026-10-17 13:57:19 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "520dd3e 合并阶段研究 #21：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/repair-photo-tail",
+      "sha": "0a8da2d44e19e635f5c51b1041d00f1cd2b377ee",
+      "date": "2026-10-17 13:56:42 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "0a8da2d 合并阶段研究 #16：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/research-summary-20261018",
+      "sha": "92147354cade8f2f06caf1b448aec748844818b9",
+      "date": "2026-10-18 13:30:02 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "9214735 研究：梳理最新结果并明确下一阶段三项任务"
+      ]
+    },
+    {
+      "ref": "github/codex/review-pr95-generalization-20261028",
+      "sha": "c4a1d794181f693dcae2c8bdc86b9bcb33d2eba9",
+      "date": "2026-10-28 23:28:10 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "c4a1d79 测试：补全#95的审查和跨LUT泛化证据"
+      ]
+    },
+    {
+      "ref": "github/codex/review-stack-integration",
+      "sha": "44b5c85210be84ab6db35ea5411a2c762c822b86",
+      "date": "2026-10-17 13:42:52 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/rounded-budget-compensation",
+      "sha": "38107f0284f2729f92242204f772bb69047d4116",
+      "date": "2026-10-17 13:57:36 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "38107f0 合并阶段研究 #23：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/skylake-adaptive-dictionary-20261021",
+      "sha": "aeffda0e1b869e3f3651275429e223879571f145",
+      "date": "2026-10-21 18:09:00 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-andn-load-20261021",
+      "sha": "92d6b1ab54eb7d978f0c030d24a3142cad7a28a7",
+      "date": "2026-10-21 19:55:02 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-andn-normal-20261021",
+      "sha": "99cdfe7182e417ddea7a63cb48f2a665fd346af6",
+      "date": "2026-10-21 21:39:33 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-base-delta-profile-20261021",
+      "sha": "0e80f83725938db2d12a0c1184937f8f152873af",
+      "date": "2026-10-23 12:43:43 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-block-dictionary-20261021",
+      "sha": "607b80051ba7aa24ce563efbebbf1fb05b37f6bd",
+      "date": "2026-10-21 16:20:53 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-bmi2-tiles-20261021",
+      "sha": "ee529bedec7537da5843080c2f1f07bab4e8e7d6",
+      "date": "2026-10-21 09:56:35 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-brick2-hybrid-20261023",
+      "sha": "4dc79c5d00c787a71ad392e634a78b48924e3abe",
+      "date": "2026-10-23 14:00:11 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-brick2-rgb-base-20261023",
+      "sha": "2de21f8bce4a7e4b5ed3ec4aaa1750698f076769",
+      "date": "2026-10-23 13:20:40 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-cache-hints-20261020",
+      "sha": "1c955caf5e24976a93bb8b0843e3e4bcbbd35be5",
+      "date": "2026-10-20 23:40:41 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-chroma-2op-20261021",
+      "sha": "cae124d1b099ff7aeeec16ee1837c0601b0767f3",
+      "date": "2026-10-21 14:22:15 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-chroma-batch4-20261021",
+      "sha": "8409ca82c779dd9c941c61e93fc7e200d0efaa4e",
+      "date": "2026-10-21 16:07:38 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-chroma-delta-20261021",
+      "sha": "226a0c49982ee61b6f372c082e408e79560ea9f8",
+      "date": "2026-10-21 14:07:26 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-deferred-palette-20261021",
+      "sha": "1aac0f903c4829d6a1b05aa2dad78c82e52dd610",
+      "date": "2026-10-21 15:03:22 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-direct-tiles-20261021",
+      "sha": "6753b12ff84f8b6d6e01f7c632847db9163ff0da",
+      "date": "2026-10-21 10:52:53 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-dispatch-diagnostic-20261021",
+      "sha": "91b7c7359f938876d22fc7fc12fa7b2b0e02ebe0",
+      "date": "2026-10-21 20:27:07 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-four-thread-diagnostic-20261021",
+      "sha": "90f2b68fcdea30edec07deabdebb64cd849ba93c",
+      "date": "2026-10-21 18:23:13 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-g-low-profile-20261021",
+      "sha": "f82fb2d93edfdbc09b4997eb60a2b52befe5980e",
+      "date": "2026-10-21 21:05:39 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-geometry-20261020",
+      "sha": "e3975ea782d86053aff922fc51f3880260333a23",
+      "date": "2026-10-20 16:09:24 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-id-batch8-20261021",
+      "sha": "865a18fdabaf8aac32bd43125e51796586d8cc65",
+      "date": "2026-10-21 15:29:40 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-inplace-path-20261020",
+      "sha": "07c6e16e2adbd10c02172898c0ab7fce99b92ad9",
+      "date": "2026-10-21 02:37:42 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-input256-20261021",
+      "sha": "e2752a80d981ca6901ded376364176f1ee1e40b5",
+      "date": "2026-10-21 22:10:11 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-input256-deferred-20261021",
+      "sha": "c3efa63a48cd29db36e3b0bc23580bb545996eeb",
+      "date": "2026-10-21 22:48:17 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-load-packing-20261020",
+      "sha": "acaf2b2fea95151a7b35e2d5158b6e236d2d47fd",
+      "date": "2026-10-20 22:13:11 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-lookup-overlap-20261021",
+      "sha": "7643bea227af63cecdea79b05fd6abcb7773ffa1",
+      "date": "2026-10-21 13:42:13 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-pack5-20261021",
+      "sha": "d209c7ad0159c808215ef8cb9d7b4fe1efb77ff2",
+      "date": "2026-10-21 14:48:11 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-pair48-input-20261021",
+      "sha": "886e733b5168e2ea7d8ed17583eabbb23ef8ef2e",
+      "date": "2026-10-21 20:55:05 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-palette-exceptions-20261020",
+      "sha": "83554020bee6b3313292d40d41d8f3a29b8b87de",
+      "date": "2026-10-20 18:07:01 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-prefetchw-20261021",
+      "sha": "02479a4e518c49b1c6bf6aac264f1c3251d889a6",
+      "date": "2026-10-21 19:01:22 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-projection-20261020",
+      "sha": "b3d7f4c70aed2a4e4b17a5ffd6ea7375f088dd53",
+      "date": "2026-10-20 17:21:04 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-recent-rgb1024-20261023",
+      "sha": "472a9a18fbfb69ae01d879b331fd384e071b91a5",
+      "date": "2026-10-23 12:55:24 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-runtime-20261020",
+      "sha": "860d6bf472703f42bdd4d105dba3220a7d399793",
+      "date": "2026-10-20 09:53:48 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-screen-calibration-20261021",
+      "sha": "2a21b86807edb57a707972d4596c0bbe727974ee",
+      "date": "2026-10-21 16:33:15 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-sparse-prefetch-20261021",
+      "sha": "b157a68e12b5e7a72aa6db0816d6165f24ec8a12",
+      "date": "2026-10-21 11:28:32 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-thread-joint-20261021",
+      "sha": "50f75249df28f262debde15cf5522449a6712bae",
+      "date": "2026-10-21 16:57:59 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-threefold-20261020",
+      "sha": "b55a444cac7ac7e4438eefa524e723a983be9e92",
+      "date": "2026-10-20 20:54:39 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-tilexy-t0-20261021",
+      "sha": "434c34ac8478742251d0fcefe87debf57ee2f95d",
+      "date": "2026-10-21 18:46:37 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/skylake-vector-input-20261021",
+      "sha": "7f3a4790907ee64c25155c1683c24e743762c296",
+      "date": "2026-10-21 10:22:23 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/stable-tail-budget",
+      "sha": "5903470d7034d8916390feef98a448a98232c8af",
+      "date": "2026-10-17 13:57:52 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "5903470 合并阶段研究 #25：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/stage-pr-testing-policy",
+      "sha": "9384a12651a43a17471e6b28a692a90e9e627eaa",
+      "date": "2026-10-16 18:00:19 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/sync-pr-roadmap",
+      "sha": "be9f6079e49376360156d74f79d8c2a70614d833",
+      "date": "2026-10-17 13:56:20 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "be9f607 合并阶段研究 #13：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/tail-aware-grid",
+      "sha": "da9823e630f793a2540408b99e1cfc90ef3f6fed",
+      "date": "2026-10-17 13:56:57 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "da9823e 合并阶段研究 #18：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/tail-working-set",
+      "sha": "3fd206e83579958be8478876102df1854345398e",
+      "date": "2026-10-17 13:58:49 +0800",
+      "head_is_ancestor": false,
+      "unique_commit_count": 1,
+      "latest_unique_subjects": [
+        "3fd206e 合并阶段研究 #34：对齐已入主干的提交记录"
+      ]
+    },
+    {
+      "ref": "github/codex/wsl-memory-budget-20261023",
+      "sha": "16ae431030a5c734a1485089c8b58d15b21902f6",
+      "date": "2026-10-23 20:51:41 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/codex/zig-default-pixi",
+      "sha": "3a79f5a29436e159b62acc90b19991369d6d02b2",
+      "date": "2026-10-16 11:54:32 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/dev/mo5nk",
+      "sha": "dec102056ce999ac08180230ddb5b32f31a55f99",
+      "date": "2026-10-16 19:03:01 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/everyday-photo",
+      "sha": "f689cf0c9d97def52c6746e778418060c6f022ad",
+      "date": "2026-10-16 00:24:48 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/main",
+      "sha": "b19c5a0c8f67c3b4822692682698fb06462b7ed7",
+      "date": "2026-10-20 15:08:07 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/performance",
+      "sha": "3d4d6d9e07df9e24c25f52f733c8535e3d9890e1",
+      "date": "2026-10-21 13:33:58 +0800",
+      "head_is_ancestor": true
+    },
+    {
+      "ref": "github/pipeline",
+      "sha": "3d4d6d9e07df9e24c25f52f733c8535e3d9890e1",
+      "date": "2026-10-21 13:33:58 +0800",
+      "head_is_ancestor": true
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "checked_at_utc": "2026-10-21 13:38:24 UTC",
+  "comparison": {
+    "before": 67,
+    "after": 68,
+    "new": [
+      74
+    ],
+    "changed": []
+  },
+  "pr74": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "number": 74,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Agent：Codex /root、/root/direct_tile_audit\nOperator：WyEhNf\nTask：精度不降、通用AVX2、相对23至少三倍吞吐\nStatus：Failed（固定布局筛查）/ Draft；整体In Progress\n\n仅评估固定G低/R中/B高的16MiB ID表地址布局，模型及运行时未改。首次统计前冻结global行集合比≤0.80、任一图≤1.05，失败不实现原生或扫描其他轴序；独立审查窗口/单位/聚合和SHA绑定后只执行一次。\n\n实际为Windows11 / Anaconda Python3.13.12 / NumPy2.4.6，100张1024×768 RGB8、1,228,800个连续64像素窗口。输入总SHA及逐图SHA通过，全部16M索引的自逆/范围/2MiB页编号证明零差；R低总行60,721,470和完整65桶直方图与旧冻结记录完全一致。\n\nR低平均不同64B行49.415258789，G低50.636512858，**G/R=1.024714109**，最差图**1.205545265**，两门槛均失败，停止G低路线。固定最低轴后高两字节互换只重命名行，该指标不必重复扫另一高轴顺序；不据此宣称真实cache set/miss/吞吐等价。\n\n六份原件及stdout/stderr/退出码保存，聚合和直方图只读复算通过；11份暂存档案blob与原字节、语法及空白检查通过。native/性能/新拟合调用均0，索引数学证明不是新增RGB8映射验证，未将地址集合当作cache miss或实际Skylake成绩。\n\n[阶段说明/复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-g-low-profile-20261021/docs/stages/2026-10-21-skylake-g-low-profile.md) · [原件与复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-g-low-profile-20261021/report/data/skylake-g-low-profile-v1)；旧R/B profile从report/data/skylake-lookup-overlap-v1/skylake-lookup-diagnostics-v1/layout-64-window-v1.json恢复并核对SHA。\n\n提交f82fb2d93edfdbc09b4997eb60a2b52befe5980e，依赖Draft #73头886e733。创建前fetch GitHub，完整读取67份PR正文与前66份比较仅新增73，其余一致；73正文/全部评论/review/行内刷新，后三者均空，最后updated检索PR/issue无新增。main b19c5a0及已验337a3dd/876e15b8/397cc367均包含；issue7修复保留，issue8接口/预算/实板继续跟踪。Discussion接口仍无法刷新，保留缺口，不合并或关闭事项。PR73的四线程纯apply三倍缺口、官方派生表许可/预算/Threshold及真实Skylake仍未解决。",
+      "title": "排除G低字节布局并保存单次只读筛查",
+      "base": "codex/skylake-pair48-input-20261021",
+      "base_sha": "886e733b5168e2ea7d8ed17583eabbb23ef8ef2e",
+      "head": "codex/skylake-g-low-profile-20261021",
+      "head_sha": "f82fb2d93edfdbc09b4997eb60a2b52befe5980e",
+      "head_repo_id": 1420743436,
+      "head_repo_full_name": "WyEhNf/flash-chroma",
+      "merge_commit_sha": "16bf1f28196944913bf18d12f4effcec46ecd177",
+      "user": {
+        "login": "WyEhNf",
+        "name": "WyEhNf",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+        "id": 228311419
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-21T13:07:18Z",
+      "updated_at": "2026-10-21T13:07:18Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 13,
+      "additions": 1308,
+      "deletions": 0,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "display_title": "排除G低字节布局并保存单次只读筛查"
+    },
+    {
+      "comments": [],
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "title": "WyEhNf/flash-chroma PR #74 comments",
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "display_title": "WyEhNf/flash-chroma PR #74 comments"
+    },
+    {
+      "reviews": []
+    },
+    {
+      "review_threads": []
+    }
+  ],
+  "final_refresh": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "number": 74,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Agent：Codex /root、/root/direct_tile_audit\nOperator：WyEhNf\nTask：精度不降、通用AVX2、相对23至少三倍吞吐\nStatus：Failed（固定布局筛查）/ Draft；整体In Progress\n\n仅评估固定G低/R中/B高的16MiB ID表地址布局，模型及运行时未改。首次统计前冻结global行集合比≤0.80、任一图≤1.05，失败不实现原生或扫描其他轴序；独立审查窗口/单位/聚合和SHA绑定后只执行一次。\n\n实际为Windows11 / Anaconda Python3.13.12 / NumPy2.4.6，100张1024×768 RGB8、1,228,800个连续64像素窗口。输入总SHA及逐图SHA通过，全部16M索引的自逆/范围/2MiB页编号证明零差；R低总行60,721,470和完整65桶直方图与旧冻结记录完全一致。\n\nR低平均不同64B行49.415258789，G低50.636512858，**G/R=1.024714109**，最差图**1.205545265**，两门槛均失败，停止G低路线。固定最低轴后高两字节互换只重命名行，该指标不必重复扫另一高轴顺序；不据此宣称真实cache set/miss/吞吐等价。\n\n六份原件及stdout/stderr/退出码保存，聚合和直方图只读复算通过；11份暂存档案blob与原字节、语法及空白检查通过。native/性能/新拟合调用均0，索引数学证明不是新增RGB8映射验证，未将地址集合当作cache miss或实际Skylake成绩。\n\n[阶段说明/复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-g-low-profile-20261021/docs/stages/2026-10-21-skylake-g-low-profile.md) · [原件与复算](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-g-low-profile-20261021/report/data/skylake-g-low-profile-v1)；旧R/B profile从report/data/skylake-lookup-overlap-v1/skylake-lookup-diagnostics-v1/layout-64-window-v1.json恢复并核对SHA。\n\n提交f82fb2d93edfdbc09b4997eb60a2b52befe5980e，依赖Draft #73头886e733。创建前fetch GitHub，完整读取67份PR正文与前66份比较仅新增73，其余一致；73正文/全部评论/review/行内刷新，后三者均空，最后updated检索PR/issue无新增。main b19c5a0及已验337a3dd/876e15b8/397cc367均包含；issue7修复保留，issue8接口/预算/实板继续跟踪。Discussion接口仍无法刷新，保留缺口，不合并或关闭事项。PR73的四线程纯apply三倍缺口、官方派生表许可/预算/Threshold及真实Skylake仍未解决。",
+      "title": "排除G低字节布局并保存单次只读筛查",
+      "base": "codex/skylake-pair48-input-20261021",
+      "base_sha": "886e733b5168e2ea7d8ed17583eabbb23ef8ef2e",
+      "head": "codex/skylake-g-low-profile-20261021",
+      "head_sha": "f82fb2d93edfdbc09b4997eb60a2b52befe5980e",
+      "head_repo_id": 1420743436,
+      "head_repo_full_name": "WyEhNf/flash-chroma",
+      "merge_commit_sha": "16bf1f28196944913bf18d12f4effcec46ecd177",
+      "user": {
+        "login": "WyEhNf",
+        "name": "WyEhNf",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+        "id": 228311419
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-21T13:07:18Z",
+      "updated_at": "2026-10-21T13:07:18Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 13,
+      "additions": 1308,
+      "deletions": 0,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "display_title": "排除G低字节布局并保存单次只读筛查"
+    },
+    {
+      "comments": [],
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "title": "WyEhNf/flash-chroma PR #74 comments",
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/74",
+      "display_title": "WyEhNf/flash-chroma PR #74 comments"
+    },
+    {
+      "reviews": []
+    },
+    {
+      "review_threads": []
+    },
+    {
+      "issues": []
+    },
+    {
+      "issues": []
+    }
+  ],
+  "prior_bodies": "其余67份正文与PR74依赖的旧原件逐项相同，仅新增74；issue7/8最新正文及全部评论见前阶段快照，updated检索无变化",
+  "discussion_limit": "接口没有Discussion刷新，不能把无法读取当成无新问题；不合并或关闭事项"
+}

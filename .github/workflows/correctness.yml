@@ -40,6 +40,20 @@ jobs:
           cache-write: ${{ matrix.task == 'test' }}
       - name: 运行 C++ 与 Python 正确性测试
         run: pixi run --locked ${{ matrix.task }}
+      - name: 构建并验证评分候选CPU交付包
+        if: matrix.task == 'test'
+        run: |
+          pixi run --locked build-score
+          pixi run --locked score-package
+          pixi run --locked python scripts/verify_p16_submission_package.py --package artifacts/p16-score-package --library build-score/libjshc_unified.so --output artifacts/p16-score-package-check.json
+      - name: 构建并验证单头文件与连续目标接口
+        if: matrix.task == 'test'
+        run: |
+          pixi run --locked python scripts/generate_flash_chroma_header.py --check
+          pixi run --locked cmake -S single_header -B build-single-header -G Ninja -DCMAKE_BUILD_TYPE=Release
+          pixi run --locked cmake --build build-single-header --parallel 2
+          pixi run --locked ctest --test-dir build-single-header --output-on-failure --no-tests=error
+          pixi run --locked python scripts/verify_flash_chroma.py --library build-single-header/libflash_chroma_bridge.so --profiles default max_first --output artifacts/single-header-ci-quality.json
 
   docker:
     name: correctness (Docker)

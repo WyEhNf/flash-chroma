@@ -1,0 +1,88 @@
+{
+  "purpose": "2³直接RGB编码阶段的远端全文增量检查",
+  "utc": "2026-10-23 05:08:41 UTC",
+  "parent": {
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+    "number": 80,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "Agent：Codex /root、/root/base_delta_delivery\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对修订23至少三倍吞吐\nStatus：Failed（固定备忘只读筛查）/ Draft；整体In Progress\n\n固定1024×8B的精确输入色备忘，完整100图每65536像素清空，共1200块，不跨API/块/图记忆；指定乘法hash和全部门槛事前冻结。它复用跨8像素包的完整输入色，碰撞必须精确回退，不改变模型或16MiB表。此次仅离线模拟tag，未实现内核。\n\n| 兴趣门槛 | 结果 |\n| --- | --- |\n| 总hit≥65% | 24.963894% |\n| 任一图hit≥35% | 最差2.963003%；77图失败 |\n| 全体块内hit/miss转移率≤2% | 16.495668% |\n\n三项均失败，停止，不调整容量、hash、清空窗口或门槛重跑。12,972,523次转移/78,642,000块内边，块间不拼接；转移不是硬件分支错判。按原pair输入的简化载荷计数3.5−2h≈3.000722，高于原2.5，另有75.0361%miss更新写；这是成本模型，不是周期或吞吐实测。\n\n实际Windows11 / Ryzen9 8945HX / Anaconda Python3.13.12 / NumPy2.4.6，小端。稳定排序按块/槽模拟最后tag，6组小合成真实cache及run逐项对照通过。235929600B固定100图总/逐图输入SHA均通过。没有候选编译、原生C ABI、模型/拟合、性能或完整RGB8执行；精度和默认路径未改，不是真实Skylake。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-recent-rgb1024-20261023/docs/stages/2026-10-23-skylake-recent-rgb1024.md) · [ZIP原件/独立核验器](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-recent-rgb1024-20261023/report/data/skylake-recent-rgb1024-profile-v1)\n\n提交472a9a18fbfb69ae01d879b331fd384e071b91a5，依赖Draft #79头0e80f83。ZIP保存五份原字节，结果SHA e03d142a6a0c3bb71a3a060df9c3e0875d4252aa628842d00cc94baffa06b84e；标准库独立核对全部身份、两输入和100片SHA、100图/1200块分类、转移及逐图精确run直方图汇总，三失败决定一致。未重跑命中分析；逐块原件只有run数/最长，不能冒称独立重建逐块完整run分布。6份初始档案暂存blob原字节、AST/JSON/ZIP CRC/SHA及空白通过，后补交付结果排除自引用。并发新增远端快照后附加“目录恰5项”静态assert停止的说明保留，根按实际集合完成交付检查，没有改统计或重跑。\n\n操作前fetch GitHub，完整73份PR正文对已读72份仅新增79、旧正文无变化；79完整正文/comment/review/行内均刷新为空，末次updated PR/issue为空。main b19c5a0和337a3dd/876e15b8/397cc367修复祖先保留；issue7历史绑定修复与issue8接口/预算/实板记录沿前阶段完整快照。当前Discussion读取缺口仍保留，不合并或关闭事项。\n\n同版纯apply单/四线程均≥3×、实际Skylake、官方派生表许可/预算/Threshold尚未完成。本阶段没有新增性能成绩，不默认采用。",
+    "title": "排除精确输入色备忘缓存并保存完整单次筛查证据",
+    "base": "codex/skylake-base-delta-profile-20261021",
+    "base_sha": "0e80f83725938db2d12a0c1184937f8f152873af",
+    "head": "codex/skylake-recent-rgb1024-20261023",
+    "head_sha": "472a9a18fbfb69ae01d879b331fd384e071b91a5",
+    "head_repo_id": 1420743436,
+    "head_repo_full_name": "WyEhNf/flash-chroma",
+    "merge_commit_sha": "8d381f7a08d7cf60eafb1d1d3cd1d7565e5368d2",
+    "user": {
+      "login": "WyEhNf",
+      "name": "WyEhNf",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+      "id": 228311419
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-23T04:56:10Z",
+    "updated_at": "2026-10-23T04:56:10Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 1,
+    "changed_files": 12,
+    "additions": 668,
+    "deletions": 0,
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+    "display_title": "排除精确输入色备忘缓存并保存完整单次筛查证据"
+  },
+  "comments": {
+    "comments": [],
+    "url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+    "title": "WyEhNf/flash-chroma PR #80 comments",
+    "display_url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+    "display_title": "WyEhNf/flash-chroma PR #80 comments"
+  },
+  "reviews": {
+    "reviews": []
+  },
+  "threads": {
+    "review_threads": []
+  },
+  "issues": {
+    "issues": []
+  },
+  "comparison": {
+    "before": 73,
+    "after": 74,
+    "new": [
+      80
+    ],
+    "changed": []
+  },
+  "previous_bodies": "report/data/skylake-recent-rgb1024-profile-v1/remote-snapshot.json @ 472a9a18fbfb69ae01d879b331fd384e071b91a5",
+  "new_bodies": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+      "title": "排除精确输入色备忘缓存并保存完整单次筛查证据",
+      "issue_number": 80,
+      "body": "Agent：Codex /root、/root/base_delta_delivery\nOperator：WyEhNf\nTask：完整RGB8精度不降、通用AVX2、相对修订23至少三倍吞吐\nStatus：Failed（固定备忘只读筛查）/ Draft；整体In Progress\n\n固定1024×8B的精确输入色备忘，完整100图每65536像素清空，共1200块，不跨API/块/图记忆；指定乘法hash和全部门槛事前冻结。它复用跨8像素包的完整输入色，碰撞必须精确回退，不改变模型或16MiB表。此次仅离线模拟tag，未实现内核。\n\n| 兴趣门槛 | 结果 |\n| --- | --- |\n| 总hit≥65% | 24.963894% |\n| 任一图hit≥35% | 最差2.963003%；77图失败 |\n| 全体块内hit/miss转移率≤2% | 16.495668% |\n\n三项均失败，停止，不调整容量、hash、清空窗口或门槛重跑。12,972,523次转移/78,642,000块内边，块间不拼接；转移不是硬件分支错判。按原pair输入的简化载荷计数3.5−2h≈3.000722，高于原2.5，另有75.0361%miss更新写；这是成本模型，不是周期或吞吐实测。\n\n实际Windows11 / Ryzen9 8945HX / Anaconda Python3.13.12 / NumPy2.4.6，小端。稳定排序按块/槽模拟最后tag，6组小合成真实cache及run逐项对照通过。235929600B固定100图总/逐图输入SHA均通过。没有候选编译、原生C ABI、模型/拟合、性能或完整RGB8执行；精度和默认路径未改，不是真实Skylake。\n\n[阶段说明与复现](https://github.com/WyEhNf/flash-chroma/blob/codex/skylake-recent-rgb1024-20261023/docs/stages/2026-10-23-skylake-recent-rgb1024.md) · [ZIP原件/独立核验器](https://github.com/WyEhNf/flash-chroma/tree/codex/skylake-recent-rgb1024-20261023/report/data/skylake-recent-rgb1024-profile-v1)\n\n提交472a9a18fbfb69ae01d879b331fd384e071b91a5，依赖Draft #79头0e80f83。ZIP保存五份原字节，结果SHA e03d142a6a0c3bb71a3a060df9c3e0875d4252aa628842d00cc94baffa06b84e；标准库独立核对全部身份、两输入和100片SHA、100图/1200块分类、转移及逐图精确run直方图汇总，三失败决定一致。未重跑命中分析；逐块原件只有run数/最长，不能冒称独立重建逐块完整run分布。6份初始档案暂存blob原字节、AST/JSON/ZIP CRC/SHA及空白通过，后补交付结果排除自引用。并发新增远端快照后附加“目录恰5项”静态assert停止的说明保留，根按实际集合完成交付检查，没有改统计或重跑。\n\n操作前fetch GitHub，完整73份PR正文对已读72份仅新增79、旧正文无变化；79完整正文/comment/review/行内均刷新为空，末次updated PR/issue为空。main b19c5a0和337a3dd/876e15b8/397cc367修复祖先保留；issue7历史绑定修复与issue8接口/预算/实板记录沿前阶段完整快照。当前Discussion读取缺口仍保留，不合并或关闭事项。\n\n同版纯apply单/四线程均≥3×、实际Skylake、官方派生表许可/预算/Threshold尚未完成。本阶段没有新增性能成绩，不默认采用。",
+      "state": null,
+      "user": null,
+      "assignees": null,
+      "labels": null,
+      "milestone": null,
+      "state_reason": null,
+      "comments": null,
+      "created_at": null,
+      "updated_at": null,
+      "closed_at": null,
+      "display_url": "https://github.com/WyEhNf/flash-chroma/pull/80",
+      "display_title": "排除精确输入色备忘缓存并保存完整单次筛查证据"
+    }
+  ],
+  "discussion_gap": "当前连接器不能读取Discussion，保留缺口，不合并或关闭"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "固定单版训练尾部协议，先有限合同再执行一次扫描；无AVX512",
+  "baseline": "已独立验收第二级max_first：mean0.7990738071534367/p99平方9/max平方50，原末级5b8be3d4，不使用mean-only末级",
+  "training": "原60图47185920整数像素计数，仅训练数据参与目标；100图是已见过的终验集",
+  "probe": "cinema-training-tail-probe-v1：p99平方12，d²>11计数比例0.01329903072781033，预先固定目标11适用",
+  "design": "原1219行(arrival,gold)完整无损支撑，frequency总16777216，mass乘47185920还原int64，残差不超过1e-6",
+  "directions": "原26个±1方向加52个±2/±4方向，总78个；八种parity各一次，不加扫/改阈值/扩步长",
+  "targets": {"uniform_p99_squared": 9, "uniform_max_target_squared": 49, "training_tail_squared": 11},
+  "budgets": "原九项绝对上限取当前基线；追加训练>11计数和平方超额。每批完整域p99/max目标计数及训练>11计数不增；其余已挣得余额可交换；逐点cap=max(49,baseline_d²)",
+  "selection": "局部十一项不退候选先以训练尾部计数/平方超额、完整域max计数、均值排序；再按同序尝试已获得余额的节点交换",
+  "finite_contract": "m17/m33跨通道几何、独立uint64、零训练频数、显式重复样本、0/255节点、11/12及49/50边界、选择器预算与拒绝输入",
+  "eligibility": "训练广义CDF和线性p99均严格下降，完整域mean/RMS/p99/max/CVaR不退、原60图mean/RMS不退才晋级新完整四级/native/100图。最终综合升级还须100图p99或max严格下降、全域及照片均值不退、同场实测速率至少50%",
+  "stop": "不适用、合同失败或扫描不满足晋级门时停止，保留原件，不补轮/换目标。过程秒数不是运行时性能。"
+}

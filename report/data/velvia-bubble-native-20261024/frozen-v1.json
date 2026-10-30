@@ -1,0 +1,50 @@
+{
+  "model_sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+  "serialized_sha256": {
+    "base.slut": "31cd5683b9a3236f6cd9193c6f5fe1f5c4745ea892778e06363d5f510fb123c2",
+    "channel-frac.bin": "a132c41acadb07894172dc0b9798566602fffb1cbd82ac7ce67d7408c9e6c7ba"
+  },
+  "source_sha256": {
+    "experiments/velvia-bubble-runtime/bubble.hpp": "51e767a9d6fed0c183e376f481fface9afb4ed2d94feb54089b432bd8fe74205",
+    "experiments/velvia-bubble-runtime/channel_runtime.cpp": "d28605b5edece0febc4d67add7837dc12e9aa16dda707d8d4e5991de1f5beb70",
+    "experiments/velvia-bubble-runtime/CMakeLists.txt": "47a4a55c5e3b295a16ac67a6d295d99d2176cce064af7d5328690f34c90c0ca7",
+    "experiments/velvia-bubble-runtime/compile_avx2.cpp": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+    "scripts/prepare_velvia_bubble_native.py": "f364336447379d53803b0df3c2a21020e7809bc99beb7f2f9903b7c5a7dcc5f5",
+    "experiments/velvia-bubble-native-plan-v1.md": "c3a7ab685a269b59f175ac931765e997252071234232613a59bc3b2b95764274"
+  },
+  "frozen_87_library": "F:/Hackathon/worktrees/p16-speed-20261023/artifacts/p16-speed-direct-build-v1/libjshc_direct_prepare_simd.dll",
+  "frozen_87_sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158",
+  "oracle_baseline_sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0",
+  "oracle_candidate_sha256": "f38217d6ab471f58cc794eee23ab02317f4df2d86b0a00eab4f520e2b4ba3875",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "expected_revision": 187,
+  "quality_policy": "先核冻结87、187关闭及187开启的全域/100图；scalar1、AVX2的1/4，原地/真分离；短尾/密集/空输入与typed拒绝；本阶段不计时",
+  "performance_policy": "另获排他窗后先187关闭对冻结87，再同187关闭/开启；原地与真分离1/4、纯apply与copy+apply，保留所有worker，不用共同固定成本掩盖开销",
+  "scope": "非stock SLUT，固定两cell/κ3，不扩拟合；每线程密集命中栈计入容量，不推断50速度底线"
+}

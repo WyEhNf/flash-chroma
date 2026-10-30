@@ -1,0 +1,53 @@
+{
+  "purpose": "98固定ordinary低hint首级纯模型精确结构普查，不进行新实现或性能",
+  "script_sha256": "c27898265a57f52f0c97a079372efee59ce40cb7041e11f660671840c346eeef",
+  "model": {
+    "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\stage1_sweep012\\stage1.slut",
+    "sha256": "af9747e4b396ee8382897cd9af717d7464eccfe066add1262c12ff95582f3fc0"
+  },
+  "rank_prime": 65521,
+  "code_sources": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\portable\\src\\jshc_portable.c",
+      "sha256": "dec96a2fc97d5087da2f21220cd01124f4399b01eabbf137d4ba1508811ec40a"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\cpp\\src\\portable_bridge.cpp",
+      "sha256": "2f45baf1b80b3189b6a6f2ea6f65775cb73b9ad811b5ef957e5de7a6ec5d97ea"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\cpp\\src\\lut.cpp",
+      "sha256": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\cpp\\src\\lut_simd_avx2.cpp",
+      "sha256": "7f9caf001b8d66e724e4b415a61be74e1c6b83182e0a75a8506a0d8c6bd140e7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-palette-prepare-runtime\\channel_runtime.cpp",
+      "sha256": "c1f1727b693b95ad99014518d0ea653ae16c20b2bff995ba29092a7d0987c507"
+    }
+  ],
+  "controls": {
+    "reference87_dll_sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158",
+    "previous95_dll_sha256": "6bb74d4097f9ca32fa723ab3a4c5c37402e92502719c108407cf8a7bfe2f0fa2",
+    "scope": "只绑定当前比较基线身份，不加载库。"
+  },
+  "checks": [
+    "全节点逐输出轴依赖/constant",
+    "全节点加性残差与反证",
+    "九个通道/模态有理秩的精确模minor证书",
+    "RGB中心化秩与固定chroma offset",
+    "全部cell局部精确仿射/逐轴/常量与idx码数直积权重"
+  ],
+  "forbidden": [
+    "gold",
+    "照片",
+    "完整16M输出",
+    "拟合/搜索rank近似",
+    "JIT",
+    "BLAS分解",
+    "原生库",
+    "性能/构建/ZIP/Git"
+  ]
+}

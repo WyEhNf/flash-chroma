@@ -1,0 +1,44 @@
+{
+  "purpose": "仅从冻结M16D字典与palette导出唯一RGB32块格式，并独立重建全域。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "script_sha256": "b75e03bb59d0adf7ecf4c819e9df0e088853e52b738b9529622f7d58eea3bb0f",
+  "plan_sha256": "cc6f9b27988e580776e36895c9cdca19468948872610c8861f302cc9c7d19ba2",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "file_bytes": 10039008,
+  "sha256": "aa0267aab4c7137d4cdccf7d087b559a7bec0ba5b33da5ea65fa3ce0db27ec30",
+  "map_bytes": 3145728,
+  "pool_bytes": 6893248,
+  "unique_blocks": 107707,
+  "model_expected_bytes": 32,
+  "resident_expected": 10039040,
+  "maximum_offset": 10038912,
+  "maximum_end": 10038976,
+  "payload_bytes": 10038976,
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "rgb32_old_sha256": "29a15ba4cb83d0840cfaa99015cda43848fa4ca43a9a1f224c19eaa7dd252497",
+  "rgb32_new_sha256": "29a15ba4cb83d0840cfaa99015cda43848fa4ca43a9a1f224c19eaa7dd252497",
+  "before": {
+    "PeakWorkingSetSize": 35655680,
+    "WorkingSetSize": 35655680,
+    "PrivateUsage": 22310912,
+    "PeakPagefileUsage": 22310912
+  },
+  "after": {
+    "PeakWorkingSetSize": 102391808,
+    "WorkingSetSize": 100405248,
+    "PrivateUsage": 82587648,
+    "PeakPagefileUsage": 89083904
+  },
+  "scope": "保留原pool顺序；只用源palette及ID预展开，无gold/照片选择。全256^3内部R低/B高枚举独立解码RGB32；该枚举SHA不冒充R高输入的native完整域SHA。离线峰值含Python/NumPy临时对象。"
+}

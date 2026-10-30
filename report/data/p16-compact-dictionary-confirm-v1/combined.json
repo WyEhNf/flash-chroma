@@ -1,0 +1,937 @@
+{
+  "purpose": "仅执行预冻结的一次字典确认，原bench同进程运行，原结果不覆盖，合并八worker取最劣。",
+  "plan_sha256": "91def8e7bbae90704d58248a841a12ad8d0d2414167f82487e5ae3f78e3e7e4c",
+  "first_summary_sha256": "3a3b37be1a55b7335390e4e8c6cbe763faacaac01019ba1311a89733a112e1f4",
+  "second_summary_sha256": "1c978bb7da61531e5b40e27d417ba4cd2a41c8d52583c7fe6504ee48abaa1301",
+  "rows": [
+    {
+      "label": "ref78",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.8937096229724522,
+        0.8970959733943435,
+        0.9368859954633705,
+        0.9920412874540397,
+        0.8940398158129215,
+        1.0,
+        0.9939684060634094,
+        0.9141677930515398
+      ],
+      "worst_raw": 0.8937096229724522,
+      "median_raw": 0.9255268942574552,
+      "worst_valid": 0.8937096229724522,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "ref80",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.9847111864028762,
+        1.0,
+        1.0
+      ],
+      "worst_raw": 0.9847111864028762,
+      "median_raw": 1.0,
+      "worst_valid": 0.9847111864028762,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "dict32",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 5919728,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.7273580898465559,
+        0.631435316593975,
+        0.6489439708877317,
+        0.6710552154583274,
+        0.6864852525294791,
+        0.6612253801565048,
+        0.7061137831272545,
+        0.6482590157611519
+      ],
+      "worst_raw": 0.631435316593975,
+      "median_raw": 0.666140297807416,
+      "worst_valid": 0.631435316593975,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_24",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.5746565176749838,
+        0.5047705166814311,
+        0.5318117910647139,
+        0.5724804999869756,
+        0.5632927646930652,
+        0.5652010206469095,
+        0.5823761698361405,
+        0.5342700607634899
+      ],
+      "worst_raw": 0.5047705166814311,
+      "median_raw": 0.5642468926699873,
+      "worst_valid": 0.5047705166814311,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_17",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.4129172104543195,
+        0.3624283530098715,
+        0.3546093746543875,
+        0.39533523995660724,
+        0.3815136427263339,
+        0.38068657074842954,
+        0.37861890602173426,
+        0.37821162603181
+      ],
+      "worst_raw": 0.3546093746543875,
+      "median_raw": 0.3796527383850819,
+      "worst_valid": 0.3546093746543875,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_24",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.25158225794646627,
+        0.2047224118522898,
+        0.23367527823386364,
+        0.24760907374599514,
+        0.24627516886679304,
+        0.24655046033915043,
+        0.23817079564326574,
+        0.2394932394570793
+      ],
+      "worst_raw": 0.2047224118522898,
+      "median_raw": 0.24288420416193618,
+      "worst_valid": 0.2047224118522898,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_17",
+      "mode": "inplace",
+      "threads": 1,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.19505867520238845,
+        0.17410029854324569,
+        0.1774068506659016,
+        0.18050830748186908,
+        0.18596475520913064,
+        0.1784429660833132,
+        0.19205295361310243,
+        0.17532079455975486
+      ],
+      "worst_raw": 0.17410029854324569,
+      "median_raw": 0.17947563678259115,
+      "worst_valid": 0.17410029854324569,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "ref78",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.8735929527154034,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "worst_raw": 0.8735929527154034,
+      "median_raw": 1.0,
+      "worst_valid": 0.8735929527154034,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "ref80",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        1.0,
+        0.9264225399605427,
+        0.8661281977531411,
+        0.7874952240829433,
+        0.8690428966682997,
+        0.8907772671210256,
+        0.8563306818597323,
+        0.8490356236667653
+      ],
+      "worst_raw": 0.7874952240829433,
+      "median_raw": 0.8675855472107203,
+      "worst_valid": 0.7874952240829433,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "dict32",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 5919728,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.9527564899813056,
+        0.8734622467577892,
+        0.8331735624224085,
+        0.7751664313152603,
+        0.8258668448041827,
+        0.7746781945737976,
+        0.8203633533788315,
+        0.8192510235704127
+      ],
+      "worst_raw": 0.7746781945737976,
+      "median_raw": 0.823115099091507,
+      "worst_valid": 0.7746781945737976,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_24",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.7970789241879468,
+        0.7217108179233375,
+        0.7041326406556282,
+        0.674356197667717,
+        0.6839228954102509,
+        0.6817404236407991,
+        0.6752652248079284,
+        0.699403936600713
+      ],
+      "worst_raw": 0.674356197667717,
+      "median_raw": 0.691663416005482,
+      "worst_valid": 0.674356197667717,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_17",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.5836418076534291,
+        0.5293897651518488,
+        0.5007937210110215,
+        0.48903725551314414,
+        0.5052527777490369,
+        0.5013880679200516,
+        0.502906065794708,
+        0.5012262725467316
+      ],
+      "worst_raw": 0.48903725551314414,
+      "median_raw": 0.5021470668573798,
+      "worst_valid": 0.48903725551314414,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_24",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.3838834013974398,
+        0.32747336409911443,
+        0.32279360124792955,
+        0.30420094937576947,
+        0.32672874016266834,
+        0.3110108762131722,
+        0.3153736613565434,
+        0.31148687315309653
+      ],
+      "worst_raw": 0.30420094937576947,
+      "median_raw": 0.3190836313022365,
+      "worst_valid": 0.30420094937576947,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_17",
+      "mode": "inplace",
+      "threads": 4,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.28866872153797984,
+        0.25759785859088596,
+        0.24518377702065278,
+        0.241251629079886,
+        0.24711950594097554,
+        0.24422729989992265,
+        0.24303719237809576,
+        0.24181411616316836
+      ],
+      "worst_raw": 0.241251629079886,
+      "median_raw": 0.2447055384602877,
+      "worst_valid": 0.241251629079886,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "ref78",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.9766463820447814,
+        0.940860746803226,
+        1.0,
+        0.9521078652068742,
+        1.0,
+        0.9487462957410775,
+        1.0,
+        0.9105306725206562
+      ],
+      "worst_raw": 0.9105306725206562,
+      "median_raw": 0.9643771236258278,
+      "worst_valid": 0.9105306725206562,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "ref80",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        1.0,
+        1.0,
+        0.991918104838466,
+        1.0,
+        0.9974783972936115,
+        1.0,
+        0.9071364294607884,
+        1.0
+      ],
+      "worst_raw": 0.9071364294607884,
+      "median_raw": 1.0,
+      "worst_valid": 0.9071364294607884,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "dict32",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 5919728,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.7310190686635712,
+        0.7346729522623242,
+        0.7524919918927119,
+        0.7293118213380964,
+        0.7608004970958554,
+        0.7424384847388938,
+        0.7639204951338394,
+        0.7016546894936152
+      ],
+      "worst_raw": 0.7016546894936152,
+      "median_raw": 0.7385557185006091,
+      "worst_valid": 0.7016546894936152,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_24",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.6754168983448492,
+        0.6197495363022275,
+        0.6708996310518898,
+        0.6554816385698691,
+        0.6542410263377905,
+        0.6483705139770133,
+        0.6445159762546689,
+        0.6170059788839543
+      ],
+      "worst_raw": 0.6170059788839543,
+      "median_raw": 0.6513057701574019,
+      "worst_valid": 0.6170059788839543,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_17",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.496829055423362,
+        0.45733390308238936,
+        0.47386229996578483,
+        0.44719330361134785,
+        0.47056510729340734,
+        0.4661123371693888,
+        0.4608218721937659,
+        0.4280764596007887
+      ],
+      "worst_raw": 0.4280764596007887,
+      "median_raw": 0.46346710468157737,
+      "worst_valid": 0.4280764596007887,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_24",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.2980990377637752,
+        0.275749072737679,
+        0.28739592342719833,
+        0.2712541735548429,
+        0.2888586303290945,
+        0.2803267411086882,
+        0.2790815763928591,
+        0.26009423773448004
+      ],
+      "worst_raw": 0.26009423773448004,
+      "median_raw": 0.27970415875077365,
+      "worst_valid": 0.26009423773448004,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_17",
+      "mode": "outplace",
+      "threads": 1,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.23654907469872324,
+        0.21416054236777668,
+        0.22106301887647684,
+        0.2069995021078524,
+        0.21653613261591492,
+        0.21109070083384807,
+        0.21271438079504834,
+        0.2026988230852923
+      ],
+      "worst_raw": 0.2026988230852923,
+      "median_raw": 0.21343746158141252,
+      "worst_valid": 0.2026988230852923,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "ref78",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.9370994174697458,
+        0.9358174407558544,
+        0.9985415001356264,
+        0.9531012277980437,
+        1.0,
+        1.0,
+        0.9651422368709965,
+        0.9921260636092684
+      ],
+      "worst_raw": 0.9358174407558544,
+      "median_raw": 0.9786341502401324,
+      "worst_valid": 0.9358174407558544,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "ref80",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 28046644,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.9524442722744115,
+        0.9439475728838063,
+        1.0,
+        1.0
+      ],
+      "worst_raw": 0.9439475728838063,
+      "median_raw": 1.0,
+      "worst_valid": 0.9439475728838063,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": true,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "dict32",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 5919728,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.818593379402819,
+        0.8689576916077724,
+        0.8998441420347049,
+        0.8122634879817121,
+        0.8652819126764103,
+        0.8255359429657848,
+        0.8832896858031866,
+        0.8509440854644158
+      ],
+      "worst_raw": 0.8122634879817121,
+      "median_raw": 0.858112999070413,
+      "worst_valid": 0.8122634879817121,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": true,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_24",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.725650046427169,
+        0.766066876443832,
+        0.8228761444431306,
+        0.7510520395299026,
+        0.7374427161747463,
+        0.7048525574026805,
+        0.8008834360502687,
+        0.7476990204783275
+      ],
+      "worst_raw": 0.7048525574026805,
+      "median_raw": 0.749375530004115,
+      "worst_valid": 0.7048525574026805,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": true,
+        "60": true,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "avx2_17",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.5493657808906575,
+        0.5603120951673054,
+        0.5793859988085945,
+        0.5591347023095639,
+        0.5409231089150065,
+        0.5343201447444828,
+        0.5915955000121306,
+        0.5597598518085971
+      ],
+      "worst_raw": 0.5343201447444828,
+      "median_raw": 0.5594472770590805,
+      "worst_valid": 0.5343201447444828,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": true
+      },
+      "valid_worker_below_50": false
+    },
+    {
+      "label": "c99_24",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 4871152,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.3364326143416816,
+        0.3463762125033657,
+        0.3623209647598002,
+        0.35375995157291745,
+        0.3359164302575691,
+        0.33299552317863523,
+        0.35674629379336714,
+        0.3536487191384868
+      ],
+      "worst_raw": 0.33299552317863523,
+      "median_raw": 0.35001246582092627,
+      "worst_valid": 0.33299552317863523,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    },
+    {
+      "label": "c99_17",
+      "mode": "outplace",
+      "threads": 4,
+      "capacity": 3953648,
+      "accuracy_retention": 1.0,
+      "all_eight_workers": [
+        0.2679495596664158,
+        0.271250650685853,
+        0.2819586681056907,
+        0.26534457157095903,
+        0.2647419560552844,
+        0.2599383372260609,
+        0.28239313565638546,
+        0.2713172898737205
+      ],
+      "worst_raw": 0.2599383372260609,
+      "median_raw": 0.2696001051761344,
+      "worst_valid": 0.2599383372260609,
+      "controls_both_pass": true,
+      "stable_tiers": {
+        "100": false,
+        "90": false,
+        "80": false,
+        "70": false,
+        "60": false,
+        "50": false
+      },
+      "valid_worker_below_50": true
+    }
+  ],
+  "controls": {
+    "first": {
+      "inplace_1": {
+        "ratios": [
+          1.0102216180575503,
+          1.0284994207724587,
+          0.9793885244761382,
+          0.9328578083035295
+        ],
+        "median": 0.9948050712668443,
+        "pass_": true
+      },
+      "inplace_4": {
+        "ratios": [
+          1.0358214350031774,
+          1.0443484819889952,
+          0.9857343606790793,
+          1.0115061326975336
+        ],
+        "median": 1.0236637838503555,
+        "pass_": true
+      },
+      "outplace_1": {
+        "ratios": [
+          0.9693730793794423,
+          1.0033435390899426,
+          0.9831271033342135,
+          0.9891959055939715
+        ],
+        "median": 0.9861615044640926,
+        "pass_": true
+      },
+      "outplace_4": {
+        "ratios": [
+          1.0440860261974285,
+          1.0189191483369315,
+          0.9791219549262975,
+          1.0246032482353982
+        ],
+        "median": 1.021761198286165,
+        "pass_": true
+      }
+    },
+    "second": {
+      "inplace_1": {
+        "ratios": [
+          0.937443014996984,
+          0.9461269824033416,
+          1.005936444744131,
+          1.0675736494800396
+        ],
+        "median": 0.9760317135737363,
+        "pass_": true
+      },
+      "inplace_4": {
+        "ratios": [
+          0.9801396758665248,
+          0.9678918323147468,
+          1.0242796038638455,
+          0.9638204773205563
+        ],
+        "median": 0.9740157540906358,
+        "pass_": true
+      },
+      "outplace_1": {
+        "ratios": [
+          0.957039242884143,
+          0.995580346979443,
+          0.9083234012668229,
+          1.057788106947443
+        ],
+        "median": 0.9763097949317929,
+        "pass_": true
+      },
+      "outplace_4": {
+        "ratios": [
+          0.9548671417803509,
+          1.0320125355139154,
+          0.9904815527506236,
+          1.0021738062075765
+        ],
+        "median": 0.9963276794791001,
+        "pass_": true
+      }
+    }
+  },
+  "stable_3byte_global_50": true,
+  "revoke_3byte_global_50": false,
+  "scope": "首轮和本轮全部8worker取最劣；两轮A/A全部有效且最劣满足门槛才给稳健资格。任何A/A有效worker越50则撤销稳健全局50推荐。无效原样保留且不反复重跑，不挑轮次、不替换首轮结果。"
+}

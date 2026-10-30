@@ -1,0 +1,122 @@
+{
+  "purpose": "单进程构建M16S C99与AVX2桌面适配器；不重编译旧三个字典控制。",
+  "source_sha256": {
+    "experiments/split-dictionary-runtime/memory_rom.h": "93eae508d8d6af3a9b0debe795c710cc07e1143675996238e4ae1f87dc818f3f",
+    "experiments/split-dictionary-runtime/memory_rom.c": "2d7c12f1bd9d7eee5c89ca5e7954f0cb6e6b9f842164f5738cc7189d523ce0f6",
+    "experiments/split-dictionary-runtime/memory_parallel.cpp": "32eee0b5be4d7dba19d916639d238391406ea74733cb1f61e7de6af002ffad5c",
+    "experiments/split-dictionary-runtime/channel_avx2_split.cpp": "5724422079a6144165ee9caaca6b4348a8f75a6731725e11216d05eae86ec798",
+    "scripts/generate_split_dictionary.py": "1cc723a9a7c152776885aabe65ecce75ac528f01443dd8b5b820700ef5882b67",
+    "scripts/export_split_dictionary.py": "2b39478b114b5fbb1b9cdacfe0fda10938dc958a367a752c8ca12e9c7024d7c0",
+    "scripts/build_split_dictionary.py": "07e4132c75624a34da4f6f2002e10e665b8fe29929e69e8bc3d1cd5348095483",
+    "scripts/verify_split_dictionary.py": "7b24b1354de6012bc509a769632bf4d7414d6a0140911424d6c52edcabae2ff6",
+    "scripts/freeze_split_dictionary.py": "47e3449afabf2583946408c82486e1d375638f65090a69c7f5ffadcf378ff67a",
+    "scripts/bench_split_dictionary.py": "4f65161cb7d0c2e2645a2ef8a41ea33670ddb49017c89611944c19ecad47cf24",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "experiments/compact-dictionary-split-design.md": "461d76d0fc8302931e7820e138b480a231dd9221f37104757cc853b9f26aa505",
+    "experiments/compact-dictionary-runtime/channel_avx2_17.cpp": "a378a9308ee755cbf6f5f5fb62ca8e420a6f9ba85dc0d21dbd47638790991d53"
+  },
+  "plan_sha256": "46b971e07a722a497de3e041f30570d82670734241a7b45cbcb8993fb081a2b4",
+  "compiler_sha256": {
+    "E:/mingw64/bin/gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:/mingw64/bin/g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-O3",
+        "-std=c99",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\split-dictionary-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\jshc_split_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\split-dictionary-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\split-dictionary-runtime\\channel_avx2_split.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\channel_avx2_split.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\channel_avx2_split.o",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-split-dictionary-build-v1\\jshc_memory_split.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "jshc_memory_split.dll": "c09b9053c75c44170b1c70436704cd56d5f1d8cd13d3dbdbcafd19ff5d208bb3",
+    "jshc_split_c99.dll": "a8992fa11714a7ade8dcd81e05f4cafead5aca94d84ac97a4293991e2659f78d",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "scope": "严格C99无堆核心；仅桌面像素TU启用AVX2，适配器OpenMP。旧32/24/17控制直接载入冻结原DLL，不重新构建。"
+}

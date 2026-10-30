@@ -1,0 +1,8 @@
+{
+  "purpose": "保留首次只读交付辅助入口失败，不涉及原生结果或重测",
+  "failure": "Windows内联Python用Path.read_text默认GBK读取UTF-8结果，UnicodeDecodeError；随后archive.py因尚未生成确认决定FileNotFoundError",
+  "state": "确认决定未写入、归档未复制任何原件、全部测量原件未改",
+  "correction": "把确认逻辑保存到confirmation-decision.py并显式encoding=utf-8；之后再执行归档",
+  "additional_native_calls": 0,
+  "additional_performance_series": 0
+}
