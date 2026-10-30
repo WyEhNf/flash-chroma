@@ -1,0 +1,24 @@
+{
+  "purpose": "离线核对原40已用vpinsrd内存操作数完成palette加载与lane插入；源码load计数不等于机器指令计数",
+  "rows": [
+    {
+      "variant": "reference40",
+      "asm_sha256": "4a47f6d1a8f987b2c8f3149e7eea2d643e6b1d88d2a9db4fb2ce832ed643403a",
+      "vpinsrd_memory_operand_count": 104,
+      "examples": [
+        "     15e:\tc4 a3 71 22 0c b6 01 \tvpinsrd $0x1,(%rsi,%r14,4),%xmm1,%xmm1",
+        "     165:\tc4 a3 79 22 04 a6 01 \tvpinsrd $0x1,(%rsi,%r12,4),%xmm0,%xmm0",
+        "     193:\tc4 23 31 22 0c 86 01 \tvpinsrd $0x1,(%rsi,%r8,4),%xmm9,%xmm9"
+      ]
+    },
+    {
+      "variant": "palettegather52",
+      "asm_sha256": "8cc932f75a54f6d8f7684142b0dc343e180181cea9c9e5b026265f3f6bacb2b3",
+      "vpinsrd_memory_operand_count": 0,
+      "examples": []
+    }
+  ],
+  "scope": "仅静态ISA表达，不声称微操作融合或专用端口/延迟事件已测得",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}

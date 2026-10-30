@@ -1,0 +1,15 @@
+{
+  "purpose": "51准备阶段的元数据键规范化失败，未构建或执行像素",
+  "exit_code": 1,
+  "exception": "KeyError: scripts/verify_skylake_vectorinput_linux.py",
+  "cause": "50验证计划的Windows路径键含反斜线；51准备代码按正斜线查键",
+  "original_source_keys": [
+    "scripts\\verify_skylake_vectorinput_linux.py",
+    "scripts\\paged_table_support.py",
+    "scripts\\outplace_support.py",
+    "scripts\\guarded_buffer_support.py"
+  ],
+  "resolution": "保持50冻结计划不变；51新计划将路径键统一正斜线，实际验证源码及50测试结果不改变",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}

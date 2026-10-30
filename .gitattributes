@@ -327,3 +327,19 @@ scripts/report_quantile_tail_study.py -text
 /scripts/*skylake_tiles*.py -text
 /report/data/skylake-tiles-v1/**/*.asm -text -diff
 /report/data/skylake-tiles-v1/**/CMakeCache.txt -text -diff
+
+/experiments/skylake-vectorinput* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-vectorinput-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_vectorinput*.py -text
+/experiments/skylake-vectorwide* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-vectorwide-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_vectorwide*.py -text
+/experiments/skylake-palettegather* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-palettegather-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_palettegather*.py -text
+/scripts/*skylake_input_path*.py -text
+/report/data/skylake-input-path-v1/**/*.asm -text -diff
+/report/data/skylake-input-path-v1/**/CMakeCache.txt -text -diff
+
+# PR原文包含合法Markdown双空格换行，保留原字节。
+/report/data/skylake-input-path-v1/expected-pr51-body.txt -text whitespace=-blank-at-eol
