@@ -1,0 +1,26 @@
+{
+  "purpose": "所读一手技术来源和适用边界，启发假设，不把厂商示例当作本机或服务器成绩",
+  "sources": [
+    {
+      "url": "https://cdrdv2-public.intel.com/814198/248966-Optimization-Reference-Manual-V1-049.pdf",
+      "section": "15.16.4与图15-12",
+      "finding": "Skylake的硬件和软件gather取舍随局部性变化，不能从AMD本机结果推定普遍优胜；本轮保留原23作同场参考"
+    },
+    {
+      "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html",
+      "finding": "受影响平台的gather缓解会增加结果可消费延迟；本任务没有修改任何缓解或系统安全设置"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+      "finding": "cache泛化事件的具体含义依CPU而异；本轮只报告原始generic事件和组运行比例，不标作L3实测"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.18/arch/x86/events/amd/core.c",
+      "finding": "Zen4的generic cache编码与本机sysfs观察一致；未把虚拟机计数当作Skylake证据"
+    },
+    {
+      "url": "https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html",
+      "finding": "只对本对象内存调用MADV_HUGEPAGE；从smaps核验实际大页覆盖，没有系统级配置变更"
+    }
+  ]
+}

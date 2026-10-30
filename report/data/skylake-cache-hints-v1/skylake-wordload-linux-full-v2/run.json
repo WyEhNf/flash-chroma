@@ -1,0 +1,139 @@
+{
+  "purpose": "仅用Python标准库核验LinuxRGB24精确主词普通加载42（容量修正v2）实际启用、ABI与完整RGB8输出；不含拟合、照片计时或Skylake实测结论。",
+  "source_sha256": {
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f",
+    "cpp/include/jshc/image_contract.hpp": "d480447c860c680354bf6348fae31e77b5c5f50fce5ddafc17338ba0144ba14b",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "cpp/src/fit_r14.cpp": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/src/lut.cpp": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+    "cpp/src/lut_simd_avx2.cpp": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+    "cpp/src/lut_simd_avx2.hpp": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+    "cpp/src/lut_simd_cpp26.cpp": "525560a74f146daef6c1bdff3dc3f49c48ddd837b84c07b019681e1d02e82af8",
+    "cpp/src/main.cpp": "9a378321209230545e3f7c9686558e99da98ee21144f57eb0b937736d0927102",
+    "cpp/src/portable_bridge.cpp": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+    "cpp/src/portable_bridge.hpp": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-common.cmake": "de4f858e5b703079715b33bbfe542914c363b46ddb9f628ba83860aa3e2b61d8",
+    "experiments/skylake-domain-isolated-runtime/CMakeLists.txt": "bca28de36adab593624707521dd9ee4b8053e2f84e5452b040239b7457e5119f",
+    "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+    "experiments/skylake-domain-isolated-runtime/channel_runtime.cpp": "ee1e91bcd4b2d8ee9bbdbfc49cf12a37cad5f7790d664d6c0817ee42b84a9fd7",
+    "experiments/skylake-domain-isolated-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp": "c77dbb77d076d4dd1b3c897af27d176ebf1e6ba1a484437ac38ba68803343cfa",
+    "experiments/skylake-palette-runtime/CMakeLists.txt": "21bae119cec6c2a0fc60acb1de39f007b9d64b3a01b9abf7cf55392e4fffe344",
+    "experiments/skylake-palette-runtime/channel_avx2.cpp": "1dc798f7220b2e8f41681c1c1f12a29bd983a90eded342bebb924c3b92dafce9",
+    "experiments/skylake-palette-runtime/channel_runtime.cpp": "58e2b0aab846014f0ee534071082b3faff6e8a318dc7be3b57cb27f33351dcaf",
+    "experiments/skylake-palette-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-palette-runtime/suffix_cache.hpp": "232964b7e7af56f585b8421c8f5facd0dbd7faab7dc1edd495c01f81e3da2a1c",
+    "experiments/skylake-suffix-cache-runtime/CMakeLists.txt": "1a1e710d2a584c63753af266adfbe3a4a8ca61a9a2d97759f902b468f4169196",
+    "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp": "fb1ffabd1bad41abf44d1513c4feadd3479392e9cda625b2842db234e519ad79",
+    "experiments/skylake-suffix-cache-runtime/channel_runtime.cpp": "ef4bca4d772ef6d0a6a708d9b5792f062f37911644e55f9e27a5614c004292d6",
+    "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp": "c31d01ead445ab1e3e432061d9cddd59835a70f14052a84d3e2050e06703e17f",
+    "portable/include/jshc_portable.h": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+    "portable/src/jshc_portable.c": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "scripts/accept_skylake_runtime.py": "9adc824542c320c3ddb93a2e6da7f7ba676373e55eaa0fe6f7637e5ff2fb33cf",
+    "scripts/archive_skylake_runtime.py": "a19b0a3d0ff3585d92b0a5b153c25473bf21bf8c5c9c8f1b9c6bf5da2f62492a",
+    "scripts/axis_preweight_support.py": "793338e2aecbd90893d80f3fecdb8c0392bbaa42a18c6957f5bfd8db6479bddb",
+    "scripts/bench_skylake_runtime.py": "fc86cd071c3a7180a22b368a5b4c5ed8cc5de3d06be5e14989b3151ae6235bdb",
+    "scripts/build_skylake_runtime.py": "e5ca8b7d2710fa41e14ddf69e0eca5a0f2d85129cd24896fc87461030caca301",
+    "scripts/delta16_support.py": "e3d982a6e3800b0e3cefdbc163e4377bca3b843d269c67d08aa3550f6c2875b1",
+    "scripts/domain_cache_support.py": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+    "scripts/inspect_skylake_avx2.py": "85075f23744d373fb707f9abec7382c174430737b47f086d129c706a205542f4",
+    "scripts/inspect_skylake_preweight.py": "c469c4898d98d17fc2aed0737c8221dd34473ecee507aeb9d6df9e63d95da4c1",
+    "scripts/inspect_skylake_rcontiguous.py": "b0f55efc3837304b5752e13f82663b5aa010f8d437781edfebb6b402eade01a4",
+    "scripts/profile_skylake_cache.py": "4b3fd9ec8af15a42b61de9a26315322e24a6410828ea3251d3c9a968f05b8b37",
+    "scripts/restrict_support.py": "1f2fabfd9a277238ac25c3ea321018ad9032c77de437c98598ea78eb2c8877c6",
+    "scripts/skylake_support.py": "49e804ce5fb472da162eea25df8a70d396c47088eabb79c537bfcaa577ac2703",
+    "scripts/suffix_cache_support.py": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/verify_skylake_domain_cache.py": "bc0e279f8c61d4e24e75364e1044bcd496c5f66d57d7693f45ce616b537eb8a9",
+    "scripts/verify_skylake_packed.py": "24f307cb2f31892f07b2ac3192b861d76c8a7df94d3e9aef517f2b4c5abe87b1",
+    "scripts/verify_skylake_rcontiguous.py": "3fbc15ba1739a7aeee864aec25472b19044a93b654981017cfd3d90795b143dc",
+    "scripts/verify_skylake_suffix_cache.py": "75fe91bb10f147095d1c00fce6f62f52df5e002d0a370ad73af481b9d14aefdb",
+    "experiments/skylake-exception-runtime/channel_avx2.cpp": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+    "experiments/skylake-exception-runtime/channel_runtime.cpp": "ba539a1c585ddbebb1635bfda6eae49786592a88a4c044d479a42ff272edde3c",
+    "experiments/skylake-exception-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-exception-runtime/CMakeLists.txt": "42afb008406ea1f9e49597b8517593da10f2fb492526a31e6977fe89a172656c",
+    "experiments/skylake-exception-runtime/suffix_cache.hpp": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c",
+    "experiments/skylake-wordload-runtime/aligned_table.hpp": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+    "experiments/skylake-wordload-runtime/channel_avx2.cpp": "6526fcbc3e587da38dd460c0ed1b8ef4e5a7bb40867a121e944c68d88cd31de1",
+    "experiments/skylake-wordload-runtime/channel_runtime.cpp": "081cef68ce0defff78e9bd77b9e437856aab0c9b828bd4c515df38f1ccea3fc2",
+    "experiments/skylake-wordload-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/skylake-wordload-runtime/CMakeLists.txt": "6c40b38273388bd547ff8a8351db4c8025447773cbec826fe4d60812e078cae4",
+    "experiments/skylake-wordload-runtime/outplace_bench.cpp": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+    "experiments/skylake-wordload-runtime/reference_to.cpp": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+    "experiments/skylake-wordload-runtime/suffix_cache.hpp": "ea09610c092730f19e86cad338000e9e24fcd83f4cfa55143844eaeaade5e0f9",
+    "scripts/paged_table_support.py": "910d25362466772edabcfb8b6e2289d2f0f91c7c863035f1708bda974a3eae30",
+    "scripts/outplace_support.py": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+    "scripts/guarded_buffer_support.py": "38ef103321f5a562208d5c081fdf13e9752dfc6eb3966a398f459d75c41779a6",
+    "scripts/verify_skylake_wordload_fixed_linux.py": "f29c8851a4258ef9ff8235ed0294b1a71958de668a54cdcb45f4adca75666d0f"
+  },
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "machine": "x86_64",
+    "cpu": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 97\nmodel name\t: AMD Ryzen 9 8945HX with Radeon Graphics\nstepping\t: 2\nmicrocode\t: 0xffffffff\ncpu MHz\t\t: 2495.237\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 32\ncore id\t\t: 0\ncpu cores\t: 16\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 13\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa\nbogomips\t: 4990.47\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management:",
+    "initial_affinity": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OMP_DYNAMIC": null,
+      "OMP_PROC_BIND": null,
+      "OMP_PLACES": null
+    },
+    "gather_data_sampling": "Not affected"
+  },
+  "build_sha256": "50d7556bb5c64192bceff8bfa8d3d864efa43cf1f50019627352ddfaf224d869",
+  "plan_sha256": "f7cbfcdeeea591f642c759321dc37bc5369c864a3e5443c13ef50c562fc3d620",
+  "single_oracle_stream": {
+    "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-domain-isolated-full-v1/first-stage.rgb",
+    "sha256": "7837c93f7b177a93e4bfb9afe8381e22eb24bdcca16009d6042e5f5b840ff146"
+  },
+  "inputs": {
+    "base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    },
+    "cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    },
+    "prior_full": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f"
+    },
+    "model": {
+      "path": "artifacts/cinema-current-anchor-v1/current-anchor-pipeline.npz",
+      "sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb"
+    }
+  },
+  "suffix_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ]
+}
