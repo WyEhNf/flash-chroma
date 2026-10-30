@@ -1,7 +1,7 @@
 // 同一单线程框架口径的受控比较：准备先于图像读取，质量与计时分列。
 #define FLASH_CHROMA_IMPLEMENTATION
 #define FLASH_CHROMA_ENABLE_OPENMP 0
-#include "fit_chain_experiment.hpp"
+#include "precision_pipeline.hpp"
 #include "framework_io.hpp"
 #include <algorithm>
 #include <chrono>
@@ -64,7 +64,7 @@ Spec parse_spec(std::string value) {
         throw std::runtime_error("candidate ID必须为安全ASCII标识符");
     for(auto m:result.m)if(m<17||m>33)throw std::runtime_error("m必须在17..33");
     if((result.grid!="framework"&&result.grid!="uniform")||structure>1||(backend!=0&&backend!=1&&backend!=2)||representation>3||!result.block||
-       (result.fit!="sample"&&result.fit!="independent_ls"&&result.fit!="chain_ls"))
+       (result.fit!="sample"&&result.fit!="independent_ls"&&result.fit!="chain_ls"&&result.fit!="history"))
         throw std::runtime_error("candidate配置非法");
     result.structure=structure;result.backend=static_cast<fc::Backend>(backend);result.representation=static_cast<fc::Representation>(representation);return result;
 }
@@ -78,6 +78,7 @@ struct PreparedModels {
     std::array<fc_framework::FitReport,4> reports{};
     std::array<int,4> reused={-1,-1,-1,-1};
     double model_ms=0;
+    std::string history="null";
 };
 struct Candidate {
     Spec spec;
@@ -206,6 +207,7 @@ int run(int argc,char** argv) {
                             else (*model->stages)[i]=fc_framework::fit_full(raw[i],sampled[i],model->reports[i]);
                         }
                     }else if(spec.fit=="chain_ls")(*model->stages)[3]=fc_framework::fit_chain_last(raw,*model->stages,model->reports[3]);
+                    else if(spec.fit=="history"){fc_framework::precision::Report report;*model->stages=fc_framework::precision::migrate(raw,*model->stages,report);model->history=fc_framework::precision::json(report);}
                     model->model_ms=ms(t);models.emplace(key,model);}
                 c->model=models.at(key);c->stages=c->model->stages;c->model_ms=c->model->model_ms;c->chain=std::make_unique<fc_framework::Chain>();
                 fc_framework::Options options;options.backend=spec.backend;options.representation=spec.representation;options.structure=spec.structure;options.threads=1;options.block_pixels=spec.block;options.max_workspace_bytes=spec.budget;
@@ -248,6 +250,7 @@ int run(int argc,char** argv) {
         for(std::size_t ci=0;ci<candidates.size();++ci){const auto& c=*candidates[ci];if(ci)report<<',';report<<"{\"id\":"<<quote(c.spec.id)<<",\"ready\":"<<(c.ready?"true":"false")<<",\"status\":"<<c.status<<",\"error\":"<<quote(c.error)<<",\"m\":[";
             for(unsigned i=0;i<4;++i){if(i)report<<',';report<<c.spec.m[i];}report<<"],\"grid\":"<<quote(c.spec.grid)<<",\"fit\":"<<quote(c.spec.fit)<<",\"requested_structure\":"<<(c.spec.structure?"true":"false")<<",\"requested_backend\":"<<static_cast<unsigned>(c.spec.backend)<<",\"requested_representation\":"<<static_cast<unsigned>(c.spec.representation)<<",\"block_pixels\":"<<c.spec.block<<",\"workspace_budget\":"<<c.spec.budget<<",\"model_prepare_ms\":"<<c.model_ms<<",\"runtime_prepare_ms\":"<<c.prepare_ms;
             report<<",\"fit_parameters\":{\"cg_max_iterations\":160,\"relative_tolerance\":1e-8,\"regularization\":1e-5,\"integer_sweeps\":8,\"guard_full_domain\":true},\"fit_reports\":";fit_reports(report,c);
+            report<<",\"history\":"<<(c.model?c.model->history:"null");
             if(c.ready){const auto info=c.chain->info();report<<",\"actual\":{\"structured\":"<<(info.structured?"true":"false")<<",\"backend\":"<<static_cast<unsigned>(info.backend)<<",\"representation\":"<<static_cast<unsigned>(info.representation)<<",\"threads\":"<<info.threads<<",\"model_bytes\":"<<info.model_bytes<<",\"sidecar_bytes\":"<<info.sidecar_bytes<<",\"arena_bytes\":"<<info.arena_bytes<<",\"object_bytes\":"<<info.object_bytes<<",\"palette_entries\":"<<info.palette_entries<<"},\"stage_proofs\":[";
                 for(unsigned i=0;i<4;++i){if(i)report<<',';const auto& stage=(*c.stages)[i];report<<"{\"separable\":"<<(stage.separable_proven?"true":"false")<<",\"nodes_checked\":"<<stage.proof_nodes<<"}";}report<<"],\"quality\":[";bool quality=true;double worst=0;
                 for(std::size_t i=0;i<c.metrics.size();++i){if(i)report<<',';const auto& m=c.metrics[i];quality=quality&&(!has_threshold||m.mean<threshold);worst=(std::max)(worst,m.mean);report<<"{\"image\":"<<i+1<<",\"mean\":"<<m.mean<<",\"rms\":"<<m.rms<<",\"max\":"<<m.max<<",\"output_fnv1a64\":"<<quote(m.output_hash)<<"}";}report<<"],\"worst_image_mean\":"<<worst<<",\"all_image_mean_pass\":"<<(has_threshold?(quality?"true":"false"):"null")<<",\"samples_ms\":[";

@@ -1,7 +1,7 @@
 /* 本机LUT-only偏好选择；完整域质量与合成时间来自本次运行，不使用照片或历史目录。 */
 #ifndef FLASH_CHROMA_FRAMEWORK_PREFERENCE_SELECTION_HPP
 #define FLASH_CHROMA_FRAMEWORK_PREFERENCE_SELECTION_HPP
-#include "fit_chain_experiment.hpp"
+#include "precision_pipeline.hpp"
 #include <cstdio>
 #include <iomanip>
 #include <locale>
@@ -17,6 +17,7 @@ struct PreferenceOptions {
     std::vector<fc::Representation> representations{fc::Representation::Sparse,fc::Representation::DirectRGB24};
     FitOptions fit{};
     std::string fit_method="sample";
+    precision::Options history{};
     fc::Backend backend=fc::Backend::Auto;
     std::size_t max_runtime_bytes=(std::numeric_limits<std::size_t>::max)();
     std::size_t max_workspace_bytes=64*fc::MiB;
@@ -61,7 +62,7 @@ inline std::string validate(const PreferenceOptions& p){
         for(std::size_t j=0;j<i;++j)if(p.representations[j]==r)return "候选表示重复";
     }
     if(p.fit.grid!=Grid::FrameworkStep&&p.fit.grid!=Grid::UniformRounded)return "网格策略非法";
-    if(p.fit_method!="sample"&&p.fit_method!="independent_ls"&&p.fit_method!="chain_ls")return "拟合策略非法";
+    if(p.fit_method!="sample"&&p.fit_method!="independent_ls"&&p.fit_method!="chain_ls"&&p.fit_method!="history")return "拟合策略非法";
     if(p.backend!=fc::Backend::Auto&&p.backend!=fc::Backend::Scalar&&p.backend!=fc::Backend::Avx2)return "后端非法";
     if(!p.block_pixels||p.block_pixels>(std::numeric_limits<std::size_t>::max)()/3)return "像素块大小非法";
     if(p.calibration_repetitions<3||p.calibration_repetitions>31||p.calibration_repetitions%2==0)
@@ -205,7 +206,7 @@ inline void calibrate(const Chain& chain,const std::vector<std::uint8_t>& input,
 }
 struct Model{
     std::array<unsigned,4> sizes{};std::array<Stage,4> stages{};std::array<FitReport,4> fits{};
-    std::array<std::string,4> hashes{};std::string id,error;
+    std::array<std::string,4> hashes{};std::string id,error,history_report="null";
     double prepare_ms=0,domain_mean=std::numeric_limits<double>::quiet_NaN();
     double domain_rms=std::numeric_limits<double>::quiet_NaN(),domain_max=std::numeric_limits<double>::quiet_NaN();
     std::uint64_t scalar_hash=0;bool accuracy_verified=false;
@@ -301,7 +302,7 @@ inline std::string report(const PreferenceOptions& p,const SelectionResult& resu
         for(unsigned j=0;j<4;++j){if(j)s<<',';s<<quoted(m.hashes[j]);}s<<"],\"error\":"<<quoted(m.error)<<",\"prepare_ms\":";number(s,m.prepare_ms);
         s<<",\"accuracy_verified\":"<<(m.accuracy_verified?"true":"false")<<",\"domain_mean\":";number(s,m.domain_mean);
         s<<",\"domain_rms\":";number(s,m.domain_rms);s<<",\"domain_max\":";number(s,m.domain_max);
-        s<<",\"scalar_output_fnv1a64\":"<<quoted(hex(m.scalar_hash))<<",\"fit_stages\":[";
+        s<<",\"scalar_output_fnv1a64\":"<<quoted(hex(m.scalar_hash))<<",\"history\":"<<m.history_report<<",\"fit_stages\":[";
         for(unsigned j=0;j<4;++j){if(j)s<<',';const auto& f=m.fits[j];
             s<<"{\"candidate_used\":"<<(f.candidate_used?"true":"false")<<",\"changed_nodes\":"<<f.changed_nodes
              <<",\"source_separable_skipped\":"<<(f.source_separable_skipped?"true":"false")<<'}';}
@@ -377,7 +378,11 @@ inline SelectionResult select_preferences(const std::array<std::vector<std::uint
                     m.stages[i]=found->stage;m.fits[i]=found->fit;
                 }
                 if(p.fit_method=="chain_ls")m.stages[3]=fit_chain_last(raw,m.stages,m.fits[3]);
-                for(unsigned i=0;i<4;++i)m.hashes[i]=hex(hash_bytes(m.stages[i].blob.data(),m.stages[i].blob.size()));
+                if(p.fit_method=="history"){precision::Report report;auto options=p.history;
+                    if(!options.capacities.empty())throw std::invalid_argument("偏好候选的容量由sizes控制，history内部不得另换容量");
+                    m.stages=precision::migrate(raw,m.stages,report,options);m.history_report=precision::json(report);}
+                for(unsigned i=0;i<4;++i){const auto& stage=m.stages[i];auto hash=hash_bytes(stage.blob.data(),stage.blob.size());
+                    hash=hash_bytes(stage.fractions.data(),stage.fractions.size(),hash);const std::uint8_t kind=static_cast<std::uint8_t>(stage.interpolation);hash=hash_bytes(&kind,1,hash);m.hashes[i]=hex(hash);}
                 scalar=scalar_domain(m,truth,m.domain_mean,m.domain_rms,m.domain_max);
                 m.scalar_hash=hash_bytes(scalar.data(),scalar.size());m.accuracy_verified=true;
                 if(uses_time(p))expected=synthetic_expected(scalar);
