@@ -1,4 +1,6 @@
-# 当前推荐的CPU评分候选
+# CPU 交付入口与历史评分候选
+
+2026-10-30 新增：[final1 两文件交付](final1/README.md)，用于当前 256³ 文本 3DL / RGB8 bin 赛事框架，单线程、33³ + prefix_nodes + DirectRGB24；[服务器测试与选择依据](../docs/stages/2026-10-30-final1.md)记录当前结果。该组 LUT 与下文旧 Cinema 候选不同，精度和耗时不可直接混用。final1 独立保存，不覆盖旧交付。
 
 需要连续精度/时间/内存选择与独立头文件部署时，使用新的[单头接口](../docs/single-header-runtime.md)和[本轮配置目录](../report/data/p16-frontier-header-20261027/catalog.json)。新入口为 `pixi run --locked build-header`、`frontier` 和 `header-run`；下文保留原修订102的评分候选及历史耗时，不能把它们当作新头文件的重测结果。
 

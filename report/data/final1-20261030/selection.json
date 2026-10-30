@@ -1,0 +1,240 @@
+{
+  "profile": "final1",
+  "complete": true,
+  "user_preference": "按赛方口径，精度与纯映射速度平衡",
+  "decision": "采用已有prefix_nodes精度路线与已有AVX2 pair32 DirectRGB24内核；同输入同表地址对照没有支持拟合模型之间稳定的映射速度差异，选验收通过候选中百图平均误差最低者。",
+  "qualification": "沿用此前发布候选的完整域mean/SSE/p99/max/CVaR不退步门控；这是工程选择标准，不冒充赛方未公布阈值。",
+  "official_scoring_formula_known": false,
+  "global_optimum_claim": false,
+  "domain": {
+    "pixels": 16777216,
+    "mean": 0.6792968137830003,
+    "sse": 37378400,
+    "rms": 1.4926239493832534,
+    "p99": 6,
+    "max": 50.20956084253277,
+    "cvar01": 9.397557941571737
+  },
+  "photos": {
+    "photos100": {
+      "mean": 1.4812500637936217,
+      "worst_image_mean": 2.385774487952878,
+      "images": 100
+    },
+    "official4": {
+      "mean": 1.481735437400042,
+      "worst_image_mean": 1.5929505334937986,
+      "images": 4
+    }
+  },
+  "timing": {
+    "scope": "final1实际apply；fresh输出复制与映射在TimeCost内；读图在计时之前，原参考和两次Delta在之后；不额外调用apply预热；正确性验收先于五轮计时",
+    "round_mean_ms": [
+      0.9723598100754316,
+      0.9779201999117504,
+      0.9754531500220764,
+      0.9878767401824007,
+      0.9503483899243292
+    ],
+    "median_round_mean_ms": 0.9754531500220764,
+    "mean_all_ms": 0.9727916580231977,
+    "min_round_mean_ms": 0.9503483899243292,
+    "max_round_mean_ms": 0.9878767401824007
+  },
+  "preparation": {
+    "read_seconds": 7.451456673999928,
+    "reference_and_sample_seconds": 0.33420777100036503,
+    "prepare_seconds": 21.172590432001016,
+    "fit_seconds": 8.271471432999533,
+    "search_seconds": 12.635236672998872,
+    "direct_prepare_seconds": 0.26480738399914117
+  },
+  "memory": {
+    "model_bytes": 448252,
+    "arena_bytes": 50919295,
+    "scope": "模型与运行arena记账；不含原LUT、参考表与拟合临时内存"
+  },
+  "fixed_address_control": {
+    "variants": {
+      "chain33": {
+        "median_ms": 0.932292280067486
+      },
+      "prefix_nodes": {
+        "median_ms": 0.9303941499092616
+      },
+      "geometry_output": {
+        "median_ms": 0.9340960850022384
+      },
+      "history": {
+        "median_ms": 0.9298961349304591
+      }
+    },
+    "aa_pre_relative_difference": 0.009659965494919999,
+    "aa_post_relative_difference": 0.0003346665248163488,
+    "whole_relative_drift": 0.012158591491654522,
+    "conclusion": "各模型中位数差约0.5%，小于本次A/A波动；不据此声称模型之间有稳定速度优势"
+  },
+  "coverage": {
+    "files": 77217,
+    "unique_contents": 31223,
+    "git_commits": 637,
+    "git_refs": 188,
+    "worktrees": [
+      "F:\\Hackathon\\projects\\16-lut-color",
+      "F:\\Hackathon\\worktrees\\16-lut-precision-half",
+      "F:\\Hackathon\\worktrees\\p16-direct-optimization-20261030",
+      "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027",
+      "F:\\Hackathon\\worktrees\\p16-memory-20261023",
+      "F:\\Hackathon\\worktrees\\p16-precision-migration-20261030",
+      "F:\\Hackathon\\worktrees\\p16-speed-20261023",
+      "F:\\Hackathon\\worktrees\\p16-tail-20261023",
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026"
+    ],
+    "roots": [
+      "F:\\Hackathon\\artifacts",
+      "F:\\Hackathon\\极速焕彩测试框架",
+      "F:\\Hackathon\\projects\\16-lut-color\\report",
+      "F:\\Hackathon\\projects\\16-lut-color\\artifacts",
+      "F:\\Hackathon\\projects\\16-lut-color\\docs",
+      "F:\\Hackathon\\worktrees\\16-lut-precision-half\\report",
+      "F:\\Hackathon\\worktrees\\16-lut-precision-half\\artifacts",
+      "F:\\Hackathon\\worktrees\\16-lut-precision-half\\docs",
+      "F:\\Hackathon\\worktrees\\p16-direct-optimization-20261030\\report",
+      "F:\\Hackathon\\worktrees\\p16-direct-optimization-20261030\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-direct-optimization-20261030\\docs",
+      "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\report",
+      "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\docs",
+      "F:\\Hackathon\\worktrees\\p16-memory-20261023\\report",
+      "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-memory-20261023\\docs",
+      "F:\\Hackathon\\worktrees\\p16-precision-migration-20261030\\report",
+      "F:\\Hackathon\\worktrees\\p16-precision-migration-20261030\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-precision-migration-20261030\\docs",
+      "F:\\Hackathon\\worktrees\\p16-speed-20261023\\report",
+      "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-speed-20261023\\docs",
+      "F:\\Hackathon\\worktrees\\p16-tail-20261023\\report",
+      "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-tail-20261023\\docs",
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\report",
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts",
+      "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\docs"
+    ],
+    "skipped": [
+      {
+        "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-feasible-cpsat-problem-v1.json",
+        "bytes": 55881516,
+        "reason": "大于32MiB，单列而非解析"
+      },
+      {
+        "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-current-safe-cpsat-problem-v1.json",
+        "bytes": 55879729,
+        "reason": "大于32MiB，单列而非解析"
+      },
+      {
+        "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-first-direct-budget-problem-v2.json",
+        "bytes": 73003996,
+        "reason": "大于32MiB，单列而非解析"
+      }
+    ],
+    "parse_errors": [
+      {
+        "path": "F:\\Hackathon\\artifacts\\zmx-sync-20261030-1450\\p16-huangrui-sync-20261030\\focused-grid-mismatch\\process-1.json",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "path": "F:\\Hackathon\\极速焕彩测试框架\\C\\.vscode\\launch.json",
+        "error": "Expecting property name enclosed in double quotes: line 2 column 5 (char 6)"
+      },
+      {
+        "path": "F:\\Hackathon\\极速焕彩测试框架\\C\\.vscode\\tasks.json",
+        "error": "Expecting value: line 13 column 5 (char 246)"
+      },
+      {
+        "path": "F:\\Hackathon\\极速焕彩测试框架\\C++\\.vscode\\launch.json",
+        "error": "Expecting property name enclosed in double quotes: line 2 column 5 (char 6)"
+      },
+      {
+        "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\camera-raw-workflow-v1\\braw-download-response.json",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\camera-raw-workflow-v1\\tools\\arri-art-cmd-win\\doc\\cli.schema.json",
+        "error": "Invalid control character at: line 8 column 79 (char 266)"
+      },
+      {
+        "path": "F:\\Hackathon\\worktrees\\p16-direct-optimization-20261030\\report\\data\\p16-framework-preferences-20261030\\evidence\\pytest-single-header-1\\test_cli_selection_report_pres0\\existing-report.json",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      },
+      {
+        "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\event-cpp-smoke-20261029\\existing.json",
+        "error": "Expecting value: line 1 column 1 (char 0)"
+      }
+    ],
+    "qualification": "文件和Git历史盘点；只对同一官方四LUT、同一104图、可复现的历史候选进行数值排名。异LUT、照片拟合、失败/空回执、单纯内核计时不能直接参加排名。没有重新运行全部637个提交。"
+  },
+  "comparable_history_entries": 29,
+  "source_manifest": {
+    "profile": "final1",
+    "algorithm": "FrameworkStep m33 chain_ls + prefix_nodes(32 nodes,1 sweep,stage3 then2)",
+    "mapping": "DirectRGB24 + 自动AVX2 pair32；不支持时Scalar/Sparse降级",
+    "source_files": {
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\final_pipeline.hpp": "53b8eba571520d26941c50c619c066cba78a6209899af1a3a89db0558aceaab5",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\prefix_joint\\candidate.hpp": "4078a548d0c2be7b3ca9da558eaf5d319f7d2b72f6d16cc1c964ce4267772773",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\precision_pipeline.hpp": "fd0e9f2a4a1f6247d2c3730a5275303b5f8130fa00f7c7352173dbd748468359",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\precision_fit.hpp": "4cb2a0a0f3e37f87d626adbad5bd56fc31015c2929efd3a4ea9d51d955eb5616",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\precision_search.hpp": "665aa03098b94bcca23b21298a18c29994277f8152987851b020fef221e6e928",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\precision_geometry.hpp": "a8ff9c5b6daa028251395ef08164d64a036652795f2f14a05183d93417bdb699",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\fit_chain_experiment.hpp": "537bfea1286024c4cc450976f3e589f676905742e0a88bc07c98504ebd149bb6",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\fit_experiment.hpp": "658e998e891950a2e26c099587ea59d513ae5abefc81ebf98afa2738222165b2",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\framework\\flash_chroma_adapter.hpp": "3ec6b6a8c300b3cbd41ed6b574ecd47706fdca8bbd317190f11eae02f4c12638",
+      "F:\\Hackathon\\artifacts\\final1-selection-20261030\\common\\include\\flash_chroma.hpp": "edcc2d23250727c15bf9d9c5cfcd9eb360e5e92419134cfe0cb041495eab999a"
+    },
+    "base_main_sha256": "18ceb6b4e8e8fe0bf07dcaf26b425719613fa8434ce9a5c89fcc6089abb282c4",
+    "output_files": {
+      "flash_chroma_framework.hpp": "d8f8665aeb05f45d5302db64cf747118114a644528f7a0cd39bad277ec32aae4",
+      "main.cpp": "979f71f9f27d55229dfa194fd9697ee5e5f81b6d84e9373eae2e909a9c867e65"
+    },
+    "production_main_modified": false,
+    "original_reference_and_delta_and_timecost_unchanged": true,
+    "main_changes": [
+      "17改为33，作为本独立版本的显式尺寸",
+      "默认数据目录data",
+      "新增可选图片数量参数，默认4且上限100"
+    ]
+  },
+  "validation": {
+    "server_compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "flags": [
+      "-O2",
+      "-std=c++17"
+    ],
+    "allocation": {
+      "pcore": 6,
+      "package_id": 0,
+      "physical_core_id": 24,
+      "siblings": [
+        12,
+        13
+      ],
+      "allowed_cpus": [
+        12,
+        13
+      ],
+      "cpu": 12,
+      "lock": "/home/admin0299/locks/6.lock",
+      "lock_inode": 2625658,
+      "wait_seconds": 7.628900129930116e-05
+    },
+    "backend": 2,
+    "threads": 1,
+    "complete_rgb24_equal": true,
+    "images_verified": 104,
+    "production_main_unchanged": true,
+    "photos_used_to_fit": false,
+    "version_selection_uses_historical_evaluation": true,
+    "unknown_lut_generalization_proved": false,
+    "binary_sha256": "87e1edd90c12b02b3b291ebf11262e703e7b8c351ba47bd343878dee181dd547"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "complete": true,
+  "checked_utc": "2026-10-30T10:12:47.539457+00:00",
+  "purpose": "PR打包来源、归档身份、汇总复算与编译检查；不重授Linux数值或性能资格",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "cpu": "AMD Ryzen 9 8945HX",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "compiler": "g++ (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0"
+  },
+  "commands": [
+    {
+      "argv": [
+        "g++",
+        "-O2",
+        "-std=c++17",
+        "submission/final1/main.cpp",
+        "-o",
+        "F:\\Hackathon\\artifacts\\final1-selection-20261030\\pr-validation\\lut3d.exe"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "g++",
+        "-O2",
+        "-std=c++17",
+        "-I",
+        "submission",
+        "experiments/final1/verify_and_benchmark.cpp",
+        "-o",
+        "F:\\Hackathon\\artifacts\\final1-selection-20261030\\pr-validation\\verify_and_benchmark.exe"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "python",
+        "scripts/package_final1.py"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "python",
+        "scripts/verify_final1.py",
+        "--staged"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0
+    }
+  ],
+  "new_document_links": 16,
+  "archive_files_verified": 39,
+  "images_reaggregated": 104,
+  "timed_images_reaggregated": 500,
+  "binary_sha256": {
+    "lut3d.exe": "541d33ada14fac4b875c8c581f2a83f3a2725d103f147a0019eff9c01eaad19b",
+    "verify_and_benchmark.exe": "ca10aecabcfc5e16b35a567c5d86d6dd3877e93ce5e72a6eaf63155e486d9506"
+  },
+  "original_template_sha256": "d6d9b1817d03c7165931f33d1126500b4ff5e9535ebecfdd4b0cbdbcfb9d0ea5",
+  "notes": [
+    "首次diff空白检查发现新文档三处Markdown行尾双空格；删除后检查通过",
+    "复用冻结源码此前Linux全域、104图、五轮百图和固定地址控制证据；本次未重跑这些数值/性能实验",
+    "远端CI状态以PR新提交检查为准"
+  ]
+}
