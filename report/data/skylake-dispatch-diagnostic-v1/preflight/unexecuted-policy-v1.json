@@ -1,0 +1,267 @@
+{
+  "purpose": "仅诊断已验78照片/固定灰色各1/4线程的两组六事件：区分空发射槽、队列资源及最老load等待，不重新验收旧候选性能",
+  "source": "https://github.com/torvalds/linux/tree/v6.18/tools/perf/pmu-events/arch/x86/amdzen4",
+  "event_sources": [
+    "https://raw.githubusercontent.com/torvalds/linux/v6.18/tools/perf/pmu-events/arch/x86/amdzen4/other.json",
+    "https://raw.githubusercontent.com/torvalds/linux/v6.18/tools/perf/pmu-events/arch/x86/amdzen4/core.json",
+    "https://raw.githubusercontent.com/torvalds/linux/v6.18/tools/perf/pmu-events/arch/x86/amdzen4/pipeline.json",
+    "https://raw.githubusercontent.com/torvalds/linux/v6.18/arch/x86/include/asm/perf_event.h",
+    "https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/56713-B1_3_05.zip"
+  ],
+  "cpu_family": 25,
+  "cpu_model": 97,
+  "perf_type": 4,
+  "events": {
+    "dispatch": [
+      [
+        "cycles",
+        118
+      ],
+      [
+        "instructions",
+        192
+      ],
+      [
+        "frontend_unused_slots",
+        4294967712
+      ],
+      [
+        "backend_unused_slots",
+        4294975136
+      ],
+      [
+        "load_queue_stall_cycles",
+        686
+      ],
+      [
+        "store_queue_stall_cycles",
+        1198
+      ]
+    ],
+    "resources": [
+      [
+        "cycles",
+        118
+      ],
+      [
+        "integer_prf_stall_cycles",
+        430
+      ],
+      [
+        "integer_scheduler_any_stall_cycles",
+        16781231
+      ],
+      [
+        "retire_token_stall_cycles",
+        8367
+      ],
+      [
+        "oldest_not_complete",
+        726
+      ],
+      [
+        "oldest_load_not_complete",
+        41686
+      ]
+    ]
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "threads": [
+    1,
+    4
+  ],
+  "revision": 78,
+  "pin_all_six": true,
+  "exclude_kernel_hypervisor": true,
+  "min_running_fraction": 0.99,
+  "probe": {
+    "path": "artifacts/skylake-dispatch-diagnostic-probe-v1/results.json",
+    "sha256": "b99d50c9a3ec962ffd34102096446a10ce6cbb29e6e3ebcddaf263e80f3753da"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "plan": {
+    "path": "experiments/skylake-andn-split-v1.json",
+    "sha256": "c62d97a402705692977250f0e626c9587a7190e97cf9a9b44f4d6a22840532d8"
+  },
+  "build": {
+    "path": "artifacts/skylake-andn-split-linux-build-v1/build.json",
+    "sha256": "2f951a5c2daa035716c2715f6d2803282e8434a8b9d645d8c0ecb7170144cbe6"
+  },
+  "full": {
+    "path": "artifacts/skylake-andn-split-linux-full-v1/results.json",
+    "sha256": "d349abe0d6021c5c03bdde3fd8204c3b69344be4e93fc6d57d38b3bfe820733b"
+  },
+  "validation": {
+    "path": "experiments/skylake-andn-split-validation-v1.json",
+    "sha256": "5b5a629e343e515942d82fa4437465f1db671ef2b97cebe3f969f2564b9885a4"
+  },
+  "library": {
+    "path": "artifacts/skylake-andn-split-linux-build-v1/libjshc_skylake_andn_split.so",
+    "sha256": "51ed7ccd99817c61e89487db8f4afe1970932f637050515ae937280c0cd1532b"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "photo_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "uniform_rgb": [
+    128,
+    128,
+    128
+  ],
+  "uniform_single_pixel_output": [
+    187,
+    180,
+    183
+  ],
+  "uniform_source_sha256": "3efe4cdc3cd3e2fee10985be710fe6c637ab7b1f9da51987ad800905f7978a12",
+  "uniform_output_sha256": "9de2d61f9bf30071a74d8a99d0f32c47bc00422d40d7878f694094b5d0355b95",
+  "cases": [
+    {
+      "case": "photo_inplace",
+      "threads": 1,
+      "group": "dispatch"
+    },
+    {
+      "case": "photo_inplace",
+      "threads": 1,
+      "group": "resources"
+    },
+    {
+      "case": "photo_inplace",
+      "threads": 4,
+      "group": "resources"
+    },
+    {
+      "case": "photo_inplace",
+      "threads": 4,
+      "group": "dispatch"
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 4,
+      "group": "resources"
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 4,
+      "group": "dispatch"
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 1,
+      "group": "dispatch"
+    },
+    {
+      "case": "uniform_inplace",
+      "threads": 1,
+      "group": "resources"
+    }
+  ],
+  "warmup_per_case": 1,
+  "count_per_case": 1,
+  "wallclock_timing_calls": 0,
+  "handle_creations": 1,
+  "input_bytes": 235929600,
+  "input_pixels": 78643200,
+  "runtime_block_pixels": 65536,
+  "runtime_blocks": 1200,
+  "target_alignment_bytes": 64,
+  "capture_all_observed_tids": true,
+  "inactive_tid_policy": "保留全部事件；未参与且enabled=0且全部计数为0时允许空窗口，其余TID逐组要求running/enabled至少0.99",
+  "aggregation": "分别保留每TID原始事件与单位正确比例；参与线程合计按全像素归一。两个组独立计数，不拼接为同一时刻因果分解；不计算吞吐倍数",
+  "counter_window": "四TID全打开；主TID最后启用、最先关闭；公开API包含OpenMP工作和barrier/收尾，不修改原生内核添加边界计数",
+  "quiet_protocol": {
+    "minimum_parent_settle_seconds": 120,
+    "minimum_pid1_age_seconds": 180,
+    "sample_interval_seconds": 5,
+    "consecutive_good_intervals": 2,
+    "busy_percent_max": 10,
+    "timeout_seconds": 600,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "global_cpu_mean_also_required": true,
+    "iowait_is_nonidle": true,
+    "on_failure": "保留部分数据并停止，不自动重跑择优",
+    "environment_change": "不调服务/频率/大页/安全策略，不改变模型或运行时代码",
+    "between_cases": "每个固定案例前再检查两个连续5秒空闲间隔；不因输出结果调整顺序或重试"
+  },
+  "source_hashes": {
+    "scripts/diagnose_skylake_dispatch_linux.py": "389f11dd0f83bbe004c49c0b819b69c468d6144d9c90e7189bab13fb3cd428c4",
+    "scripts/zen4_dispatch_pmu_support.py": "70939c2f01859dc0378975b66ea9c7e3355bd0f41aa76128ef50802974cf9df8",
+    "scripts/probe_skylake_dispatch_pmu.py": "71ba550f0c22d8b7b484cfa10bd4a8933c845e7d918a53be82a7d7d3f4ead889",
+    "scripts/probe_skylake_pmu.py": "e7f66b884005483a35d25c700ca164c9c5fb487d27c6b30c217828da3080808d",
+    "scripts/skylake_server_support.py": "38c669fa506c1b324ffce196cc2c720092d6c235c55e8f2a1236266decaa6a00",
+    "scripts/verify_skylake_linux_stdlib.py": "cabb4d6930f8229fe661f253450d974c5f4c28422267d9d0ed0190e3ba400aa3",
+    "scripts/pinned_openmp_support.py": "15dee1c6e6464976002ab1ea7c911411be27bab9dc8e9a131e8447dee24900e8",
+    "scripts/paged_table_support.py": "910d25362466772edabcfb8b6e2289d2f0f91c7c863035f1708bda974a3eae30",
+    "scripts/quiet_host_support.py": "2579ea511ca3786a49ec83a662c60b58a4b9a462598dd69c939f4c6f732c9653"
+  },
+  "limitations": [
+    "单次八案例诊断，不产生相对23吞吐或采用结论，不自动重试或挑选样本",
+    "每个TID包含启停边界、OpenMP调度、barrier及收尾自旋；无法从聚合等待直接分离像素内核与自旋",
+    "每TID像素数由冻结78的1200块schedule(static)及实际团队1/4推定，不是线程内部测量",
+    "等待事件仅描述最老指令或load阻塞退休的周期，不能直接推导平均访存延迟或并行请求数量",
+    "固定灰色与真实照片只作负载诊断；不得将两者周期相减冒称纯查表成本或设置运行时内容特判",
+    "原始事件来自Linux v6.18 Zen4定义；WSL虚拟PMU语义未由宿主校准，不用于真实Skylake事件解释",
+    "来宾空闲及绑核不保证宿主独占、锁频控温；八案例固定时间顺序，缓存和频率仍可能变化",
+    "当前进程使用单个四级句柄，固定64字节目标对齐；不等同于长批次吞吐验收的缓存和对齐状态",
+    "FE/BE是槽位计数，其余是周期计数；可重叠原因不相加。1a0的01/1e是枚举值，不能OR；AF低四原因位可以OR，但用CMASK1去除同周期重叠。",
+    "两组轮流采集，每个组各一次预热/计数，固定ABBA组顺序；不因计数结果重试或选择组顺序。",
+    "探测available仅表示可调度、基本计数及范围检查通过，不证明WSL虚拟PMU所有事件语义已经宿主校准；零事件不自动表示没有瓶颈。"
+  ],
+  "ppr_pages": {
+    "version": "56713 Rev3.05，Family19h Model61h B1",
+    "control": "216—217",
+    "token_stalls": "271—272",
+    "retire_wait": "275"
+  },
+  "event_group_orders": [
+    [
+      "dispatch",
+      "resources"
+    ],
+    [
+      "resources",
+      "dispatch"
+    ],
+    [
+      "resources",
+      "dispatch"
+    ],
+    [
+      "dispatch",
+      "resources"
+    ]
+  ],
+  "counted_calls": 8,
+  "warmup_calls": 8,
+  "candidate_api_calls": 16,
+  "event_units": {
+    "frontend_unused_slots": "未供给派发槽/(同组6×cycles)",
+    "backend_unused_slots": "后端阻塞派发槽/(同组6×cycles)",
+    "load_queue_stall_cycles": "LQ token导致派发受阻周期/cycles，不等于miss率",
+    "store_queue_stall_cycles": "SQ token导致派发受阻周期/cycles，不等于所有权升级",
+    "integer_prf_stall_cycles": "整数物理寄存器token受阻周期/cycles，不覆盖SIMD资源",
+    "integer_scheduler_any_stall_cycles": "AF/0f四队列原因位；CMASK=1,INV=0,EDGE=0，每周期至少一个原因时仅计一次，不是调度器利用率",
+    "retire_token_stall_cycles": "退休队列token受阻周期/cycles",
+    "oldest_not_complete": "最老op等待执行且无退休的周期/cycles",
+    "oldest_load_not_complete": "最老op等load且无退休的周期/cycles，为oldest_not_complete子集"
+  }
+}
