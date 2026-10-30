@@ -89,9 +89,8 @@ cmake --build build-runtime --parallel 2
 
 1. Linux 默认门禁 `pixi run --locked test`。
 2. Linux 无 AVX2/OpenMP 门禁 `pixi run --locked test-scalar`。
-3. Docker 镜像构建及容器中的默认门禁。
 
-独立的 [嵌入式工作流](.github/workflows/embedded.yml) 分别使用 ARM/RISC-V 裸机 GCC 和 AArch64 Linux GCC，在 QEMU 系统模拟器中验证 Cortex-M3/FreeRTOS、RV32/FreeRTOS、Cortex-A53/Linux。Linux 目标启动锁定内核及最小 initramfs。运行时独立构建只要求 C99，不使用桌面 Pixi 环境；工具链、模型存储预算与当前覆盖范围见 [embedded/README.md](embedded/README.md)。
+Docker 镜像构建与容器内门禁已改为本地步骤，不再由 CI 执行；嵌入式交叉构建与 QEMU 验证同样改为按 [embedded/README.md](embedded/README.md) 本地执行，CI 不再启动这类作业。
 
 CI 固定 Pixi 版本，按锁文件只安装默认环境，不运行 benchmark，不下载实验数据。CUDA 与可选 SIMD 需在具备相应环境的机器上单独验证。
 
