@@ -1,0 +1,148 @@
+{
+  "measurement_completed": true,
+  "accepted_on_this_host": false,
+  "failed_gates": [
+    "1线程apply未达3倍",
+    "1线程真实输出未达3倍",
+    "4线程apply未达3倍"
+  ],
+  "summary": [
+    {
+      "variant": "reference",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 2.023132915,
+      "median_legacy_copy_apply_ms_per_image": 2.5741205000000003,
+      "median_outplace_ms_per_image": 2.589995645,
+      "prepare_wall_seconds": [
+        0.16649296299999605,
+        0.15384023699999716,
+        0.1417458800000304,
+        0.12194968000000017
+      ],
+      "model_accounting_bytes": 11269404
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 1.079137975,
+      "median_legacy_copy_apply_ms_per_image": 1.6439307849999998,
+      "median_outplace_ms_per_image": 1.0851726,
+      "prepare_wall_seconds": [
+        0.189333395999995,
+        0.18066946599998346,
+        0.24331474799998887,
+        0.18908720899997888
+      ],
+      "model_accounting_bytes": 78378292
+    },
+    {
+      "variant": "reference",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 0.563950445,
+      "median_legacy_copy_apply_ms_per_image": 1.115038745,
+      "median_outplace_ms_per_image": 1.12141869,
+      "prepare_wall_seconds": [
+        0.10460763600002565,
+        0.15865684099998134,
+        0.1687650640000129,
+        0.15720223599998917
+      ],
+      "model_accounting_bytes": 11269404
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 0.31666397999999996,
+      "median_legacy_copy_apply_ms_per_image": 0.840343095,
+      "median_outplace_ms_per_image": 0.34674847999999997,
+      "prepare_wall_seconds": [
+        0.16078681499999448,
+        0.22114300900000217,
+        0.1832280419999961,
+        0.26724845500001493
+      ],
+      "model_accounting_bytes": 78378292
+    }
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "process_apply_ratios": [
+        0.4891828986433246,
+        0.6328885889307455,
+        0.5212169768522997,
+        0.546057533540643
+      ],
+      "median_apply_ratio": 0.5336372551964714,
+      "process_legacy_copy_apply_ratios": [
+        0.5916064292291233,
+        0.7139504548801741,
+        0.6190954040229352,
+        0.6582712966055595
+      ],
+      "median_legacy_copy_apply_ratio": 0.6386833503142473,
+      "process_outplace_ratios": [
+        0.4030892813319013,
+        0.4179135253317447,
+        0.40023719728661156,
+        0.4902544633397913
+      ],
+      "median_outplace_ratio": 0.410501403331823,
+      "process_prepare_plus_100_outplace_ratios": [
+        0.6683363693252945,
+        0.6835499975300725,
+        0.8607923603184153,
+        0.8404990961779049
+      ],
+      "median_prepare_plus_100_outplace_ratio": 0.7620245468539887
+    },
+    {
+      "requested_threads": 4,
+      "process_apply_ratios": [
+        0.687330388340066,
+        0.5972835749244526,
+        0.5183097266088703,
+        0.5395227753201072
+      ],
+      "median_apply_ratio": 0.5684031751222799,
+      "process_legacy_copy_apply_ratios": [
+        0.844711751785929,
+        0.7689368748653362,
+        0.7327854236200091,
+        0.7810128096629323
+      ],
+      "median_legacy_copy_apply_ratio": 0.7749748422641343,
+      "process_outplace_ratios": [
+        0.35946797966475447,
+        0.3217420044341901,
+        0.2672641624834062,
+        0.2964068920182431
+      ],
+      "median_outplace_ratio": 0.3090744482262166,
+      "process_prepare_plus_100_outplace_ratios": [
+        0.9646922488454434,
+        0.989176288584214,
+        0.7969524690946975,
+        1.2159602210189688
+      ],
+      "median_prepare_plus_100_outplace_ratio": 0.9769342687148287
+    }
+  ],
+  "worker_sha256": [
+    "641fa2ba5eaf7274da924c02a00b0ae2d6acdd7f89b4d6e977ee018a74e463f9",
+    "57d656f0137c47c7d1cfa1705ed81d47dd90452d59bac47352585d0263d13ba5",
+    "2d6db74f2c7276a954ab62a1abb1896a2b9f0e9a1a9f60a42f44f59819f7ae20",
+    "aabc92efa0bedd52519378c6169315d3f82d22e2bd56cc8dcee26e9245810222"
+  ],
+  "selected_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "actual_main_affinity": [
+    0
+  ],
+  "frequency_and_temperature_controlled": false,
+  "scope": "本机Linux/AMD同场比较44与23，不与Windows绝对耗时相除，不外推Skylake；44首次计时，固定绑定只运行一次；34失败记录另外保存，不混算"
+}
