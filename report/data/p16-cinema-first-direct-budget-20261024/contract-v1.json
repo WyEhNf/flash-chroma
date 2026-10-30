@@ -1,0 +1,258 @@
+{
+  "pass": true,
+  "input_sha256": "dee741174269c86ac0f25b3d33102f1082b143a9e6e110cd471cc2548671b86b",
+  "source_sha256": {
+    "experiments/p16-cinema-first-direct-budget-cpsat-v1.json": "074a2a5f81ca5068e853a0d7e1c9a6432200e5a1d1343e49f6b874fb40efeb72",
+    "python/lutlab/integer_error_cost.py": "1021b7afa356b995763eade4ab5c23f35e3c901ae7975cc1d56a112f6f186fdd",
+    "scripts/check_cinema_first_direct_budget.py": "e39d97cb68e11c1d390ebbd3c6b105daa509882da0bfd8c50b4f64a880a92089",
+    "scripts/cinema_first_cpsat_model.py": "83e3398d427ca33286fa270ef7f2794f92149a1a8cdc737ba08f5bf87f067a40",
+    "scripts/cinema_first_direct_budget_identity.py": "c41d1cbd0668e16397b86bb38238210faae1b36d2a98634c5ab38f89c6260aff",
+    "scripts/cinema_first_direct_budget_model.py": "2bfff7a338161317229af0545b42a8a4beda002b7da25ff85415f3f208b1755a",
+    "scripts/preflight_cinema_first_direct_budget.py": "c2feb7235ec59fa557e196539ee6f1e1bae91efc154b5bd17607ea8a4315126b",
+    "scripts/prepare_cinema_first_cpsat.py": "ea0dea6ac7691953278a3dd0ebd182ad7c9dc2a8bba8457a25288d8ea4a314ab",
+    "scripts/prepare_cinema_first_direct_budget.py": "b1dd7fb77395ea3b036f87037493e818b9571b6eb108b8bc8f4bb82ae7c0d02e",
+    "scripts/solve_cinema_first_direct_budget.py": "3bfa6b6c38dfc5a1de0635252b0004c94e5de2dff56773967d10a0101a395ab5",
+    "scripts/verify_cinema_first_direct_budget.py": "206f909e89c883b4e79c3145663bf25affbc6c25b16c0eabd977d62745b62235"
+  },
+  "cases": [
+    {
+      "name": "half_exact",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 7
+    },
+    {
+      "name": "half_below",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 7
+    },
+    {
+      "name": "half_above",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          -1
+        ],
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 7
+    },
+    {
+      "name": "shared_clipped_fixed_corners",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          0,
+          -2
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          -2
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          0,
+          -2
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          -2
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 14
+    },
+    {
+      "name": "shared_infeasible",
+      "status": "INFEASIBLE",
+      "expected_node_assignments": [],
+      "cp_node_assignments": [],
+      "complete_equal": true,
+      "variables": 8
+    },
+    {
+      "name": "forced_nonzero_constant_q",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          -1
+        ],
+        [
+          1
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          -1
+        ],
+        [
+          1
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 4
+    },
+    {
+      "name": "shared_nonzero_budget_feasible",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          1
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          1
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 13
+    },
+    {
+      "name": "shared_mean_budget_infeasible",
+      "status": "INFEASIBLE",
+      "expected_node_assignments": [],
+      "cp_node_assignments": [],
+      "complete_equal": true,
+      "variables": 10
+    },
+    {
+      "name": "zero_training_still_protect_uniform",
+      "status": "INFEASIBLE",
+      "expected_node_assignments": [],
+      "cp_node_assignments": [],
+      "complete_equal": true,
+      "variables": 10
+    },
+    {
+      "name": "p99_original_rank_slack",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          -1
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          -1
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 16
+    },
+    {
+      "name": "p99_zero_slack_blocks",
+      "status": "INFEASIBLE",
+      "expected_node_assignments": [],
+      "cp_node_assignments": [],
+      "complete_equal": true,
+      "variables": 16
+    },
+    {
+      "name": "ceil_refund_conservative",
+      "status": "OPTIMAL",
+      "expected_node_assignments": [
+        [
+          0
+        ]
+      ],
+      "cp_node_assignments": [
+        [
+          0
+        ]
+      ],
+      "complete_equal": true,
+      "variables": 15
+    }
+  ],
+  "scope": "仅有限小域逐项全集合同，包含强制非零可行/预算无解/p99原余量/保守退款；未构建或求解真实10335点模型。"
+}

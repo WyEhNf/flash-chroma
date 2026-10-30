@@ -1,0 +1,143 @@
+{
+  "schema": "p16_direct_u10_perf_v1",
+  "scope": "八角色同场289/288/87；保留全部控制失效与有效低50，禁止补测择样。",
+  "workers": 4,
+  "threads": [
+    1,
+    4
+  ],
+  "paths": [
+    "inplace",
+    "to"
+  ],
+  "repeats_per_group": 5,
+  "warmup_per_group": 1,
+  "roles": [
+    "87a399",
+    "87old",
+    "288old",
+    "289old",
+    "288max",
+    "288p99",
+    "289max",
+    "289p99"
+  ],
+  "group_order": [
+    "87a399A",
+    "87oldA",
+    "288oldA",
+    "289oldA",
+    "288maxA",
+    "288p99A",
+    "289maxA",
+    "289p99A",
+    "289p99B",
+    "289maxB",
+    "288p99B",
+    "288maxB",
+    "289oldB",
+    "288oldB",
+    "87oldB",
+    "87a399B"
+  ],
+  "comparisons": [
+    [
+      "87old",
+      "288old"
+    ],
+    [
+      "87old",
+      "289old"
+    ],
+    [
+      "288old",
+      "289old"
+    ],
+    [
+      "87a399",
+      "289max"
+    ],
+    [
+      "87old",
+      "289max"
+    ],
+    [
+      "288old",
+      "289max"
+    ],
+    [
+      "87a399",
+      "289p99"
+    ],
+    [
+      "87old",
+      "289p99"
+    ],
+    [
+      "288old",
+      "289p99"
+    ],
+    [
+      "288max",
+      "289max"
+    ],
+    [
+      "288p99",
+      "289p99"
+    ],
+    [
+      "87a399",
+      "288max"
+    ],
+    [
+      "87a399",
+      "288p99"
+    ]
+  ],
+  "AA_time_ratio_bounds": [
+    0.85,
+    1.15
+  ],
+  "AA_rule": "逐worker/scenario，双方全部metric的B/A闭区间有效，逐组五次中位数；无效不授档。",
+  "speed_rule": "先组内五次中位数，跨两相位/四worker/1或4线程/原地pure及copy/分离总API取有效最劣倒数；100/90/80/70/60/50六档。",
+  "no_obvious_time_ratio_cap": 1.1,
+  "candidate_gate": "289两点分别对87a399/87old/288old全部AA通过且最劣至少50；289/288同模型仅本场，不能只换慢分母。",
+  "prepare_scope": "八角色按roles顺序各构造一次并首批百图4线程原地；构造+首批仅描述，不称有AA或真正进程/文件缓存冷启动。",
+  "allowed_logical_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "thread_pinning": false,
+  "process_control": "每worker在加载数据/DLL之前设进程允许CPU集合0x55；不固定单个OMP TID、不锁频，不作与旧环境差异的因果结论。",
+  "dataset": "固定100张已见1024×768 RGB8照片，共78,643,200像素；全部源和每组末实际输出SHA。",
+  "ordering": "奇数worker逆序四场景；各场角色A正序、B逆序回文，warmup1+正式5，无后验重排。",
+  "quality_frozen": "artifacts/p16-direct-u10-quality-frozen-v1/frozen.json",
+  "quality_frozen_sha256": "ceb5cac7f1ec2b2dc316caf4c93d894d265a3e276bb5cc187692b8a9a425baa2",
+  "quality_result": "artifacts/p16-direct-u10-quality-v1/results.json",
+  "quality_result_sha256": "8f285e7140a071be681c3052dac699979e0f906afc095bda7bbbed9eb89fdb02",
+  "source_sha256": {
+    "scripts/run_direct_u10_perf.py": "568d5876b1b40b5328c2e0b6184c7454245f69f67e3c884ea55d1d353be40233",
+    "scripts/freeze_direct_u10_perf.py": "1982efb0b707445d5ec80984c9db23428fb0d8585caaa60c9e8a4e35af4b2a88",
+    "scripts/check_direct_u16_ilp_perf.py": "13a2388d77fc2bdb95a712c87583056080d161f9ae3c20afd479c69d2aef2143",
+    "scripts/check_direct_u10_perf.py": "1a2a0721ea31d843cfc7182e469ea0d0911b4cb452e1c744a76f8f700c39f698",
+    "scripts/prepare_direct_u10_perf_audit.py": "3b86e43b98a3f5923711a5d8c15442027f84d487fe7bee0482f2bc700858bcf0",
+    "scripts/run_direct_u16_ilp_perf.py": "2102ab990cd89a01708d1fd40bf5efd5c35e5f1d4ebcaf718e34d7e4ac1e3d4b",
+    "scripts/run_velvia_bubble_perf.py": "f4c90e71b2b8d8ed9ec812e86bf3df321e1c209eb6a92e34a7d9d10937e45561",
+    "scripts/check_velvia_bubble_native.py": "0d012fb21e984acf32cb3d6552ae97519111a78c32eed069e05f9937ba459d42",
+    "scripts/check_direct_u10_native.py": "1626bd414eecc5ef6b6ec0b542c100a0878bb4651541b399b2c6837463043237",
+    "scripts/check_direct_u16_ilp_native.py": "453cfb4918fde7232ae63fe816495218fb8a359ab06df6febcab14d8f3e040b2",
+    "scripts/run_channel_tail_nodes.py": "7eaf093b5fbc5f4eb30f8a6125b06510acee9a25e91067d42c23da1bc7b3b811",
+    "scripts/outplace_support.py": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+    "scripts/direct16_support.py": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7",
+    "scripts/suffix_cache_support.py": "2c66197a7200c7bf434a7bcabce08fbb2a41f4cfa8f1c64333028d701c673a6e",
+    "scripts/domain_cache_support.py": "ff78716454a6c41d0330b4b046234ac509f0ad183c8bb2b8598f52b527cb7781",
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/exception_support.py": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645",
+    "python/lutlab/study_provenance.py": "0a9047e15df49dc96e4891f8c4eda56b4eabc729b562de386cfadb7342af02e8",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec"
+  },
+  "memory": "8句柄同时驻留+百图source/work，另已有288/289六fresh RSS，不将性能组峰当单模型最小RAM。",
+  "limits": "必须取得排他性能窗口；非官方Threshold/服务器/实板验证，无AVX512，不切默认。"
+}

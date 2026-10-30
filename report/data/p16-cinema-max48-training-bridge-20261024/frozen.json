@@ -1,0 +1,69 @@
+{
+  "ast_pass": true,
+  "source_sha256": {
+    "python/lutlab/training_budget_bridge.py": "766791879ac7135036c8a0017c1a91ba552ada18064dc590847f6e857985b485",
+    "scripts/check_cinema_max48_training_bridge.py": "bb03f661e75a622779d2330c6c1b60d20bd54899fe9e80dba2b1e67f846e2759",
+    "scripts/census_cinema_max48_training_bridge.py": "4b1a02e861be7fe964f3f96548b84491d2c8d5eafda7aa80d73b4692e9d093e8",
+    "scripts/audit_cinema_max48_training_bridge.py": "eca927e7a536a37b2af99f23a097cc04c55510ae2bdec2cb9306c83fbdddc6c5",
+    "experiments/p16-cinema-max48-training-bridge-census-v1.json": "28baa2952e3a4ef725251a740200019e8acdcc4b9868aacece155f6151da312b",
+    "experiments/p16-cinema-max48-training-bridge-proposal-v1.md": "d0cd962bda0c39b92036d93553c20feee3b1f1068d87fa76b8310baa744e2e2f"
+  },
+  "inputs": {
+    "screen": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-risk-upper-v1\\screen.npz",
+      "sha256": "a016695a72446e728ee64d5b93d0db61d68375651db00e991c556a3b94df0baa"
+    },
+    "risk_summary": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-risk-upper-v1\\summary.json",
+      "sha256": "6eac35f3c8596bf63ad47be4a3da5927d841555fb88d299fa84187aeafca7cfe"
+    },
+    "risk_run": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-risk-upper-v1\\run.json",
+      "sha256": "0369f9975f705d0dad0ece16a6e8b5fd6b9fd87ab1927721a51843d9d1db79fe"
+    },
+    "risk_audit": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-risk-upper-independent-v1.json",
+      "sha256": "42f81d5d1a70cd6423c147b81d3d64014c17294e87fd7c68cdd9a0738548073f"
+    },
+    "risk_manifest": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\report\\data\\p16-cinema-max48-risk-upper-20261024\\manifest.json",
+      "sha256": "901bcb573871d8ba8175ce638f608210c1cbcfbc5fa38215a6bddd19ff5d8ef3"
+    },
+    "mass": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\photo-arrival-frequency.npy",
+      "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+    },
+    "quality_manifest": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\report\\data\\p16-cinema-max48-pareto-quality-20261024\\manifest.json",
+      "sha256": "321745ced3515a18349e30699ccae960b8726da833bb04a964dd36f371f1e8a4"
+    },
+    "quality_histograms": {
+      "path": "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\cinema-max48-pareto-quality-v1\\histograms.npz",
+      "sha256": "758b566abbf502da139f094a915585236daee4b1c8b98dadba64663b27e3852b"
+    }
+  },
+  "plan": {
+    "阶段": "当前122节点公共训练两预算桥唯一只读规模普查",
+    "状态": "执行前固定；不建CP、不查询新RGB、不拟合、不solver",
+    "起点": "固定741e55f、122物理节点全部RGB±2/clip、904e/95cb/5b8后缀；完整80751正支撑与2102192状态复用已认证风险screen，不改几何/节点域/cap",
+    "公共分母": "固定373a综合best；a399与741仅披露对照，不能拿741较低mean消失或改旧八预算失败",
+    "固定资源门": {
+      "union_points_max": 16384,
+      "safe_rows_max": 500000,
+      "extra_cost_flag_vars_max": 131072
+    },
+    "原风险门": "全部4985危险点/386612安全行须与已认证screen一致，原8192危险点/1000000行门仍适用；所有危险点包含零训练频数者完整保留",
+    "全集": "D为maximum_squared>47；T为training_count>0且minimum_squared<safe_maximum_squared；表全集D∪T，不删点。零安全表STOP",
+    "成本": "T每点一个ceil(2^20 sqrt(q))成本列，真实安全RGB决定q。训练安全q跨12者加一flag，其余flag贡献固定。仅普查列数，不构造表或CP",
+    "mean预算": "综合best完整60图根floor和减去固定外域及内部恒q点根ceil和；所有训练整数频数计入，root_bounds逐q精确isqrt，负余额如实报告",
+    "p99预算": "阈值q12，上端秩允许count(q>12)≤471859；固定外域/恒flag内部与可变flag频数全部计入",
+    "频数": "只读原60图完整16777216频数重建47185920整数总量，独立匹配支撑901853及全部80751保存权重；不读取100图作选择",
+    "上界": "全域mean/p99/max对373a由旧风险条件直方图自动保护，但并未证明共享解存在；训练mean/p99不等于100图质量保证",
+    "停止": "任何固定三门超限STOP，不改变门、阈值、域、分母，不删训练或危险点。过门只报告规模/整数总界，下一真实建模或solver另行冻结授权",
+    "合同": "完整小q选择枚举检验保守mean与上端秩p99充分性、固定外部贡献、零权重点、恒q/恒flag/跨阈分类，两个独立整数根算法；不使用真实CP",
+    "输出": "冻结source/input/协议、有限合同、完整规模/固定预算/显式变量及表列账单、全部分类NPZ和独立只读重放；不是新候选或运行时RAM/性能"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "cp_model_built": false,
+  "cp_solver_called": false
+}

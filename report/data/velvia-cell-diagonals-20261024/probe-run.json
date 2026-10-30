@@ -1,0 +1,43 @@
+{
+  "input_sha256": {
+    "model": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "mass": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "mask0.rgb": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0",
+    "mask1.rgb": "5072f667ffe78582219f9ce727a57abf6b0ca3a72dc31fe3f1dbec862f5a15fc",
+    "mask2.rgb": "a82ad7afba5113da94d5b8f1185ee7e8a5d2585a3acaba9b5b5fcadbba24adc6",
+    "mask4.rgb": "bbb2cbcb9c03c76b9c1c58e9fadbc974bfd2040b016ecc2f1b616953db55c584"
+  },
+  "source_sha256": {
+    "scripts/probe_velvia_cell_diagonals.py": "4d1df91e4cff0c3aceb4ed4db6f8077603af7bf2529464a8ba6624b032764395"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "policy": "只聚合既有四方向完整流；每cell单选方向，先给最坏误差最优下界及cap1681/最优cap的五种独立最优均值下界；没有多次搜索、照片反馈或原生。",
+  "scope": "独立metric最优是必要可行性下界，不自动保证五约束同时可行。整cell选择可能面间不连续；当前不作原生/边界/照片终验结论。"
+}

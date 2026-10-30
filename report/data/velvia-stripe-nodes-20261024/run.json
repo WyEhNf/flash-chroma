@@ -1,0 +1,59 @@
+{
+  "input_sha256": {
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\velvia-channel-coordinates-v1\\channel-coordinates.npz": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "F:\\Hackathon\\worktrees\\p16-tail-20261023\\artifacts\\velvia-stripe-diagonals-v1\\results.json": "9ab9312dfe162f165d77747eb1275e5a874e8d5551c6731e26e1e97e5cfbce13",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\chain-error-cache\\source-2ff0a4e385f9f9e49ca02f63\\table.lut256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\envelope-arrivals.npy": "fac03692667ab8d5220a4a09035b420d96037094c101b91011de303209ccaaea",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\photo-arrival-frequency.npy": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "artifacts\\oriented-tail-contract-v1.json": "e0df5a5ccd794f19991ab02457ad344bace5c559e89cd88a030e4a75e01b0589"
+  },
+  "source_sha256": {
+    "scripts/run_velvia_stripe_nodes.py": "21fc45ae2d7e8668a0c8bbb9dc47378b52da764f8c812b56655a95e69dca7ee3",
+    "python/lutlab/oriented_tetra.py": "256ff2db56df51fbd28cd0acad266eb48c8a09aa8e6b27c13dbd726aeee621c0",
+    "python/lutlab/channel_tail_nodes.py": "32e9f1fe7e9604a5ac188f6166743d02cd4e6fe70aad603ede3dc1eea7609c69"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "baseline_five_metric_budget": [
+    14875902.179840583,
+    45581569.0,
+    0.8503247819035926,
+    1.4587222417195769,
+    165930.0
+  ],
+  "five_metric_order": [
+    "distance_sum",
+    "squared_sum",
+    "training_frequency_mean",
+    "training_frequency_squared",
+    "count_above_40"
+  ],
+  "policy": "固定global1两扫末的相容stripe场及原3e5轴/节点起点；仅1扫8色0..7、26个±1方向。每色按节点升序，以原3e5五项预算的正超额(max,sum)/训练mean/uniformmean严格改善，cap1522从不放宽；逐批fresh完整复算，不看照片或追加扫数。",
+  "scope": "初始stripe均值不合格，仅作可行性目标；最终全域五约束须<=原3e5且后续独立全域/照片/边界验收方可入围。新插值表示，无原生/性能。"
+}

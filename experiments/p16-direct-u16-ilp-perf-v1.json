@@ -1,0 +1,105 @@
+{
+  "schema": "p16_direct_u16_ilp_perf_v1",
+  "scope": "八角色同场：87a399/87old，288a399/288old，287max/p99及288max/p99。保持全部raw/AA/失败，不补跑挑样。",
+  "workers": 4,
+  "threads": [
+    1,
+    4
+  ],
+  "paths": [
+    "inplace",
+    "to"
+  ],
+  "repeats_per_group": 5,
+  "warmup_per_group": 1,
+  "roles": [
+    "87a399",
+    "87old",
+    "288a399",
+    "288old",
+    "287max",
+    "287p99",
+    "288max",
+    "288p99"
+  ],
+  "group_order": [
+    "87a399A",
+    "87oldA",
+    "288a399A",
+    "288oldA",
+    "287maxA",
+    "287p99A",
+    "288maxA",
+    "288p99A",
+    "288p99B",
+    "288maxB",
+    "287p99B",
+    "287maxB",
+    "288oldB",
+    "288a399B",
+    "87oldB",
+    "87a399B"
+  ],
+  "comparisons": [
+    [
+      "87a399",
+      "288a399"
+    ],
+    [
+      "87old",
+      "288old"
+    ],
+    [
+      "87a399",
+      "288old"
+    ],
+    [
+      "87a399",
+      "288max"
+    ],
+    [
+      "87a399",
+      "288p99"
+    ],
+    [
+      "87old",
+      "288max"
+    ],
+    [
+      "87old",
+      "288p99"
+    ],
+    [
+      "288old",
+      "288max"
+    ],
+    [
+      "288old",
+      "288p99"
+    ],
+    [
+      "287max",
+      "288max"
+    ],
+    [
+      "287p99",
+      "288p99"
+    ]
+  ],
+  "AA_time_ratio_bounds": [
+    0.85,
+    1.15
+  ],
+  "AA_rule": "逐worker/scenario，比较双方每项metric的B/A均须在闭区间；保留所有无效场。有效低于50即足够拒绝；通过结论另需全部AA通过及各场覆盖。",
+  "speed_rule": "组内五次中位数先求候选/基线耗时比，再跨全部有效worker、A/B、1/4线程、in/out及inplace的pure/copy指标取最劣吞吐倒数；按100/90/80/70/60/50%全列。",
+  "no_obvious_time_ratio_cap": 1.1,
+  "candidate_gate": "288max/p99分别对87a399、87old、288old三分母，最劣>=50且全部对应AA通过；原87基线不可省。288/287同模型因果对照只用本场，不与旧31%相除。",
+  "ordering": "奇数worker逆序四场景；每场组序固定回文。每组1次完整百图warmup，接着5次完整百图原生计时，组后核全部末work与源SHA。",
+  "prepare_scope": "每worker八角色依既定roles顺序构造，记录Python外层构造及首次4线程原地完整百图，和构造+首批；无prepare AA，仅描述，不能推断稳定性能。",
+  "library_sha256": "d95332e9ac8b56a9d589bf176a5b020e2d60a176d1f360594a0300b5efae5b9f",
+  "control_87_sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158",
+  "quality_frozen_sha256": "532049b63900adfd06d2248e1c1164ef4676fc8288daa5cb6ecaf09cbdfdcd30",
+  "memory": "287/288同模型直接表/palette逐字节相等、capacity相等、prepare/vector相同；分别记录实际mod64。8角色同时驻留，加完整百图source/work；实际RSS已独立进程观察，不以该单模型峰冒充八角色perf峰。",
+  "limits": "必须独占计时授权；不把shared-host质量准备秒数当性能，不以历史场次比值相除；不切默认，官方格式许可未知。",
+  "legacy_287_sha256": "5ec24854848159541c55f58aff831bec5de401d794cf3dfe3fddf64e3ebcb508"
+}

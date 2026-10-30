@@ -1,0 +1,22 @@
+{
+  "schema": "p16_sentinel_census_v1",
+  "agent": "/root/tail",
+  "operator": "本任务用户",
+  "status": "仅静态方案；未运行普查、未实现native",
+  "purpose": "为精确uint8热调色板+255哨兵回退的可行性提供一次纯模型频数和canonical8包率描述，不以覆盖率替代正式性能",
+  "models": ["原max_first 0ea0/904e/95cb/5b8", "原p99_first 0ea0/e3dc/95cb/5b8"],
+  "library": "冻结288 DLL d95332e9ac8b56a9d589bf176a5b020e2d60a176d1f360594a0300b5efae5b9f",
+  "inputs": "仅原稀疏模型/sidecar及由这些模型原生prepare产生的完整cache、sorted RGB32 palette、真实uint16 direct IDs；不读gold、照片、既有RGB8输出流或官方源表",
+  "frozen_once": "两个模型各构造一次并导出完整cache/palette/恰好16777216项逻辑ID；所有源/模型/DLL/原始导出SHA执行前冻结；不扫描不同热项数，固定top255",
+  "physical_order": "288原生直表地址R|(G<<8)|(B<<16)，uint16真对象；排除末端4字节owned guard，不把physical顺序误称canonical R<<16|G<<8|B",
+  "cache_ranking": "对全部cache槽的RGB32值计数，含不可达/未填充零槽，按频数降序、RGB32数值升序固定排序，取前255。不可通过先去掉零槽或只保留actual输出来改善该排名",
+  "domain_ranking": "对完整16777216逻辑ID频数计数，将ID对应RGB32按全域频数降序、RGB32升序排序，取前255；这是离线必要普查，不宣称运行时免费获得",
+  "zero_reporting": "分别列完整cache零RGB槽数、由r/dg/db盒可证明非法未填充的零槽数、全域零RGB频数与其是否进入cache top255；只有全域零频数为0才把该零输出称为全域不可达，不能把所有合法零值槽都直接称不可达",
+  "reports_each_ranking": ["top255 RGB32及cache/全域精确频数", "全域像素命中/哨兵数和比例", "canonical B最快、每8连续输入组成的包中哨兵lane数0到8的完整分布", "physical R最快每8项分布作为顺序控制", "任一哨兵包率、全哨兵包率", "两个固定排名的共同热RGB数及覆盖率差"],
+  "independence": "NumPy uint64精确频数与独立分块Python整数/Counter复算总数、前255名与8包分布；palette RGB均原样精确保留，无近似",
+  "resources": "构造原288全模型及其prepare暂态全计；导出32MiB owned ID副本、至多两份16MiB布尔命中暂态、cache与palette元数据单列，避免一次复制出另一个32MiB canonical ID表；这是质量普查，不计性能",
+  "prepare_cost_boundary": "cache频数排名可在原cache prepare后一次第一层全域编译直接生成uint8/sentinel；全域排名须新增完整域第一遍频数工作，或先保留32MiB uint16 ID暂表再生成16MiB最终表。两种时间/暂态均不能把本离线普查产物当免费prepare，当前不实施任何一种native",
+  "runtime_hypothesis": "hot ID 0..254为精确RGB32，255只作sentinel，miss按原首级+完整suffix cache精确回退；旧8bit成功仍优先。最小8lane混合包核可能任一miss整包插值，不能用像素命中率直接推断吞吐；canonical包率也不是照片包率",
+  "prior_art": "修订22的3bit块哨兵曾整8lane插值回退，修订23以精确例外ID池取代；它们原来要求whole-cache palette<=255，不能作为本603/703项新模型已经实现的证据",
+  "scope": "仅描述两固定top255频数/包率，非速度线、native正确性或官方许可证明；是否实现新的哨兵后端须在该结果后另立冻结协议"
+}
