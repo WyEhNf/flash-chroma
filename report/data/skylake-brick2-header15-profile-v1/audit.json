@@ -1,0 +1,195 @@
+{
+  "purpose": "只读核验2³输入/header15残差6/tag63的ZIP证据；不执行原分析或重建主词与池。",
+  "audit_completed": true,
+  "audit_passed": true,
+  "completed_utc": "2026-10-23T05:17:41.863047+00:00",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "executable": "C:\\Users\\admin\\miniconda3\\python.exe",
+    "dependencies": "Python标准库"
+  },
+  "verifier_sha256": "68156e9cfc56ca528664230df852b8f7760dc6fcae7536d6ab9744ecce0be63d",
+  "manifest_sha256": "9fe3c617d6ee3e5f5d4ee495ae6387970e44b019b0542440145aafa6ac871202",
+  "archive_sha256": "3fa61d48c927ab3278d7dbaa0964e44d59699799ee7273286d2a504b3decc387",
+  "originals_sha256": {
+    "analyze.py": "1ee565baae333ecf40b0af0ca295e741d38138ab6dd255fd9cb4ef9517cc7a6f",
+    "protocol.json": "f852982dedc149a53a22576a90fb4ba46ae891ff5e380677cba888e7cb0ec15a",
+    "execution-start.json": "1d417489212c1af129b0b57bcf6ec1398054160d6728d0cc133d4eef27c9072b",
+    "analysis.json": "efaa960d621ecbdbdc6732ed23e8b803a1ebf73cd533fe83bcb118d699243a16",
+    "exit.json": "eeba4e08074f6d5f8354d285d79e047f2360d9844dbbff6cef6e57cfa5d62a97"
+  },
+  "originals_byte_compared": true,
+  "input_rehashes": [
+    {
+      "name": "cache_gold",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/cache-gold.u32",
+      "sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "bytes": 742400
+    },
+    {
+      "name": "cube",
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "bytes": 50331648
+    },
+    {
+      "name": "photos",
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+      "bytes": 235929600
+    },
+    {
+      "name": "manifest",
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "bytes": 101681
+    },
+    {
+      "name": "old_palette_crosscheck",
+      "path": "artifacts/skylake-palette-bank-readonly-v1/palette.u32",
+      "sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "bytes": 1024
+    },
+    {
+      "name": "cache_generation",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/generation.json",
+      "sha256": "c2afd9e81688e8609b52a4862917e0315b05692a0783a512e1bc73d4fd16be95",
+      "bytes": 2058
+    }
+  ],
+  "per_image_input_rehashes": 100,
+  "prior_profile_rehashed": true,
+  "prior_profile": {
+    "path": "artifacts/skylake-brick2-rgb-base-profile-v1/analysis.json",
+    "sha256": "9da1460d4836af7d4831b21ac73e8c14e46c15144e1dbd0ba39d312a4ea9b779"
+  },
+  "mathematical_bound": {
+    "purpose": "仅从已完成旧3D直方图与原230palette推导的容量边界，不是新编码执行或性能结果",
+    "source_result_sha256": "9da1460d4836af7d4831b21ac73e8c14e46c15144e1dbd0ba39d312a4ea9b779",
+    "palette_observed_bounds": {
+      "R": [
+        0,
+        240
+      ],
+      "DG": [
+        -11,
+        0
+      ],
+      "DB": [
+        -6,
+        0
+      ],
+      "spanDG": 11,
+      "spanDB": 6
+    },
+    "palette_bounds_usage": "这里只记事前证据；脚本仍从原230palette重新计算signed min/span，绝不读取此值作为编码常数",
+    "old_geometry_reason_counts": {
+      "R_span_greater_7": 102,
+      "DG_span_greater_3": 0,
+      "DB_span_greater_1": 63542,
+      "synthetic_base_outside_RGB8": 0,
+      "synthetic_base_white": 0
+    },
+    "union_lower_blocks": 63542,
+    "union_upper_blocks": 63644,
+    "derivation": "例外原因并集下界max(102,0,63542)=63542，上界102+0+63542=63644；基值越界/白为0；offset从palette全局min定义且span前提通过，不额外产生例外",
+    "exception_pool_lower_bytes": 2033344,
+    "exception_pool_upper_bytes": 2036608,
+    "exception_pool_gate_bytes": 2097152,
+    "upper_margin_bytes": 60544,
+    "unknown": "仅容量已有数学依据；照片异常8包总率<=5%和任一图<=20%仍未知，必须唯一执行完整100图后判定"
+  },
+  "palette_bounds_recomputed": {
+    "R": [
+      0,
+      240
+    ],
+    "DG": [
+      -11,
+      0
+    ],
+    "DB": [
+      -6,
+      0
+    ],
+    "spanDG": 11,
+    "spanDB": 6
+  },
+  "encoding_global_bounds": {
+    "global_minDG": -11,
+    "global_minDB": -6,
+    "global_spanDG": 11,
+    "global_spanDB": 6
+  },
+  "verified": {
+    "reason_histogram_entries": 128,
+    "reasons_recomputed": {
+      "base_R_outside_0_255": 0,
+      "base_G_outside_0_255": 0,
+      "base_B_outside_0_255": 0,
+      "base_RGB_equals_ffffff": 0,
+      "delta_R_outside_0_7": 102,
+      "delta_G_minus_R_outside_0_3": 0,
+      "delta_B_minus_R_outside_0_1": 63542
+    },
+    "span_histograms": 3,
+    "span_entries_each": 511,
+    "span_ranges": {
+      "R": {
+        "minimum": 0,
+        "maximum": 10
+      },
+      "G_minus_R": {
+        "minimum": 0,
+        "maximum": 3
+      },
+      "B_minus_R": {
+        "minimum": 0,
+        "maximum": 4
+      }
+    },
+    "full_domain_colors": 16777216,
+    "full_domain_blocks": 2097152,
+    "image_histograms": 100,
+    "images_over_gate": 16,
+    "photo_packets8": 9830400,
+    "gate": {
+      "full_domain_exact": true,
+      "photos_exact": true,
+      "exception_pool_bytes": 2035136,
+      "exception_pool_pass": true,
+      "exception_packet8_fraction": 0.14782206217447916,
+      "exception_packets_pass": false,
+      "any_image_exception_packet8_fraction": 0.4647420247395833,
+      "per_image_pass": false,
+      "limits": {
+        "exception_pool_bytes_max": 2097152,
+        "exception_packet8_fraction_max": 0.05,
+        "any_image_exception_packet8_fraction_max": 0.2
+      },
+      "passed": false
+    }
+  },
+  "source_review": {
+    "scope": "人工审阅冻结172行原分析并AST解析；未导入或执行其函数",
+    "construction": "按Bcoarse分片，几何不变；header15放baseR8/DGoffset4/DBoffset3，残差3+2+1位移15+6k，bit63单独tag",
+    "signed_decode": "DG/DB全局min由palette求得；int32恢复base及三通道，先检查<0或>255，再转byte；例外以低63bit序号直接取池",
+    "original_correctness": "按R=0..255完整G/B笛卡尔积解码全部16M，与cube逐字节及SHA比较；100图以cube直接RGB索引比较；两者每色正逆映射及RGB三项真实进位检查"
+  },
+  "limitations": [
+    "原分析完整色域/100图通过是冻结离线编码重建结果，不是候选原生完整域。",
+    "本审计只重哈希输入和复算已有统计，未独立重建colorword、pool或重新编码/解码完整色域/照片。",
+    "16MiB主表及异常池二进制没有归档；原件仅保存大小/SHA和连续序号布尔结果，不能独立重哈希不存在的二进制。",
+    "ZIP单独复核只核对已存palette bounds与prior身份；加--rehash-inputs时才从输入palette重新推导，并从prior文件复算旧跨度尾部。",
+    "逐图输出SHA只核对格式及冻结完整输出SHA，未从照片重新产生输出。",
+    "没有缓存行门槛或吞吐结论，也未重评旧ID-3bit/R8失败。"
+  ],
+  "original_analysis_executions_added": 0,
+  "runtime_implementations_added": 0,
+  "native_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0,
+  "model_calls": 0,
+  "full_domain_calls": 0
+}
