@@ -1,0 +1,24 @@
+{
+  "purpose": "只读完整表分析，不执行原生像素或性能",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:05:56) [MSC v.1942 64 bit (AMD64)]",
+    "numpy": "2.4.6"
+  },
+  "script_sha256": "d2b43766d3d8101bf7b1f4417f27fa36ffb97df40faad7ee5e6a233053620796",
+  "input": {
+    "path": "artifacts/skylake-palette-bank-readonly-v1/direct.u8",
+    "bytes": 16777216,
+    "sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0"
+  },
+  "block_bytes": 64,
+  "map_entries": 262144,
+  "map_bytes": 1048576,
+  "unique_normalized_blocks": 84608,
+  "pool_bytes": 5414912,
+  "used_bytes": 6463488,
+  "decode_byte_mismatches": 0,
+  "proposal": "每个32bit映射的高8bit为首ID，低24bit为归一块偏移；读取后ID=(delta+base)&255。仅离线检查固定64字节块，尚未实现或实测。",
+  "native_calls": 0,
+  "performance_calls": 0
+}
