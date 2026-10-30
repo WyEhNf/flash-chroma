@@ -40,6 +40,12 @@ jobs:
           cache-write: ${{ matrix.task == 'test' }}
       - name: 运行 C++ 与 Python 正确性测试
         run: pixi run --locked ${{ matrix.task }}
+      - name: 构建并验证评分候选CPU交付包
+        if: matrix.task == 'test'
+        run: |
+          pixi run --locked build-score
+          pixi run --locked score-package
+          pixi run --locked python scripts/verify_p16_submission_package.py --package artifacts/p16-score-package --library build-score/libjshc_unified.so --output artifacts/p16-score-package-check.json
 
   docker:
     name: correctness (Docker)
