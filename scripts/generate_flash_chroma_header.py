@@ -14,6 +14,8 @@ def rendered():
     core = core.replace('FC_DETAIL_', 'FC_CPP_DETAIL_')
     core = re.sub(r'#ifdef __cplusplus\s+extern "C" \{\s+#endif', '', core)
     core = re.sub(r'#ifdef __cplusplus\s+\}\s+#endif', '', core)
+    core = core.replace('四级 RGB8/Q16 单头 C99 运行库。',
+                        '四级 RGB8/Q16 C++内部标量核心，与独立C99头共享数值语义。')
     cpp = (ROOT / 'src/flash_chroma_cpp.inc').read_text(encoding='utf-8')
     # 维护片段只在生成时展开，部署头不引用仓库私有文件。
     def fragment(match):
@@ -22,7 +24,7 @@ def rendered():
     selection_path = ROOT / 'src/flash_chroma_selection.inc'
     selection = selection_path.read_text(encoding='utf-8') if selection_path.exists() else ''
     return '\n'.join([
-        '/* 自动生成：修改同源 C 核或 src 中的 inc 文件后运行生成脚本。 */',
+        '/* 独立C++17单头；维护时由同源标量核心及src片段生成，部署不依赖.c/.h或生成脚本。 */',
         '#ifndef FLASH_CHROMA_HPP', '#define FLASH_CHROMA_HPP',
         '#if !defined(__cplusplus) || __cplusplus < 201703L',
         '#error "flash_chroma.hpp 要求 C++17"', '#endif',

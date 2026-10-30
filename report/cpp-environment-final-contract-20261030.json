@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "scope": "最终LF交付与CRLF测试头正文一致、同目标双TU仅一IMPLEMENTATION本机链接/执行；非实板",
+  "test_header_sha256": "bcca37d779df517efba5e2047126383fdce0eff7d7601ad80d6378d1de33afa0",
+  "delivery_header_sha256": "1115e8e7050a3d7648fddaf08303e09e4929ea3d571bb1af94de3d2815d99315",
+  "identical_after_newline_normalization": true,
+  "two_tu_command": [
+    "E:/mingw64/bin/g++.exe",
+    "-std=c++17",
+    "-Os",
+    "-ffreestanding",
+    "-fno-exceptions",
+    "-fno-rtti",
+    "impl.cpp",
+    "user.cpp",
+    "-o",
+    "two-tu.exe"
+  ],
+  "two_tu_sources": {
+    "impl.cpp": "#define FLASH_CHROMA_TARGET 3\n#define FLASH_CHROMA_IMPLEMENTATION\n#include \"flash_chroma_framework.hpp\"\n",
+    "user.cpp": "#define FLASH_CHROMA_TARGET 3\n#include \"flash_chroma_framework.hpp\"\nint main() { return fc::is_embedded() && fc::compiled_capabilities()==1 ? 0 : 1; }\n"
+  }
+}

@@ -385,12 +385,121 @@ def generate_main(original):
     return source
 
 
+def generate_contest_main(original):
+    """赛方原O2/C++17命令与单data参数入口；保留原参考、读图和计时算法。"""
+    source = once(original, '#include <cstdio>', '''#define FLASH_CHROMA_IMPLEMENTATION
+#include "flash_chroma_framework.hpp"
+#include <memory>
+#include <cstdio>''')
+    source = once(source, '    int size = 0;                  // N',
+                  '    std::shared_ptr<fc_framework::Stage> fc_stage;\n    int size = 0;                  // N')
+    source = once(source, '// Read .3DL file:', '''// 只用本次四张LUT准备；图像不参与拟合和后端选择。
+fc_framework::Chain fc_contest_chain;
+std::array<const fc_framework::Stage*,4> fc_contest_stages{};
+
+// Read .3DL file:''')
+    source = once(source, '''    // add your code here
+    return true;
+}''', '''    try {
+        fc_framework::FitOptions fit;
+        fit.grid = fc_framework::Grid::FrameworkStep;
+        out.fc_stage = std::make_shared<fc_framework::Stage>(
+            fc_framework::prepare_stage(lut256, static_cast<unsigned>(lut_size), fit));
+        out.size = static_cast<int>(out.fc_stage->m);
+        out.data.assign(out.fc_stage->nodes_data(), out.fc_stage->nodes_data() + out.fc_stage->node_bytes());
+        return true;
+    } catch (const std::exception& error) {
+        std::fprintf(stderr, "LUT预处理失败：%s\\n", error.what()); return false;
+    }
+}''')
+    source = once(source, '''    // add your code here
+    out = img;
+
+    return true;
+}''', '''    if (!fc_contest_chain.ready() || img.C != 3 ||
+        fc_contest_stages != std::array<const fc_framework::Stage*,4>{{
+            l1.fc_stage.get(),l2.fc_stage.get(),l3.fc_stage.get(),l4.fc_stage.get()}}) return false;
+    out.H = img.H; out.W = img.W; out.C = img.C;
+    out.data.resize(img.size());
+    return fc_contest_chain.apply(img.ptr(), out.ptr(), static_cast<std::size_t>(img.H) * img.W) == fc::Status::Ok;
+}''')
+    source = once(source, 'int main(int argc, char** argv) {', '''int main(int argc, char** argv) {
+    if (argc > 2) { std::fprintf(stderr, "用法：./lut3d <data_dir>\\n"); return 2; }''')
+    source = once(source, 'lut_sparse(luts_raw[i], 17,  lut17[i])', 'lut_sparse(luts_raw[i], 33,  lut17[i])')
+    source = once(source, '    // free raw 16-bit LUTs', '''    try {
+        std::array<fc_framework::Stage,4> sampled;
+        for (unsigned i = 0; i != 4; ++i) sampled[i] = *lut17[i].fc_stage;
+        fc_framework::FitReport fit_report;
+        *lut17[3].fc_stage = fc_framework::fit_chain_last(luts_raw, sampled, fit_report);
+        for (auto& model : lut17) {
+            const auto& stage = *model.fc_stage;
+            std::vector<std::uint8_t>(stage.nodes_data(), stage.nodes_data() + stage.node_bytes()).swap(model.data);
+            model.size = static_cast<int>(stage.m);
+        }
+        fc_contest_stages = {{lut17[0].fc_stage.get(),lut17[1].fc_stage.get(),lut17[2].fc_stage.get(),lut17[3].fc_stage.get()}};
+        fc_framework::Options options;
+        options.backend = fc::Backend::Auto;
+        options.structure = false;
+        options.threads = 1;
+        options.representation = fc::Representation::DirectRGB24;
+        fc::Status status;
+        try { status = fc_contest_chain.prepare(fc_contest_stages, options); }
+        catch (const std::bad_alloc&) { status = fc::Status::Budget; }
+        if (status != fc::Status::Ok) {
+            // 额外直表无法建立时使用相同节点的Sparse，保留四级数值输出。
+            options.representation = fc::Representation::Sparse;
+            status = fc_contest_chain.prepare(fc_contest_stages, options);
+        }
+        if (status != fc::Status::Ok) {
+            std::fprintf(stderr, "运行准备失败：%s\\n", fc::status_string(status)); return 2;
+        }
+        const auto& info = fc_contest_chain.info();
+        std::printf("FlashChroma compiled=%u available=%u actual_backend=%u representation=%u threads=%u m=33,33,33,33 fit=chain_ls grid=framework\\n",
+                    fc::compiled_capabilities(),fc::available_backends(),unsigned(info.backend),unsigned(info.representation),info.threads);
+    } catch (const std::exception& error) {
+        std::fprintf(stderr, "整链预处理失败：%s\\n", error.what()); return 2;
+    }
+    // free raw 16-bit LUTs''')
+    source = once(source, '    print_time_now("SpareLut Time");', '''    // 与原示例相同的四张图；准备完成后才检查/打开图片。
+    for (int i = 1; i <= 4; ++i) {
+        std::ifstream probe(join("image/" + std::to_string(i) + ".bin"), std::ios::binary | std::ios::ate);
+        if (!probe || probe.tellg() != std::streamoff(IMG_H) * IMG_W * IMG_C) {
+            std::fprintf(stderr, "图片缺失或长度不符：%d\\n", i); return 2;
+        }
+    }
+    print_time_now("SpareLut Time");''')
+    source = once(source, '    std::vector<double> deltas, perfs;',
+                  '    int fc_success_count = 0;\n    std::vector<double> deltas, perfs;')
+    source = once(source, '        deltas.push_back(delta2);', '        ++fc_success_count;\n        deltas.push_back(delta2);')
+    source = once(source, '    print_time_now("End Time");', '''    print_time_now("End Time");
+    if (fc_success_count != 4) { std::fprintf(stderr, "未完整处理原四图\\n"); return 2; }''')
+    return source
+
+
+def install_contest(framework, output):
+    """只导出main.cpp与同一hpp，编译/运行完全遵循原main注释。"""
+    framework, output = Path(framework).resolve(), Path(output).resolve()
+    original = framework / 'C++/main.cpp'
+    output.mkdir(parents=True, exist_ok=False)
+    (output / 'main.cpp').write_text(generate_contest_main(original.read_text(encoding='utf-8-sig')), encoding='utf-8', newline='\n')
+    header, components = amalgamate()
+    (output / 'flash_chroma_framework.hpp').write_text(header, encoding='utf-8', newline='\n')
+    return {'directory': str(output), 'files': sorted(p.name for p in output.iterdir()),
+            'original_main_sha256': digest(original), 'components': components,
+            'build': 'g++ -O2 -std=c++17 -o lut3d main.cpp', 'run': './lut3d <data_dir>'}
+
+
 def amalgamate():
     """原核心与框架接入完整内嵌，部署只需一个hpp和框架main.cpp。"""
     names = ('include/flash_chroma.hpp', 'framework/flash_chroma_adapter.hpp', 'framework/framework_io.hpp',
              'framework/fit_experiment.hpp', 'framework/fit_chain_experiment.hpp', 'framework/preference_selection.hpp')
-    parts = ['// 由scripts/install_framework.py生成；源文件SHA见source-manifest.json。\n']
+    parts = ['// 独立C++17聚合头；部署不依赖生成脚本或外部项目头。\n',
+             '#ifndef FLASH_CHROMA_FRAMEWORK_HPP\n#define FLASH_CHROMA_FRAMEWORK_HPP\n',
+             '// 在include前定义FLASH_CHROMA_EMBEDDED=1，裁掉宿主框架/IO/拟合/测速。\n']
     for name in names:
+        if name == 'framework/flash_chroma_adapter.hpp':
+            # 必须连同宿主标准库include一起裁掉；核心和选择器仍作为C++接口提供。
+            parts.append('\n#if FLASH_CHROMA_TARGET <= FLASH_CHROMA_TARGET_MOBILE\n')
         code = (ROOT / name).read_text(encoding='utf-8-sig')
         if name.endswith('flash_chroma_adapter.hpp'):
             code = once(code, '#include "flash_chroma.hpp"', '// 运行库已完整内嵌于上文。')
@@ -401,6 +510,7 @@ def amalgamate():
         if name.endswith('preference_selection.hpp'):
             code = once(code, '#include "fit_chain_experiment.hpp"', '// 链求解器已内嵌于上文。')
         parts.extend(['\n// ---- ' + name + ' ----\n', code, '\n'])
+    parts.append('\n#endif // 宿主框架模块\n#endif // FLASH_CHROMA_FRAMEWORK_HPP\n')
     return ''.join(parts), {name: digest(ROOT / name) for name in names}
 
 
@@ -483,6 +593,15 @@ try {
 
 在此目录执行 `.\\run.ps1`，编译后直接运行原框架的四张样图；无需Python或OpenMP运行时。完整接入只需一个 `flash_chroma_framework.hpp` 和 `main.cpp`。指定编译器可设置 `FLASH_CHROMA_CXX`。构建使用同一单线程O3，静态链接GCC运行库，不用GPU/NPU。原C、C++模板和数据未修改。当前实测GCC15.2；题面指定的13.2尚未执行，不能混称。
 
+同一个hpp默认自动识别编译目标与可用指令集，不需要额外SIMD构建参数。freestanding或裸ARM/RISC-V默认裁掉宿主模块，x86宿主运行时须通过CPU与OS状态检查才用AVX2，否则Scalar。`FLASH_CHROMA_EMBEDDED 1`仅是手动覆盖开关，`fc::is_embedded()`可查询构建目标；仅一个.cpp定义`FLASH_CHROMA_IMPLEMENTATION`。嵌入式模式保留C++ Runtime/选择器，裁掉宿主适配、文件读取、拟合和自动测速；关闭AVX2、Direct、OpenMP和准备缓存，冲突配置编译拒绝。应用只需hpp与自己的.cpp，无需项目.c/.h或脚本；模型用预压缩SLUT只读数组传入，图像缓冲由调用者持有。所有翻译单元须使用相同配置；标准C++头、运行库和BSP仍由目标环境提供。
+
+```cpp
+#define FLASH_CHROMA_EMBEDDED 1
+#define FLASH_CHROMA_IMPLEMENTATION
+#include "flash_chroma_framework.hpp"
+static_assert(fc::is_embedded(), "嵌入式目标");
+```
+
 ```powershell
 .\\run.ps1 -GridSizes 17 -Mode auto
 .\\run.ps1 -GridSizes 33 -Mode sparse -Backend avx2
@@ -526,5 +645,9 @@ if __name__ == '__main__':
     parser.add_argument('--framework', type=Path, required=True)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--compiler', type=Path)
+    parser.add_argument('--contest', action='store_true', help='只生成遵循原build/run命令的main.cpp与hpp')
     args = parser.parse_args()
-    print(json.dumps(install(args.framework, args.output, args.compiler), ensure_ascii=False, indent=2))
+    if args.contest and args.output is None:
+        parser.error('--contest必须指定全新的--output目录')
+    print(json.dumps(install_contest(args.framework, args.output) if args.contest else
+                     install(args.framework, args.output, args.compiler), ensure_ascii=False, indent=2))

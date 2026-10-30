@@ -1,0 +1,927 @@
+.....F.............                                                      [100%]
+================================== FAILURES ===================================
+__ test_explicit_host_override_remains_available_in_freestanding_environment __
+tests\test_framework_auto_detection.py:86: in test_explicit_host_override_remains_available_in_freestanding_environment
+    standalone('manual-host-override', source, ('-ffreestanding',))
+tests\test_framework_auto_detection.py:35: in build
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/string:40,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/stdexcept:41,
+E                      from flash_chroma_framework.hpp:1842,
+E                      from main.cpp:4:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/requires_hosted.h:34:4: error: #error "This header is not available in freestanding mode."
+E        34 | #  error "This header is not available in freestanding mode."
+E           |    ^~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xmmintrin.h:34,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/immintrin.h:31,
+E                      from flash_chroma_framework.hpp:421:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h: In function 'void* _mm_malloc(size_t, size_t)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h:57:18: error: 'malloc' was not declared in this scope
+E        57 |   __malloc_ptr = malloc (__size + __align);
+E           |                  ^~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h:28:1: note: 'malloc' is defined in header '<cstdlib>'; this is probably fixable by adding '#include <cstdlib>'
+E        27 | #include <stdlib.h>
+E       +++ |+#include <cstdlib>
+E        28 | #if __STDC_HOSTED__
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h: In function 'void _mm_free(void*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h:75:5: error: 'free' was not declared in this scope
+E        75 |     free (((void **) __aligned_ptr)[-1]);
+E           |     ^~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/mm_malloc.h:75:5: note: 'free' is defined in header '<cstdlib>'; this is probably fixable by adding '#include <cstdlib>'
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/x86_64-w64-mingw32/bits/c++allocator.h:33,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/allocator.h:46,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/string:45:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/new_allocator.h: In member function '_Tp* std::__new_allocator<_Tp>::allocate(size_type, const void*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/new_allocator.h:139:20: error: '__throw_bad_array_new_length' is not a member of 'std'; did you mean 'bad_array_new_length'? [-Wtemplate-body]
+E       139 |               std::__throw_bad_array_new_length();
+E           |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E           |                    bad_array_new_length
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/new_allocator.h:140:18: error: '__throw_bad_alloc' is not a member of 'std' [-Wtemplate-body]
+E       140 |             std::__throw_bad_alloc();
+E           |                  ^~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/string:56:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In member function 'void std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::_M_check_length(size_type, size_type, const char*) const':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:423:11: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E       423 |           __throw_length_error(__N(__s));
+E           |           ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:423:11: note: (if you use '-fpermissive', G++ will accept your code, but allowing the use of an undeclared name is deprecated)
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In constructor 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT*, size_type, const _Alloc&)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:690:16: error: '__throw_logic_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       690 |           std::__throw_logic_error(__N("basic_string: "
+E           |                ^~~~~~~~~~~~~~~~~~~
+E           |                __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In constructor 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT*, const _Alloc&)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:711:16: error: '__throw_logic_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       711 |           std::__throw_logic_error(__N("basic_string: "
+E           |                ^~~~~~~~~~~~~~~~~~~
+E           |                __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: At global scope:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:3789:35: error: expected ')' before '<' token
+E      3789 |     basic_string(basic_string_view<_CharT, _Traits>, const _Allocator& = _Allocator())
+E           |                 ~                 ^
+E           |                                   )
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:3795:35: error: expected ')' before '<' token
+E      3795 |     basic_string(basic_string_view<_CharT, _Traits>,
+E           |                 ~                 ^
+E           |                                   )
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'int std::__cxx11::stoi(const std::string&, std::size_t*, int)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4455:47: error: 'strtol' is not a member of 'std'; did you mean 'strtok'?
+E      4455 |   { return __gnu_cxx::__stoa<long, int>(&std::strtol, "stoi", __str.c_str(),
+E           |                                               ^~~~~~
+E           |                                               strtok
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'long int std::__cxx11::stol(const std::string&, std::size_t*, int)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4460:36: error: 'strtol' is not a member of 'std'; did you mean 'strtok'?
+E      4460 |   { return __gnu_cxx::__stoa(&std::strtol, "stol", __str.c_str(),
+E           |                                    ^~~~~~
+E           |                                    strtok
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'long unsigned int std::__cxx11::stoul(const std::string&, std::size_t*, int)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4465:36: error: 'strtoul' is not a member of 'std'; did you mean 'strtok'?
+E      4465 |   { return __gnu_cxx::__stoa(&std::strtoul, "stoul", __str.c_str(),
+E           |                                    ^~~~~~~
+E           |                                    strtok
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'long long int std::__cxx11::stoll(const std::string&, std::size_t*, int)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4471:36: error: 'strtoll' is not a member of 'std'; did you mean 'strcoll'?
+E      4471 |   { return __gnu_cxx::__stoa(&std::strtoll, "stoll", __str.c_str(),
+E           |                                    ^~~~~~~
+E           |                                    strcoll
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'long long unsigned int std::__cxx11::stoull(const std::string&, std::size_t*, int)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4476:36: error: 'strtoull' is not a member of 'std'; did you mean 'strcoll'?
+E      4476 |   { return __gnu_cxx::__stoa(&std::strtoull, "stoull", __str.c_str(),
+E           |                                    ^~~~~~~~
+E           |                                    strcoll
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'double std::__cxx11::stod(const std::string&, std::size_t*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4490:36: error: 'strtod' is not a member of 'std'; did you mean 'strtok'?
+E      4490 |   { return __gnu_cxx::__stoa(&std::strtod, "stod", __str.c_str(), __idx); }
+E           |                                    ^~~~~~
+E           |                                    strtok
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'float std::__cxx11::stof(const std::string&, std::size_t*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4496:36: error: 'strtof' is not a member of 'std'; did you mean 'strtok'?
+E      4496 |   { return __gnu_cxx::__stoa(&std::strtof, "stof", __str.c_str(), __idx); }
+E           |                                    ^~~~~~
+E           |                                    strtok
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In function 'long double std::__cxx11::stold(const std::string&, std::size_t*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:4518:36: error: 'strtold' is not a member of 'std'; did you mean 'strtok'?
+E      4518 |   { return __gnu_cxx::__stoa(&std::strtold, "stold", __str.c_str(), __idx); }
+E           |                                    ^~~~~~~
+E           |                                    strtok
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/string:57:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.tcc: In member function 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::pointer std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::_M_create(size_type&, size_type)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.tcc:149:14: error: '__throw_length_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       149 |         std::__throw_length_error(__N("basic_string::_M_create"));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/string:72:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/memory_resource.h: In member function '_Tp* std::pmr::polymorphic_allocator<_Tp>::allocate(std::size_t)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/memory_resource.h:163:16: error: '__throw_bad_array_new_length' is not a member of 'std'; did you mean 'bad_array_new_length'? [-Wtemplate-body]
+E       163 |           std::__throw_bad_array_new_length();
+E           |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E           |                bad_array_new_length
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/vector:68,
+E                      from flash_chroma_framework.hpp:1843:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In member function 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:11: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In static member function 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:11: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E      2211 |           __throw_length_error(
+E           |           ^~~~~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/vector:69:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_bvector.h: In member function 'void std::vector<bool, _Alloc>::reserve(size_type)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_bvector.h:1208:11: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E      1208 |           __throw_length_error(__N("vector::reserve"));
+E           |           ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_bvector.h: In member function 'std::vector<bool, _Alloc>::size_type std::vector<bool, _Alloc>::_M_check_len(size_type, const char*) const':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_bvector.h:1738:11: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E      1738 |           __throw_length_error(__N(__s));
+E           |           ^~~~~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/vector:74:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc: In member function 'void std::vector<_Tp, _Alloc>::reserve(size_type)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:71:9: error: there are no arguments to '__throw_length_error' that depend on a template parameter, so a declaration of '__throw_length_error' must be available [-Wtemplate-body]
+E        71 |         __throw_length_error(__N("vector::reserve"));
+E           |         ^~~~~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_classes.h:896,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ios_base.h:43,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/ios:46,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:42,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:42,
+E                      from flash_chroma_framework.hpp:2089:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_classes.tcc: In function 'const _Facet& std::use_facet(const locale&)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_classes.tcc:230:7: error: there are no arguments to '__throw_bad_cast' that depend on a template parameter, so a declaration of '__throw_bad_cast' must be available [-Wtemplate-body]
+E       230 |       __throw_bad_cast();
+E           |       ^~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_classes.tcc: In member function 'virtual std::__cxx11::collate<_CharT>::string_type std::__cxx11::collate<_CharT>::do_transform(const _CharT*, const _CharT*) const':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_classes.tcc:348:19: error: there are no arguments to '__throw_system_error' that depend on a template parameter, so a declaration of '__throw_system_error' must be available [-Wtemplate-body]
+E       348 |                   __throw_system_error(errno);
+E           |                   ^~~~~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/ios:47:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf: In instantiation of 'class std::basic_streambuf<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/streambuf.tcc:154:25:   required from here
+E       154 |   extern template class basic_streambuf<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf:138:57: error: no type named 'pos_type' in 'std::basic_streambuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       138 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf:139:57: error: no type named 'off_type' in 'std::basic_streambuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       139 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf: In instantiation of 'class std::basic_streambuf<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/streambuf.tcc:162:25:   required from here
+E       162 |   extern template class basic_streambuf<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf:138:57: error: no type named 'pos_type' in 'std::basic_streambuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       138 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/streambuf:139:57: error: no type named 'off_type' in 'std::basic_streambuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       139 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/ios:48:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h: In function 'const _Facet& std::__check_facet(const _Facet*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:52:9: error: there are no arguments to '__throw_bad_cast' that depend on a template parameter, so a declaration of '__throw_bad_cast' must be available [-Wtemplate-body]
+E        52 |         __throw_bad_cast();
+E           |         ^~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:531:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.tcc: In member function 'void std::basic_ios<_CharT, _Traits>::clear(std::ios_base::iostate)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.tcc:53:9: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E        53 |         __throw_ios_failure(__N("basic_ios::clear"));
+E           |         ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h: In instantiation of 'class std::basic_ios<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.tcc:179:25:   required from here
+E       179 |   extern template class basic_ios<char>;
+E           |                         ^~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:84:54: error: no type named 'pos_type' in 'struct std::char_traits<char>'
+E        84 |       typedef typename _Traits::pos_type             pos_type;
+E           |                                                      ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:85:54: error: no type named 'off_type' in 'struct std::char_traits<char>'
+E        85 |       typedef typename _Traits::off_type             off_type;
+E           |                                                      ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h: In instantiation of 'class std::basic_ios<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.tcc:182:25:   required from here
+E       182 |   extern template class basic_ios<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:84:54: error: no type named 'pos_type' in 'struct std::char_traits<wchar_t>'
+E        84 |       typedef typename _Traits::pos_type             pos_type;
+E           |                                                      ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_ios.h:85:54: error: no type named 'off_type' in 'struct std::char_traits<wchar_t>'
+E        85 |       typedef typename _Traits::off_type             off_type;
+E           |                                                      ^~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/ostream:42,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:43:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h: In instantiation of 'class std::basic_ostream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.tcc:349:25:   required from here
+E       349 |   extern template class basic_ostream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h:72:57: error: no type named 'pos_type' in 'struct std::char_traits<char>'
+E        72 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h:73:57: error: no type named 'off_type' in 'struct std::char_traits<char>'
+E        73 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h: In instantiation of 'class std::basic_ostream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.tcc:375:25:   required from here
+E       375 |   extern template class basic_ostream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h:72:57: error: no type named 'pos_type' in 'struct std::char_traits<wchar_t>'
+E        72 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/ostream.h:73:57: error: no type named 'off_type' in 'struct std::char_traits<wchar_t>'
+E        73 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream: In instantiation of 'class std::basic_istream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:742:24:   required from here
+E       742 |     basic_istream<char>::
+E           |                        ^~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:68:57: error: no type named 'pos_type' in 'struct std::char_traits<char>'
+E        68 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:69:57: error: no type named 'off_type' in 'struct std::char_traits<char>'
+E        69 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream: In instantiation of 'class std::basic_istream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:758:27:   required from here
+E       758 |     basic_istream<wchar_t>::
+E           |                           ^~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:68:57: error: no type named 'pos_type' in 'struct std::char_traits<wchar_t>'
+E        68 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:69:57: error: no type named 'off_type' in 'struct std::char_traits<wchar_t>'
+E        69 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream: In instantiation of 'class std::basic_iostream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/istream.tcc:1154:25:   required from here
+E      1154 |   extern template class basic_iostream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:995:57: error: no type named 'pos_type' in 'struct std::char_traits<char>'
+E       995 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:996:57: error: no type named 'off_type' in 'struct std::char_traits<char>'
+E       996 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream: In instantiation of 'class std::basic_iostream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/istream.tcc:1176:25:   required from here
+E      1176 |   extern template class basic_iostream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:995:57: error: no type named 'pos_type' in 'struct std::char_traits<wchar_t>'
+E       995 |       typedef typename _Traits::pos_type                pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/istream:996:57: error: no type named 'off_type' in 'struct std::char_traits<wchar_t>'
+E       996 |       typedef typename _Traits::off_type                off_type;
+E           |                                                         ^~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:1372:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc: In member function 'virtual std::basic_filebuf<_CharT, _Traits>::int_type std::basic_filebuf<_CharT, _Traits>::underflow()':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:414:27: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       414 |                           __throw_ios_failure(__N("basic_filebuf::underflow "
+E           |                           ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:471:17: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       471 |                 __throw_ios_failure(__N("basic_filebuf::underflow "
+E           |                 ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:475:13: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       475 |             __throw_ios_failure(__N("basic_filebuf::underflow "
+E           |             ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:478:13: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       478 |             __throw_ios_failure(__N("basic_filebuf::underflow "
+E           |             ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc: In member function 'bool std::basic_filebuf<_CharT, _Traits>::_M_convert_to_external(_CharT*, std::streamsize)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:643:13: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       643 |             __throw_ios_failure(__N("basic_filebuf::_M_convert_to_external "
+E           |             ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:664:17: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       664 |                 __throw_ios_failure(__N("basic_filebuf::_M_convert_to_external "
+E           |                 ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc: In member function 'virtual std::streamsize std::basic_filebuf<_CharT, _Traits>::xsgetn(_CharT*, std::streamsize)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:724:17: error: there are no arguments to '__throw_ios_failure' that depend on a template parameter, so a declaration of '__throw_ios_failure' must be available [-Wtemplate-body]
+E       724 |                 __throw_ios_failure(__N("basic_filebuf::xsgetn "
+E           |                 ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_filebuf<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1086:25:   required from here
+E      1086 |   extern template class basic_filebuf<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:100:64: error: no type named 'state_type' in 'struct std::char_traits<char>'
+E       100 |       static_assert(__chk_state<typename _Traits::state_type>::value,
+E           |                                                                ^~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:105:66: error: no type named 'pos_type' in 'struct std::char_traits<char>'
+E       105 |                             fpos<typename _Traits::state_type>>::value,
+E           |                                                                  ^~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:113:57: error: no type named 'pos_type' in 'std::basic_filebuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       113 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:114:57: error: no type named 'off_type' in 'std::basic_filebuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       114 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:119:57: error: no type named 'state_type' in 'std::basic_filebuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       119 |       typedef typename traits_type::state_type          __state_type;
+E           |                                                         ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:120:57: error: no type named 'state_type' in 'struct std::char_traits<char>'
+E       120 |       typedef codecvt<char_type, char, __state_type>    __codecvt_type;
+E           |                                                         ^~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_ifstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1087:25:   required from here
+E      1087 |   extern template class basic_ifstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:542:57: error: no type named 'pos_type' in 'std::basic_ifstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       542 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:543:57: error: no type named 'off_type' in 'std::basic_ifstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       543 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_ofstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1088:25:   required from here
+E      1088 |   extern template class basic_ofstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:815:57: error: no type named 'pos_type' in 'std::basic_ofstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       815 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:816:57: error: no type named 'off_type' in 'std::basic_ofstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       816 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_fstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1089:25:   required from here
+E      1089 |   extern template class basic_fstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:1090:57: error: no type named 'pos_type' in 'std::basic_fstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E      1090 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:1091:57: error: no type named 'off_type' in 'std::basic_fstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E      1091 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_filebuf<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1092:25:   required from here
+E      1092 |   extern template class basic_filebuf<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:100:64: error: no type named 'state_type' in 'struct std::char_traits<wchar_t>'
+E       100 |       static_assert(__chk_state<typename _Traits::state_type>::value,
+E           |                                                                ^~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:105:66: error: no type named 'pos_type' in 'struct std::char_traits<wchar_t>'
+E       105 |                             fpos<typename _Traits::state_type>>::value,
+E           |                                                                  ^~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:113:57: error: no type named 'pos_type' in 'std::basic_filebuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       113 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:114:57: error: no type named 'off_type' in 'std::basic_filebuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       114 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:119:57: error: no type named 'state_type' in 'std::basic_filebuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       119 |       typedef typename traits_type::state_type          __state_type;
+E           |                                                         ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:120:57: error: no type named 'state_type' in 'struct std::char_traits<wchar_t>'
+E       120 |       typedef codecvt<char_type, char, __state_type>    __codecvt_type;
+E           |                                                         ^~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_ifstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1093:25:   required from here
+E      1093 |   extern template class basic_ifstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:542:57: error: no type named 'pos_type' in 'std::basic_ifstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       542 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:543:57: error: no type named 'off_type' in 'std::basic_ifstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       543 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_ofstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1094:25:   required from here
+E      1094 |   extern template class basic_ofstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:815:57: error: no type named 'pos_type' in 'std::basic_ofstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       815 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:816:57: error: no type named 'off_type' in 'std::basic_ofstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       816 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream: In instantiation of 'class std::basic_fstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/fstream.tcc:1095:25:   required from here
+E      1095 |   extern template class basic_fstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:1090:57: error: no type named 'pos_type' in 'std::basic_fstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E      1090 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/fstream:1091:57: error: no type named 'off_type' in 'std::basic_fstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E      1091 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     flash_chroma_framework.hpp: In function 'std::vector<unsigned char> fc_framework_io::read_rgb_file(const std::string&, std::size_t)':
+E     flash_chroma_framework.hpp:2146:27: error: 'std::ifstream' {aka 'class std::basic_ifstream<char>'} has no member named 'tellg'
+E      2146 |     const auto length = f.tellg();
+E           |                           ^~~~~
+E     flash_chroma_framework.hpp:2152:7: error: 'std::ifstream' {aka 'class std::basic_ifstream<char>'} has no member named 'seekg'
+E      2152 |     f.seekg(0);
+E           |       ^~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:47,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/cmath:3913,
+E                      from flash_chroma_framework.hpp:2205:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/gamma.tcc: In function '_Tp std::__detail::__log_gamma(_Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/gamma.tcc:236:18: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       236 |             std::__throw_domain_error(__N("Argument is nonpositive integer "
+E           |                  ^~~~~~~~~~~~~~~~~~~~
+E           |                  __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/gamma.tcc: In function '_Tp std::__detail::__psi(unsigned int, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/gamma.tcc:451:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       451 |         std::__throw_domain_error(__N("Argument out of range "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:48:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc: In function '_Tp std::__detail::__cyl_bessel_j(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc:495:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       495 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc: In function '_Tp std::__detail::__cyl_neumann_n(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc:537:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       537 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc: In function '_Tp std::__detail::__sph_bessel(unsigned int, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc:609:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       609 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc: In function '_Tp std::__detail::__sph_neumann(unsigned int, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/bessel_function.tcc:647:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       647 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:50:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_rf(_Tp, _Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:84:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E        84 |         std::__throw_domain_error(__N("Argument less than zero "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:88:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E        88 |         std::__throw_domain_error(__N("Argument too small in __ellint_rf"));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_1(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:227:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       227 |         std::__throw_domain_error(__N("Bad argument in __ellint_1."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_rd(_Tp, _Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:324:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       324 |         std::__throw_domain_error(__N("Argument less than zero "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:327:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       327 |         std::__throw_domain_error(__N("Argument too small "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__comp_ellint_2(_Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:409:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       409 |         std::__throw_domain_error(__N("Bad argument in __comp_ellint_2."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_2(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:441:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       441 |         std::__throw_domain_error(__N("Bad argument in __ellint_2."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_rc(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:500:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       500 |         std::__throw_domain_error(__N("Argument less than zero "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_rj(_Tp, _Tp, _Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:569:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       569 |         std::__throw_domain_error(__N("Argument less than zero "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:573:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       573 |         std::__throw_domain_error(__N("Argument too small "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__comp_ellint_3(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:671:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       671 |         std::__throw_domain_error(__N("Bad argument in __comp_ellint_3."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc: In function '_Tp std::__detail::__ellint_3(_Tp, _Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/ell_integral.tcc:709:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       709 |         std::__throw_domain_error(__N("Bad argument in __ellint_3."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:52:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/hypergeometric.tcc: In function '_Tp std::__detail::__hyperg(_Tp, _Tp, _Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/hypergeometric.tcc:743:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       743 |         std::__throw_domain_error(__N("Argument outside unit circle "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:54:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/modified_bessel_func.tcc: In function '_Tp std::__detail::__cyl_bessel_i(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/modified_bessel_func.tcc:272:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       272 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/modified_bessel_func.tcc: In function '_Tp std::__detail::__cyl_bessel_k(_Tp, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/modified_bessel_func.tcc:308:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       308 |         std::__throw_domain_error(__N("Bad argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:56:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/poly_laguerre.tcc: In function '_Tp std::__detail::__poly_laguerre(unsigned int, _Tpa, _Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/poly_laguerre.tcc:249:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E       249 |         std::__throw_domain_error(__N("Negative argument "
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/specfun.h:57:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/riemann_zeta.tcc: In function '_Tp std::__detail::__riemann_zeta_sum(_Tp)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/tr1/riemann_zeta.tcc:84:14: error: '__throw_domain_error' is not a member of 'std'; did you mean '__throw_runtime_error'? [-Wtemplate-body]
+E        84 |         std::__throw_domain_error(__N("Bad argument in zeta sum."));
+E           |              ^~~~~~~~~~~~~~~~~~~~
+E           |              __throw_runtime_error
+E     flash_chroma_framework.hpp: In function 'double fc_framework::fit_detail::seconds()':
+E     flash_chroma_framework.hpp:2240:55: error: 'steady_clock' is not a member of 'std::chrono'
+E      2240 |     return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+E           |                                                       ^~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/locale:47,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/iomanip:53,
+E                      from flash_chroma_framework.hpp:2639:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h: In constructor 'std::__detail::_Scoped_ptr<_Tp>::_Scoped_ptr(_Tp*, const char*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h:238:13: error: there are no arguments to '__throw_logic_error' that depend on a template parameter, so a declaration of '__throw_logic_error' must be available [-Wtemplate-body]
+E       238 |             __throw_logic_error(__msg);
+E           |             ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h: In member function 'std::__cxx11::wstring_convert<_Codecvt, _Elem, _Wide_alloc, _Byte_alloc>::wide_string std::__cxx11::wstring_convert<_Codecvt, _Elem, _Wide_alloc, _Byte_alloc>::from_bytes(const char*, const char*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h:346:9: error: there are no arguments to '__throw_range_error' that depend on a template parameter, so a declaration of '__throw_range_error' must be available [-Wtemplate-body]
+E       346 |         __throw_range_error("wstring_convert::from_bytes");
+E           |         ^~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h: In member function 'std::__cxx11::wstring_convert<_Codecvt, _Elem, _Wide_alloc, _Byte_alloc>::byte_string std::__cxx11::wstring_convert<_Codecvt, _Elem, _Wide_alloc, _Byte_alloc>::to_bytes(const _Elem*, const _Elem*)':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/locale_conv.h:382:9: error: there are no arguments to '__throw_range_error' that depend on a template parameter, so a declaration of '__throw_range_error' must be available [-Wtemplate-body]
+E       382 |         __throw_range_error("wstring_convert::to_bytes");
+E           |         ^~~~~~~~~~~~~~~~~~~
+E     In file included from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/quoted_string.h:40,
+E                      from E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/iomanip:55:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_stringbuf<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:295:25:   required from here
+E       295 |   extern template class basic_stringbuf<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:100:57: error: no type named 'pos_type' in 'std::__cxx11::basic_stringbuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       100 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:101:57: error: no type named 'off_type' in 'std::__cxx11::basic_stringbuf<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       101 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_istringstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:296:25:   required from here
+E       296 |   extern template class basic_istringstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:562:57: error: no type named 'pos_type' in 'std::__cxx11::basic_istringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       562 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:563:57: error: no type named 'off_type' in 'std::__cxx11::basic_istringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       563 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_ostringstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:297:25:   required from here
+E       297 |   extern template class basic_ostringstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:790:57: error: no type named 'pos_type' in 'std::__cxx11::basic_ostringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       790 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:791:57: error: no type named 'off_type' in 'std::__cxx11::basic_ostringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E       791 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_stringstream<char>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:298:25:   required from here
+E       298 |   extern template class basic_stringstream<char>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:1018:57: error: no type named 'pos_type' in 'std::__cxx11::basic_stringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E      1018 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:1019:57: error: no type named 'off_type' in 'std::__cxx11::basic_stringstream<char>::traits_type' {aka 'struct std::char_traits<char>'}
+E      1019 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_stringbuf<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:301:25:   required from here
+E       301 |   extern template class basic_stringbuf<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:100:57: error: no type named 'pos_type' in 'std::__cxx11::basic_stringbuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       100 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:101:57: error: no type named 'off_type' in 'std::__cxx11::basic_stringbuf<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       101 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_istringstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:302:25:   required from here
+E       302 |   extern template class basic_istringstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:562:57: error: no type named 'pos_type' in 'std::__cxx11::basic_istringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       562 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:563:57: error: no type named 'off_type' in 'std::__cxx11::basic_istringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       563 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_ostringstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:303:25:   required from here
+E       303 |   extern template class basic_ostringstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:790:57: error: no type named 'pos_type' in 'std::__cxx11::basic_ostringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       790 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:791:57: error: no type named 'off_type' in 'std::__cxx11::basic_ostringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E       791 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream: In instantiation of 'class std::__cxx11::basic_stringstream<wchar_t>':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/sstream.tcc:304:25:   required from here
+E       304 |   extern template class basic_stringstream<wchar_t>;
+E           |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:1018:57: error: no type named 'pos_type' in 'std::__cxx11::basic_stringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E      1018 |       typedef typename traits_type::pos_type            pos_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/sstream:1019:57: error: no type named 'off_type' in 'std::__cxx11::basic_stringstream<wchar_t>::traits_type' {aka 'struct std::char_traits<wchar_t>'}
+E      1019 |       typedef typename traits_type::off_type            off_type;
+E           |                                                         ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/quoted_string.h: At global scope:
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/quoted_string.h:71:29: error: 'basic_string_view' was not declared in this scope
+E        71 |       struct _Quoted_string<basic_string_view<_CharT, _Traits>, _CharT>
+E           |                             ^~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/quoted_string.h:71:62: error: template argument 1 is invalid
+E        71 |       struct _Quoted_string<basic_string_view<_CharT, _Traits>, _CharT>
+E           |                                                              ^
+E     flash_chroma_framework.hpp: In function 'fc_framework::preference_detail::ResourceAccounting fc_framework::preference_detail::account_resources(const fc_framework::Info&, std::size_t)':
+E     flash_chroma_framework.hpp:2736:54: error: 'shared_ptr' is not a member of 'std'
+E      2736 |     r.shared_ownership_estimate_bytes=4*(sizeof(std::shared_ptr<Stage>)+2*sizeof(void*));
+E           |                                                      ^~~~~~~~~~
+E     flash_chroma_framework.hpp:2643:1: note: 'std::shared_ptr' is defined in header '<memory>'; this is probably fixable by adding '#include <memory>'
+E      2642 | #include <optional>
+E       +++ |+#include <memory>
+E      2643 | #include <sstream>
+E     flash_chroma_framework.hpp:2736:70: error: expected primary-expression before '>' token
+E      2736 |     r.shared_ownership_estimate_bytes=4*(sizeof(std::shared_ptr<Stage>)+2*sizeof(void*));
+E           |                                                                      ^
+E     flash_chroma_framework.hpp:2736:71: error: expected primary-expression before ')' token
+E      2736 |     r.shared_ownership_estimate_bytes=4*(sizeof(std::shared_ptr<Stage>)+2*sizeof(void*));
+E           |                                                                       ^
+E     flash_chroma_framework.hpp: In function 'double fc_framework::preference_detail::timed_apply(const fc_framework::Chain&, const std::vector<unsigned char>&, const std::vector<unsigned char>&, uint64_t&)':
+E     flash_chroma_framework.hpp:2816:68: error: 'std::chrono::steady_clock' has not been declared
+E      2816 |     std::vector<std::uint8_t> output;const auto start=std::chrono::steady_clock::now();
+E           |                                                                    ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2818:34: error: 'std::chrono::steady_clock' has not been declared
+E      2818 |     const auto stop=std::chrono::steady_clock::now();require(status,"合成校准映射失败");
+E           |                                  ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp: In function 'fc_framework::SelectionResult fc_framework::select_preferences(const std::array<std::vector<short unsigned int>, 4>&, const PreferenceOptions&)':
+E     flash_chroma_framework.hpp:2975:37: error: 'std::chrono::steady_clock' has not been declared
+E      2975 |     const auto started=std::chrono::steady_clock::now();
+E           |                                     ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp: In lambda function:
+E     flash_chroma_framework.hpp:2977:63: error: 'steady_clock' is not a member of 'std::chrono'
+E      2977 |         std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-started).count());};
+E           |                                                               ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp: In function 'fc_framework::SelectionResult fc_framework::select_preferences(const std::array<std::vector<short unsigned int>, 4>&, const PreferenceOptions&)':
+E     flash_chroma_framework.hpp:3000:49: error: 'std::chrono::steady_clock' has not been declared
+E      3000 |             const auto model_start=std::chrono::steady_clock::now();std::vector<std::uint8_t> scalar,expected;
+E           |                                                 ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3018:80: error: 'steady_clock' is not a member of 'std::chrono'
+E      3018 |             m.prepare_ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-model_start).count();
+E           |                                                                                ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3034:42: error: 'std::chrono::steady_clock' has not been declared
+E      3034 |                     auto at=std::chrono::steady_clock::now();require(chain.prepare(pointers(m.stages),o),"候选准备失败");
+E           |                                          ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3035:88: error: 'steady_clock' is not a member of 'std::chrono'
+E      3035 |                     r.prepare_ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-at).count();r.info=chain.info();
+E           |                                                                                        ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3043:37: error: 'std::chrono::steady_clock' has not been declared
+E      3043 |                     at=std::chrono::steady_clock::now();verify_domain(chain,scalar,r);
+E           |                                     ^~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3044:89: error: 'steady_clock' is not a member of 'std::chrono'
+E      3044 |                     r.contract_ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-at).count();c.correctness_verified=true;
+E           |                                                                                         ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc: In instantiation of 'void std::vector<_Tp, _Alloc>::reserve(size_type) [with _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; size_type = long long unsigned int]':
+E     flash_chroma_framework.hpp:2109:19:   required from here
+E      2109 |     parsed.reserve(expected_values);
+E           |     ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:71:29: error: '__throw_length_error' was not declared in this scope
+E        71 |         __throw_length_error(__N("vector::reserve"));
+E           |         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc: In instantiation of 'void std::vector<_Tp, _Alloc>::reserve(size_type) [with _Tp = fc_framework::preference_detail::Model; _Alloc = std::allocator<fc_framework::preference_detail::Model>; size_type = long long unsigned int]':
+E     flash_chroma_framework.hpp:2994:23:   required from here
+E      2994 |         models.reserve(p.sizes.size());records.reserve(p.sizes.size()*p.representations.size());
+E           |         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:71:29: error: '__throw_length_error' was not declared in this scope
+E        71 |         __throw_length_error(__N("vector::reserve"));
+E           |         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc: In instantiation of 'void std::vector<_Tp, _Alloc>::reserve(size_type) [with _Tp = fc_framework::preference_detail::Record; _Alloc = std::allocator<fc_framework::preference_detail::Record>; size_type = long long unsigned int]':
+E     flash_chroma_framework.hpp:2994:55:   required from here
+E      2994 |         models.reserve(p.sizes.size());records.reserve(p.sizes.size()*p.representations.size());
+E           |                                        ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:71:29: error: '__throw_length_error' was not declared in this scope
+E        71 |         __throw_length_error(__N("vector::reserve"));
+E           |         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc: In instantiation of 'void std::vector<_Tp, _Alloc>::reserve(size_type) [with _Tp = fc::Candidate; _Alloc = std::allocator<fc::Candidate>; size_type = long long unsigned int]':
+E     flash_chroma_framework.hpp:3056:65:   required from here
+E      3056 |         std::vector<fc::Candidate> candidates;candidates.reserve(records.size());
+E           |                                               ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:71:29: error: '__throw_length_error' was not declared in this scope
+E        71 |         __throw_length_error(__N("vector::reserve"));
+E           |         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = char; _Alloc = std::allocator<char>; size_type = long long unsigned int; allocator_type = std::allocator<char>]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = char; _Alloc = std::allocator<char>; size_type = long long unsigned int; allocator_type = std::allocator<char>]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2104:41:   required from here
+E      2104 |     std::vector<char> buffer(1024 * 1024);
+E           |                                         ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>; size_type = long long unsigned int; allocator_type = std::allocator<unsigned char>]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>; size_type = long long unsigned int; allocator_type = std::allocator<unsigned char>]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2151:52:   required from here
+E      2151 |     std::vector<std::uint8_t> result(expected_bytes);
+E           |                                                    ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; size_type = long long unsigned int; allocator_type = std::allocator<short unsigned int>]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; size_type = long long unsigned int; allocator_type = std::allocator<short unsigned int>]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2171:54:   required from here
+E      2171 |     std::vector<std::uint16_t> parsed(expected_values);
+E           |                                                      ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = std::array<double, 8>; _Alloc = std::allocator<std::array<double, 8> >; size_type = long long unsigned int; allocator_type = std::allocator<std::array<double, 8> >]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = std::array<double, 8>; _Alloc = std::allocator<std::array<double, 8> >; size_type = long long unsigned int; allocator_type = std::allocator<std::array<double, 8> >]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2292:104:   required from here
+E      2292 |         : count(std::size_t(coordinates.m) * coordinates.m * coordinates.m), delta(coordinates.delta), h(count), rhs(count) {}
+E           |                                                                                                        ^~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = std::array<double, 3>; _Alloc = std::allocator<std::array<double, 3> >; size_type = long long unsigned int; allocator_type = std::allocator<std::array<double, 3> >]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = std::array<double, 3>; _Alloc = std::allocator<std::array<double, 3> >; size_type = long long unsigned int; allocator_type = std::allocator<std::array<double, 3> >]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2292:114:   required from here
+E      2292 |         : count(std::size_t(coordinates.m) * coordinates.m * coordinates.m), delta(coordinates.delta), h(count), rhs(count) {}
+E           |                                                                                                                  ^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = double; _Alloc = std::allocator<double>; size_type = long long unsigned int; allocator_type = std::allocator<double>]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:587:32:   required from 'std::vector<_Tp, _Alloc>::vector(size_type, const allocator_type&) [with _Tp = double; _Alloc = std::allocator<double>; size_type = long long unsigned int; allocator_type = std::allocator<double>]'
+E       587 |       : _Base(_S_check_init_len(__n, __a), __a)
+E           |               ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     flash_chroma_framework.hpp:2357:28:   required from here
+E      2357 |     std::vector<double> x(n), rhs(n), reg(n), r(n), z(n), direction(n), product(n);
+E           |                            ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:788:3:   required from 'void std::vector<_Tp, _Alloc>::_M_default_append(size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>; size_type = long long unsigned int]'
+E       788 |                 _M_check_len(__n, "vector::_M_default_append");
+E           |                 ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1146:4:   required from 'void std::vector<_Tp, _Alloc>::resize(size_type) [with _Tp = unsigned char; _Alloc = std::allocator<unsigned char>; size_type = long long unsigned int]'
+E      1146 |           _M_default_append(__new_size - size());
+E           |           ^~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:1918:23:   required from here
+E      1918 |     result.blob.resize(nodes_at + std::size_t(m) * m * m * 3);
+E           |     ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:938:5:   required from 'void std::vector<_Tp, _Alloc>::_M_range_insert(iterator, _ForwardIterator, _ForwardIterator, std::forward_iterator_tag) [with _ForwardIterator = short unsigned int*; _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; iterator = std::vector<short unsigned int>::iterator]'
+E       938 |                   _M_check_len(__n, "vector::_M_range_insert");
+E           |                   ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1621:19:   required from 'std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::insert(const_iterator, _InputIterator, _InputIterator) [with _InputIterator = short unsigned int*; <template-parameter-2-2> = void; _Tp = short unsigned int; _Alloc = std::allocator<short unsigned int>; iterator = std::vector<short unsigned int>::iterator; const_iterator = std::vector<short unsigned int>::const_iterator]'
+E      1621 |           _M_range_insert(begin() + __offset, __first, __last,
+E           |           ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E      1622 |                           std::__iterator_category(__first));
+E           |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2137:22:   required from here
+E      2137 |         parsed.insert(parsed.end(), row.begin(), row.end());
+E           |         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = double; _Alloc = std::allocator<double>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:788:3:   required from 'void std::vector<_Tp, _Alloc>::_M_default_append(size_type) [with _Tp = double; _Alloc = std::allocator<double>; size_type = long long unsigned int]'
+E       788 |                 _M_check_len(__n, "vector::_M_default_append");
+E           |                 ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1146:4:   required from 'void std::vector<_Tp, _Alloc>::resize(size_type) [with _Tp = double; _Alloc = std::allocator<double>; size_type = long long unsigned int]'
+E      1146 |           _M_default_append(__new_size - size());
+E           |           ^~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2295:19:   required from here
+E      2295 |         out.resize(count);
+E           |         ~~~~~~~~~~^~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = std::array<unsigned int, 4>; _Alloc = std::allocator<std::array<unsigned int, 4> >; size_type = long long unsigned int; allocator_type = std::allocator<std::array<unsigned int, 4> >]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1985:41:   required from 'void std::vector<_Tp, _Alloc>::_M_range_initialize_n(_Iterator, _Sentinel, size_type) [with _Iterator = const std::array<unsigned int, 4>*; _Sentinel = const std::array<unsigned int, 4>*; _Tp = std::array<unsigned int, 4>; _Alloc = std::allocator<std::array<unsigned int, 4> >; size_type = long long unsigned int]'
+E      1985 |             this->_M_allocate(_S_check_init_len(__n, _M_get_Tp_allocator()));
+E           |                               ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:712:23:   required from 'std::vector<_Tp, _Alloc>::vector(std::initializer_list<_Tp>, const allocator_type&) [with _Tp = std::array<unsigned int, 4>; _Alloc = std::allocator<std::array<unsigned int, 4> >; allocator_type = std::allocator<std::array<unsigned int, 4> >]'
+E       712 |         _M_range_initialize_n(__l.begin(), __l.end(), __l.size());
+E           |         ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2649:74:   required from here
+E      2649 |     std::vector<std::array<unsigned,4>> sizes{{17,17,17,17},{33,33,33,33}};
+E           |                                                                          ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'static std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_S_check_init_len(size_type, const allocator_type&) [with _Tp = fc::Representation; _Alloc = std::allocator<fc::Representation>; size_type = long long unsigned int; allocator_type = std::allocator<fc::Representation>]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1985:41:   required from 'void std::vector<_Tp, _Alloc>::_M_range_initialize_n(_Iterator, _Sentinel, size_type) [with _Iterator = const fc::Representation*; _Sentinel = const fc::Representation*; _Tp = fc::Representation; _Alloc = std::allocator<fc::Representation>; size_type = long long unsigned int]'
+E      1985 |             this->_M_allocate(_S_check_init_len(__n, _M_get_Tp_allocator()));
+E           |                               ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:712:23:   required from 'std::vector<_Tp, _Alloc>::vector(std::initializer_list<_Tp>, const allocator_type&) [with _Tp = fc::Representation; _Alloc = std::allocator<fc::Representation>; allocator_type = std::allocator<fc::Representation>]'
+E       712 |         _M_range_initialize_n(__l.begin(), __l.end(), __l.size());
+E           |         ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2650:111:   required from here
+E      2650 |     std::vector<fc::Representation> representations{fc::Representation::Sparse,fc::Representation::DirectRGB24};
+E           |                                                                                                               ^
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2211:31: error: '__throw_length_error' was not declared in this scope
+E      2211 |           __throw_length_error(
+E           |           ~~~~~~~~~~~~~~~~~~~~^
+E      2212 |               __N("cannot create std::vector larger than max_size()"));
+E           |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h: In instantiation of 'void std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::_M_check_length(size_type, size_type, const char*) const [with _CharT = char; _Traits = std::char_traits<char>; _Alloc = std::allocator<char>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:1584:2:   required from 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc>& std::__cxx11::basic_string<_CharT, _Traits, _Alloc>::append(const _CharT*) [with _CharT = char; _Traits = std::char_traits<char>; _Alloc = std::allocator<char>]'
+E      1584 |         _M_check_length(size_type(0), __n, "basic_string::append");
+E           |         ^~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:3977:36:   required from 'std::__cxx11::basic_string<_CharT, _Traits, _Alloc> std::operator+(__cxx11::basic_string<_CharT, _Traits, _Alloc>&&, const _CharT*) [with _CharT = char; _Traits = char_traits<char>; _Alloc = allocator<char>]'
+E      3977 |     { return std::move(__lhs.append(__rhs)); }
+E           |                        ~~~~~~~~~~~~^~~~~~~
+E     flash_chroma_framework.hpp:2784:76:   required from here
+E      2784 |     if(status!=fc::Status::Ok)throw std::runtime_error(std::string(action)+":"+fc::status_string(status));
+E           |                                                                            ^~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/basic_string.h:423:31: error: '__throw_length_error' was not declared in this scope
+E       423 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = fc_framework::preference_detail::Model; _Alloc = std::allocator<fc_framework::preference_detail::Model>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:566:31:   required from 'void std::vector<_Tp, _Alloc>::_M_realloc_append(_Args&& ...) [with _Args = {}; _Tp = fc_framework::preference_detail::Model; _Alloc = std::allocator<fc_framework::preference_detail::Model>]'
+E       566 |       const size_type __len = _M_check_len(1u, "vector::_M_realloc_append");
+E           |                               ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:123:21:   required from 'std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::emplace_back(_Args&& ...) [with _Args = {}; _Tp = fc_framework::preference_detail::Model; _Alloc = std::allocator<fc_framework::preference_detail::Model>; reference = fc_framework::preference_detail::Model&]'
+E       123 |           _M_realloc_append(std::forward<_Args>(__args)...);
+E           |           ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:2997:32:   required from here
+E      2997 |             models.emplace_back();auto& m=models.back();m.sizes=sizes;m.id="m";
+E           |             ~~~~~~~~~~~~~~~~~~~^~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = fc_framework::preference_detail::Record; _Alloc = std::allocator<fc_framework::preference_detail::Record>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:566:31:   required from 'void std::vector<_Tp, _Alloc>::_M_realloc_append(_Args&& ...) [with _Args = {}; _Tp = fc_framework::preference_detail::Record; _Alloc = std::allocator<fc_framework::preference_detail::Record>]'
+E       566 |       const size_type __len = _M_check_len(1u, "vector::_M_realloc_append");
+E           |                               ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:123:21:   required from 'std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::emplace_back(_Args&& ...) [with _Args = {}; _Tp = fc_framework::preference_detail::Record; _Alloc = std::allocator<fc_framework::preference_detail::Record>; reference = fc_framework::preference_detail::Record&]'
+E       123 |           _M_realloc_append(std::forward<_Args>(__args)...);
+E           |           ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3020:37:   required from here
+E      3020 |                 records.emplace_back();auto& r=records.back();r.model_index=models.size()-1;r.requested_representation=rep;
+E           |                 ~~~~~~~~~~~~~~~~~~~~^~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = fc::Candidate; _Alloc = std::allocator<fc::Candidate>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:566:31:   required from 'void std::vector<_Tp, _Alloc>::_M_realloc_append(_Args&& ...) [with _Args = {const fc::Candidate&}; _Tp = fc::Candidate; _Alloc = std::allocator<fc::Candidate>]'
+E       566 |       const size_type __len = _M_check_len(1u, "vector::_M_realloc_append");
+E           |                               ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1427:21:   required from 'void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = fc::Candidate; _Alloc = std::allocator<fc::Candidate>; value_type = fc::Candidate]'
+E      1427 |           _M_realloc_append(__x);
+E           |           ~~~~~~~~~~~~~~~~~^~~~~
+E     flash_chroma_framework.hpp:3059:90:   required from here
+E      3059 |             r.candidate.evidence="本次LUT完整域与合成校准";candidates.push_back(r.candidate);
+E           |                                                            ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h: In instantiation of 'std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::_M_check_len(size_type, const char*) const [with _Tp = fc_framework::preference_detail::CachedStage; _Alloc = std::allocator<fc_framework::preference_detail::CachedStage>; size_type = long long unsigned int]':
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:566:31:   required from 'void std::vector<_Tp, _Alloc>::_M_realloc_append(_Args&& ...) [with _Args = {fc_framework::preference_detail::CachedStage}; _Tp = fc_framework::preference_detail::CachedStage; _Alloc = std::allocator<fc_framework::preference_detail::CachedStage>]'
+E       566 |       const size_type __len = _M_check_len(1u, "vector::_M_realloc_append");
+E           |                               ^~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/vector.tcc:123:21:   required from 'std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::emplace_back(_Args&& ...) [with _Args = {fc_framework::preference_detail::CachedStage}; _Tp = fc_framework::preference_detail::CachedStage; _Alloc = std::allocator<fc_framework::preference_detail::CachedStage>; reference = fc_framework::preference_detail::CachedStage&]'
+E       123 |           _M_realloc_append(std::forward<_Args>(__args)...);
+E           |           ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:1434:21:   required from 'void std::vector<_Tp, _Alloc>::push_back(value_type&&) [with _Tp = fc_framework::preference_detail::CachedStage; _Alloc = std::allocator<fc_framework::preference_detail::CachedStage>; value_type = fc_framework::preference_detail::CachedStage]'
+E      1434 |       { emplace_back(std::move(__x)); }
+E           |         ~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+E     flash_chroma_framework.hpp:3008:40:   required from here
+E      3008 |                         cache.push_back(std::move(entry));found=cache.end()-1;
+E           |                         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+E     E:/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/c++/bits/stl_vector.h:2200:31: error: '__throw_length_error' was not declared in this scope
+E      2200 |           __throw_length_error(__N(__s));
+E           |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['E:/mingw64/bin/g++.exe', '-O2', '-std=c++17', '-ffreestanding', '-o', 'lut3d', 'main.cpp'], re... in this scope\n 2200 |           __throw_length_error(__N(__s));\n      |           ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~\n').returncode
+=========================== short test summary info ===========================
+FAILED tests/test_framework_auto_detection.py::test_explicit_host_override_remains_available_in_freestanding_environment
+1 failed, 18 passed in 17.31s
