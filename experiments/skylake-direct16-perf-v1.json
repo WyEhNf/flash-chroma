@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "purpose": "24直接对23的一次固定80轮，验收目标为apply/copy吞吐达到3倍；未达到则继续研究，不改门槛",
+  "plan": {
+    "path": "experiments/skylake-direct16-v1.json",
+    "sha256": "eba4c15b6d635d4ab862b685b65602eb3a2da427d487929f44b70ede7d9fde87"
+  },
+  "build_path": "artifacts/skylake-direct16-build-v1",
+  "build": {
+    "path": "artifacts/skylake-direct16-build-v1/build.json",
+    "sha256": "ed3e27bee2860438d8fd15a0e47c31bfa65d69cb3c1f9cd26dc160fc52fe5101"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-direct16-full-v1/results.json",
+    "sha256": "1c3547c0883a0aa56f20cebe401ba1983580ce896159809d47cc1d936478c8f9"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.3333333333333333,
+    "any_process_apply_ratio_max": 0.9,
+    "median_copy_apply_ratio_max": 0.3333333333333333,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备",
+    "例外池实际269708个u32，1078832字节；任意模型容量不同，官方许可仍待确认",
+    "32MiB新直表，完整保留23的数据和回退；额外内存与准备单列；3倍未测先不宣称"
+  ],
+  "domain_contract": {
+    "path": "artifacts/skylake-direct16-domain-contract-v1/results.json",
+    "sha256": "f11c18b59b09703cad7c1eeb887bf763046872914e8070b3469a8a524de06482"
+  },
+  "verify_each_measured_round": true,
+  "packed_contract": {
+    "path": "artifacts/skylake-direct16-packed-contract-v1/results.json",
+    "sha256": "2f816f3f8d62fbb1d79800d4fc06818adc1551094691e466cda468e26bbf8ff6"
+  },
+  "signed_contract": {
+    "path": "artifacts/skylake-direct16-signed-contract-v1/results.json",
+    "sha256": "d78744f7b1682418574f5fcf48703571afb4a1444e84d1fea601593f1a0f8138"
+  },
+  "validation": {
+    "path": "experiments/skylake-direct16-validation-v2.json",
+    "sha256": "80079ff3d01a3474de782fc567774f8f932fdf878f31fd139500cd560a169759"
+  },
+  "benchmark_script": {
+    "path": "scripts/bench_skylake_direct16.py",
+    "sha256": "11309c3173c8f7224d291adeede0c0c2723c326d32e8b9bb5aebde118be16e05"
+  },
+  "exception_support": {
+    "path": "scripts/exception_support.py",
+    "sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645"
+  },
+  "direct_support": {
+    "path": "scripts/direct16_support.py",
+    "sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "measurement_completed": true,
+  "accepted_on_this_host": false,
+  "failed_gates": [
+    "1线程apply未达3倍",
+    "1线程copy+apply未达3倍",
+    "4线程apply未达3倍",
+    "4线程copy+apply未达3倍"
+  ],
+  "summary": [
+    {
+      "variant": "reference",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 1.53035053,
+      "median_copy_apply_ms_per_image": 2.01464065,
+      "prepare_wall_seconds": [
+        0.1321399500000009,
+        0.09400951499999977,
+        0.11328548700000596,
+        0.10404571000000118
+      ],
+      "model_accounting_bytes": 11269404
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "median_apply_ms_per_image": 0.85838546,
+      "median_copy_apply_ms_per_image": 1.31333383,
+      "prepare_wall_seconds": [
+        0.11398318700000054,
+        0.09869932799999859,
+        0.1352738480000042,
+        0.09695475200000203
+      ],
+      "model_accounting_bytes": 28046644
+    },
+    {
+      "variant": "reference",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 0.379178405,
+      "median_copy_apply_ms_per_image": 0.8546680799999999,
+      "prepare_wall_seconds": [
+        0.0956231989999985,
+        0.09962568300000285,
+        0.08925495500000125,
+        0.12918364699999785
+      ],
+      "model_accounting_bytes": 11269404
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "median_apply_ms_per_image": 0.22655944,
+      "median_copy_apply_ms_per_image": 0.6957425500000001,
+      "prepare_wall_seconds": [
+        0.09465570700000114,
+        0.13842694499999908,
+        0.09449404400000105,
+        0.1078523680000032
+      ],
+      "model_accounting_bytes": 28046644
+    }
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "process_apply_ratios": [
+        0.58682667423171,
+        0.5696029708507715,
+        0.5689444070916847,
+        0.5464939662811639
+      ],
+      "median_apply_ratio": 0.5692736889712281,
+      "process_copy_apply_ratios": [
+        0.6800326816516391,
+        0.6694030956434733,
+        0.6715001482120737,
+        0.6328441335912615
+      ],
+      "median_copy_apply_ratio": 0.6704516219277735,
+      "process_prepare_plus_100_copy_apply_ratios": [
+        0.7893564622831343,
+        0.8172143720503743,
+        0.8426279016697685,
+        0.7683347266194459
+      ],
+      "median_prepare_plus_100_copy_apply_ratio": 0.8032854171667543
+    },
+    {
+      "requested_threads": 4,
+      "process_apply_ratios": [
+        0.599894851779048,
+        0.5416912533738109,
+        0.6055956490547901,
+        0.620933031969472
+      ],
+      "median_apply_ratio": 0.6027452504169191,
+      "process_copy_apply_ratios": [
+        0.8181163124809055,
+        0.7856797533409203,
+        0.7984439714092542,
+        0.8292131460297888
+      ],
+      "median_copy_apply_ratio": 0.8082801419450798,
+      "process_prepare_plus_100_copy_apply_ratios": [
+        0.8959163730394865,
+        1.0680621008283158,
+        0.9389647618580125,
+        0.8542785785299176
+      ],
+      "median_prepare_plus_100_copy_apply_ratio": 0.9174405674487495
+    }
+  ],
+  "worker_sha256": [
+    "3d8b4da9c31361b134cc46aed45b09c20064a912b1aee738577fd9ca098a3a09",
+    "dcc9aa62bfcadeca6d4b406f05b597e7e7889e9222b2dba7069825c729d2cf19",
+    "5df244a03eeb23f40ed642207945a9d3af1ac982a1633cec2d7d263d33288bd3",
+    "cf0a38f752a6bc0f7543de8632bc0636bd29e42033c77333204a90a690ae0269"
+  ],
+  "actual_affinity": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "frequency_and_temperature_controlled": false,
+  "scope": "本机Linux/AMD同场比较27与23，不与Windows绝对耗时相除，不外推Skylake；只运行一次"
+}
