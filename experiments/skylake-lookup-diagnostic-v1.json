@@ -1,0 +1,111 @@
+{
+  "purpose": "仅诊断同一40对照片/固定灰色及原地/分离输出的Zen4用户态等待，不能作为吞吐验收或挑选旧候选",
+  "source": "https://github.com/torvalds/linux/tree/v6.18/tools/perf/pmu-events/arch/x86/amdzen4",
+  "event_sources": [
+    "https://github.com/torvalds/linux/blob/v6.18/tools/perf/pmu-events/arch/x86/amdzen4/core.json",
+    "https://github.com/torvalds/linux/blob/v6.18/tools/perf/pmu-events/arch/x86/amdzen4/memory.json",
+    "https://github.com/torvalds/linux/blob/v6.18/arch/x86/events/amd/core.c"
+  ],
+  "cpu_family": 25,
+  "cpu_model": 97,
+  "perf_type": 4,
+  "events": [
+    [
+      "cycles",
+      118
+    ],
+    [
+      "instructions",
+      192
+    ],
+    [
+      "l2_request_misses",
+      2404
+    ],
+    [
+      "oldest_not_complete",
+      726
+    ],
+    [
+      "oldest_load_not_complete",
+      41686
+    ],
+    [
+      "load_dispatch",
+      297
+    ]
+  ],
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "threads": 1,
+  "pin_all_six": true,
+  "exclude_kernel_hypervisor": true,
+  "min_running_fraction": 0.99,
+  "probe": {
+    "path": "artifacts/skylake-lookup-diagnostics-v1/raw-probe.json",
+    "sha256": "8ab59013d9bed23ad08b998eaa866ba7fbe1b2946b0f3f9cfc9c1a35004a282a"
+  },
+  "plan": {
+    "path": "experiments/skylake-batchspan-v1.json",
+    "sha256": "7a0bf316436d4a178d1721dd842567ed106d458bf6b5910c407474af26060bed"
+  },
+  "build": {
+    "path": "artifacts/skylake-batchspan-linux-build-v1/build.json",
+    "sha256": "1ae9e1806787ddbf22464f598c75ec647dc1df5d4d6bd88d8a60a0da6165f80b"
+  },
+  "full": {
+    "path": "artifacts/skylake-batchspan-linux-full-v1/results.json",
+    "sha256": "e412d02df80f22d2e026400038cb74f8518b88966bc00a5b1e1a4445c9b19a47"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "photo_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "uniform_rgb": [
+    128,
+    128,
+    128
+  ],
+  "uniform_single_pixel_output": [
+    187,
+    180,
+    183
+  ],
+  "uniform_source_sha256": "3efe4cdc3cd3e2fee10985be710fe6c637ab7b1f9da51987ad800905f7978a12",
+  "uniform_output_sha256": "9de2d61f9bf30071a74d8a99d0f32c47bc00422d40d7878f694094b5d0355b95",
+  "order": [
+    "photo_inplace",
+    "uniform_inplace",
+    "photo_outplace"
+  ],
+  "warmup_per_case": 1,
+  "count_per_case": 1,
+  "wallclock_timing_calls": 0,
+  "source_hashes": {
+    "scripts/profile_skylake_lookup_diagnostic.py": "88a36b423973cc690745fbfbda4df086f2b439341d160b6bc89b775d48679bc5",
+    "scripts/lookup_pmu_support.py": "4e7cf49198520efc057c4232f707b9a45bc18863bc72e3d14dde8e078cfabc2b",
+    "scripts/probe_skylake_lookup_pmu.py": "ce980172698a257d68a9131d0d6a474c2f7bc785138e0627cfd6bc8c41d52088",
+    "scripts/skylake_server_support.py": "38c669fa506c1b324ffce196cc2c720092d6c235c55e8f2a1236266decaa6a00",
+    "scripts/verify_skylake_linux_stdlib.py": "cabb4d6930f8229fe661f253450d974c5f4c28422267d9d0ed0190e3ba400aa3",
+    "scripts/outplace_support.py": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+    "scripts/pinned_openmp_support.py": "15dee1c6e6464976002ab1ea7c911411be27bab9dc8e9a131e8447dee24900e8",
+    "scripts/paged_table_support.py": "910d25362466772edabcfb8b6e2289d2f0f91c7c863035f1708bda974a3eae30",
+    "scripts/probe_skylake_pmu.py": "e7f66b884005483a35d25c700ca164c9c5fb487d27c6b30c217828da3080808d"
+  },
+  "limitations": [
+    "单次异质工作负载只诊断本机，不能跨案例算相对23的提速",
+    "三个案例本身时间顺序固定，绝对周期受频率、宿主噪声和缓存状态影响",
+    "固定灰色不是自然照片，不按照片和内容设置运行时特判",
+    "原始事件映射来自Linux Zen4定义，WSL虚拟PMU语义未由宿主校准",
+    "比例只表示最老load阻塞退休的周期，不证明load请求并行度或真实Skylake瓶颈"
+  ]
+}
