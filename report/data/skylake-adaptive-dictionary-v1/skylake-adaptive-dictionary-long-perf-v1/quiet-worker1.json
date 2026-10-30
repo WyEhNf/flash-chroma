@@ -1,0 +1,325 @@
+{
+  "pass": true,
+  "purpose": "冻结Linux来宾空闲前置条件；只读CPU/启动状态，不更改频率、服务或系统配置。",
+  "phase": "quiet-worker1",
+  "policy": {
+    "minimum_parent_settle_seconds": 120,
+    "minimum_pid1_age_seconds": 180,
+    "sample_interval_seconds": 5,
+    "consecutive_good_intervals": 2,
+    "busy_percent_max": 10,
+    "timeout_seconds": 600,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "global_cpu_mean_also_required": true,
+    "iowait_is_nonidle": true,
+    "between_workers": "每个worker前再检查两个连续5秒空闲间隔，父进程保持WSL存活",
+    "on_failure": "保留部分数据并停止，不自动重跑择优",
+    "environment_change": "不调服务/频率/大页/安全策略，不改变模型或运行时代码"
+  },
+  "start_monotonic": 370.402843448,
+  "actual_settle_min_seconds": 0,
+  "elapsed_seconds": 10.012670344000014,
+  "samples": [
+    {
+      "monotonic": 370.403040082,
+      "uptime_seconds": 370.4,
+      "pid1_start_ticks": 12641,
+      "ticks_per_second": 100,
+      "pid1_age_seconds": 243.98999999999998,
+      "cpu_ticks": {
+        "cpu": {
+          "total": 1185316,
+          "idle": 1173001,
+          "raw_ticks": [
+            9321,
+            0,
+            1858,
+            1173001,
+            338,
+            0,
+            798,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu0": {
+          "total": 37605,
+          "idle": 32319,
+          "raw_ticks": [
+            4342,
+            0,
+            253,
+            32319,
+            16,
+            0,
+            675,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu2": {
+          "total": 37025,
+          "idle": 35650,
+          "raw_ticks": [
+            1279,
+            0,
+            64,
+            35650,
+            16,
+            0,
+            16,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu4": {
+          "total": 37016,
+          "idle": 34917,
+          "raw_ticks": [
+            1916,
+            0,
+            153,
+            34917,
+            18,
+            0,
+            12,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu6": {
+          "total": 37041,
+          "idle": 35700,
+          "raw_ticks": [
+            1221,
+            0,
+            67,
+            35700,
+            19,
+            0,
+            34,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "monotonic": 375.40900933,
+      "uptime_seconds": 375.4,
+      "pid1_start_ticks": 12641,
+      "ticks_per_second": 100,
+      "pid1_age_seconds": 248.98999999999998,
+      "cpu_ticks": {
+        "cpu": {
+          "total": 1201330,
+          "idle": 1189012,
+          "raw_ticks": [
+            9321,
+            0,
+            1861,
+            1189012,
+            338,
+            0,
+            798,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu0": {
+          "total": 38102,
+          "idle": 32814,
+          "raw_ticks": [
+            4342,
+            0,
+            255,
+            32814,
+            16,
+            0,
+            675,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu2": {
+          "total": 37526,
+          "idle": 36151,
+          "raw_ticks": [
+            1279,
+            0,
+            64,
+            36151,
+            16,
+            0,
+            16,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu4": {
+          "total": 37516,
+          "idle": 35417,
+          "raw_ticks": [
+            1916,
+            0,
+            153,
+            35417,
+            18,
+            0,
+            12,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu6": {
+          "total": 37542,
+          "idle": 36201,
+          "raw_ticks": [
+            1221,
+            0,
+            67,
+            36201,
+            19,
+            0,
+            34,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "monotonic": 380.415511748,
+      "uptime_seconds": 380.41,
+      "pid1_start_ticks": 12641,
+      "ticks_per_second": 100,
+      "pid1_age_seconds": 254.00000000000003,
+      "cpu_ticks": {
+        "cpu": {
+          "total": 1217350,
+          "idle": 1205031,
+          "raw_ticks": [
+            9321,
+            0,
+            1862,
+            1205031,
+            338,
+            0,
+            798,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu0": {
+          "total": 38604,
+          "idle": 33315,
+          "raw_ticks": [
+            4342,
+            0,
+            256,
+            33315,
+            16,
+            0,
+            675,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu2": {
+          "total": 38026,
+          "idle": 36651,
+          "raw_ticks": [
+            1279,
+            0,
+            64,
+            36651,
+            16,
+            0,
+            16,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu4": {
+          "total": 38017,
+          "idle": 35918,
+          "raw_ticks": [
+            1916,
+            0,
+            153,
+            35918,
+            18,
+            0,
+            12,
+            0,
+            0,
+            0
+          ]
+        },
+        "cpu6": {
+          "total": 38042,
+          "idle": 36701,
+          "raw_ticks": [
+            1221,
+            0,
+            67,
+            36701,
+            19,
+            0,
+            34,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ],
+  "intervals": [
+    {
+      "elapsed_seconds": 5.006168277000029,
+      "busy_percent": {
+        "cpu": 0.018733608092918696,
+        "cpu0": 0.4024144869215292,
+        "cpu2": 0.0,
+        "cpu4": 0.0,
+        "cpu6": 0.0
+      },
+      "settled": true,
+      "pass": true
+    },
+    {
+      "elapsed_seconds": 10.012670344000014,
+      "busy_percent": {
+        "cpu": 0.006242197253433208,
+        "cpu0": 0.199203187250996,
+        "cpu2": 0.0,
+        "cpu4": 0.0,
+        "cpu6": 0.0
+      },
+      "settled": true,
+      "pass": true
+    }
+  ],
+  "limitation": "只证明来宾CPU计数前置空闲；宿主竞争、频率和温度未锁定，不代表独占服务器",
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}
