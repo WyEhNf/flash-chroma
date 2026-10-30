@@ -1,0 +1,128 @@
+{
+  "purpose": "冻结Linux来宾空闲前置条件；只读CPU/启动状态，不更改频率、服务或系统配置。",
+  "phase": "quiet-parent",
+  "policy": {
+    "minimum_parent_settle_seconds": 120,
+    "minimum_pid1_age_seconds": 180,
+    "sample_interval_seconds": 5,
+    "consecutive_good_intervals": 2,
+    "busy_percent_max": 10,
+    "timeout_seconds": 600,
+    "cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "global_cpu_mean_also_required": true,
+    "iowait_is_nonidle": true,
+    "between_workers": "每个worker前再检查两个连续5秒空闲间隔，父进程保持WSL存活",
+    "on_failure": "保留部分数据并停止，不自动重跑择优",
+    "environment_change": "不调服务/频率/大页/安全策略，不改变模型或运行时代码"
+  },
+  "elapsed_seconds": 180.210343026,
+  "consecutive_good_intervals": 2,
+  "last_snapshot": {
+    "monotonic": 187.949361239,
+    "uptime_seconds": 187.94,
+    "pid1_start_ticks": 221,
+    "ticks_per_second": 100,
+    "pid1_age_seconds": 185.73,
+    "cpu_ticks": {
+      "cpu": {
+        "total": 601192,
+        "idle": 599990,
+        "raw_ticks": [
+          243,
+          0,
+          629,
+          599990,
+          123,
+          0,
+          207,
+          0,
+          0,
+          0
+        ]
+      },
+      "cpu0": {
+        "total": 18914,
+        "idle": 18666,
+        "raw_ticks": [
+          7,
+          0,
+          83,
+          18666,
+          0,
+          0,
+          158,
+          0,
+          0,
+          0
+        ]
+      },
+      "cpu2": {
+        "total": 18794,
+        "idle": 18683,
+        "raw_ticks": [
+          2,
+          0,
+          66,
+          18683,
+          21,
+          0,
+          22,
+          0,
+          0,
+          0
+        ]
+      },
+      "cpu4": {
+        "total": 18780,
+        "idle": 18755,
+        "raw_ticks": [
+          3,
+          0,
+          18,
+          18755,
+          1,
+          0,
+          3,
+          0,
+          0,
+          0
+        ]
+      },
+      "cpu6": {
+        "total": 18781,
+        "idle": 18763,
+        "raw_ticks": [
+          2,
+          0,
+          11,
+          18763,
+          1,
+          0,
+          4,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "last_interval": {
+    "elapsed_seconds": 180.210343026,
+    "busy_percent": {
+      "cpu": 0.012483615254977841,
+      "cpu0": 0.0,
+      "cpu2": 0.0,
+      "cpu4": 0.0,
+      "cpu6": 0.0
+    },
+    "settled": true,
+    "pass": true
+  },
+  "new_native_calls": 0,
+  "new_performance_calls": 0
+}
