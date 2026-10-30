@@ -1,0 +1,454 @@
+
+F:\Hackathon\worktrees\p16-memory-20261023\artifacts\p16-rgb24-sparse-build-v1\avx2.o:     file format pe-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy>:
+   0:	56                   	push   rsi
+   1:	53                   	push   rbx
+   2:	48 81 ec e8 01 00 00 	sub    rsp,0x1e8
+   9:	c5 f8 29 b4 24 40 01 	vmovaps XMMWORD PTR [rsp+0x140],xmm6
+  10:	00 00 
+  12:	c5 f8 29 bc 24 50 01 	vmovaps XMMWORD PTR [rsp+0x150],xmm7
+  19:	00 00 
+  1b:	c5 78 29 84 24 60 01 	vmovaps XMMWORD PTR [rsp+0x160],xmm8
+  22:	00 00 
+  24:	c5 78 29 8c 24 70 01 	vmovaps XMMWORD PTR [rsp+0x170],xmm9
+  2b:	00 00 
+  2d:	c5 78 29 94 24 80 01 	vmovaps XMMWORD PTR [rsp+0x180],xmm10
+  34:	00 00 
+  36:	c5 78 29 9c 24 90 01 	vmovaps XMMWORD PTR [rsp+0x190],xmm11
+  3d:	00 00 
+  3f:	c5 78 29 a4 24 a0 01 	vmovaps XMMWORD PTR [rsp+0x1a0],xmm12
+  46:	00 00 
+  48:	c5 78 29 ac 24 b0 01 	vmovaps XMMWORD PTR [rsp+0x1b0],xmm13
+  4f:	00 00 
+  51:	c5 78 29 b4 24 c0 01 	vmovaps XMMWORD PTR [rsp+0x1c0],xmm14
+  58:	00 00 
+  5a:	c5 78 29 bc 24 d0 01 	vmovaps XMMWORD PTR [rsp+0x1d0],xmm15
+  61:	00 00 
+  63:	4d 85 c9             	test   r9,r9
+  66:	49 89 d3             	mov    r11,rdx
+  69:	0f 84 df 06 00 00    	je     74e <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x74e>
+  6f:	4c 8d 14 52          	lea    r10,[rdx+rdx*2]
+  73:	49 83 e9 01          	sub    r9,0x1
+  77:	49 c1 e9 03          	shr    r9,0x3
+  7b:	49 c1 e2 05          	shl    r10,0x5
+  7f:	4b 8d 04 49          	lea    rax,[r9+r9*2]
+  83:	49 01 ca             	add    r10,rcx
+  86:	4d 8d 4c c0 18       	lea    r9,[r8+rax*8+0x18]
+  8b:	b8 00 80 00 00       	mov    eax,0x8000
+  90:	c5 f9 6e e0          	vmovd  xmm4,eax
+  94:	c4 e2 7d 58 e4       	vpbroadcastd ymm4,xmm4
+  99:	c5 fe 7f a4 24 20 01 	vmovdqu YMMWORD PTR [rsp+0x120],ymm4
+  a0:	00 00 
+  a2:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+  a8:	c4 c1 7a 6f 10       	vmovdqu xmm2,XMMWORD PTR [r8]
+  ad:	4d 85 db             	test   r11,r11
+  b0:	c4 c1 7a 7e 40 10    	vmovq  xmm0,QWORD PTR [r8+0x10]
+  b6:	c4 e3 79 0f c2 0c    	vpalignr xmm0,xmm0,xmm2,0xc
+  bc:	c4 e3 6d 38 d0 01    	vinserti128 ymm2,ymm2,xmm0,0x1
+  c2:	c4 e2 6d 00 15 00 00 	vpshufb ymm2,ymm2,YMMWORD PTR [rip+0x0]        # cb <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0xcb>
+  c9:	00 00 
+  cb:	c5 f5 72 d2 08       	vpsrld ymm1,ymm2,0x8
+  d0:	c5 ed db 05 60 00 00 	vpand  ymm0,ymm2,YMMWORD PTR [rip+0x60]        # 138 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x138>
+  d7:	00 
+  d8:	c5 f5 db 0d 60 00 00 	vpand  ymm1,ymm1,YMMWORD PTR [rip+0x60]        # 140 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x140>
+  df:	00 
+  e0:	c5 ed 72 d2 10       	vpsrld ymm2,ymm2,0x10
+  e5:	0f 84 cd 06 00 00    	je     7b8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x7b8>
+  eb:	c5 fe 7f 04 24       	vmovdqu YMMWORD PTR [rsp],ymm0
+  f0:	48 89 c8             	mov    rax,rcx
+  f3:	c5 fe 7f 4c 24 20    	vmovdqu YMMWORD PTR [rsp+0x20],ymm1
+  f9:	c5 fe 7f 54 24 40    	vmovdqu YMMWORD PTR [rsp+0x40],ymm2
+  ff:	e9 b2 02 00 00       	jmp    3b6 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x3b6>
+ 104:	0f 1f 40 00          	nop    DWORD PTR [rax+0x0]
+ 108:	48 8b 58 28          	mov    rbx,QWORD PTR [rax+0x28]
+ 10c:	c5 f5 76 c9          	vpcmpeqd ymm1,ymm1,ymm1
+ 110:	c4 41 3d 76 c0       	vpcmpeqd ymm8,ymm8,ymm8
+ 115:	48 83 c0 60          	add    rax,0x60
+ 119:	c5 fe 6f 74 24 40    	vmovdqu ymm6,YMMWORD PTR [rsp+0x40]
+ 11f:	c4 e2 75 90 2c b3    	vpgatherdd ymm5,DWORD PTR [rbx+ymm6*4],ymm1
+ 125:	48 8b 58 c0          	mov    rbx,QWORD PTR [rax-0x40]
+ 129:	c5 f5 76 c9          	vpcmpeqd ymm1,ymm1,ymm1
+ 12d:	c5 d5 db 2d 80 00 00 	vpand  ymm5,ymm5,YMMWORD PTR [rip+0x80]        # 1b5 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x1b5>
+ 134:	00 
+ 135:	c5 fe 6f 74 24 20    	vmovdqu ymm6,YMMWORD PTR [rsp+0x20]
+ 13b:	c4 62 75 90 1c b3    	vpgatherdd ymm11,DWORD PTR [rbx+ymm6*4],ymm1
+ 141:	48 8b 58 b8          	mov    rbx,QWORD PTR [rax-0x48]
+ 145:	c5 25 db 1d 80 00 00 	vpand  ymm11,ymm11,YMMWORD PTR [rip+0x80]        # 1cd <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x1cd>
+ 14c:	00 
+ 14d:	c5 f5 76 c9          	vpcmpeqd ymm1,ymm1,ymm1
+ 151:	c5 fe 6f 34 24       	vmovdqu ymm6,YMMWORD PTR [rsp]
+ 156:	c4 e2 75 90 04 b3    	vpgatherdd ymm0,DWORD PTR [rbx+ymm6*4],ymm1
+ 15c:	48 8b 58 e0          	mov    rbx,QWORD PTR [rax-0x20]
+ 160:	c5 fd db 05 80 00 00 	vpand  ymm0,ymm0,YMMWORD PTR [rip+0x80]        # 1e8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x1e8>
+ 167:	00 
+ 168:	c4 42 7d 3d e3       	vpmaxsd ymm12,ymm0,ymm11
+ 16d:	c5 a5 66 c8          	vpcmpgtd ymm1,ymm11,ymm0
+ 171:	c4 c1 55 66 f4       	vpcmpgtd ymm6,ymm5,ymm12
+ 176:	c4 62 1d 3d e5       	vpmaxsd ymm12,ymm12,ymm5
+ 17b:	c4 c3 5d 4c c9 10    	vpblendvb ymm1,ymm4,ymm9,ymm1
+ 181:	c4 e3 75 4c 0d 1f 00 	vpblendvb ymm1,ymm1,YMMWORD PTR [rip+0x1f],ymm6        # 1aa <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x1aa>
+ 188:	00 00 60 
+ 18b:	c4 c2 7d 39 f3       	vpminsd ymm6,ymm0,ymm11
+ 190:	c5 ed fe c9          	vpaddd ymm1,ymm2,ymm1
+ 194:	c4 62 4d 39 fd       	vpminsd ymm15,ymm6,ymm5
+ 199:	c5 cd 66 f5          	vpcmpgtd ymm6,ymm6,ymm5
+ 19d:	c5 95 72 f1 01       	vpslld ymm13,ymm1,0x1
+ 1a2:	c5 15 fe e9          	vpaddd ymm13,ymm13,ymm1
+ 1a6:	c4 a2 3d 90 0c 2a    	vpgatherdd ymm1,DWORD PTR [rdx+ymm13*1],ymm8
+ 1ac:	c4 41 7d 66 eb       	vpcmpgtd ymm13,ymm0,ymm11
+ 1b1:	c4 41 3d 76 c0       	vpcmpeqd ymm8,ymm8,ymm8
+ 1b6:	c4 c1 7d fe c3       	vpaddd ymm0,ymm0,ymm11
+ 1bb:	c5 f5 db 0d a0 00 00 	vpand  ymm1,ymm1,YMMWORD PTR [rip+0xa0]        # 263 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x263>
+ 1c2:	00 
+ 1c3:	c5 f5 72 d1 08       	vpsrld ymm1,ymm1,0x8
+ 1c8:	c5 f5 db 0d 60 00 00 	vpand  ymm1,ymm1,YMMWORD PTR [rip+0x60]        # 230 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x230>
+ 1cf:	00 
+ 1d0:	c4 43 5d 4c e9 d0    	vpblendvb ymm13,ymm4,ymm9,ymm13
+ 1d6:	c4 e3 15 4c 35 1f 00 	vpblendvb ymm6,ymm13,YMMWORD PTR [rip+0x1f],ymm6        # 1ff <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x1ff>
+ 1dd:	00 00 60 
+ 1e0:	c5 e5 fa f6          	vpsubd ymm6,ymm3,ymm6
+ 1e4:	c5 95 72 f6 01       	vpslld ymm13,ymm6,0x1
+ 1e9:	c5 15 fe ee          	vpaddd ymm13,ymm13,ymm6
+ 1ed:	c4 a2 3d 90 34 2a    	vpgatherdd ymm6,DWORD PTR [rdx+ymm13*1],ymm8
+ 1f3:	c4 41 1d fe ef       	vpaddd ymm13,ymm12,ymm15
+ 1f8:	c5 cd db 35 a0 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0xa0]        # 2a0 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x2a0>
+ 1ff:	00 
+ 200:	c5 cd 72 d6 08       	vpsrld ymm6,ymm6,0x8
+ 205:	c4 c1 55 fa ed       	vpsubd ymm5,ymm5,ymm13
+ 20a:	c5 cd db 35 60 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0x60]        # 272 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x272>
+ 211:	00 
+ 212:	c5 d5 fe c0          	vpaddd ymm0,ymm5,ymm0
+ 216:	c5 cd fa e9          	vpsubd ymm5,ymm6,ymm1
+ 21a:	c4 e2 7d 40 c5       	vpmulld ymm0,ymm0,ymm5
+ 21f:	c4 c1 75 fa ca       	vpsubd ymm1,ymm1,ymm10
+ 224:	c5 fe 6f ac 24 c0 00 	vmovdqu ymm5,YMMWORD PTR [rsp+0xc0]
+ 22b:	00 00 
+ 22d:	c4 c2 75 40 cc       	vpmulld ymm1,ymm1,ymm12
+ 232:	c5 f5 fe 8c 24 80 00 	vpaddd ymm1,ymm1,YMMWORD PTR [rsp+0x80]
+ 239:	00 00 
+ 23b:	c5 55 fa c6          	vpsubd ymm8,ymm5,ymm6
+ 23f:	c5 fe 6f 74 24 40    	vmovdqu ymm6,YMMWORD PTR [rsp+0x40]
+ 245:	c5 d5 76 ed          	vpcmpeqd ymm5,ymm5,ymm5
+ 249:	c4 42 3d 40 c7       	vpmulld ymm8,ymm8,ymm15
+ 24e:	c4 c1 7d fe c0       	vpaddd ymm0,ymm0,ymm8
+ 253:	c5 fd fe c1          	vpaddd ymm0,ymm0,ymm1
+ 257:	c5 f5 72 d0 10       	vpsrld ymm1,ymm0,0x10
+ 25c:	c4 e2 55 90 04 b3    	vpgatherdd ymm0,DWORD PTR [rbx+ymm6*4],ymm5
+ 262:	c5 fd db 05 80 00 00 	vpand  ymm0,ymm0,YMMWORD PTR [rip+0x80]        # 2ea <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x2ea>
+ 269:	00 
+ 26a:	48 8b 58 d8          	mov    rbx,QWORD PTR [rax-0x28]
+ 26e:	48 8b 70 d0          	mov    rsi,QWORD PTR [rax-0x30]
+ 272:	c5 d5 76 ed          	vpcmpeqd ymm5,ymm5,ymm5
+ 276:	49 39 c2             	cmp    r10,rax
+ 279:	c5 7d 6f f9          	vmovdqa ymm15,ymm1
+ 27d:	c5 7e 6f 6c 24 20    	vmovdqu ymm13,YMMWORD PTR [rsp+0x20]
+ 283:	c5 7e 6f 24 24       	vmovdqu ymm12,YMMWORD PTR [rsp]
+ 288:	c4 a2 55 90 34 ab    	vpgatherdd ymm6,DWORD PTR [rbx+ymm13*4],ymm5
+ 28e:	c4 41 15 76 ed       	vpcmpeqd ymm13,ymm13,ymm13
+ 293:	c5 cd db 35 80 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0x80]        # 31b <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x31b>
+ 29a:	00 
+ 29b:	c4 a2 15 90 2c a6    	vpgatherdd ymm5,DWORD PTR [rsi+ymm12*4],ymm13
+ 2a1:	c4 41 15 76 ed       	vpcmpeqd ymm13,ymm13,ymm13
+ 2a6:	c5 d5 db 2d 80 00 00 	vpand  ymm5,ymm5,YMMWORD PTR [rip+0x80]        # 32e <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x32e>
+ 2ad:	00 
+ 2ae:	c4 62 55 3d c6       	vpmaxsd ymm8,ymm5,ymm6
+ 2b3:	c5 4d 66 dd          	vpcmpgtd ymm11,ymm6,ymm5
+ 2b7:	c4 41 7d 66 d0       	vpcmpgtd ymm10,ymm0,ymm8
+ 2bc:	c4 62 3d 3d c0       	vpmaxsd ymm8,ymm8,ymm0
+ 2c1:	c4 43 5d 4c d9 b0    	vpblendvb ymm11,ymm4,ymm9,ymm11
+ 2c7:	c4 63 25 4c 1d 1f 00 	vpblendvb ymm11,ymm11,YMMWORD PTR [rip+0x1f],ymm10        # 2f0 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x2f0>
+ 2ce:	00 00 a0 
+ 2d1:	c4 62 55 39 d6       	vpminsd ymm10,ymm5,ymm6
+ 2d6:	c4 c1 6d fe d3       	vpaddd ymm2,ymm2,ymm11
+ 2db:	c4 62 2d 39 e0       	vpminsd ymm12,ymm10,ymm0
+ 2e0:	c5 2d 66 d0          	vpcmpgtd ymm10,ymm10,ymm0
+ 2e4:	c5 a5 72 f2 01       	vpslld ymm11,ymm2,0x1
+ 2e9:	c5 25 fe da          	vpaddd ymm11,ymm11,ymm2
+ 2ed:	c4 a2 15 90 14 1a    	vpgatherdd ymm2,DWORD PTR [rdx+ymm11*1],ymm13
+ 2f3:	c5 55 66 de          	vpcmpgtd ymm11,ymm5,ymm6
+ 2f7:	c5 d5 fe ee          	vpaddd ymm5,ymm5,ymm6
+ 2fb:	c5 ed db 15 a0 00 00 	vpand  ymm2,ymm2,YMMWORD PTR [rip+0xa0]        # 3a3 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x3a3>
+ 302:	00 
+ 303:	c5 ed 72 d2 10       	vpsrld ymm2,ymm2,0x10
+ 308:	c5 ed db 15 60 00 00 	vpand  ymm2,ymm2,YMMWORD PTR [rip+0x60]        # 370 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x370>
+ 30f:	00 
+ 310:	c4 c3 5d 4c e1 b0    	vpblendvb ymm4,ymm4,ymm9,ymm11
+ 316:	c4 41 35 76 c9       	vpcmpeqd ymm9,ymm9,ymm9
+ 31b:	c4 e3 5d 4c 25 1f 00 	vpblendvb ymm4,ymm4,YMMWORD PTR [rip+0x1f],ymm10        # 344 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x344>
+ 322:	00 00 a0 
+ 325:	c5 e5 fa dc          	vpsubd ymm3,ymm3,ymm4
+ 329:	c5 dd 72 f3 01       	vpslld ymm4,ymm3,0x1
+ 32e:	c5 dd fe e3          	vpaddd ymm4,ymm4,ymm3
+ 332:	c4 e2 35 90 1c 22    	vpgatherdd ymm3,DWORD PTR [rdx+ymm4*1],ymm9
+ 338:	c4 c1 3d fe e4       	vpaddd ymm4,ymm8,ymm12
+ 33d:	c5 e5 db 1d a0 00 00 	vpand  ymm3,ymm3,YMMWORD PTR [rip+0xa0]        # 3e5 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x3e5>
+ 344:	00 
+ 345:	c5 e5 72 d3 10       	vpsrld ymm3,ymm3,0x10
+ 34a:	c5 fd fa c4          	vpsubd ymm0,ymm0,ymm4
+ 34e:	c5 e5 db 1d 60 00 00 	vpand  ymm3,ymm3,YMMWORD PTR [rip+0x60]        # 3b6 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x3b6>
+ 355:	00 
+ 356:	c5 e5 fa e2          	vpsubd ymm4,ymm3,ymm2
+ 35a:	c5 fd fe c5          	vpaddd ymm0,ymm0,ymm5
+ 35e:	c4 c1 6d fa d6       	vpsubd ymm2,ymm2,ymm14
+ 363:	c4 e2 7d 40 c4       	vpmulld ymm0,ymm0,ymm4
+ 368:	c5 fe 6f a4 24 e0 00 	vmovdqu ymm4,YMMWORD PTR [rsp+0xe0]
+ 36f:	00 00 
+ 371:	c4 c2 6d 40 d0       	vpmulld ymm2,ymm2,ymm8
+ 376:	c5 ed fe 94 24 a0 00 	vpaddd ymm2,ymm2,YMMWORD PTR [rsp+0xa0]
+ 37d:	00 00 
+ 37f:	c5 dd fa db          	vpsubd ymm3,ymm4,ymm3
+ 383:	c4 c2 65 40 dc       	vpmulld ymm3,ymm3,ymm12
+ 388:	c5 fd fe c3          	vpaddd ymm0,ymm0,ymm3
+ 38c:	c5 fd fe c2          	vpaddd ymm0,ymm0,ymm2
+ 390:	c5 fd 72 d0 10       	vpsrld ymm0,ymm0,0x10
+ 395:	c5 fd 6f d0          	vmovdqa ymm2,ymm0
+ 399:	0f 84 59 03 00 00    	je     6f8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6f8>
+ 39f:	c5 fe 7f 4c 24 20    	vmovdqu YMMWORD PTR [rsp+0x20],ymm1
+ 3a5:	c5 fe 7f 44 24 40    	vmovdqu YMMWORD PTR [rsp+0x40],ymm0
+ 3ab:	c5 fe 6f 64 24 60    	vmovdqu ymm4,YMMWORD PTR [rsp+0x60]
+ 3b1:	c5 fe 7f 24 24       	vmovdqu YMMWORD PTR [rsp],ymm4
+ 3b6:	48 8b 10             	mov    rdx,QWORD PTR [rax]
+ 3b9:	c5 dd 76 e4          	vpcmpeqd ymm4,ymm4,ymm4
+ 3bd:	c4 41 05 76 ff       	vpcmpeqd ymm15,ymm15,ymm15
+ 3c2:	c5 fe 6f 1c 24       	vmovdqu ymm3,YMMWORD PTR [rsp]
+ 3c7:	8b 58 54             	mov    ebx,DWORD PTR [rax+0x54]
+ 3ca:	8b 70 50             	mov    esi,DWORD PTR [rax+0x50]
+ 3cd:	c4 e2 5d 90 04 9a    	vpgatherdd ymm0,DWORD PTR [rdx+ymm3*4],ymm4
+ 3d3:	48 8b 50 08          	mov    rdx,QWORD PTR [rax+0x8]
+ 3d7:	c5 dd 76 e4          	vpcmpeqd ymm4,ymm4,ymm4
+ 3db:	c5 fe 6f 5c 24 20    	vmovdqu ymm3,YMMWORD PTR [rsp+0x20]
+ 3e1:	c5 fe 6f 54 24 40    	vmovdqu ymm2,YMMWORD PTR [rsp+0x40]
+ 3e7:	c5 79 6e cb          	vmovd  xmm9,ebx
+ 3eb:	c4 42 7d 58 c9       	vpbroadcastd ymm9,xmm9
+ 3f0:	c4 e2 5d 90 2c 9a    	vpgatherdd ymm5,DWORD PTR [rdx+ymm3*4],ymm4
+ 3f6:	48 8b 50 10          	mov    rdx,QWORD PTR [rax+0x10]
+ 3fa:	c5 dd 76 e4          	vpcmpeqd ymm4,ymm4,ymm4
+ 3fe:	c5 e5 72 d0 11       	vpsrld ymm3,ymm0,0x11
+ 403:	c5 fd db 05 80 00 00 	vpand  ymm0,ymm0,YMMWORD PTR [rip+0x80]        # 48b <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x48b>
+ 40a:	00 
+ 40b:	c4 e2 5d 90 0c 92    	vpgatherdd ymm1,DWORD PTR [rdx+ymm2*4],ymm4
+ 411:	c5 f9 6e e6          	vmovd  xmm4,esi
+ 415:	48 8b 50 48          	mov    rdx,QWORD PTR [rax+0x48]
+ 419:	c5 ed 72 d5 11       	vpsrld ymm2,ymm5,0x11
+ 41e:	8d 74 33 01          	lea    esi,[rbx+rsi*1+0x1]
+ 422:	c4 e2 7d 58 e4       	vpbroadcastd ymm4,xmm4
+ 427:	c5 d5 db 2d 80 00 00 	vpand  ymm5,ymm5,YMMWORD PTR [rip+0x80]        # 4af <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x4af>
+ 42e:	00 
+ 42f:	c4 e2 65 40 dc       	vpmulld ymm3,ymm3,ymm4
+ 434:	c5 7d fe ed          	vpaddd ymm13,ymm0,ymm5
+ 438:	c4 62 55 39 e0       	vpminsd ymm12,ymm5,ymm0
+ 43d:	c4 c2 6d 40 d1       	vpmulld ymm2,ymm2,ymm9
+ 442:	c5 cd 72 d1 11       	vpsrld ymm6,ymm1,0x11
+ 447:	c5 f5 db 0d 80 00 00 	vpand  ymm1,ymm1,YMMWORD PTR [rip+0x80]        # 4cf <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x4cf>
+ 44e:	00 
+ 44f:	c5 55 66 d0          	vpcmpgtd ymm10,ymm5,ymm0
+ 453:	c5 ed fe d3          	vpaddd ymm2,ymm2,ymm3
+ 457:	c5 ed fe d6          	vpaddd ymm2,ymm2,ymm6
+ 45b:	c5 cd 76 f6          	vpcmpeqd ymm6,ymm6,ymm6
+ 45f:	c5 e5 72 f2 01       	vpslld ymm3,ymm2,0x1
+ 464:	c4 43 5d 4c d1 a0    	vpblendvb ymm10,ymm4,ymm9,ymm10
+ 46a:	c5 e5 fe da          	vpaddd ymm3,ymm3,ymm2
+ 46e:	c4 62 4d 90 34 1a    	vpgatherdd ymm14,DWORD PTR [rdx+ymm3*1],ymm6
+ 474:	c5 f9 6e de          	vmovd  xmm3,esi
+ 478:	c4 e2 7d 58 db       	vpbroadcastd ymm3,xmm3
+ 47d:	c5 e5 fe da          	vpaddd ymm3,ymm3,ymm2
+ 481:	c5 bd 72 f3 01       	vpslld ymm8,ymm3,0x1
+ 486:	c5 3d fe c3          	vpaddd ymm8,ymm8,ymm3
+ 48a:	c4 a2 05 90 34 02    	vpgatherdd ymm6,DWORD PTR [rdx+ymm8*1],ymm15
+ 490:	c4 62 55 3d c0       	vpmaxsd ymm8,ymm5,ymm0
+ 495:	c5 7e 7f 6c 24 60    	vmovdqu YMMWORD PTR [rsp+0x60],ymm13
+ 49b:	c5 fd 66 c5          	vpcmpgtd ymm0,ymm0,ymm5
+ 49f:	c4 62 3d 3d e9       	vpmaxsd ymm13,ymm8,ymm1
+ 4a4:	c4 41 75 66 c0       	vpcmpgtd ymm8,ymm1,ymm8
+ 4a9:	c4 c3 5d 4c c1 00    	vpblendvb ymm0,ymm4,ymm9,ymm0
+ 4af:	c4 63 2d 4c 15 1f 00 	vpblendvb ymm10,ymm10,YMMWORD PTR [rip+0x1f],ymm8        # 4d8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x4d8>
+ 4b6:	00 00 80 
+ 4b9:	c4 41 6d fe d2       	vpaddd ymm10,ymm2,ymm10
+ 4be:	c4 c1 3d 72 f2 01    	vpslld ymm8,ymm10,0x1
+ 4c4:	c4 41 3d fe c2       	vpaddd ymm8,ymm8,ymm10
+ 4c9:	c4 41 2d 76 d2       	vpcmpeqd ymm10,ymm10,ymm10
+ 4ce:	c4 22 2d 90 3c 02    	vpgatherdd ymm15,DWORD PTR [rdx+ymm8*1],ymm10
+ 4d4:	c5 05 db 1d 60 00 00 	vpand  ymm11,ymm15,YMMWORD PTR [rip+0x60]        # 53c <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x53c>
+ 4db:	00 
+ 4dc:	c5 0d db 15 60 00 00 	vpand  ymm10,ymm14,YMMWORD PTR [rip+0x60]        # 544 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x544>
+ 4e3:	00 
+ 4e4:	c4 c1 3d 72 f2 10    	vpslld ymm8,ymm10,0x10
+ 4ea:	c5 7e 7f bc 24 00 01 	vmovdqu YMMWORD PTR [rsp+0x100],ymm15
+ 4f1:	00 00 
+ 4f3:	c5 1d 66 f9          	vpcmpgtd ymm15,ymm12,ymm1
+ 4f7:	c4 41 25 fa d2       	vpsubd ymm10,ymm11,ymm10
+ 4fc:	c4 42 2d 40 d5       	vpmulld ymm10,ymm10,ymm13
+ 501:	c4 e3 7d 4c 05 1f 00 	vpblendvb ymm0,ymm0,YMMWORD PTR [rip+0x1f],ymm15        # 52a <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x52a>
+ 508:	00 00 f0 
+ 50b:	c4 41 05 76 ff       	vpcmpeqd ymm15,ymm15,ymm15
+ 510:	c5 e5 fa e8          	vpsubd ymm5,ymm3,ymm0
+ 514:	c5 fd 72 f5 01       	vpslld ymm0,ymm5,0x1
+ 519:	c5 fd fe c5          	vpaddd ymm0,ymm0,ymm5
+ 51d:	c4 e2 05 90 2c 02    	vpgatherdd ymm5,DWORD PTR [rdx+ymm0*1],ymm15
+ 523:	c4 e2 1d 39 c1       	vpminsd ymm0,ymm12,ymm1
+ 528:	c5 55 db 3d 60 00 00 	vpand  ymm15,ymm5,YMMWORD PTR [rip+0x60]        # 590 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x590>
+ 52f:	00 
+ 530:	80 78 58 00          	cmp    BYTE PTR [rax+0x58],0x0
+ 534:	c5 15 fe e0          	vpaddd ymm12,ymm13,ymm0
+ 538:	c4 c1 75 fa cc       	vpsubd ymm1,ymm1,ymm12
+ 53d:	c5 f5 fe 4c 24 60    	vpaddd ymm1,ymm1,YMMWORD PTR [rsp+0x60]
+ 543:	c5 7e 6f a4 24 20 01 	vmovdqu ymm12,YMMWORD PTR [rsp+0x120]
+ 54a:	00 00 
+ 54c:	c4 41 05 fa db       	vpsubd ymm11,ymm15,ymm11
+ 551:	c4 62 25 40 d9       	vpmulld ymm11,ymm11,ymm1
+ 556:	c4 41 3d fe c4       	vpaddd ymm8,ymm8,ymm12
+ 55b:	c4 41 25 fe c0       	vpaddd ymm8,ymm11,ymm8
+ 560:	c5 4d db 1d 60 00 00 	vpand  ymm11,ymm6,YMMWORD PTR [rip+0x60]        # 5c8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x5c8>
+ 567:	00 
+ 568:	c4 41 25 fa df       	vpsubd ymm11,ymm11,ymm15
+ 56d:	c5 cd db 35 a0 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0xa0]        # 615 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x615>
+ 574:	00 
+ 575:	c4 62 25 40 d8       	vpmulld ymm11,ymm11,ymm0
+ 57a:	c4 41 25 fe da       	vpaddd ymm11,ymm11,ymm10
+ 57f:	c4 41 3d fe c3       	vpaddd ymm8,ymm8,ymm11
+ 584:	c5 0d db 1d a0 00 00 	vpand  ymm11,ymm14,YMMWORD PTR [rip+0xa0]        # 62c <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x62c>
+ 58b:	00 
+ 58c:	c4 c1 2d 72 d3 08    	vpsrld ymm10,ymm11,0x8
+ 592:	c5 2d db 15 60 00 00 	vpand  ymm10,ymm10,YMMWORD PTR [rip+0x60]        # 5fa <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x5fa>
+ 599:	00 
+ 59a:	c4 c1 05 72 d0 10    	vpsrld ymm15,ymm8,0x10
+ 5a0:	c4 c1 3d 72 f2 10    	vpslld ymm8,ymm10,0x10
+ 5a6:	c5 7e 7f 7c 24 60    	vmovdqu YMMWORD PTR [rsp+0x60],ymm15
+ 5ac:	c4 41 3d fe f4       	vpaddd ymm14,ymm8,ymm12
+ 5b1:	c4 c1 25 72 d3 10    	vpsrld ymm11,ymm11,0x10
+ 5b7:	c5 7e 7f b4 24 80 00 	vmovdqu YMMWORD PTR [rsp+0x80],ymm14
+ 5be:	00 00 
+ 5c0:	c5 bd 72 d6 08       	vpsrld ymm8,ymm6,0x8
+ 5c5:	c5 3d db 35 60 00 00 	vpand  ymm14,ymm8,YMMWORD PTR [rip+0x60]        # 62d <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x62d>
+ 5cc:	00 
+ 5cd:	c5 7e 7f b4 24 c0 00 	vmovdqu YMMWORD PTR [rsp+0xc0],ymm14
+ 5d4:	00 00 
+ 5d6:	c5 cd 72 d6 10       	vpsrld ymm6,ymm6,0x10
+ 5db:	c5 25 db 35 60 00 00 	vpand  ymm14,ymm11,YMMWORD PTR [rip+0x60]        # 643 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x643>
+ 5e2:	00 
+ 5e3:	c5 cd db 35 60 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0x60]        # 64b <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x64b>
+ 5ea:	00 
+ 5eb:	c5 fe 7f b4 24 e0 00 	vmovdqu YMMWORD PTR [rsp+0xe0],ymm6
+ 5f2:	00 00 
+ 5f4:	c4 c1 4d 72 f6 10    	vpslld ymm6,ymm14,0x10
+ 5fa:	c4 c1 4d fe f4       	vpaddd ymm6,ymm6,ymm12
+ 5ff:	c5 fe 7f b4 24 a0 00 	vmovdqu YMMWORD PTR [rsp+0xa0],ymm6
+ 606:	00 00 
+ 608:	0f 84 fa fa ff ff    	je     108 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x108>
+ 60e:	c5 fe 6f 9c 24 c0 00 	vmovdqu ymm3,YMMWORD PTR [rsp+0xc0]
+ 615:	00 00 
+ 617:	c5 d5 db 2d a0 00 00 	vpand  ymm5,ymm5,YMMWORD PTR [rip+0xa0]        # 6bf <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6bf>
+ 61e:	00 
+ 61f:	48 83 c0 60          	add    rax,0x60
+ 623:	c5 cd 72 d5 08       	vpsrld ymm6,ymm5,0x8
+ 628:	c5 cd db 35 60 00 00 	vpand  ymm6,ymm6,YMMWORD PTR [rip+0x60]        # 690 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x690>
+ 62f:	00 
+ 630:	c5 d5 72 d5 10       	vpsrld ymm5,ymm5,0x10
+ 635:	c5 d5 db 2d 60 00 00 	vpand  ymm5,ymm5,YMMWORD PTR [rip+0x60]        # 69d <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x69d>
+ 63c:	00 
+ 63d:	4c 39 d0             	cmp    rax,r10
+ 640:	c5 fe 6f a4 24 00 01 	vmovdqu ymm4,YMMWORD PTR [rsp+0x100]
+ 647:	00 00 
+ 649:	c5 e5 fa de          	vpsubd ymm3,ymm3,ymm6
+ 64d:	c5 dd db 15 a0 00 00 	vpand  ymm2,ymm4,YMMWORD PTR [rip+0xa0]        # 6f5 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6f5>
+ 654:	00 
+ 655:	c5 dd 72 d2 08       	vpsrld ymm4,ymm2,0x8
+ 65a:	c5 dd db 25 60 00 00 	vpand  ymm4,ymm4,YMMWORD PTR [rip+0x60]        # 6c2 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6c2>
+ 661:	00 
+ 662:	c5 cd fa f4          	vpsubd ymm6,ymm6,ymm4
+ 666:	c4 e2 65 40 d8       	vpmulld ymm3,ymm3,ymm0
+ 66b:	c4 c1 5d fa e2       	vpsubd ymm4,ymm4,ymm10
+ 670:	c4 e2 4d 40 f1       	vpmulld ymm6,ymm6,ymm1
+ 675:	c4 c2 5d 40 e5       	vpmulld ymm4,ymm4,ymm13
+ 67a:	c5 dd fe a4 24 80 00 	vpaddd ymm4,ymm4,YMMWORD PTR [rsp+0x80]
+ 681:	00 00 
+ 683:	c5 ed 72 d2 10       	vpsrld ymm2,ymm2,0x10
+ 688:	c5 ed db 15 60 00 00 	vpand  ymm2,ymm2,YMMWORD PTR [rip+0x60]        # 6f0 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6f0>
+ 68f:	00 
+ 690:	c5 e5 fe de          	vpaddd ymm3,ymm3,ymm6
+ 694:	c5 e5 fe dc          	vpaddd ymm3,ymm3,ymm4
+ 698:	c5 fe 6f a4 24 e0 00 	vmovdqu ymm4,YMMWORD PTR [rsp+0xe0]
+ 69f:	00 00 
+ 6a1:	c5 e5 72 d3 10       	vpsrld ymm3,ymm3,0x10
+ 6a6:	c5 dd fa e5          	vpsubd ymm4,ymm4,ymm5
+ 6aa:	c5 d5 fa ea          	vpsubd ymm5,ymm5,ymm2
+ 6ae:	c5 7d 6f fb          	vmovdqa ymm15,ymm3
+ 6b2:	c4 e2 5d 40 c0       	vpmulld ymm0,ymm4,ymm0
+ 6b7:	c4 c1 6d fa d6       	vpsubd ymm2,ymm2,ymm14
+ 6bc:	c4 e2 55 40 e9       	vpmulld ymm5,ymm5,ymm1
+ 6c1:	c4 c2 6d 40 d5       	vpmulld ymm2,ymm2,ymm13
+ 6c6:	c5 ed fe 94 24 a0 00 	vpaddd ymm2,ymm2,YMMWORD PTR [rsp+0xa0]
+ 6cd:	00 00 
+ 6cf:	c5 fd fe c5          	vpaddd ymm0,ymm0,ymm5
+ 6d3:	c5 fd fe c2          	vpaddd ymm0,ymm0,ymm2
+ 6d7:	c5 fd 72 d0 10       	vpsrld ymm0,ymm0,0x10
+ 6dc:	c5 fd 6f d0          	vmovdqa ymm2,ymm0
+ 6e0:	74 16                	je     6f8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6f8>
+ 6e2:	c5 fe 7f 5c 24 20    	vmovdqu YMMWORD PTR [rsp+0x20],ymm3
+ 6e8:	c5 fe 7f 44 24 40    	vmovdqu YMMWORD PTR [rsp+0x40],ymm0
+ 6ee:	e9 b8 fc ff ff       	jmp    3ab <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x3ab>
+ 6f3:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+ 6f8:	c5 fe 6f 44 24 60    	vmovdqu ymm0,YMMWORD PTR [rsp+0x60]
+ 6fe:	c5 ed 72 f2 10       	vpslld ymm2,ymm2,0x10
+ 703:	49 83 c0 18          	add    r8,0x18
+ 707:	c4 c1 05 72 f7 08    	vpslld ymm15,ymm15,0x8
+ 70d:	c5 05 eb fa          	vpor   ymm15,ymm15,ymm2
+ 711:	c5 85 eb c0          	vpor   ymm0,ymm15,ymm0
+ 715:	c4 e2 7d 00 05 40 00 	vpshufb ymm0,ymm0,YMMWORD PTR [rip+0x40]        # 75e <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x75e>
+ 71c:	00 00 
+ 71e:	c5 f9 6f d0          	vmovdqa xmm2,xmm0
+ 722:	c4 e3 7d 39 c0 01    	vextracti128 xmm0,ymm0,0x1
+ 728:	c5 f1 73 f8 0c       	vpslldq xmm1,xmm0,0xc
+ 72d:	c5 f9 73 d8 04       	vpsrldq xmm0,xmm0,0x4
+ 732:	c5 f1 eb ca          	vpor   xmm1,xmm1,xmm2
+ 736:	c4 c1 7a 7f 48 e8    	vmovdqu XMMWORD PTR [r8-0x18],xmm1
+ 73c:	c4 c1 79 d6 40 f8    	vmovq  QWORD PTR [r8-0x8],xmm0
+ 742:	4d 39 c1             	cmp    r9,r8
+ 745:	0f 85 5d f9 ff ff    	jne    a8 <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0xa8>
+ 74b:	c5 f8 77             	vzeroupper
+ 74e:	c5 f8 28 b4 24 40 01 	vmovaps xmm6,XMMWORD PTR [rsp+0x140]
+ 755:	00 00 
+ 757:	c5 f8 28 bc 24 50 01 	vmovaps xmm7,XMMWORD PTR [rsp+0x150]
+ 75e:	00 00 
+ 760:	c5 78 28 84 24 60 01 	vmovaps xmm8,XMMWORD PTR [rsp+0x160]
+ 767:	00 00 
+ 769:	c5 78 28 8c 24 70 01 	vmovaps xmm9,XMMWORD PTR [rsp+0x170]
+ 770:	00 00 
+ 772:	c5 78 28 94 24 80 01 	vmovaps xmm10,XMMWORD PTR [rsp+0x180]
+ 779:	00 00 
+ 77b:	c5 78 28 9c 24 90 01 	vmovaps xmm11,XMMWORD PTR [rsp+0x190]
+ 782:	00 00 
+ 784:	c5 78 28 a4 24 a0 01 	vmovaps xmm12,XMMWORD PTR [rsp+0x1a0]
+ 78b:	00 00 
+ 78d:	c5 78 28 ac 24 b0 01 	vmovaps xmm13,XMMWORD PTR [rsp+0x1b0]
+ 794:	00 00 
+ 796:	c5 78 28 b4 24 c0 01 	vmovaps xmm14,XMMWORD PTR [rsp+0x1c0]
+ 79d:	00 00 
+ 79f:	c5 78 28 bc 24 d0 01 	vmovaps xmm15,XMMWORD PTR [rsp+0x1d0]
+ 7a6:	00 00 
+ 7a8:	48 81 c4 e8 01 00 00 	add    rsp,0x1e8
+ 7af:	5b                   	pop    rbx
+ 7b0:	5e                   	pop    rsi
+ 7b1:	c3                   	ret
+ 7b2:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+ 7b8:	c5 7d 6f f9          	vmovdqa ymm15,ymm1
+ 7bc:	e9 3d ff ff ff       	jmp    6fe <_ZN12jshc_channel10avx2_chainEPKNS_4ViewEyPhy+0x6fe>
+ 7c1:	90                   	nop
+ 7c2:	90                   	nop
+ 7c3:	90                   	nop
+ 7c4:	90                   	nop
+ 7c5:	90                   	nop
+ 7c6:	90                   	nop
+ 7c7:	90                   	nop
+ 7c8:	90                   	nop
+ 7c9:	90                   	nop
+ 7ca:	90                   	nop
+ 7cb:	90                   	nop
+ 7cc:	90                   	nop
+ 7cd:	90                   	nop
+ 7ce:	90                   	nop
+ 7cf:	90                   	nop

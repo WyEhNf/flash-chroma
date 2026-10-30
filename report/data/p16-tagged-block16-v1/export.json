@@ -1,0 +1,43 @@
+{
+  "purpose": "按唯一census与固定M16T布局导出，独立解码所有序列化RGB32。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "ce6384ee8dcdc00516c0c5e324b46a01e31a3dd853065257a71bbe6d8a3ff06b",
+  "census_sha256": "3a099cbcbd25f0b41769b004143d32c527c1efca215831e2c73f32fcafe74b9c",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "rom_bytes": 5915136,
+  "rom_sha256": "b873b00d5b554c43f930d541c8e11e864dcabb1d9f55ff12c99b89ff35a114de",
+  "map_bytes": 4194304,
+  "pool_bytes": 1719776,
+  "nonconstant_unique": 107486,
+  "constant_unique": 221,
+  "constant_map_entries": 392293,
+  "model_expected_bytes": 1056,
+  "resident_expected": 5916192,
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "rgb32_sha256": "29a15ba4cb83d0840cfaa99015cda43848fa4ca43a9a1f224c19eaa7dd252497",
+  "old_rgb32_sha256": "29a15ba4cb83d0840cfaa99015cda43848fa4ca43a9a1f224c19eaa7dd252497",
+  "before": {
+    "PeakWorkingSetSize": 35643392,
+    "WorkingSetSize": 35643392,
+    "PrivateUsage": 22224896,
+    "PeakPagefileUsage": 22224896
+  },
+  "after": {
+    "PeakWorkingSetSize": 84926464,
+    "WorkingSetSize": 84017152,
+    "PrivateUsage": 66465792,
+    "PeakPagefileUsage": 69029888
+  },
+  "scope": "原ID块非恒定部分稳定压紧，palette原字节保持，常量直接RGB24；只按已冻结census实现，无照片/gold/参数扫描。峰值含离线Python/NumPy，不是核心RAM。"
+}

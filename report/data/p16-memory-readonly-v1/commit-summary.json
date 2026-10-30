@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "purpose": "三角色同import新进程，PrivateUsage相对自身before；两个COW对照均须优于RO至少1MiB。",
+  "deltas": {
+    "original_cow": {
+      "mapped_untouched": 16814080,
+      "prepared": 16814080,
+      "all_pages_read": 16814080,
+      "closed": 0
+    },
+    "cow": {
+      "mapped_untouched": 16818176,
+      "prepared": 16818176,
+      "all_pages_read": 16818176,
+      "closed": 0
+    },
+    "readonly": {
+      "mapped_untouched": 32768,
+      "prepared": 32768,
+      "all_pages_read": 32768,
+      "closed": 0
+    }
+  },
+  "conservative_gain_bytes": {
+    "mapped_untouched": 16781312,
+    "prepared": 16781312,
+    "all_pages_read": 16781312
+  },
+  "minimum_gain_bytes": 1048576,
+  "scope": "系统commit仅辅助，不把commit差称为capacity或WS差；只有单次微实验，不宣称跨环境稳定性或速度。"
+}

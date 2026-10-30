@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "purpose": "M10L八配置完整域、65535合法块ID/256palette及map/pool末端保护。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "0d829d42723357da55abfc113bfce8c246fe8dbe487d9d21080ee123e1dea968",
+  "libraries": {
+    "artifacts\\p16-le16-block1024-build-v1\\jshc_memory_le16_1024.dll": "69e2aa92be2f4a356438b58d0580e77f248a83b7c67e7bcd8fe5046b7bdaa0f8",
+    "artifacts\\p16-le16-block1024-build-v1\\jshc_le16_1024_c99.dll": "bc9d2d39fbc50c64994a535e274825e857220cce5a1253c1280072bd25b2770b"
+  },
+  "rom_sha256": "c0a46fbb4dd359e1bd30767533b763288ca28aaf137a6613e8e3ba018ed64e19",
+  "rom_bytes": 10767392,
+  "model_size": 1056,
+  "resident": 10768448,
+  "finite": 437,
+  "refusals": 28,
+  "image_guards": 108,
+  "rom_guards": 18,
+  "forced_last_id": 10481,
+  "positive_maximum_id": 65535,
+  "positive_palette_count": 256,
+  "positive_fixture_bytes": 67142688,
+  "positive_fixture_sha256": "1ce124a26c7ba4f95e0f3f2a1b5a18ce94b76b41a0bb1e54156b285e2ed8f43a",
+  "hashes": {
+    "c99_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "c99_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "quality_memory_before": {
+    "PeakWorkingSetSize": 35917824,
+    "WorkingSetSize": 35917824,
+    "PrivateUsage": 22609920,
+    "PeakPagefileUsage": 22609920
+  },
+  "quality_memory_after": {
+    "PeakWorkingSetSize": 305152000,
+    "WorkingSetSize": 233840640,
+    "PrivateUsage": 215994368,
+    "PeakPagefileUsage": 292540416
+  },
+  "scope": "Windows x64/GCC15.2；四后端原地/分离共8完整256^3。ID65535的65536块与全部256合法palette，真实/强制末map末pool图像与ROM保护页通过；质量与tail并行非计时，峰值含Python/NumPy及67MiB正向夹具，不是核心RAM；无WASM/实板或速度结论。"
+}

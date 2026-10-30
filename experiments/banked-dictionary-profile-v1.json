@@ -1,0 +1,22 @@
+{
+  "purpose": "预冻结2/4/8/16连续bank的精确局部LE16字典容量，只读原M16D，不读gold/照片。",
+  "script_sha256": "84fecbe3a07ead5e48e407c7c07a8df8b1a71ece40409ba39760be0d9f1454f8",
+  "source_rom_path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "banks": [
+    2,
+    4,
+    8,
+    16
+  ],
+  "block_bytes": 16,
+  "source_blocks": 1048576,
+  "header_palette_bytes": 1056,
+  "model_bytes": 1056,
+  "map_bytes": 2097152,
+  "bank_metadata_bytes": "4*bank_count：LE32绝对payload pool base，每bank一项；末bank结束由header length给出。",
+  "threshold_resident_bytes": 4871152,
+  "protocol": "按源RGB24地址高位连续均分原1048576项16B块map；只用原M16D global block ID分组unique，不重新训练、量化或用gold/照片挑选。每bank unique<=65536才可LE16。重建每档全部16MiB逻辑ID，并核固定SHA。只在可行且实际常驻严格小于3B已合格4871152B的档中选唯一最小容量；并列按较少bank；其它bank不进入native。",
+  "capacity": "ROM=1056头/palette+2097152 map+4*bank_count metadata+16*sum(bank_unique)；resident=ROM+1056 model。1056 ROM元数据与1056 model均明确计入；不把ZIP大小当RAM。",
+  "scope": "本轮仅离线剖析，不构建native/不测吞吐，不读gold/照片。失败/溢出及重复pool代价全部保留。"
+}

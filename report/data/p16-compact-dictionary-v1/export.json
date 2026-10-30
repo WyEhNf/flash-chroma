@@ -1,0 +1,50 @@
+{
+  "purpose": "把已冻结精确16B字典的32bit偏移改写为3B偏移/17bit块ID，独立完整逻辑表重建。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "script_sha256": "e2a0e947b6c0f5cf3055bd13763dfa1418f54604dd731782d2d76ca3ed69d727",
+  "models": [
+    {
+      "entry_bits": 24,
+      "map_bytes": 3145728,
+      "pool_bytes": 1723312,
+      "unique_blocks": 107707,
+      "file_bytes": 4870096,
+      "sha256": "e7845552f2cfb19dd60151413b15527d8386b2ed3b5375d46fd91f1bd89b2285",
+      "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0"
+    },
+    {
+      "entry_bits": 17,
+      "map_bytes": 2228224,
+      "pool_bytes": 1723312,
+      "unique_blocks": 107707,
+      "file_bytes": 3952592,
+      "sha256": "33dc6d0ba3a57d0b62f51ebef910eb4862811473420602e03c238c08cc4448da",
+      "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0"
+    }
+  ],
+  "before": {
+    "PeakWorkingSetSize": 35467264,
+    "WorkingSetSize": 35467264,
+    "PrivateUsage": 22052864,
+    "PeakPagefileUsage": 22052864
+  },
+  "after": {
+    "PeakWorkingSetSize": 102793216,
+    "WorkingSetSize": 78143488,
+    "PrivateUsage": 59174912,
+    "PeakPagefileUsage": 89333760
+  },
+  "scope": "只压已冻结模型编译得到的精确字典；独立重建所有256^3个ID，未读照片/gold/原滤镜。进程RSS/峰包括Python/NumPy与两种格式离线导出的全部临时对象。"
+}

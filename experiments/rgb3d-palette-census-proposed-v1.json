@@ -1,0 +1,17 @@
+{
+  "status": "Proposed，仅静态未冻结/运行",
+  "purpose": "固定RGB各高3位形成512个bank，每bank至多64色的6bit无损表示存在性普查",
+  "key": "bank=(R>>5)|((G>>5)<<3)|((B>>5)<<6)",
+  "equivalent_same_key": "((code>>5)&7)|((code>>10)&56)|((code>>15)&448)，code=R|(G<<8)|(B<<16)",
+  "bank_count": 512,
+  "input_colors_per_bank": 32768,
+  "local_id_bits": 6,
+  "gate": "完整16M输入；任一bank最终RGB色数>64则STOP，不更改key/bank/位宽或追加例外",
+  "source_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "logical_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "proposed_rom_bytes": 12715044,
+  "proposed_model_bytes_windows_x64": 32,
+  "proposed_resident_bytes": 12715076,
+  "before_execution": "当前94性能窗只写静态文件。待root明确grant，执行freeze_rgb3d_palette_census.py绑定源/设计原字节SHA，再唯一profile；本静态说明不冒充已冻结/执行计划。",
+  "scope": "无照片/gold/参数扫描/新ROM/native/perf/ZIP/Git；独立于旧luma16/7bit失败。"
+}

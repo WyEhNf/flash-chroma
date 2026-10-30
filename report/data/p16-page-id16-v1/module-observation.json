@@ -1,0 +1,2779 @@
+{
+  "passed": true,
+  "plan_sha256": "9d0781e17d8f1c8108fe26e26dcfd159d1d2bd5817f9446e8d09876408a7d73c",
+  "performance_plan_sha256": "b54be80781190763245429eb8743433063ccf3d04bb448f5afd0f8a2999f2608",
+  "affinity": {
+    "allowed": 85,
+    "system": 4294967295,
+    "allowed_logical_cpus": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "scope": "进程允许集，非逐OMP绑定/锁频或旧漂移因果证明。"
+  },
+  "roles": [
+    "ref78",
+    "ref80",
+    "linear_avx",
+    "linear_c99",
+    "p4_avx",
+    "p4_c99"
+  ],
+  "identities": {
+    "ref78": {
+      "role": "ref78",
+      "capacity": 28046644,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+      "library_sha256": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+      "model_kind": "a399快编译句柄"
+    },
+    "ref80": {
+      "role": "ref80",
+      "capacity": 28046644,
+      "library": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+      "library_sha256": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+      "model_kind": "a399快编译句柄"
+    },
+    "linear_avx": {
+      "role": "linear_avx",
+      "capacity": 16779328,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+      "library_sha256": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+      "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+      "model_bytes": 1056,
+      "blob_address": 2167012327424
+    },
+    "linear_c99": {
+      "role": "linear_c99",
+      "capacity": 16779328,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+      "library_sha256": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+      "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+      "model_bytes": 1056,
+      "blob_address": 2167029170176
+    },
+    "p4_avx": {
+      "role": "p4_avx",
+      "capacity": 12633164,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\jshc_page_id16.dll",
+      "library_sha256": "a4b442de7e2e9c579349736a5285f928fc9b379e357ab2db12b6b968061f0b92",
+      "rom_sha256": "a953eef0d1a70763a4bca053d4d70dc00dae6e40cc8eecdd1ac48648dfa15173",
+      "model_bytes": 40,
+      "blob_address": 2167046012928
+    },
+    "p4_c99": {
+      "role": "p4_c99",
+      "capacity": 12633164,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\jshc_page_id16.dll",
+      "library_sha256": "a4b442de7e2e9c579349736a5285f928fc9b379e357ab2db12b6b968061f0b92",
+      "rom_sha256": "a953eef0d1a70763a4bca053d4d70dc00dae6e40cc8eecdd1ac48648dfa15173",
+      "model_bytes": 40,
+      "blob_address": 2167058661376
+    }
+  },
+  "observations": [
+    {
+      "label": "same-imports-before-setup",
+      "module_count": 51,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 0,
+        "libgomp-1.dll": 0,
+        "libstdc++-6.dll": 0,
+        "libwinpthread-1.dll": 0
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [],
+        "libgomp-1.dll": [],
+        "libstdc++-6.dll": [],
+        "libwinpthread-1.dll": []
+      }
+    },
+    {
+      "label": "after-ref78",
+      "module_count": 57,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-ref80",
+      "module_count": 58,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-linear_avx",
+      "module_count": 59,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+          "basename": "jshc_memory_clang_store.dll",
+          "module_address": 140716212748288
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-linear_c99",
+      "module_count": 59,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+          "basename": "jshc_memory_clang_store.dll",
+          "module_address": 140716212748288
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-p4_avx",
+      "module_count": 60,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+          "basename": "jshc_memory_clang_store.dll",
+          "module_address": 140716212748288
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\jshc_page_id16.dll",
+          "basename": "jshc_page_id16.dll",
+          "module_address": 140716487671808
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-p4_c99",
+      "module_count": 60,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+          "basename": "jshc_memory_clang_store.dll",
+          "module_address": 140716212748288
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\jshc_page_id16.dll",
+          "basename": "jshc_page_id16.dll",
+          "module_address": 140716487671808
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    },
+    {
+      "label": "after-all-close",
+      "module_count": 60,
+      "modules": [
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "basename": "python.exe",
+          "module_address": 140695879155712
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\ntdll.dll",
+          "basename": "ntdll.dll",
+          "module_address": 140717784170496
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNEL32.DLL",
+          "basename": "KERNEL32.DLL",
+          "module_address": 140717768835072
+        },
+        {
+          "path": "C:\\Windows\\System32\\KERNELBASE.dll",
+          "basename": "KERNELBASE.dll",
+          "module_address": 140717741637632
+        },
+        {
+          "path": "C:\\Windows\\System32\\ucrtbase.dll",
+          "basename": "ucrtbase.dll",
+          "module_address": 140717738491904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140.dll",
+          "basename": "VCRUNTIME140.dll",
+          "module_address": 140716768034816
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+          "basename": "python312.dll",
+          "module_address": 140715394138112
+        },
+        {
+          "path": "C:\\Windows\\System32\\WS2_32.dll",
+          "basename": "WS2_32.dll",
+          "module_address": 140717747535872
+        },
+        {
+          "path": "C:\\Windows\\System32\\RPCRT4.dll",
+          "basename": "RPCRT4.dll",
+          "module_address": 140717774471168
+        },
+        {
+          "path": "C:\\Windows\\System32\\ADVAPI32.dll",
+          "basename": "ADVAPI32.dll",
+          "module_address": 140717782532096
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcrt.dll",
+          "basename": "msvcrt.dll",
+          "module_address": 140717767327744
+        },
+        {
+          "path": "C:\\Windows\\System32\\sechost.dll",
+          "basename": "sechost.dll",
+          "module_address": 140717779845120
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\VERSION.dll",
+          "basename": "VERSION.dll",
+          "module_address": 140717621903360
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\bcrypt.dll",
+          "basename": "bcrypt.dll",
+          "module_address": 140717734690816
+        },
+        {
+          "path": "C:\\Windows\\System32\\bcryptprimitives.dll",
+          "basename": "bcryptprimitives.dll",
+          "module_address": 140717735870464
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.DLL",
+          "basename": "python3.DLL",
+          "module_address": 2168325734400
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+          "basename": "_ctypes.pyd",
+          "module_address": 140716733235200
+        },
+        {
+          "path": "C:\\Windows\\System32\\ole32.dll",
+          "basename": "ole32.dll",
+          "module_address": 140717757038592
+        },
+        {
+          "path": "C:\\Windows\\System32\\msvcp_win.dll",
+          "basename": "msvcp_win.dll",
+          "module_address": 140717739933696
+        },
+        {
+          "path": "C:\\Windows\\System32\\GDI32.dll",
+          "basename": "GDI32.dll",
+          "module_address": 140717783449600
+        },
+        {
+          "path": "C:\\Windows\\System32\\win32u.dll",
+          "basename": "win32u.dll",
+          "module_address": 140717741441024
+        },
+        {
+          "path": "C:\\Windows\\System32\\gdi32full.dll",
+          "basename": "gdi32full.dll",
+          "module_address": 140717736656896
+        },
+        {
+          "path": "C:\\Windows\\System32\\USER32.dll",
+          "basename": "USER32.dll",
+          "module_address": 140717776830464
+        },
+        {
+          "path": "C:\\Windows\\System32\\combase.dll",
+          "basename": "combase.dll",
+          "module_address": 140717763592192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+          "basename": "libffi-8.dll",
+          "module_address": 140717180452864
+        },
+        {
+          "path": "C:\\Windows\\System32\\OLEAUT32.dll",
+          "basename": "OLEAUT32.dll",
+          "module_address": 140717773488128
+        },
+        {
+          "path": "C:\\Windows\\System32\\IMM32.DLL",
+          "basename": "IMM32.DLL",
+          "module_address": 140717783646208
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+          "basename": "_hashlib.pyd",
+          "module_address": 140716698763264
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+          "basename": "libcrypto-3-x64.dll",
+          "module_address": 140715270471680
+        },
+        {
+          "path": "C:\\Windows\\System32\\CRYPT32.dll",
+          "basename": "CRYPT32.dll",
+          "module_address": 140717745897472
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.cp312-win_amd64.pyd",
+          "basename": "_multiarray_umath.cp312-win_amd64.pyd",
+          "module_address": 140715525341184
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "basename": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "module_address": 140715236130816
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\core\\_multiarray_tests.cp312-win_amd64.pyd",
+          "basename": "_multiarray_tests.cp312-win_amd64.pyd",
+          "module_address": 140716698632192
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp312-win_amd64.pyd",
+          "basename": "_umath_linalg.cp312-win_amd64.pyd",
+          "module_address": 140716681723904
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+          "basename": "_wmi.pyd",
+          "module_address": 140717150044160
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\VCRUNTIME140_1.dll",
+          "basename": "VCRUNTIME140_1.dll",
+          "module_address": 140717133922304
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\PROPSYS.dll",
+          "basename": "PROPSYS.dll",
+          "module_address": 140717630750720
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\fft\\_pocketfft_internal.cp312-win_amd64.pyd",
+          "basename": "_pocketfft_internal.cp312-win_amd64.pyd",
+          "module_address": 140716681592832
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\mtrand.cp312-win_amd64.pyd",
+          "basename": "mtrand.cp312-win_amd64.pyd",
+          "module_address": 140715772674048
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\bit_generator.cp312-win_amd64.pyd",
+          "basename": "bit_generator.cp312-win_amd64.pyd",
+          "module_address": 140716616908800
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_common.cp312-win_amd64.pyd",
+          "basename": "_common.cp312-win_amd64.pyd",
+          "module_address": 140716607602688
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_bounded_integers.cp312-win_amd64.pyd",
+          "basename": "_bounded_integers.cp312-win_amd64.pyd",
+          "module_address": 140716599869440
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_mt19937.cp312-win_amd64.pyd",
+          "basename": "_mt19937.cp312-win_amd64.pyd",
+          "module_address": 140716681461760
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_philox.cp312-win_amd64.pyd",
+          "basename": "_philox.cp312-win_amd64.pyd",
+          "module_address": 140716630999040
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_pcg64.cp312-win_amd64.pyd",
+          "basename": "_pcg64.cp312-win_amd64.pyd",
+          "module_address": 140716630474752
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_sfc64.cp312-win_amd64.pyd",
+          "basename": "_sfc64.cp312-win_amd64.pyd",
+          "module_address": 140717133398016
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\error-study-py312\\Lib\\site-packages\\numpy\\random\\_generator.cp312-win_amd64.pyd",
+          "basename": "_generator.cp312-win_amd64.pyd",
+          "module_address": 140715763433472
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+          "basename": "_decimal.pyd",
+          "module_address": 140716485378048
+        },
+        {
+          "path": "C:\\Windows\\System32\\psapi.DLL",
+          "basename": "psapi.DLL",
+          "module_address": 140717748125696
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+          "basename": "_bz2.pyd",
+          "module_address": 140716592136192
+        },
+        {
+          "path": "C:\\Users\\admin\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+          "basename": "_lzma.pyd",
+          "module_address": 140716498485248
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll",
+          "basename": "jshc_memory_ref78.dll",
+          "module_address": 140716236931072
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+          "basename": "libgcc_s_seh-1.dll",
+          "module_address": 140716494553088
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+          "basename": "libgomp-1.dll",
+          "module_address": 140716224741376
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+          "basename": "libstdc++-6.dll",
+          "module_address": 140715532222464
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+          "basename": "libwinpthread-1.dll",
+          "module_address": 140716492324864
+        },
+        {
+          "path": "C:\\Windows\\SYSTEM32\\kernel.appcore.dll",
+          "basename": "kernel.appcore.dll",
+          "module_address": 140717716602880
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+          "basename": "libjshc_skylake_andn_normal.dll",
+          "module_address": 140716220481536
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+          "basename": "jshc_memory_clang_store.dll",
+          "module_address": 140716212748288
+        },
+        {
+          "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\jshc_page_id16.dll",
+          "basename": "jshc_page_id16.dll",
+          "module_address": 140716487671808
+        }
+      ],
+      "dependency_counts": {
+        "libgcc_s_seh-1.dll": 1,
+        "libgomp-1.dll": 1,
+        "libstdc++-6.dll": 1,
+        "libwinpthread-1.dll": 1
+      },
+      "dependencies": {
+        "libgcc_s_seh-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgcc_s_seh-1.dll",
+            "basename": "libgcc_s_seh-1.dll",
+            "module_address": 140716494553088,
+            "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+            "bytes": 142848
+          }
+        ],
+        "libgomp-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libgomp-1.dll",
+            "basename": "libgomp-1.dll",
+            "module_address": 140716224741376,
+            "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+            "bytes": 293376
+          }
+        ],
+        "libstdc++-6.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libstdc++-6.dll",
+            "basename": "libstdc++-6.dll",
+            "module_address": 140715532222464,
+            "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+            "bytes": 2354176
+          }
+        ],
+        "libwinpthread-1.dll": [
+          {
+            "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\libwinpthread-1.dll",
+            "basename": "libwinpthread-1.dll",
+            "module_address": 140716492324864,
+            "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+            "bytes": 57344
+          }
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OMP_DYNAMIC": null,
+      "OMP_WAIT_POLICY": null,
+      "OPENBLAS_NUM_THREADS": null
+    }
+  },
+  "scope": "磁盘四目录的冻结SHA不是实际加载证明；不选择/更换DLL或环境、不通过此观察授速度/稳定性资格。仅一个fresh，首次失败保存STOP。API返回HMODULE为借用快照，不CloseHandle。"
+}
