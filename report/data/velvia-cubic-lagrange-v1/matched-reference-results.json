@@ -1,0 +1,359 @@
+{
+  "run_identity": "3848f24364106620d571abc3e1886eac7a26c87cad1772d2c1e306cd47cc1d02",
+  "solvers": {
+    "tetra": {
+      "assembly": {
+        "backend": "native_uint64_full_domain_stencil",
+        "trainer": {
+          "abi_version": 1,
+          "library_sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+          "native_source_sha256": {
+            "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+            "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f"
+          },
+          "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+          "openmp_compiled": true
+        },
+        "sample_count": 16777216,
+        "sample_weight_sum": 262144.0,
+        "requested_threads": 4,
+        "actual_threads": 4,
+        "r_cell_parity_passes": 2,
+        "integer_accumulator_payload_bytes": 3162456,
+        "integer_system_sha256": "ef446bbdce4c76897ad779e67d0753628e7e5158d740793832c82dd6fe8c65a1",
+        "normal_equations_nnz": 513313,
+        "zero_diagonal_nodes": 0,
+        "minimum_diagonal": 0.2949155859896564,
+        "data_hessian_eigenvalue_lower_bound": 0.006029681507243367,
+        "support_certificate": {
+          "method": "nearest_rgb_symmetric_gershgorin_q16",
+          "witness_count": 35937,
+          "witness_rgb_sha256": "007570db8b5450a48be7791240d0604a0dec6bb34cd4c458802b2b5d5ed9c6fd",
+          "axis_tables_sha256": "1ff86af3f1ef14397e55e58a78792b3105174ac0cbbe4a63e55b007f79b4f692",
+          "minimum_twice_symmetric_margin_q16": 81423,
+          "singular_value_lower_bound_ratio": [
+            81423,
+            131072
+          ],
+          "hessian_eigenvalue_lower_bound_ratio": [
+            6629704929,
+            1099511627776
+          ],
+          "hessian_eigenvalue_lower_bound": 0.006029681507243367,
+          "integer_grid": false,
+          "scope": "互异见证均为完整RGB域子集；H=sum(w*w^T)/64；证书只证明当前权威Q16设计正定，不证明RGB8精度"
+        },
+        "target_squared_sum_rgb": [
+          401381165656,
+          372708601024,
+          406395407002
+        ],
+        "target_norm_squared_scaled": 18445080838.78125,
+        "normalisation": "H = sum(w_q w_q^T) / 2^38; b = sum(w_q y) / 2^22; all 256^3 colours",
+        "assembly_seconds": 0.0843633999757003
+      },
+      "helper_regularized_warmup": {
+        "solver": "jacobi_cg",
+        "lambda": 1e-12,
+        "rtol": 1e-12,
+        "maxiter": 1000,
+        "channels": [
+          {
+            "channel": 0,
+            "info": 0,
+            "iterations": 23,
+            "residual_l2": 8.666546981347084e-08,
+            "relative_residual": 3.9658675439748865e-13,
+            "finite": true,
+            "converged": true
+          },
+          {
+            "channel": 1,
+            "info": 0,
+            "iterations": 22,
+            "residual_l2": 1.6054712275564313e-07,
+            "relative_residual": 7.476621622658732e-13,
+            "finite": true,
+            "converged": true
+          },
+          {
+            "channel": 2,
+            "info": 0,
+            "iterations": 23,
+            "residual_l2": 8.512745101927463e-08,
+            "relative_residual": 3.8671526897231896e-13,
+            "finite": true,
+            "converged": true
+          }
+        ],
+        "status": "converged"
+      },
+      "effective_final_regularization": 0.0,
+      "raw_cg": [
+        {
+          "channel": 0,
+          "info": 0,
+          "iterations": 2,
+          "relative_residual": 7.958230350454054e-14,
+          "residual_norm": 1.7390993636521802e-08
+        },
+        {
+          "channel": 1,
+          "info": 0,
+          "iterations": 3,
+          "relative_residual": 5.88506289707894e-14,
+          "residual_norm": 1.2637123597349148e-08
+        },
+        {
+          "channel": 2,
+          "info": 0,
+          "iterations": 2,
+          "relative_residual": 7.764208295695756e-14,
+          "residual_norm": 1.7091315353318643e-08
+        }
+      ],
+      "mean_squared_objective_gap_upper_bound": 4.77182855459933e-19,
+      "unrounded_uniform_cube_mse_from_normal_moments": 1.8526704487157986,
+      "continuous_node_min": -16.88879787692424,
+      "continuous_node_max": 257.33148257792794,
+      "node_channels_outside_rgb8": 14259
+    },
+    "tri": {
+      "solver": "float64_Q16_axis_SVD_pseudoinverse_tensor_contraction",
+      "basis_conditions": [
+        1.999790118536279,
+        2.5240963279877553,
+        2.328216458457056
+      ],
+      "basis_left_inverse_maximum_error": 1.9984014443252818e-15,
+      "gram_integer_gershgorin_margins_q32": [
+        8141868712,
+        5000459732,
+        6105859406
+      ],
+      "hessian_lower_bound_scaled": 0.04902541420890061,
+      "normal_residual_norm": [
+        3.5623686562133873e-10,
+        3.7740465425319277e-10,
+        3.5432800193516086e-10
+      ],
+      "mean_squared_objective_gap_upper_bound": 3.0726421543892164e-23,
+      "unrounded_uniform_cube_mse_from_normal_moments": 2.282880984566873,
+      "continuous_node_min": -15.741429304456279,
+      "continuous_node_max": 258.21531778123295,
+      "node_channels_outside_rgb8": 14532
+    }
+  },
+  "evaluation": {
+    "uniform_keys": {
+      "rows": 16384,
+      "points_sha256": "917bfc66ee0c3a7d5718f396918bfbceb7ada90ec1afb08ee971c37809200fcb",
+      "matched_tetra": {
+        "continuous_nodes_unrounded": {
+          "mean": 0.8883673720319264,
+          "rms": 1.346250714075782,
+          "p99": 5.202209988535686,
+          "max": 23.6124343938135
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 0.7548139065321982,
+          "rms": 1.3505686374750636,
+          "p99": 5.0,
+          "max": 24.020824298928627
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 0.9551388169240761,
+          "rms": 1.4794462946486289,
+          "p99": 5.96888287388512,
+          "max": 24.920161703058973
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 0.9178344122832252,
+          "rms": 1.5371974740477392,
+          "p99": 6.0,
+          "max": 25.079872407968907
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "6c937f2e931603d937af38fc53facaa4cd47aa57926e5e4c293cb4940eaa6211"
+      },
+      "matched_tri": {
+        "continuous_nodes_unrounded": {
+          "mean": 1.0086268762971957,
+          "rms": 1.4936875541545171,
+          "p99": 5.7174485105691595,
+          "max": 23.036409391513004
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 0.8832535371049355,
+          "rms": 1.4834084023899994,
+          "p99": 5.830951894845301,
+          "max": 23.021728866442675
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 1.1109183027752527,
+          "rms": 1.717817566516557,
+          "p99": 7.034414202470575,
+          "max": 23.191754797770205
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 1.076040136491528,
+          "rms": 1.7674216522593018,
+          "p99": 7.0710678118654755,
+          "max": 23.08679276123039
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "51b88f06c9a0fc5c96bb9d357564d3047041ccd6f3ca3ecc5b89b4a93e0ef6ec"
+      },
+      "existing_2dd_different_objective": {
+        "mean": 0.9422828218616554,
+        "rms": 1.6833172989386909,
+        "p99": 6.4031242374328485,
+        "max": 30.066592756745816
+      },
+      "baseline_stream_mismatches": 0
+    },
+    "photo_keys": {
+      "rows": 16384,
+      "points_sha256": "43b66d39b8a4c79dd6a2bc124de9cde4f00f9c037177b61fba55f2e078d55ad0",
+      "matched_tetra": {
+        "continuous_nodes_unrounded": {
+          "mean": 0.9421213241800912,
+          "rms": 1.1360136612464355,
+          "p99": 3.278427806358455,
+          "max": 9.280851023253772
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 0.8951703817778258,
+          "rms": 1.2014751268622876,
+          "p99": 3.1622776601683795,
+          "max": 9.486832980505138
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 0.9942479981230736,
+          "rms": 1.2027964681091388,
+          "p99": 3.4212858888222937,
+          "max": 10.087840814839074
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 0.9933209433666936,
+          "rms": 1.288470508005519,
+          "p99": 3.4641016151377544,
+          "max": 10.099504938362077
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "dd04e7f61b0d3b53855fb6513a63612f00a19ff9ae14315d11ad81323c1fba26"
+      },
+      "matched_tri": {
+        "continuous_nodes_unrounded": {
+          "mean": 1.1875533045012676,
+          "rms": 1.4622824981885285,
+          "p99": 4.127836708344409,
+          "max": 10.34365189021952
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 1.1514334546579774,
+          "rms": 1.5112695149691202,
+          "p99": 4.123105625617661,
+          "max": 10.04987562112089
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 1.2601487423198585,
+          "rms": 1.5604335425059905,
+          "p99": 4.468946948639845,
+          "max": 11.397467768536272
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 1.271377024151922,
+          "rms": 1.62882662425287,
+          "p99": 4.47213595499958,
+          "max": 11.045361017187261
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "a430ee6508a27dc6d1bfd56e0c5f374589cd676be153576b68471c905c5197fd"
+      },
+      "existing_2dd_different_objective": {
+        "mean": 0.8927973468110049,
+        "rms": 1.2143852129009558,
+        "p99": 3.3166247903554,
+        "max": 12.649110640673518
+      },
+      "baseline_stream_mismatches": 0
+    },
+    "worst_keys": {
+      "rows": 16,
+      "points_sha256": "e0b4fee077679dcd2b9d66df7425a85a2ac2473a396007ce858d9ac035f12a7d",
+      "matched_tetra": {
+        "continuous_nodes_unrounded": {
+          "mean": 17.055793567462768,
+          "rms": 17.132427380918053,
+          "p99": 20.34687241733343,
+          "max": 20.452690459214125
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 17.087180535711845,
+          "rms": 17.162823194334898,
+          "p99": 20.024984394500787,
+          "max": 20.024984394500787
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 17.14943826012636,
+          "rms": 17.22550313565347,
+          "p99": 20.21141797387327,
+          "max": 20.304787641083298
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 17.204152713815546,
+          "rms": 17.2735346701247,
+          "p99": 20.024984394500787,
+          "max": 20.024984394500787
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "f94ff2106dcedf1386d3e9246364b01c77cd5d1b5b48f59f0dba21030b128260"
+      },
+      "matched_tri": {
+        "continuous_nodes_unrounded": {
+          "mean": 14.981183808085248,
+          "rms": 15.105357832722017,
+          "p99": 18.28831905588819,
+          "max": 18.393000857853806
+        },
+        "continuous_nodes_rgb8_output": {
+          "mean": 15.005306195035393,
+          "rms": 15.13068075137401,
+          "p99": 18.027756377319946,
+          "max": 18.027756377319946
+        },
+        "quantized_nodes_unrounded": {
+          "mean": 14.875413932311798,
+          "rms": 15.005396496523337,
+          "p99": 18.294076169944546,
+          "max": 18.402817529576964
+        },
+        "quantized_nodes_rgb8_output": {
+          "mean": 14.834117675492806,
+          "rms": 14.972892172189045,
+          "p99": 18.027756377319946,
+          "max": 18.027756377319946
+        },
+        "independent_integer_oracle_mismatches": 0,
+        "float_round_vs_integer_rgb8_mismatching_channels": 0,
+        "quantized_output_sha256": "f027040dd12acf8df84ec2781523edaf285b3a162aeaa6edca8befe0918c749b"
+      },
+      "existing_2dd_different_objective": {
+        "mean": 39.661343742397925,
+        "rms": 39.667366940597404,
+        "p99": 41.012193308819754,
+        "max": 41.012193308819754
+      },
+      "baseline_stream_mismatches": 0
+    }
+  },
+  "nodes_sha256": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26",
+  "limits": "两算子各一次、同源同m33同权威Q16设计同完整均匀L2，不拟合其他方法/参数。连续节点可越出RGB8并且不可部署，量化时相同clip+half-up；所有RGB颜色均参与训练，探针不是独立测试。不新建SLUT，不新full映射、不100图、不改核心/默认/根代理驱动，不PR不推送；RGB距离非CIEDE2000，非官方/SOTA结论。",
+  "interpretation": "仅完整均匀L2的连续近似最优与固定探针；RGB8量化非整数最优，旧2dd目标不同；无新full/100图或性能结果"
+}

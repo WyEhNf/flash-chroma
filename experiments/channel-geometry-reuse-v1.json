@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "purpose": "先量化分通道模型的相同内点地址机会，决定是否值得实现公共几何SIMD分支，非速度测试",
+  "inputs": {
+    "model": {
+      "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+      "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+    },
+    "frequency": {
+      "path": "artifacts/cinema-prefix-stage1-v1/photo-arrival-frequency.npy",
+      "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+    },
+    "image": {
+      "path": "assets/photos/kodak/rgb8-1024x768/kodim03.png",
+      "sha256": "626ccf68aacfae6f439305d77a767bcef68b1c73f799e5729f34c5fa40ebdb6b"
+    }
+  },
+  "threads": 4,
+  "packet_pixels": 8,
+  "feasibility": {
+    "pilot_packet_common_both_min": 0.5,
+    "training_pixel_common_both_min": 0.6
+  },
+  "scope": "一个冻结模型的完整色域地址分类、原60图频数加权及一张固定已见Kodak原顺序8像素包。分类器只读Q16轴表，不访问节点颜色或映射任何像素。不是CABI/精度/性能合同。",
+  "limits": "地址一致率只给重用机会，不代表耗时或预测命中率。canonical包不是自然照片。单张pilot不代表全部100图，不据此声称加速；未过可行性门槛则不做分支候选，不扫描图片/参数。通过后仍须实际实现、正确性与串行性能实验决定。"
+}

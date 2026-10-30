@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "purpose": "对PR41第二个可分离来源完成唯一17³实际模型、完整域/百图和原生正确性；不扫描其他来源",
+  "inputs": {
+    "source": {
+      "path": "assets/LUT/sources/stripedpurple/Scenic Moods/Striped Purple - Emerald Malaise.cube",
+      "sha256": "b76d97e0958d9b2b80b6f3c51da6c634a46cb0b5741b854a014beb405510194e"
+    },
+    "reference": {
+      "path": "artifacts/emerald-calibration-feasibility-v1/reference.npy",
+      "sha256": "246751885156d439621b20c66563d62715ef6179b4ba2cd3040bfc116c6a4f50"
+    },
+    "baseline17": {
+      "path": "artifacts/emerald-calibration-feasibility-v1/baseline-m17.slut",
+      "sha256": "939b6aad84e5bdf51fd5e6c16d579e9f1db235cb8e27a7140939b08f2fad4be3"
+    },
+    "baseline33": {
+      "path": "artifacts/emerald-calibration-feasibility-v1/baseline-m33.slut",
+      "sha256": "09920f1211f46fa73f706ab583d0f3559ed2c2c0ecef1aad026020398bdbc077"
+    },
+    "feasibility_run": {
+      "path": "artifacts/emerald-calibration-feasibility-v1/run.json",
+      "sha256": "d3dc3bbd5122852989ec74cc737e0ea36733edc02e0724b1fb6f6297a377bf60"
+    },
+    "feasibility_results": {
+      "path": "artifacts/emerald-calibration-feasibility-v1/results.json",
+      "sha256": "fa2100cb1df0d4634199afff4c9a4db5425ddf9dbc18a97936c607377cd97768"
+    }
+  },
+  "contracts": [
+    {
+      "results": {
+        "path": "artifacts/separable-calibration-contract-v1/results.json",
+        "sha256": "46f0764b66a376ce3d35f6acb88edaa9e8d0aa7d73f1d5316068ebc0717ca508"
+      },
+      "run": {
+        "path": "artifacts/separable-calibration-contract-v1/run.json",
+        "sha256": "b857b94fb22950cb5d8845744a37479664f96e2d2b95b0c6c75c16dce7cf9565"
+      },
+      "expected_checks": 11
+    }
+  ],
+  "manifest": {
+    "path": "assets/photos/manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "executable": {
+    "path": "build-engineering-alignment/jshc.exe",
+    "sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a"
+  },
+  "maximum_shift": 4096,
+  "candidate": "只对历史DP17节点调用现有exact_monotone；固定节点/idx/grid/端点，不扩大偏移",
+  "trigger": "完整原表结构证明和768码值解析均验零，且两档历史基线完整域mean及p99非零，才进行一次集中完整验收；不满足则停止",
+  "kernels": [
+    "tetra_scalar",
+    "tetra_avx2",
+    "tetra_avx2_madd",
+    "tetra_avx2_scalar_gather",
+    "tetra_avx2_exact_float"
+  ],
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX/32GB，Python3.12.14/NumPy1.26.4/Numba0.60.0，Numba4/BLAS-MKL-OMP1；旧GCC15.2 Release程序。完整cube原生5后端各单线程，照片AVX2请求4。非性能测试，允许与另一个精度研究并行但不比较时延。",
+  "limits": "单一可分离来源的单级限定验收。baseline17/33完整域指标由已证明分离的256码值直方图卷积解析得到，候选17另实际完整映射/u64及5后端比较；百图三模型各实际映射，候选再原生AVX2逐字节比较。不能声称新四级、C99或非可分离LUT验零，不修改公共拟合/运行时默认。照片均历史已见，RGB距离非CIEDE2000，无官方数据/Threshold/SOTA/新速度声明。不PR不推送。"
+}

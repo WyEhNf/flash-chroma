@@ -1,0 +1,1580 @@
+{
+  "pass": true,
+  "purpose": "一次集中合同：首级分通道/后三共享四级热路径及混合共享fallback，独立u64真值。",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "library_sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+  "abi": 1,
+  "revision": 2,
+  "capabilities": 7,
+  "build_sha256": "66b05e3986e3988813a03ab5f534469ea3715ee200cb3f4efa5a8852fe512ded",
+  "plan_sha256": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839",
+  "source_sha256": {
+    "scripts/build_channel_specialized.py": "3ff92cf3d912c842d19be2dab0168f53413e71ef4333510cd38492ff6fbcf2c5",
+    "scripts/verify_channel_specialized.py": "62d70446d9700a33e58687f09d8e4e275758137209d018350bbddb8e3892b05c",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/channel-runtime/channel_avx2.cpp": "efc4b862e9b3b74eea6160e32e940cafbda87f4a1a6c90f348dd012fdd7a6427",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/native_provenance.py": "a0609687d20f57a9e63041fb1ceb8ef784c222caf36a6ae93dd2c2614724b6e5",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582",
+    "experiments/channel-runtime-specialized-v1.json": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839"
+  },
+  "loaded_dependency_sources": [
+    {
+      "name": "jshc_channel_specialized.dll",
+      "adjacent_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+      "loaded_module_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll"
+    },
+    {
+      "name": "libgcc_s_seh-1.dll",
+      "adjacent_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libgcc_s_seh-1.dll",
+      "sha256": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+      "loaded_module_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libgcc_s_seh-1.dll"
+    },
+    {
+      "name": "libgomp-1.dll",
+      "adjacent_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libgomp-1.dll",
+      "sha256": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+      "loaded_module_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libgomp-1.dll"
+    },
+    {
+      "name": "libstdc++-6.dll",
+      "adjacent_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libstdc++-6.dll",
+      "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+      "loaded_module_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libstdc++-6.dll"
+    },
+    {
+      "name": "libwinpthread-1.dll",
+      "adjacent_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libwinpthread-1.dll",
+      "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e",
+      "loaded_module_path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\libwinpthread-1.dll"
+    }
+  ],
+  "seed": 2026101931,
+  "cases": [
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 0,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 1,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 7,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 8,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 9,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 15,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 16,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 17,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4095,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4096,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "specialized_4_unshared_shared_shared_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4097,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 0,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 1,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 7,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 8,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 9,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 15,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 16,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 17,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4095,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4096,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_shared_unshared_shared_unshared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4097,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 496953
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 0,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 1,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 7,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 8,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 9,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 15,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 16,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 17,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4095,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4096,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_4_equal_sidecar_all_shared",
+      "stages": 4,
+      "mixed_m": [
+        17,
+        18,
+        25,
+        33
+      ],
+      "pixels": 4097,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 487737
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 0,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 1,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 7,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 8,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 9,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 15,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 16,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 17,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 4095,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 4096,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    },
+    {
+      "path": "fallback_3_unshared_shared_shared",
+      "stages": 3,
+      "mixed_m": [
+        17,
+        18,
+        25
+      ],
+      "pixels": 4097,
+      "backend_threads": [
+        [
+          "scalar",
+          1
+        ],
+        [
+          "avx2",
+          1
+        ],
+        [
+          "avx2",
+          4
+        ]
+      ],
+      "byte_offsets": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "integer_oracle_mismatches": 0,
+      "sentinel_mismatches": 0,
+      "model_accounting_bytes": 225494
+    }
+  ],
+  "inherited_abi_exception_contract": {
+    "path": "artifacts/channel-native-contract-packed-v1/results.json",
+    "sha256": "1d66f309546b2fdb1dd37115a8b80a19705b851b1c33af98b3f903c55d2e88cd"
+  },
+  "scope": "一次有限合成正确性合同。没有运行新完整域、百图、测速或拟合；ABI输入/异常路径来自原封标量壳及既有集中合同，不冒称本次重测。"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "purpose": "严格匹配同一完整cube均匀L2与权威Q16坐标，区分算子表达与同节点直接换算子的偏差；仅固定旧探针归因",
+  "inputs": {
+    "model": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut", "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"},
+    "grid": {"path": "artifacts/joint-grid-full-prepare/baseline-grid.npy", "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"},
+    "table": {"path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256", "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"},
+    "stream": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb", "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"},
+    "probes": {"path": "artifacts/velvia-interpolation-diagnosis-v1/fixed-probes.npz", "sha256": "ae07f815e9e433f9d7fcbf3fa55f2a551143912459ab337b15cdb527eb38f182"}
+  },
+  "trainer": {
+    "path": "build-fit/libjshc_full_fit.dll",
+    "sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+    "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+    "abi": 1,
+    "threads": 4
+  },
+  "tri_solver": "从同一权威idx/frac构造float64轴基矩阵；rcond=1e-14的SVD伪逆；全表float64张量收缩，不调用强制float32的fit.contract",
+  "tetra_solver": {
+    "assembly": "已验证原生uint64完整域H/b，权重1/64；核再生轴表与原权威表逐值相同",
+    "helper_lambda": 1e-12,
+    "helper_tolerance": 1e-12,
+    "raw_cg_tolerance": 1e-13,
+    "maximum_iterations_each_solve": 1000,
+    "policy": "solve_spd小prior仅作暖启动；最后解原始无ridge H/b并核正规方程残差，不做整数精化、照片加权或节点盒优化"
+  },
+  "evaluation": "只复用冻结uniform16384、训练照片频数16384和旧流top16；各算子计算未量化连续节点、不部署的浮点节点RGB8输出、clip+half-up量化节点的连续/真实整数RGB8输出；不重新挑点",
+  "integer_truth": "三线性uint64 Q48八权重oracle，与独立逐轴整数Horner无中间舍入对照；原生tri_float不作整数真值。四面体Q16与独立比较器排序uint64 oracle对照",
+  "baseline": "实际2dd仅作不同训练目标的参照，不能称与两种均匀L2解matched优劣",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/SciPy1.15.2；原生组装4线程、BLAS1；未调用实时映射原生后端，无性能比较",
+  "limits": "两算子各一次、同源同m33同权威Q16设计同完整均匀L2，不拟合其他方法/参数。连续节点可越出RGB8并且不可部署，量化时相同clip+half-up；所有RGB颜色均参与训练，探针不是独立测试。不新建SLUT，不新full映射、不100图、不改核心/默认/根代理驱动，不PR不推送；RGB距离非CIEDE2000，非官方/SOTA结论。"
+}

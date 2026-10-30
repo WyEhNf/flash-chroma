@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "purpose": "对PR41 Filmic06严格可分离整数曲线作解析Q16坐标校准；不扩大节点或运行时字段",
+  "historical_commit": "ac9e0ab",
+  "source": {
+    "path": "assets/LUT/sources/blender-filmic/Filmic sRGB 06 High Contrast.3dl",
+    "sha256": "0846de8be0c34616b5d3375940ad9e6ab526cce760b5b1d3c5f1f3e97d2e2c4f",
+    "format": "3dl",
+    "grid_size": 17
+  },
+  "source_contract": "沿用source_lut：近恒等10bit shaper视为恒等、B最快、12bit输出缩放、三线性展开、clip后half-up为RGB8；不声称其他OCIO解释",
+  "historical_reference_file_sha256": "4662f6e49689e67cc801b9822808bbb17f0aaeacbc07ddf9f6e59a658e27559f",
+  "historical_models": {
+    "17": "8ebe30d069d6a4e30a0413ba66f4c8ed8bd1c8c8cde1b630f150ed82d52cb750",
+    "33": "225d8f66a2ecf196f464a9208507b2e5716c3cc4693488aab60bd177e13d0986"
+  },
+  "rebuild": {
+    "method": "adaptive_dp_grid加fit_structured_tetra(general_method=supported)",
+    "probes": 24,
+    "required_route": "verified_axis_separable",
+    "sizes": [17, 33],
+    "on_sha_mismatch": "明确另立当前环境受控基线；保留实际SHA及差异，不能冒充PR41冻结模型"
+  },
+  "calibration": {
+    "maximum_shift": 4096,
+    "bounds": "同时满足0..65536、相对原frac总偏移±4096、静态相邻有效坐标中点界，冻结输入0和255",
+    "fixed": ["RGB8节点", "idx", "float32网格元数据"],
+    "method": "half-up整数区间解析；可行时取离原frac最近的精确值；不可行时取区间内最小绝对输出码值误差，再最小化frac偏移",
+    "missing": "分别报告节点凸包不可达、端点冻结、静态中点阻断及仅偏移不足；最小必要shift仅诊断不放宽",
+    "scope": "自定义单调可分离坐标政策，约762自由度；±4096为1/16单元参数而非RGB码值；本地SLUT合法不等于官方认可"
+  },
+  "verification": {
+    "purpose": "阶段集中验证来源一致、结构标签、格式、解析区间与整数oracle；不测性能",
+    "contracts": "正负斜率/常量half-up区间的独立枚举，单调区间、固定字节与全轴曲线、RGB探针的独立整数四面体对照",
+    "full_trigger": "同尺寸解析全域RGB mean至少下降3%且RMS/p99/max不升；每个尺寸只有一个冻结候选",
+    "full_once": "满足触发后一次完整256^3与100张完整照片；基线及候选逐字节核Numba/独立整数oracle/可分离闭式输出",
+    "native": "实际info确定可用单级四面体后端，完整256^3核SHA；候选另用tetra_avx2实际映射100图核输出流",
+    "excluded_native": "tetra_c99和tetra_structured_avx2要求四模型，不能把单级Filmic研究冒充这两个后端的四级比赛验收",
+    "runtime": "GCC15.2 Release既有CPU程序，Numba4线程、BLAS/MKL/OMP=1、原生各1线程；不做性能比较",
+    "metrics": "RGB8欧氏距离，非Lab/CIEDE2000；完整域p99与百图最差单图p99分开"
+  },
+  "photos": {
+    "manifest": "assets/photos/manifest.json",
+    "manifest_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+    "count": 100,
+    "size": [1024, 768],
+    "scope": "原有历史已见照片，只用于冻结模型后验证，不用于选择frac或调参"
+  },
+  "executable": {
+    "path": "build-engineering-alignment/jshc.exe",
+    "sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a"
+  },
+  "limits": "仅两个尺寸的一个严格可分离来源；不声称通用三维、四级误差传播、官方Threshold或SOTA，不替换默认、不提交、不推送、不PR；失败和不匹配如实保留"
+}

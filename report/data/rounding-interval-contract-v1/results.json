@@ -1,0 +1,43 @@
+{
+  "purpose": "521行合成固定Q16设计的目标/方向梯度/归约/内部零损失；不测试真实LUT、拟合收益或原生运行时",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "seed": 2026101912,
+  "numba_threads": 4,
+  "value_abs_error": 2.1316282072803006e-14,
+  "directions": 12,
+  "maximum_gradient_abs_error": 2.51498946668427e-10,
+  "parts_gradient_max_error": 5.551115123125783e-17,
+  "unsupported_gradient_zero": true,
+  "interior_zero_and_signed_symmetry": true,
+  "source_sha256": {
+    "python/lutlab/rounding_interval.py": "b1b07973a018789620e023ca6b48e559717643b71f3e22e5b335c270c5770016",
+    "scripts/verify_rounding_interval.py": "30698c4e316470d5293ca67bc44a96c123ce7871d46af94f2819fec96136e258"
+  },
+  "pass": true
+}

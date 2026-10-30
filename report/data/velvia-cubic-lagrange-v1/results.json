@@ -1,0 +1,83 @@
+{
+  "run_identity": "5b60daf8ae084ed7ad6d2037226c2a84bf7d26577d657f0feba5d90e2c3145e3",
+  "weight_verification": {
+    "enumerated_axis_rows": 768,
+    "stencil_indices_in_bounds": true,
+    "constant_q16_sum": 65536,
+    "negative_weights_retained": 1466,
+    "maximum_weight_quantization_errors_q16_units": [
+      0.49944318912457675,
+      0.4992717569693923,
+      0.49971765314694494,
+      1.1276610055938363
+    ],
+    "maximum_weight_error_ratios": [
+      [
+        4290184327,
+        8589934592
+      ],
+      [
+        536088967,
+        1073741824
+      ],
+      [
+        4292541955,
+        8589934592
+      ],
+      [
+        1210816785,
+        1073741824
+      ]
+    ],
+    "maximum_axis_l1_q16": [
+      106768,
+      106790,
+      106744
+    ],
+    "maximum_axis_l1_real": [
+      1.629150390625,
+      1.629486083984375,
+      1.6287841796875
+    ],
+    "signed_accumulator_absolute_bound": 310352570987078400,
+    "bound_including_half_up_bias": 310493308475433728,
+    "signed_int64_limit": 9223372036854775807,
+    "weight_sha256": "aaae171acaa3cd6fac5a40908cf7894e063f8e75847ec2502e9e38cb8551d1eb",
+    "start_sha256": "e6c72c00894adc6c23ee605fefbe791fedf3788ec3fc37751a13a1d2618ec3af",
+    "local_coordinate": "有效索引i+frac/ONE，不是物理非均匀结点的三次基"
+  },
+  "solver": {
+    "solver": "float64_Q16_axis_SVD_tensor",
+    "basis_conditions": [
+      2.7784713614671994,
+      3.410203461471112,
+      3.1353042918601024
+    ],
+    "basis_left_inverse_maximum_error": 5.956093652045007e-15,
+    "normal_residual_norm_scaled_1over64": [
+      7.694069560667065e-10,
+      1.3936371636843587e-09,
+      1.4654148860177427e-09
+    ],
+    "unrounded_uniform_cube_mse_from_normal_moments": 1.9722460458579008,
+    "matched_tetra_mse": 1.8526704487157986,
+    "relative_mse_reduction": -0.06454229203309603,
+    "fixed_reduction_threshold": 0.2,
+    "probe_evaluation_triggered": false,
+    "continuous_node_min": -8.248486934852744,
+    "continuous_node_max": 256.6109378662144,
+    "node_channels_outside_rgb8": 13241,
+    "numeric_scope": "浮点SVD、张量收缩、矩相减与残差诊断；未提供舍入区间或严密全局证书"
+  },
+  "nodes_file_sha256": "9dc1eeab6241e13b5f1ff856ba7b4db6ea0030d48fb92c693d6f99ac8d56a206",
+  "capacity": {
+    "baseline_slut_bytes": 112063,
+    "candidate_rgb8_node_payload_bytes": 107811,
+    "candidate_slut_created": false,
+    "operator_vertices": 64,
+    "scope": "节点容量相同，不代表旧SLUT语义或tetra/tri_float后端支持本显式算子"
+  },
+  "evaluation": {},
+  "limits": "单一预声明基、同源同m33同权威idx/frac同均匀L2，所有颜色参与训练。显式新增64顶点插值族，不可把节点套给旧tetra或tri_float；不创建SLUT、不改默认/核心/原生/根驱动，无新full映射、100图、native或性能测试。连续节点不可部署；RGB8节点仅同节点容量，不代表旧格式/后端已支持。MSE矩及残差是浮点诊断，不称含舍入界的严密全局证书；非官方/SOTA结论、不PR不推送。",
+  "stop": "未达预声明20%完整均匀L2矩改善，不评价探针、不生成SLUT"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "purpose": "由旧输出质量归因触发的单一照片优先取舍点：在相同2dd起点、4+1预算和逐色cap下，将照片质量.48改为.75，检验普遍小误差而非极少热点是否能进一步减少",
+  "baseline": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+  "baseline_sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+  "baseline_cube": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+  "baseline_cube_sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+  "baseline_results": "artifacts/joint-grid-budget-v2/full-results.json",
+  "baseline_run": "artifacts/joint-grid-budget-v2/run.json",
+  "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+  "offline_grid": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+  "offline_grid_sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+  "table": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+  "table_sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+  "source": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+  "source_sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+  "partition": "artifacts/full-photo-v1/photo-partition.json",
+  "pixels_per_image": 4096,
+  "pixel_seed": 2026101701,
+  "cube_training_seed": 2026101801,
+  "cube_selection_seed": 2026101802,
+  "hotspot_count": 8192,
+  "mass": {
+    "cube": 0.21,
+    "photos": 0.75,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "profiles": [
+    "guarded_pair"
+  ],
+  "threads": 4,
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "selection": "全部预定检查点拟合完成后一次选择；完整域分层选择颜色及20图选择像素，mean/RMS/p99均不高于基线、两种mean至少降低3%、至少一种p99严格下降、已知热点及选择颜色max不高于基线。合格者按两种mean最大比值、两种p99最大比值、mean比值和、名称选型。每个对照最多一个冻结候选进入终验。",
+  "acceptance": "冻结候选各一次完整256^3、100图和独立整数oracle/标量/AVX2；完整域mean/RMS/p99/max/CVaR、百图mean/RMS/最差逐图p99/max/平均逐图CVaR均不高于同SHA基线，两种mean均至少降低3%、至少一种p99降低3%才记为本阶段合格改善；逐图退化完整披露，不把聚合门禁写成逐图非退化，也不因此宣告整个精度目标完成",
+  "limits": "单级Velvia已见数据上一个预声明照片优先点；同一原2dd起点、m33/grid/idx/frac、4扫单节点+1扫配对，与.48/.48阶段构成固定算法不同测度的对照。没有继承旧阶段节点以延长扫数。全部色域和60图完整频数训练，20选择/20审计历史已见。逐色cap同原2dd；只两最终候选、一池至多一赢家，双mean3%及p99门槛不变。失败不全验、不增预算不PR不推送，不作全场景最优权重或官方结论。",
+  "baseline_candidate": "joint_grid_iter1600",
+  "cube_training": "full",
+  "hotspot_source_cube": "artifacts/joint-minimax-v1/joint_0002/cube.rgb",
+  "hotspot_source_cube_sha256": "7d07c9a27bb0a9dad4620fcd3d36bb8d5db505de2b1e1d433b69ef6423fae62f",
+  "proposal": "guarded_pair",
+  "photo_training": "full",
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "d_new(x)^2<=max(49,d_2dd(x)^2)",
+    "scope": "全部256^3原色各自约束，保护旧>7误差不增；原样本max回归不再仅用全域统一max约束"
+  },
+  "algorithm": "原rho目标的单节点8色更新加两种2³分块配对；组合收益为单端全支撑之和加交集修正；所有行均受固定原基线逐色cap约束",
+  "reason": "旧60图78.785%的误差总量来自距离≤2，清除全部>7误差最多改善mean .870875%；平均分配cube/照片时cube选择mean已降5.35%而照片仅2.17%。只提出一个照片优先权重点，保留同一cube/照片双3%和p99门槛以显露Pareto取舍，不扫描权重。",
+  "contract": {
+    "path": "artifacts/paired-grid-contract-v1/results.json",
+    "sha256": "76b9826e60d2a16cc56c9b44b9ca053005e60fd41bcc82b87356e2627e0b69dd",
+    "scope": "纯合成组合损失/逐色违规计数/批量缓存/独立uint64 oracle；不证明真实LUT收益"
+  },
+  "warmup_sweeps": 4,
+  "paired_sweeps": 1,
+  "predeclared_candidates": [
+    "warmup_final",
+    "paired_final"
+  ],
+  "error_mass_evidence": {
+    "path": "artifacts/velvia-error-mass-v1/results.json",
+    "sha256": "86b63f45d48fd449dd7e1541b99122062ba902e0db81079698e0dce611c46ecd"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "purpose": "若唯一当前锚点候选完整准确性验收通过，仅一次衡量实际四张创意LUT串联的精度收益成本",
+  "inputs": {
+    "library": {
+      "path": "artifacts/channel-native-runtime-v3/jshc_channel_packed.dll",
+      "sha256": "7ceb30d7913a8cf032e1828c25c3fe062082be8e9d531d105282ba8d1794b072"
+    },
+    "native_acceptance": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/results.json",
+      "sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f"
+    },
+    "candidate_base": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/candidate-base.slut",
+      "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+    },
+    "candidate_sidecar": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/channel-frac.bin",
+      "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+    },
+    "candidate_cube": {
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    },
+    "policy": {
+      "path": "experiments/cinema-current-anchor-runtime-policy-v1.json",
+      "sha256": "9a3802d26423e113c8ec408b727550c7d826020d304b6bdd86feefc99e5f6d6c"
+    },
+    "build": {
+      "path": "artifacts/channel-native-runtime-v3/build.json",
+      "sha256": "86d9c9003a4a9dbe230ae0b30f1973e395df1109785bdaa2b689c0b57f24bb24"
+    },
+    "baseline_model": {
+      "path": "artifacts/cinema-axis-calibration-v1/stage1_sweep012/stage1.slut",
+      "sha256": "af9747e4b396ee8382897cd9af717d7464eccfe066add1262c12ff95582f3fc0"
+    },
+    "baseline_cube": {
+      "path": "artifacts/cinema-axis-calibration-v1/stage1_sweep012/cube.rgb",
+      "sha256": "78ebea523d67db084c045369697a8dd3b906b37e35517d6cf52c3fd7349a096f"
+    },
+    "evidence_audit": {
+      "path": "artifacts/cinema-current-anchor-evidence-audit-v1/results.json",
+      "sha256": "f2246b31455a403744a69a46d2aa5db711773dcd3bd7d07f0d6e1e3c56f6118d"
+    }
+  },
+  "controls": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "variants": [
+    "baseline",
+    "candidate"
+  ],
+  "repeats": 5,
+  "orders": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "required_revisions": {
+    "baseline": 2,
+    "candidate": 2
+  },
+  "limits": "四张真实创意LUT仅数值串联，色彩域兼容性未证明；实验NPZ/9216字节侧表未获官方格式许可，未接公共CLI/GUI/C99；历史已见100图不是盲测，没有官方数据/Threshold或官方分数。",
+  "labels": {
+    "baseline": "已验af974普通首级+原后三模型",
+    "candidate": "当前锚点新分输出首级+相同后三模型"
+  },
+  "timing_scope": "每新进程预加载相同100图；各配置各线程完整组预热+SHA后原生5次完整组，apply与copy+apply分列；不含拟合、模型加载、文件IO/解码/编码/hash。以每进程5次中位数为单位，给四进程中位数、范围和同进程candidate/baseline比中位数；ms/图为完整组摊销，非单图延迟分位数。",
+  "environment": "Windows11 26200 x64、Ryzen9 8945HX/32GB、GCC15.2 Release -O3 -DNDEBUG、packed v3同一独立C ABI库、实查AVX2/OpenMP；Python3.12.14/NumPy1.26.4/Pillow10.4；OMP_DYNAMIC=FALSE，BLAS/MKL/OMP环境1，原生请求1/4线程。进程串行、无其他数值任务，不锁频、不绑核、不控制温度。"
+}

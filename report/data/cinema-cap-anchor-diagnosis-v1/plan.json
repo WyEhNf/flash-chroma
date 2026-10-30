@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "purpose": "仅解释f139原guard81920像素photos.max退化：定位原RGB，再对少量原色逐级独立u64与旧cap基准核对，不新拟合或扩数据",
+  "inputs": {
+    "initial": {
+      "path": "artifacts/cinema-channel-suffix-coordinates-v1/channel-suffix-coordinates.npz",
+      "sha256": "aed888e75375e1e2cc1bff32f8fbe62b67afbfdb33d800bb521739aec76b5a41"
+    },
+    "baseline_initial": {
+      "path": "artifacts/cinema-axis-calibration-v1/stage1_sweep012/stage1.slut",
+      "sha256": "af9747e4b396ee8382897cd9af717d7464eccfe066add1262c12ff95582f3fc0"
+    },
+    "baseline_stream": {
+      "path": "artifacts/cinema-axis-calibration-v1/stage1_sweep012/cube.rgb",
+      "sha256": "78ebea523d67db084c045369697a8dd3b906b37e35517d6cf52c3fd7349a096f"
+    },
+    "cap_anchor_stream": {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/cube.rgb",
+      "sha256": "daad012f981ec381ca6fb53c5f66722e126ccd02012ebb8c219028610986e5f0"
+    },
+    "caps": {
+      "path": "artifacts/cinema-axis-calibration-v1/envelope-caps.npy",
+      "sha256": "8c89f3ffb2bd1eccd2ed9961022e57766bf88919789194b4651cab2c5ffd74f5"
+    },
+    "reference": {
+      "path": "artifacts/cinema-axis-calibration-v1/envelope-reference.npy",
+      "sha256": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690"
+    },
+    "suffix": {
+      "path": "artifacts/cinema-axis-calibration-v1/envelope-suffix.npy",
+      "sha256": "95bc0995c29f476c3a31d7f7a08ad782b582a852bc2f1876b1a9cf07b24c1cf7"
+    },
+    "selection_points": {
+      "path": "artifacts/cinema-axis-calibration-v1/selection-points.npz",
+      "sha256": "7d328b11482f69194ce7e115aa4a97da31eaa9f184d3cf3031bbaf64846fa345"
+    },
+    "selection_inputs": {
+      "path": "artifacts/cinema-axis-calibration-v1/selection-inputs.json",
+      "sha256": "7c5c9a0af427c6d9681261b6907cf41705f8e2a92db8bebfd759def7f8aea147"
+    },
+    "candidate": {
+      "path": "artifacts/cinema-channel-suffix-joint-nodes-v1/channel-suffix-joint-nodes.npz",
+      "sha256": "f13923f1ab8edf25e8773ca0519dea20f6583edf5561a31d713d11b09e960662"
+    },
+    "candidate_selection": {
+      "path": "artifacts/cinema-channel-suffix-joint-nodes-v1/selection.json",
+      "sha256": "d49bd7b98e94e954d812aed97a046395e7b4880ef58ee38f914fe1162808434b"
+    },
+    "candidate_run": {
+      "path": "artifacts/cinema-channel-suffix-joint-nodes-v1/run.json",
+      "sha256": "4123e3557ef9944fe7a87e75541ff13cb94ca246f61efe529e4dd9aef67a3b2c"
+    },
+    "anchor_initial": {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage1.slut",
+      "sha256": "cef37f82a0335af370028083bd6254a53b72ca48cea7923bcf78e9ebc61fe57a"
+    }
+  },
+  "suffix_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "tables": [
+    {
+      "stage": 1,
+      "path": "artifacts/chain-error-cache/source-307edcd6b7b55fff03392f5e/table.lut256",
+      "sha256": "37b1fa642957a648294301c281d6e261391857e93bd163fe2fd592df7f673944",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1910s.cube",
+      "source_sha256": "2ae2f4c62d028e41cf132f0d87f9098240fb8232195e602ed316c94cc0d38538"
+    },
+    {
+      "stage": 2,
+      "path": "artifacts/chain-error-cache/source-7b6980ce01910cd2b18ed3b9/table.lut256",
+      "sha256": "ccd454354df9a9e7da30e1022da31e66d65d2051b775a15995b76de09523aae8",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1920s.cube",
+      "source_sha256": "8f4f6ece25f0979b952c77e0d62a0e695310201a882fa8d7002471af0ff430f4"
+    },
+    {
+      "stage": 3,
+      "path": "artifacts/chain-error-cache/source-864defbd3b3e0712936e347c/table.lut256",
+      "sha256": "733f2578420247456b7b5bd07aa570c8d1b6a50173b1494a27c7dbaa5c330cfd",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1930s.cube",
+      "source_sha256": "a82f33eaeb5e834c15d845e3ce2cda26d9f2aadb179af3dd25b79cceec838bf9"
+    },
+    {
+      "stage": 4,
+      "path": "artifacts/chain-error-cache/source-d69ca4fa6f34c990a0bc752d/table.lut256",
+      "sha256": "5ffcbb5032b6c8a10aaad2c6649fa1ad85fd7e920121d8b0460ec6f181cb7b00",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1940s.cube",
+      "source_sha256": "d568987e472432d63afba500d4daa26022c86d1db1739056c19431e5175baee7"
+    }
+  ],
+  "guard_count": 81920,
+  "trajectory_maximum_unique_colours": 16,
+  "selection": "原guard20*4096像素/既有seed和字节，f139只一次映射定位全局最大d2；全部最大色去重保留图id/本guard频数，最多前16个RGB字典序逐级轨迹，超额明确未做轨迹。基线及anchor全guard不重新映射，查已存流。",
+  "trajectories": "每少量色分别记录daad anchor、af974、aed起点、f139首级与冻结2/3/4输出，以及四独立原RGB8完整表逐级参考；独立uint64比较器oracle逐级对研究前向及S缓存，核旧两流。原表逐级RGB8，不能把前缀总误差当单级局部误差。",
+  "cap": "读取原caps并核max(49,d_daad²)；同时列af974误差与f139误差，纯算术展示max(49,d_af974²)是否会排除该色，不修改cap/门槛、模型或训练。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60.0，Numba4/BLAS1；诊断正确性和约束含义，不测性能。",
+  "limits": "一个固定原guard定位，最多16色轨迹，没有新照片/色域/seed/参数扫描，不加入训练、不拟合、不新full/百图/native，不改旧模块/默认，不commit/PR/push。四张真实创意LUT数值四级链，不称真实ISP/自然摄影管线；候选f139保持原失败状态，不以诊断升级为验收成功。"
+}

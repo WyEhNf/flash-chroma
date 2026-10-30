@@ -1019,8 +1019,8 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
     t0 = time.perf_counter()
     grid = uniform_grid(m) if grid is None else grid
     info: dict = {}
-    if method == "adaptive_full":
-        raise ValueError("adaptive_full requires fit_model so its authoritative axis tables are preserved")
+    if method in ("adaptive_full", "ls_tetra_calibrated"):
+        raise ValueError(f"{method}需要fit_model以保留权威轴坐标表")
     if method == "sample":
         x = fit_sample(T, grid)
     elif method == "sample_interp":
@@ -1064,6 +1064,36 @@ def fit(T: np.ndarray, m: int, method: str, grid: np.ndarray | None = None) -> t
 
 def fit_model(T, m, method, grid=None, *, reachable_inputs=None):
     """Model-aware entry preserving any explicitly constructed axis weights."""
+    if method == "ls_tetra_calibrated":
+        from . import curve, separable_calibration
+        from .io import FULL_SHAPE, validate_sparse
+        if (np.shape(T) != FULL_SHAPE or np.asarray(T).dtype != np.uint8
+                or not isinstance(m, int) or isinstance(m, bool) or not 17 <= m <= 33):
+            raise ValueError('校准拟合需要完整RGB8原表及17..33整数网格大小')
+        started = time.perf_counter()
+        positions = adaptive_dp_grid(T, m) if grid is None else grid
+        info = {}
+        nodes = fit_structured_tetra(T, positions, diagnostics=info.setdefault('initial_fit', {}),
+                                     general_method='supported')
+        model = SparseLut(positions, nodes)
+        if info['initial_fit']['route'] == 'verified_axis_separable':
+            # 只接受完整源结构证明，不把近似可分离当作精确标签。
+            channels = curve.separable_channels(T)
+            if channels is None:
+                raise AssertionError('原表结构证明在同一次拟合中改变')
+            candidate, detail = separable_calibration.exact_monotone(model, channels, maximum_shift=4096)
+            info['calibration'] = detail
+            if candidate is not None:
+                model, route = candidate, 'exact_monotone_calibrated'
+            else:
+                route = 'structured_dp_fallback'
+        else:
+            info['calibration'] = {'status': '未执行', 'reason': '原表未完整验证为逐通道单轴可分离'}
+            route = 'general_supported_fallback'
+        validate_sparse(model, competition=True)
+        info.update(model_route=route, target_semantics='own_original_LUT',
+                    fit_s=round(time.perf_counter()-started, 3))
+        return model, info
     if method != "adaptive_full":
         nodes, positions, info = fit(T, m, method, grid=grid)
         return SparseLut(positions, nodes), info

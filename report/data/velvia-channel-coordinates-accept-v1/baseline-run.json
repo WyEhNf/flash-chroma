@@ -1,0 +1,97 @@
+{
+  "identity": {
+    "source_sha256": {
+      "scripts/run_joint_grid_study.py": "fc7274a9b214e95bc8c47b1187e6f89872161ad4c1222cb4d36786255f0bf3f4",
+      "python/lutlab/joint_grid.py": "ebd1c98ff5d90b1c0318f7a57e185f626ec430c0fa8a9e21ca018e44a5deb425",
+      "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+      "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+      "python/lutlab/error_analysis.py": "2f33f18f6affd56a3f7158db15e6076ee6de912f289d28d0c51789624a7a20f3",
+      "python/lutlab/study_kernels.py": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+      "python/lutlab/fit.py": "f4ae4404a0a75d8313daf766542c9825a0ae496ffe3e20a9251039bbc58c7238",
+      "scripts/run_chain_error_study.py": "8c8844bfbf107376e77a6d5d0c33f8d979986a7e7c18a28473356b034faf7c2b",
+      "scripts/run_joint_box_study.py": "e4e967c4013ff225688c9a120173557ee5a4b5821e4f194a58d1c2193c19ad61",
+      "scripts/verify_joint_grid.py": "655263ee3a4d54e950dc8195c73a9e77f12885fad77af7dec13591d2396b717c",
+      "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+      "experiments/joint-grid-budget-v2.json": "dd0d6ae9462591977a46b7723838cf284dd0388768fa51a685d1fad9b1ec6ddc"
+    },
+    "plan": {
+      "schema": 1,
+      "purpose": "第一批联合提议迭代预算耗尽且仍下降，仅延长一次预算；保持数据、目标、界和门槛不变，不作参数扫描",
+      "baseline": "artifacts/joint-minimax-v1/joint_0002/model.slut",
+      "baseline_sha256": "9f65bf5fdda5d100178dae4d26729b99a00af82b6cf23b015afd8a8eb2e0028a",
+      "baseline_cube": "artifacts/joint-minimax-v1/joint_0002/cube.rgb",
+      "baseline_cube_sha256": "7d07c9a27bb0a9dad4620fcd3d36bb8d5db505de2b1e1d433b69ef6423fae62f",
+      "baseline_results": "artifacts/joint-minimax-v1/results.json",
+      "baseline_run": "artifacts/joint-minimax-v1/run.json",
+      "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+      "offline_grid": "artifacts/fractional-fit-v1/velvia-vivid/historical-grid.npy",
+      "offline_grid_sha256": "b159d184f9a1a6c76e1434c10adbba49bf4ec9b7acd205c1e76cca5d1a71a15b",
+      "table": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+      "table_sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+      "source": "assets/LUT/sources/filmsim/Velvia_Vivid_v2.tif",
+      "source_sha256": "1b347b4c5afec78ad7f79103bf04b319e182b7133ffe2a8864c732a7003b7eea",
+      "partition": "artifacts/full-photo-v1/photo-partition.json",
+      "pixels_per_image": 4096,
+      "pixel_seed": 2026101701,
+      "cube_training_seed": 2026101801,
+      "cube_selection_seed": 2026101802,
+      "hotspot_count": 8192,
+      "mass": {
+        "cube": 0.48,
+        "photos": 0.48,
+        "boundary": 0.02,
+        "hotspots": 0.02
+      },
+      "profiles": [
+        "fixed_grid",
+        "joint_grid"
+      ],
+      "threads": 4,
+      "iterations": 1600,
+      "checkpoint_every": 200,
+      "spacing_factor": 4.0,
+      "minimum_step": 0.5,
+      "epsilon": 0.25,
+      "tail_at": 6.0,
+      "tail_weight": 0.02,
+      "selection": "全部预定检查点拟合完成后一次选择；完整域分层选择颜色及20图选择像素，mean/RMS/p99均不高于基线、两种mean至少降低3%、至少一种p99严格下降、已知热点及选择颜色max不高于基线。合格者按两种mean最大比值、两种p99最大比值、mean比值和、名称选型。每个对照最多一个冻结候选进入终验。",
+      "acceptance": "冻结候选各一次完整256^3、100图和独立整数oracle/标量/AVX2；完整域mean/RMS/p99/max/CVaR、百图mean/RMS/最差逐图p99/max/平均逐图CVaR均不高于同SHA基线，两种mean均至少降低3%、至少一种p99降低3%才记为本阶段合格改善；逐图退化完整披露，不把聚合门禁写成逐图非退化，也不因此宣告整个精度目标完成",
+      "limits": "单级Velvia方法研究，未获得官方数据/Threshold，不代表四级比赛成绩；历史60训练/20选择/20审计均已观察，不能声称盲测；不运行68LUT扫描、不比较性能、不改变运行时/模型格式/各级独立语义、不替换默认，不创建PR；固定轴113迭代已收敛，本次重放核对对照身份，不将其计为新的算法收益",
+      "parent_fit": "artifacts/joint-grid-v1/selection.json"
+    },
+    "environment": {
+      "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+      "implementation": "CPython",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+      "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+      "logical_cpu_count": 32,
+      "packages": {
+        "numpy": "1.26.4",
+        "scipy": "1.15.2",
+        "numba": "0.60.0",
+        "llvmlite": "0.43.0",
+        "Pillow": "10.4.0",
+        "tifffile": "2023.4.12",
+        "psutil": "5.9.0"
+      },
+      "thread_environment": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMBA_NUM_THREADS": null,
+        "NUMBA_THREADING_LAYER": null,
+        "NUMBA_CPU_NAME": null,
+        "NUMBA_CPU_FEATURES": null
+      },
+      "numba_threads": 4,
+      "timing_scope": "仅拟合用时，不比较运行时性能"
+    },
+    "image_manifest_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+    "partition_sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50",
+    "baseline_results_sha256": "71b52ca85b5fb0637fccaf2d6ba6b3994a92e8857c3d82ddac1dc38ca0df966e",
+    "baseline_run_sha256": "e9695818abe795f98f3c932f983634f68554dd1c70c83c709fd2e1e4fc8d3291"
+  },
+  "identity_sha256": "e7a1566888e7b1b5499662a1ad4f6da643c6fbbf8217276f89cfb2f92547a24d"
+}

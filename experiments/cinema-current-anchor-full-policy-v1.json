@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "purpose": "仅当当前基线锚定的唯一整合候选通过原固定选择门禁，执行一次完整独立四原表/稀疏四级/原生/百图终验",
+  "prerequisite": "固定样本选择selected=true、无failures；完整首级训练cache/fresh/硬cap0差异；训练起点和最终比较基线均为af974首级及原冻结后三模型，不使用未入围aed/f139作验收基线",
+  "reference": "四张独立完整RGB8 LUT按1910s→1920s→1930s→1940s逐级映射，每级保留RGB8；完整生成参考SHA须重现493c9084a90186a15ec42cd4553e02ee6b915f9ee4511d77cb2b40adcb82f0a9",
+  "independence": "候选首级及后三稀疏阶段均以独立6分支uint64 oracle逐级计算，与研究前向/固定S缓存一致；标量1/AVX2请求4的单级、实际四级均完整256³逐字节一致；100图使用实际四级原生AVX2请求4，并与完整oracle流逐字节核对",
+  "numeric_gates": {
+    "cube_mean_reduction_min": 0.03,
+    "photos_mean_reduction_min": 0.03,
+    "p99_reduction_in_at_least_one_min": 0.03,
+    "p99_choices": ["cube.p99", "photos.worst_image_p99"],
+    "cube_nonregression": ["mean", "rms", "p99", "max", "cvar_1pct"],
+    "photos_nonregression": ["mean", "rms", "worst_image_p99", "max", "mean_image_cvar_1pct", "merged_p99"],
+    "groups_nonregression": ["mean", "rms"],
+    "groups": ["training60", "guard20", "audit20"],
+    "full_colour_cap_violations": 0,
+    "byte_mismatches": 0,
+    "tolerance": 1e-12
+  },
+  "reporting": "同时输出完整色域、100图逐图、合并像素和60/20/20分组的mean/RMS/p99/max/CVaR及阈值占比、top128颜色。阈值占比只是历史RGB欧氏诊断，非官方Threshold。逐图退化数如实披露，聚合通过不等于逐图支配。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX/32GB；Python3.12.14、NumPy1.26.4、Numba0.60.0；Numba4、BLAS/MKL/OMP环境1；已验GCC15.2 Release -O3 -DNDEBUG packed v3 C ABI，实查AVX2/OpenMP能力及独立DLL SHA。此阶段不测速。",
+  "limits": "真实创意LUT数值四级链，未证明色彩域匹配，不称真实ISP。每输出独立Q16表示仅研究NPZ/C ABI，未获官方格式许可，未接公共CLI/GUI/C99；9216字节原型sidecar实际增量另记。原100图与分组历史已见，非独立盲测；无官方数据/Threshold，不给官方分数。不选参数、不追加迭代；失败保留结论，不放松门槛，不PR/push。"
+}

@@ -1,0 +1,122 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "固定3e5独立分通道几何，唯一8色26方向节点RGB联合±1，直接真实RGB8目标，不接失败提议",
+    "inputs": {
+      "baseline": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "baseline_stream": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "frozen_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz",
+        "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"
+      },
+      "caps": {
+        "path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy",
+        "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"
+      },
+      "prior_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/samples.json",
+        "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"
+      },
+      "initial": {
+        "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+        "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+      },
+      "prior_run": {
+        "path": "artifacts/velvia-channel-coordinates-v1/run.json",
+        "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"
+      },
+      "prior_selection": {
+        "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+        "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+      }
+    },
+    "contract": "artifacts/channel-joint-nodes-contract-v1/results.json",
+    "threads": 4,
+    "mass": {
+      "cube": 0.48,
+      "photos": 0.48,
+      "boundary": 0.02,
+      "hotspots": 0.02
+    },
+    "tail_at": 6.0,
+    "tail_weight": 0.02,
+    "incremental_mean_reduction": 0.005,
+    "order": "从3e5起点固定parity0..7恰好一次；每节点在26个RGB[-1,1]^3非零方向中只选一个严格负收益合法步，无第二扫。",
+    "training": "直接复用冻结完整canonical RGB8本级原表labels、原mass、原2dd逐色caps=max(49,d2)。三输出各自I/W与当前acc，联合26方向算真实RGB8 d2和rho=sqrt(d2)+.02*max(sqrt(d2)-6,0)^2，不相加单通道收益或禁止位；包括零质量色硬cap。节点RGB8边界全局禁止。",
+    "validation": "一次m17/m33集中小合同：全部实际有正支撑的节点26方向对独立uint64收益/cap；全部cells的8角parity互异、三输出不同几何、边界0/255、零质量cap、最终fresh缓存。另复用解析三像素反例，六个单通道步变差但联合(1,1,0)改善，不做反例搜索。",
+    "selection": "只最终一个候选，原cube262144/guard20*4096/hot8192一次选型；原2dd双mean至少降3%、mean/RMS/p99/max非增、至少一种p99严格改善、worst_image_p99/hotspot.max非增。同时相对3e5两mean均至少再降0.5%，mean/RMS/p99/max、worst_image_p99/hotspot.max均非增。记录CVaR，不冒称完整百图门禁。",
+    "failure_action": "唯一最终8色候选按原2dd门槛与相对3e5双mean再降0.5%及各mean/RMS/p99/max/worst/hot不增选型。失败停止无full/百图/native/性能，不继续追加节点邻域/扫数/参数。",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；无原生/性能",
+    "limits": "保持3e5现有NPZ实验格式/几何/参数数目，不声称SLUT v1/官方支持；不接全局连续等失败提议，不改权重/输入/native/旧模块/报告/默认，不commit/PR/push。选择集历史已见，不称盲测。有限26方向8色不证明整数全局最优。",
+    "colours": 8,
+    "directions": 26,
+    "geometry_proof": "shared idx使三输出共用同一cube；8角parity互异，固定parity时各输出若有正支撑必是同一角，只是各通道weight可能不同或为0。同色节点的跨输出支持不交，可独立汇总各节点26方向的真实RGB8联合收益。kernel对节点一致性和缓存另设诊断。",
+    "memory": "三输出各自I/W离线暂存1610612736字节，另有acc/d2/私有parts*26*M收益与cap计数等，不冒充运行时增加或同速度。"
+  },
+  "plan_sha256": "ecd7b922a1c52a0151762c704d47ee75fc9ff4ea65199d48722eb6a3c3083d74",
+  "source_sha256": {
+    "scripts/run_channel_joint_nodes.py": "1aed5f9fb3d5109a6578e8c715a4cd2e21c6e6893efcdfdca0d854d360b55d24",
+    "experiments/velvia-channel-joint-nodes-v1.json": "ecd7b922a1c52a0151762c704d47ee75fc9ff4ea65199d48722eb6a3c3083d74",
+    "scripts/verify_channel_joint_nodes.py": "0c37a638e020f3e94b49b1e736936eb8618aa2ce7abf0190163809ca93c76dd3",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/run_channel_coordinates.py": "484018d334bbf1ed74fcd18c37119ca87944e67ebf0767f6ab7f219d0463904e",
+    "python/lutlab/channel_joint_nodes.py": "3fa44f2ab30012c40e27a3933d4471de12773abf762fd4f903185a0824fb074b",
+    "python/lutlab/channel_global_nodes.py": "157912276ee73e76785290cf9a170f5fac4e5ababc146785ef62a13bae421638",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "contract_sha256": "879f35967eb39b6bafeed0c3e5a6b7dfa1255b4aab2c469aa8d7f7d82e705ef7",
+  "input_sha256": {
+    "baseline": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "baseline_stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "frozen_samples": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b",
+    "caps": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a",
+    "prior_samples": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c",
+    "initial": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "prior_run": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff",
+    "prior_selection": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+  },
+  "scope": "单次8色26方向RGB联合节点精化，训练fresh检查；一个最终候选固定样本门禁，无新完整流/百图/native/性能",
+  "identity_sha256": "ceba8959b6ae6cf6207ff02041312a70ded0fecbbc493268fe722784f0f4b151"
+}

@@ -1,0 +1,121 @@
+{
+  "purpose": "只核对已保存字节和4×5计时回执并归档；不调用模型、原生库、像素或性能。",
+  "performance_accepted": true,
+  "failures": [],
+  "frozen_gates": {
+    "purpose": "仅完整等价通过后，由根代理一次比较同a399模型下已验v3和唯一专门化DLL，不拿af974不同模型冒充后端收益。",
+    "threads": [
+      1,
+      4
+    ],
+    "same_inputs": "同一SHA100图/同一host/同一a399+933a/95cb/932f实际四级/同一请求线程，预加载与模型加载排除，原生apply及copy+apply分列。",
+    "balanced_orders": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ],
+      [
+        "baseline",
+        "candidate"
+      ]
+    ],
+    "thread_orders": [
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        1
+      ]
+    ],
+    "processes": 4,
+    "repeats_per_process_configuration": 5,
+    "metric": "每进程5轮中位数，同进程candidate/v3比；再四进程比值中位数。",
+    "apply_ratio_max_by_thread": 0.97,
+    "apply_ratio_max_in_any_process": 1.02,
+    "copy_apply_median_ratio_max_by_thread": 1.0,
+    "failure_action": "任一失败就保留负结果并停止；不更换方向/强制inline/预算/参数，不自动晋升默认。",
+    "limits": "未锁频/绑核/控温，不给统计显著性保证；100图组摊销不是单图延迟。"
+  },
+  "paired_recomputed": [
+    {
+      "requested_threads": 1,
+      "process_apply_ratios": [
+        0.8736593653235452,
+        0.8910057854917668,
+        0.9001791063797828,
+        0.894897811514872
+      ],
+      "median_apply_ratio": 0.8929517985033194,
+      "apply_reduction_percent": 10.704820149668059,
+      "worst_process_apply_ratio": 0.9001791063797828,
+      "process_copy_apply_ratios": [
+        0.8740630927808068,
+        0.9007661389115131,
+        0.8932467056009259,
+        0.895914068832498
+      ],
+      "median_copy_apply_ratio": 0.894580387216712,
+      "copy_apply_reduction_percent": 10.541961278328804
+    },
+    {
+      "requested_threads": 4,
+      "process_apply_ratios": [
+        0.9283449075476805,
+        0.9163693676082494,
+        0.9310442109486672,
+        0.9129535288778405
+      ],
+      "median_apply_ratio": 0.9223571375779649,
+      "apply_reduction_percent": 7.764286242203511,
+      "worst_process_apply_ratio": 0.9310442109486672,
+      "process_copy_apply_ratios": [
+        0.9333843268168405,
+        0.9271302792708646,
+        0.9339517322312363,
+        0.9147317038067595
+      ],
+      "median_copy_apply_ratio": 0.9302573030438526,
+      "copy_apply_reduction_percent": 6.974269695614743
+    }
+  ],
+  "raw_rounds": 80,
+  "independent_processes": 4,
+  "copy_apply_formula": "median_i(median_5(candidate_copy_apply_i)/median_5(v3_copy_apply_i))；不是两端四进程中位数之比",
+  "source_and_snapshot_sha_verified": true,
+  "native_identity_recomputed": true,
+  "same_a399_model_and_suffixes": true,
+  "same_preloaded_source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "hot_path_layout_proven_from_sidecar_bytes": true,
+  "candidate_library_sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+  "baseline_library_sha256": "7ceb30d7913a8cf032e1828c25c3fe062082be8e9d531d105282ba8d1794b072",
+  "native_results_sha256": "8dc0b6a029037b0c51ac56dd0649e6f9c258689251d7bc823c677f2c738386fa",
+  "runtime_results_sha256": "77c562ee4c3eb465bb7cff9ec3bb7160a7f434358f3f56a09093b528641ca5d2",
+  "build_sha256": "66b05e3986e3988813a03ab5f534469ea3715ee200cb3f4efa5a8852fe512ded",
+  "contract_sha256": "ecfd23a9e793adf3e7e45b21b16975ed7c4827b56d089b09eb31c6b6a29720f5",
+  "prior_accuracy_results_sha256": "ec8de74c65ec0252874c7c7e0ee371143ad6cbcfc9ad3dc869a853310912a41f",
+  "reused_model_bundle": {
+    "path": "report/data/cinema-current-anchor-accept-v1/models.zip",
+    "sha256": "07bce54753726adfc707c1efea6bffb9ce6947f77f6b636d64372359cc530284"
+  },
+  "additional_native_or_pixel_or_performance_or_fit_calls": 0,
+  "loaded_module_scope": "新主DLL及四个共用GCC依赖均记录实际已载路径/字节SHA；v3主库由冻结完整路径ct.CDLL加载及worker SHA绑定，未另记录GetModuleFileNameW枚举旧主库。",
+  "limits": "只对原回执做统计/来源审查，不重跑数值；本机未控频温/绑核，不给统计显著性或跨机器保证，不跨阶段与af974绝对耗时拼接。"
+}

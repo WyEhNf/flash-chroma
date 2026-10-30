@@ -1,0 +1,231 @@
+{
+  "pass": true,
+  "purpose": "集中合同：不同输出几何的全局梯度、量化整数前向和硬cap只撤销恢复。",
+  "seed": 2026101923,
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "cases": [
+    {
+      "m": 17,
+      "points": 73,
+      "finite_difference_coordinates": [
+        [
+          5,
+          0
+        ],
+        [
+          17,
+          0
+        ],
+        [
+          18,
+          0
+        ],
+        [
+          22,
+          0
+        ],
+        [
+          23,
+          0
+        ],
+        [
+          59,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          17,
+          1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          22,
+          1
+        ],
+        [
+          23,
+          1
+        ],
+        [
+          59,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          17,
+          2
+        ],
+        [
+          18,
+          2
+        ],
+        [
+          22,
+          2
+        ],
+        [
+          23,
+          2
+        ],
+        [
+          59,
+          2
+        ]
+      ],
+      "maximum_gradient_absolute_error": 6.2637041278561234e-12,
+      "independent_loss_error": 0.0,
+      "quantized_uint64_oracle_mismatches": 0,
+      "veto_support_mismatches": 0,
+      "veto_rounds": [
+        {
+          "round": 1,
+          "violating_colours_before": 73,
+          "reset_node_components": 774,
+          "changed_components_after": 13962
+        }
+      ],
+      "cap_violations_after": 0,
+      "fresh_cache_mismatches": 0,
+      "zero_mass_cap_and_0_255_nodes_and_zero_weight_checked": true
+    },
+    {
+      "m": 33,
+      "points": 73,
+      "finite_difference_coordinates": [
+        [
+          31,
+          0
+        ],
+        [
+          400,
+          0
+        ],
+        [
+          1002,
+          0
+        ],
+        [
+          1003,
+          0
+        ],
+        [
+          1036,
+          0
+        ],
+        [
+          1120,
+          0
+        ],
+        [
+          31,
+          1
+        ],
+        [
+          400,
+          1
+        ],
+        [
+          1002,
+          1
+        ],
+        [
+          1003,
+          1
+        ],
+        [
+          1036,
+          1
+        ],
+        [
+          1120,
+          1
+        ],
+        [
+          31,
+          2
+        ],
+        [
+          400,
+          2
+        ],
+        [
+          1002,
+          2
+        ],
+        [
+          1003,
+          2
+        ],
+        [
+          1036,
+          2
+        ],
+        [
+          1120,
+          2
+        ]
+      ],
+      "maximum_gradient_absolute_error": 7.557503559595113e-12,
+      "independent_loss_error": 0.0,
+      "quantized_uint64_oracle_mismatches": 0,
+      "veto_support_mismatches": 0,
+      "veto_rounds": [
+        {
+          "round": 1,
+          "violating_colours_before": 73,
+          "reset_node_components": 786,
+          "changed_components_after": 107022
+        }
+      ],
+      "cap_violations_after": 0,
+      "fresh_cache_mismatches": 0,
+      "zero_mass_cap_and_0_255_nodes_and_zero_weight_checked": true
+    }
+  ],
+  "source_sha256": {
+    "scripts/verify_channel_global_nodes.py": "ca42ccd45479d216d814cc9ddacf7cb6069459e7bdd0fdd76bdffbecb69f8487",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "python/lutlab/channel_global_nodes.py": "157912276ee73e76785290cf9a170f5fac4e5ababc146785ef62a13bae421638",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "scope": "集中小型合成合同，不拟合真实模型，不代替精度或性能验收"
+}

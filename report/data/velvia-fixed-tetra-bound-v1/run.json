@@ -1,0 +1,112 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "用原始uint64全域矩和Python大整数/Fraction证明固定2dd权威坐标的合法四面体模型无法全色域RGB8零误差；不求解新模型",
+    "inputs": {
+      "model": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "grid": {
+        "path": "artifacts/joint-grid-full-prepare/baseline-grid.npy",
+        "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "matched_results": {
+        "path": "artifacts/velvia-matched-operators-v1/results.json",
+        "sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8"
+      },
+      "matched_nodes": {
+        "path": "artifacts/velvia-matched-operators-v1/matched-nodes.npz",
+        "sha256": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26"
+      }
+    },
+    "trainer": {
+      "path": "build-fit/libjshc_full_fit.dll",
+      "sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+      "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+      "abi": 1,
+      "threads": 4
+    },
+    "raw_integer_system_sha256": "ef446bbdce4c76897ad779e67d0753628e7e5158d740793832c82dd6fe8c65a1",
+    "certificate": {
+      "method": "nearest_rgb_symmetric_gershgorin_q16",
+      "witness_count": 35937,
+      "witness_rgb_sha256": "007570db8b5450a48be7791240d0604a0dec6bb34cd4c458802b2b5d5ed9c6fd",
+      "axis_tables_sha256": "1ff86af3f1ef14397e55e58a78792b3105174ac0cbbe4a63e55b007f79b4f692",
+      "minimum_twice_symmetric_margin_q16": 81423,
+      "hessian_eigenvalue_lower_bound_ratio": [
+        6629704929,
+        1099511627776
+      ]
+    },
+    "rational_vector": "仅把已冻结tetra_float64按精确float有理值half-up取Q20，允许该证据向量越界；不生成或量化可部署模型",
+    "arithmetic": "原始矩只组装一次。Hnum*zint、独立二次型、残差平方及最终Fraction比较全部Python任意精度整数；不用float64矩乘或残差作为证明",
+    "normalisation": "N=2^24，Q=2^16；F=||Az-y||^2/64，H=Hnum/2^38，b=bnum/2^22，c=c_raw/64；z=zint/2^20",
+    "proof_formula": "gnum=Hnum*zint-bnum*2^36；Fnum=zint·(gnum-bnum*2^36)+c_raw*2^72；MSE_lower=(k*Fnum-4*sum(gnum^2))/(k*2^96)，k=6629704929",
+    "acceptance": "输入、ABI、完整矩SHA和独立整数见证证书全匹配；原始矩常量守恒及两种整数二次型一致；精确Fraction下界>3/4才声明固定坐标合法节点全域零误差不可能",
+    "environment": "Windows11 26200 x64，Ryzen9 8945HX，Python3.12.14/NumPy1.26.4；原生旧输入矩组装实际线程写入回执，requested=4，BLAS1；最终证明运算Python大整数/Fraction；不是运行时后端或性能测试",
+    "limits": "只限原2dd固定idx/frac、凸四面体和RGB8或[0,255]节点。未约束节点再clip、新DP坐标/网格、其它算子不在结论内；不能证明其它候选无解、当前2dd接近理论最优、mean或p99具体下界、官方或SOTA结论。不拟合、不新模型、不native映射、不新full输出、不100图、不性能、不改核心/默认/根代理驱动，不提交推送PR。"
+  },
+  "plan_sha256": "a47d8f55e3db2b614b38e3d745c0fe34337efdf6da18f5ca416d4646a14bafe5",
+  "source_sha256": {
+    "scripts/prove_velvia_fixed_tetra_bound.py": "69b115a077df3d9156a4ea74296d47f5c670c372629811b697eb0c11a3afd69f",
+    "experiments/velvia-fixed-tetra-bound-v1.json": "a47d8f55e3db2b614b38e3d745c0fe34337efdf6da18f5ca416d4646a14bafe5",
+    "python/lutlab/fullfit.py": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/support_certificate.py": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+    "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "trainer": {
+    "abi_version": 1,
+    "library_sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+    "native_source_sha256": {
+      "cpp/src/full_normals.cpp": "90da0ba2bd9270e9a5d958fb1778cd2ce41217b51b2a7e46da94a25582b91f83",
+      "cpp/include/jshc/full_normals.h": "a1cb8b43abcc2f26b1c229e99d78a4bb3928cbcb3e2820c4e24a47eeb2714b8f"
+    },
+    "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+    "openmp_compiled": true
+  },
+  "input_sha256": {
+    "model": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "grid": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "matched_results": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8",
+    "matched_nodes": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26"
+  },
+  "scope": "只一次旧输入原始矩组装、整数见证与有理证明；无模型求解或映射/性能计时",
+  "identity_sha256": "2db6140c629cb4e2ca1f2e6bb0aed3a227b216cf8757cd2bfc7f235073e41bcc"
+}

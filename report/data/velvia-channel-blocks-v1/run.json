@@ -1,0 +1,118 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "固定3e5坐标，2×2×2节点同通道整体±1平移，检验单点舍入停滞；固定000原点、单次24组",
+    "inputs": {
+      "baseline": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+        "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+      },
+      "baseline_stream": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "frozen_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz",
+        "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"
+      },
+      "caps": {
+        "path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy",
+        "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"
+      },
+      "prior_samples": {
+        "path": "artifacts/velvia-alternating-integer-v1/samples.json",
+        "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"
+      },
+      "initial": {
+        "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+        "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+      },
+      "prior_run": {
+        "path": "artifacts/velvia-channel-coordinates-v1/run.json",
+        "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"
+      },
+      "prior_selection": {
+        "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+        "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+      }
+    },
+    "contract": "artifacts/channel-blocks-contract-v1/results.json",
+    "threads": 4,
+    "blocks": 24,
+    "mass": {
+      "cube": 0.48,
+      "photos": 0.48,
+      "boundary": 0.02,
+      "hotspots": 0.02
+    },
+    "tail_at": 6.0,
+    "tail_weight": 0.02,
+    "incremental_mean_reduction": 0.005,
+    "order": "输出R/G/B各按2×2×2节点块parity0..7，24组各一次；仅000原点划分，每块同通道同号±1；每节点至多移动1码",
+    "training": "原完整canonical RGB8 labels/mass/caps；合并同块全部顶点权重后才计算真实整数输出变化，不相加单节点收益。同色不同块正支撑互斥；固定rho与三份坐标，无新增训练颜色或照片。",
+    "validation": "一次m17/m33×3通道合成合同：块±1完整独立u64增量成本/cap、0/255边界、零权重和质量、其它通道、24组fresh缓存，并解析构造单节点台阶反例；训练每组收益/cap核对，末尾fresh前向核缓存。",
+    "selection": "只最终一个候选，原cube262144/guard20*4096/hot8192一次选型；原2dd双mean至少降3%、mean/RMS/p99/max非增、至少一种p99严格改善、worst_image_p99/hotspot.max非增。同时相对3e5两mean均至少再降0.5%，mean/RMS/p99/max、worst_image_p99/hotspot.max均非增。记录CVaR，不冒称完整百图门禁。",
+    "failure_action": "未入围停止，不追加轮数/权重/参数、不full/native/性能。入围仅通知根代理，由其审查和另立终验。",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；无原生/性能",
+    "limits": "实验NPZ扩展表示，不伪装SLUT v1/官方支持。冻结既有报告/数值模块/native/默认，不commit/PR/push；guard20及audit20历史已见，不称盲测。 此为与单节点24组并行的另一有限算法提议，从相同3e5起点独立拟合，不续接失败节点候选，不扫描块偏移或重复轮次。"
+  },
+  "plan_sha256": "8a4c3c9e2e737f2ffc800c15b81945faa4c039110531a36758489730710cc559",
+  "source_sha256": {
+    "scripts/run_channel_blocks.py": "c4ee3fcacde6b2a186136ac59e90c5307bb12396eb70fa9cff9aeebfb8f8ff3b",
+    "experiments/velvia-channel-blocks-v1.json": "8a4c3c9e2e737f2ffc800c15b81945faa4c039110531a36758489730710cc559",
+    "scripts/verify_channel_blocks.py": "8dca2e62b7a233ffb74bda89e8c638e13ca3593ec6dc964f18d71d73bc787180",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "scripts/run_channel_coordinates.py": "484018d334bbf1ed74fcd18c37119ca87944e67ebf0767f6ab7f219d0463904e",
+    "python/lutlab/channel_blocks.py": "035992c1f08977fc2f5ee1eafc40d27caec27ae25f70d63bb4eec2e16c006350",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "contract_sha256": "614250af7adcf45d27c0a865185f2891443fe11afb45800ab6ce088367f24a1f",
+  "input_sha256": {
+    "baseline": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947",
+    "baseline_stream": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "frozen_samples": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b",
+    "caps": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a",
+    "prior_samples": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c",
+    "initial": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "prior_run": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff",
+    "prior_selection": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+  },
+  "scope": "单次24块节点精化，训练fresh检查；一个最终候选固定样本门禁，无新完整流/百图/native/性能",
+  "identity_sha256": "5b545da5bd0b6975f85637bc0f596e5a9a4cbf18c9b91e951deff50ffcb2163a"
+}

@@ -1,0 +1,116 @@
+{
+  "purpose": "只分析分通道四面体的节点地址复用机会，不映射像素或计时运行时。",
+  "plan": {
+    "schema": 1,
+    "purpose": "先量化分通道模型的相同内点地址机会，决定是否值得实现公共几何SIMD分支，非速度测试",
+    "inputs": {
+      "model": {
+        "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+        "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+      },
+      "frequency": {
+        "path": "artifacts/cinema-prefix-stage1-v1/photo-arrival-frequency.npy",
+        "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+      },
+      "image": {
+        "path": "assets/photos/kodak/rgb8-1024x768/kodim03.png",
+        "sha256": "626ccf68aacfae6f439305d77a767bcef68b1c73f799e5729f34c5fa40ebdb6b"
+      }
+    },
+    "threads": 4,
+    "packet_pixels": 8,
+    "feasibility": {
+      "pilot_packet_common_both_min": 0.5,
+      "training_pixel_common_both_min": 0.6
+    },
+    "scope": "一个冻结模型的完整色域地址分类、原60图频数加权及一张固定已见Kodak原顺序8像素包。分类器只读Q16轴表，不访问节点颜色或映射任何像素。不是CABI/精度/性能合同。",
+    "limits": "地址一致率只给重用机会，不代表耗时或预测命中率。canonical包不是自然照片。单张pilot不代表全部100图，不据此声称加速；未过可行性门槛则不做分支候选，不扫描图片/参数。通过后仍须实际实现、正确性与串行性能实验决定。"
+  },
+  "source_sha256": {
+    "scripts/profile_channel_geometry.py": "d7224d81a3580fb09ef8028d271e847ebc13f1634514407d5c97bf1402231027",
+    "experiments/channel-geometry-reuse-v1.json": "53cc176e76c4e0eafa9f0b9aa375fa5a65a0cfed697b6e6646c7e008ce188c4b",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "experiments/channel-runtime/channel_avx2.cpp": "efc4b862e9b3b74eea6160e32e940cafbda87f4a1a6c90f348dd012fdd7a6427"
+  },
+  "input_sha256": {
+    "model": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "frequency": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "image": "626ccf68aacfae6f439305d77a767bcef68b1c73f799e5729f34c5fa40ebdb6b"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "uniform_canonical_order": {
+    "pixels": 16777216,
+    "common_first_pixels": 16461148,
+    "common_first_fraction": 0.9811608791351318,
+    "common_last_pixels": 16474416,
+    "common_last_fraction": 0.9819517135620117,
+    "common_both_pixels": 16176814,
+    "common_both_fraction": 0.9642132520675659,
+    "eight_pixel_packets": 2097152,
+    "common_first_whole_packet_count": 1876763,
+    "common_first_whole_packet_fraction": 0.8949103355407715,
+    "common_last_whole_packet_count": 1874785,
+    "common_last_whole_packet_fraction": 0.8939671516418457,
+    "common_both_whole_packet_count": 1707819,
+    "common_both_whole_packet_fraction": 0.8143515586853027
+  },
+  "training_60_frequency": {
+    "pixels": 47185920,
+    "common_first_pixels": 46315914,
+    "common_first_fraction": 0.9815621693929036,
+    "common_last_pixels": 46320144,
+    "common_last_fraction": 0.9816518147786458,
+    "common_both_pixels": 45528407,
+    "common_both_fraction": 0.9648727205064561
+  },
+  "pilot_original_pixel_order": {
+    "pixels": 786432,
+    "common_first_pixels": 776559,
+    "common_first_fraction": 0.9874458312988281,
+    "common_last_pixels": 777437,
+    "common_last_fraction": 0.988562266031901,
+    "common_both_pixels": 767757,
+    "common_both_fraction": 0.9762535095214844,
+    "eight_pixel_packets": 98304,
+    "common_first_whole_packet_count": 90603,
+    "common_first_whole_packet_fraction": 0.921661376953125,
+    "common_last_whole_packet_count": 91204,
+    "common_last_whole_packet_fraction": 0.9277750651041666,
+    "common_both_whole_packet_count": 84703,
+    "common_both_whole_packet_fraction": 0.8616434733072916
+  },
+  "pilot_decoded_pixel_sha256": "f44853a623378b12418ef5bf6eb01bda854b2ef5aab2f7e9637ea2f1535eea01",
+  "fastpath_feasibility_gate_passed": true,
+  "pixel_mapping_calls": 0,
+  "native_benchmarks": 0,
+  "limits": "地址一致率只给重用机会，不代表耗时或预测命中率。canonical包不是自然照片。单张pilot不代表全部100图，不据此声称加速；未过可行性门槛则不做分支候选，不扫描图片/参数。通过后仍须实际实现、正确性与串行性能实验决定。"
+}

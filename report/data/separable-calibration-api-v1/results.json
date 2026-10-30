@@ -1,0 +1,133 @@
+{
+  "passed": 11,
+  "checks": [
+    "下降/常量/轴置换精确校准",
+    "共享同轴多通道可兼容",
+    "共享同轴单独可达但区间冲突",
+    "冻结端点不能被覆盖标签绕过",
+    "不自动增加最大坐标偏移",
+    "逐码均可达但全局单调无解",
+    "常量节点不能伪造不同标签",
+    "完整节点张量必须符合通道依赖轴",
+    "未验证来源明确回退",
+    "Filmic17精确复现既有零误差模型SHA",
+    "Filmic33精确复现既有零误差模型SHA"
+  ],
+  "filmic": {
+    "17": {
+      "sha256": "d8186ab6762f3aac8ffaf2d86e87fbc1af220a2de3ecfcd41177f58abfa5b9cb",
+      "report": {
+        "method": "exact_monotone_q16",
+        "maximum_shift": 4096,
+        "feasible": true,
+        "scope": "固定节点/idx/grid/端点和总偏移的精确单调坐标；仅原表完整验证的轴可分离结构；不可行返回None",
+        "channel_axes": [
+          0,
+          1,
+          2
+        ],
+        "verified_node_values": 14739,
+        "reason": null,
+        "status": "exact",
+        "changed_fractions": 30,
+        "maximum_actual_shift": 1215,
+        "exact_channel_codes": 768,
+        "endpoints_unchanged": true,
+        "effective_coordinates_monotone": true,
+        "selection": "完整可行域内逐点最近原坐标；无近似成功或自动扩大偏移"
+      }
+    },
+    "33": {
+      "sha256": "49231a3755bc2897f0d32f9ccb7578e11479d2e22cd0516a520915818f7cced0",
+      "report": {
+        "method": "exact_monotone_q16",
+        "maximum_shift": 4096,
+        "feasible": true,
+        "scope": "固定节点/idx/grid/端点和总偏移的精确单调坐标；仅原表完整验证的轴可分离结构；不可行返回None",
+        "channel_axes": [
+          0,
+          1,
+          2
+        ],
+        "verified_node_values": 107811,
+        "reason": null,
+        "status": "exact",
+        "changed_fractions": 15,
+        "maximum_actual_shift": 313,
+        "exact_channel_codes": 768,
+        "endpoints_unchanged": true,
+        "effective_coordinates_monotone": true,
+        "selection": "完整可行域内逐点最近原坐标；无近似成功或自动扩大偏移"
+      }
+    }
+  },
+  "shared_axis_failure": {
+    "method": "exact_monotone_q16",
+    "maximum_shift": 4096,
+    "feasible": false,
+    "scope": "固定节点/idx/grid/端点和总偏移的精确单调坐标；仅原表完整验证的轴可分离结构；不可行返回None",
+    "channel_axes": [
+      0,
+      0,
+      2
+    ],
+    "verified_node_values": 14739,
+    "reason": "pointwise_interval_empty",
+    "failures": [
+      {
+        "axis": 0,
+        "input": 8,
+        "reason": "shared_axis_interval_conflict",
+        "original_fraction": 32897,
+        "fraction_interval": [
+          32768,
+          32767
+        ],
+        "channel_constraints": [
+          {
+            "channel": 0,
+            "left": 0,
+            "right": 1,
+            "target": 0,
+            "interval": [
+              0,
+              32767
+            ]
+          },
+          {
+            "channel": 1,
+            "left": 0,
+            "right": 1,
+            "target": 1,
+            "interval": [
+              32768,
+              65536
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "global_monotone_failure": {
+    "method": "exact_monotone_q16",
+    "maximum_shift": 4096,
+    "feasible": false,
+    "scope": "固定节点/idx/grid/端点和总偏移的精确单调坐标；仅原表完整验证的轴可分离结构；不可行返回None",
+    "channel_axes": [
+      0,
+      1,
+      2
+    ],
+    "verified_node_values": 14739,
+    "reason": "monotonicity_conflict",
+    "witness": {
+      "axis": 0,
+      "left_input": 100,
+      "left_minimum_q": 425984,
+      "right_input": 101,
+      "right_maximum_q": 425983
+    },
+    "pointwise_intervals_nonempty": true
+  },
+  "scope": "有限合成契约及Filmic已验模型SHA复现；没有追加其他来源全域/百图"
+}

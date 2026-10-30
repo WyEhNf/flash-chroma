@@ -1,0 +1,120 @@
+{
+  "pass": true,
+  "summary": [
+    {
+      "variant": "baseline",
+      "requested_threads": 1,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 13.443810000000001,
+      "process_medians_apply_ms_per_image": [
+        13.63813,
+        13.482000000000001,
+        13.18211,
+        13.40562
+      ],
+      "process_median_range_ms_per_image": [
+        13.18211,
+        13.63813
+      ],
+      "median_copy_apply_ms_per_image": 13.556525,
+      "model_accounting_bytes": 1058292,
+      "serialized_input_bytes": 457468
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 1,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 11.955869999999999,
+      "process_medians_apply_ms_per_image": [
+        11.91508,
+        12.012540000000001,
+        11.86626,
+        11.996659999999999
+      ],
+      "process_median_range_ms_per_image": [
+        11.86626,
+        12.012540000000001
+      ],
+      "median_copy_apply_ms_per_image": 12.068005,
+      "model_accounting_bytes": 1058292,
+      "serialized_input_bytes": 457468
+    },
+    {
+      "variant": "baseline",
+      "requested_threads": 4,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 4.901260000000001,
+      "process_medians_apply_ms_per_image": [
+        4.95066,
+        4.910880000000001,
+        4.78524,
+        4.89164
+      ],
+      "process_median_range_ms_per_image": [
+        4.78524,
+        4.95066
+      ],
+      "median_copy_apply_ms_per_image": 5.011985000000001,
+      "model_accounting_bytes": 1058292,
+      "serialized_input_bytes": 457468
+    },
+    {
+      "variant": "candidate",
+      "requested_threads": 4,
+      "images": 100,
+      "stages": 4,
+      "median_apply_ms_per_image": 4.48301,
+      "process_medians_apply_ms_per_image": [
+        4.59592,
+        4.500179999999999,
+        4.4552700000000005,
+        4.46584
+      ],
+      "process_median_range_ms_per_image": [
+        4.4552700000000005,
+        4.59592
+      ],
+      "median_copy_apply_ms_per_image": 4.61576,
+      "model_accounting_bytes": 1058292,
+      "serialized_input_bytes": 457468
+    }
+  ],
+  "paired": [
+    {
+      "requested_threads": 1,
+      "numerator": "candidate",
+      "denominator": "baseline",
+      "process_ratios": [
+        0.8736593653235452,
+        0.8910057854917668,
+        0.9001791063797828,
+        0.894897811514872
+      ],
+      "median_ratio": 0.8929517985033194
+    },
+    {
+      "requested_threads": 4,
+      "numerator": "candidate",
+      "denominator": "baseline",
+      "process_ratios": [
+        0.9283449075476805,
+        0.9163693676082494,
+        0.9310442109486672,
+        0.9129535288778405
+      ],
+      "median_ratio": 0.9223571375779649
+    }
+  ],
+  "worker_sha256": [
+    "58ee70b07fcc42873263b5dd39272ae65662532723bc07d8e0f313cb2297ac3f",
+    "bfcfec1c2bbc7c6ad598f74e3170e554ba659078dfe1e23d3875e1ee64d64475",
+    "768add86ddd0cb8deba4ab97e37b992847662974c8e6e9995ca6f390c9bb2e28",
+    "5c17d5954c9ba82452a72ebafbc11e6b0a7e072ed83c2f33228db1e91a4eb93a"
+  ],
+  "scope": "一次新后端布局假设，非同包地址复用重试；节点/idx/9路frac/实际四级/图片/容量完全相同，两独立库及各实际已载GCC依赖SHA明确。完整native和100图已与同一oracle流逐字节一致。四进程串行平衡顺序，1/4请求线程各5遍完整100图，未锁频/控温/绑核，不称统计显著或官方成绩。仅按结果前冻结3%/2%及总耗时门槛判定；任一失败止步，不扫描其它编译/布局参数，不PR/push/默认升级。",
+  "sample_unit": "一次100图完整组，ms/图为摊销值而非单图延迟",
+  "clock_temperature_affinity_controlled": false
+}

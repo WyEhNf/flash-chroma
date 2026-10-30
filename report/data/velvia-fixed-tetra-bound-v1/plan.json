@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "purpose": "用原始uint64全域矩和Python大整数/Fraction证明固定2dd权威坐标的合法四面体模型无法全色域RGB8零误差；不求解新模型",
+  "inputs": {
+    "model": {"path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut", "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"},
+    "grid": {"path": "artifacts/joint-grid-full-prepare/baseline-grid.npy", "sha256": "1b62bbc42278fc9deb993e1dc3b1c1973fbc9a47aa7e108d891c51cec26d2eb3"},
+    "table": {"path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256", "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"},
+    "matched_results": {"path": "artifacts/velvia-matched-operators-v1/results.json", "sha256": "66de80cb4bfcd4c896634ec805c9c2b95c802c2614addebd0ec6ccac97cfc2a8"},
+    "matched_nodes": {"path": "artifacts/velvia-matched-operators-v1/matched-nodes.npz", "sha256": "7ab5097817328a9cf1b10b0fca81230c7ec56f3937971d20eb2ecb06abeebd26"}
+  },
+  "trainer": {
+    "path": "build-fit/libjshc_full_fit.dll",
+    "sha256": "1d333018af57ebceb0df54e49daa0e000c78162a33cfce4680a5a7639fbf0024",
+    "embedded_source_fingerprint": "6a23eaf5044cb317279385d9623a88fc80ff7612ba404fb4bfd681c460a164bf",
+    "abi": 1,
+    "threads": 4
+  },
+  "raw_integer_system_sha256": "ef446bbdce4c76897ad779e67d0753628e7e5158d740793832c82dd6fe8c65a1",
+  "certificate": {
+    "method": "nearest_rgb_symmetric_gershgorin_q16",
+    "witness_count": 35937,
+    "witness_rgb_sha256": "007570db8b5450a48be7791240d0604a0dec6bb34cd4c458802b2b5d5ed9c6fd",
+    "axis_tables_sha256": "1ff86af3f1ef14397e55e58a78792b3105174ac0cbbe4a63e55b007f79b4f692",
+    "minimum_twice_symmetric_margin_q16": 81423,
+    "hessian_eigenvalue_lower_bound_ratio": [6629704929, 1099511627776]
+  },
+  "rational_vector": "仅把已冻结tetra_float64按精确float有理值half-up取Q20，允许该证据向量越界；不生成或量化可部署模型",
+  "arithmetic": "原始矩只组装一次。Hnum*zint、独立二次型、残差平方及最终Fraction比较全部Python任意精度整数；不用float64矩乘或残差作为证明",
+  "normalisation": "N=2^24，Q=2^16；F=||Az-y||^2/64，H=Hnum/2^38，b=bnum/2^22，c=c_raw/64；z=zint/2^20",
+  "proof_formula": "gnum=Hnum*zint-bnum*2^36；Fnum=zint·(gnum-bnum*2^36)+c_raw*2^72；MSE_lower=(k*Fnum-4*sum(gnum^2))/(k*2^96)，k=6629704929",
+  "acceptance": "输入、ABI、完整矩SHA和独立整数见证证书全匹配；原始矩常量守恒及两种整数二次型一致；精确Fraction下界>3/4才声明固定坐标合法节点全域零误差不可能",
+  "environment": "Windows11 26200 x64，Ryzen9 8945HX，Python3.12.14/NumPy1.26.4；原生旧输入矩组装实际线程写入回执，requested=4，BLAS1；最终证明运算Python大整数/Fraction；不是运行时后端或性能测试",
+  "limits": "只限原2dd固定idx/frac、凸四面体和RGB8或[0,255]节点。未约束节点再clip、新DP坐标/网格、其它算子不在结论内；不能证明其它候选无解、当前2dd接近理论最优、mean或p99具体下界、官方或SOTA结论。不拟合、不新模型、不native映射、不新full输出、不100图、不性能、不改核心/默认/根代理驱动，不提交推送PR。"
+}

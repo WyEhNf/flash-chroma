@@ -1,5 +1,7 @@
 # 文档索引
 
+[2026-10-19 最新精度与后端结果](stages/2026-10-19-precision-latest.md)汇总当前已验模型、误差来源和速度代价；新研究方案未自动替换公共默认。
+
 当前开发与验收入口以根目录 [README](../README.md)、[TOOLCHAIN](../TOOLCHAIN.md)、[pixi.toml](../pixi.toml) 和 [CMakePresets.json](../CMakePresets.json) 为准。下列阶段文档保存对应阶段的方法与证据，里面的本机路径、分支名、构建命令和性能数字不是当前配置的承诺。
 
 ## 当前接口与规则
@@ -56,6 +58,40 @@
 
 ## 冻结报告与早期研究
 
+- [2026-10-18 联合网格与节点](stages/2026-10-18-joint-grid.md)：Velvia完整域及百图改善，未泛化成功的对照保留。
+- [2026-10-18 真实RGB8与完整照片测度](stages/2026-10-18-rounded-grid.md)：采样偏差、整数目标及max退化反例。
+- [2026-10-18 Cinema四级链优化](stages/2026-10-18-cinema-rounded.md)：完整域mean降低14.09%、p99降低7.07%，百图mean降低12.89%，完整三后端一致；另列前缀不可逆混叠归因。仅本地研究，暂不创建PR。
+- [2026-10-19 首级与后缀保持度量](stages/2026-10-19-cinema-prefix.md)：保留本级损失、训练测度与共享节点的未入围对照。
+- [2026-10-19 单调坐标校准](stages/2026-10-19-axis-calibration.md)：四级链累计完整域mean/p99降低20.42%/12.10%、百图mean降低17.72%，模型字节数保持，插值函数族扩大。
+- [2026-10-19 同机速度与内存](stages/2026-10-19-precision-performance.md)：三版模型18次原生交错比较，显式AVX2、1/4线程、完整百图原始计时；无额外模型内存成本，不作微小差异显著加速声明。
+- [2026-10-19 Lomo整数对照](stages/2026-10-19-lomo-rounded.md)：均值改善却尾部退化，未入围，未执行新增完整终验。
+- [2026-10-19 校准坐标后的节点](stages/2026-10-19-calibrated-nodes.md)：归因后固定四扫，样本收益不足，不做完整验收。
+- [2026-10-19 精确舍入事件搜索](stages/2026-10-19-exact-axis.md)：同坐标边界内约75万项合同通过，完整训练目标小幅下降，选择样本mean/p99未入围，停止同范围搜索。
+- [2026-10-19 Velvia坐标对照](stages/2026-10-19-velvia-exact-axis.md)：加入逐原色尾部保护，照片样本mean仅降约0.3%，不入围、不完整终验。
+- [2026-10-19 Filmic解析校准](stages/2026-10-19-filmic-calibration.md)：同SHA重建PR41，33³完整域与百图误差归零，17³照片mean降低90.68%，限定严格可分离特例。
+- [2026-10-19 Filmic直接单调约束](stages/2026-10-19-filmic-direct-monotone.md)：另立阶段排除保守静态边界，17³也完整验零，仍固定节点/idx/网格与总偏移。
+- [2026-10-19 精确单调API](stages/2026-10-19-separable-calibration-api.md)：11项集中合同，覆盖通道置换/共享输入轴、精确可行与明确回退。
+- [2026-10-19 同家族四级先导](stages/2026-10-19-filmic-chain-calibrated.md)：原链已被后缀消去局部误差，停止完整验收，不记作新收益。
+- [2026-10-19 等距四级控制链](stages/2026-10-19-filmic-isometric-chain.md)：统一CLI/不可变缓存，四张不同原表与逐级RGB8，17³完整域/百图误差归零，标量/AVX2/C99一致。
+- [2026-10-19 解析17³性能](stages/2026-10-19-calibrated-performance.md)：18次交错原生比较，4线程2.55ms/图，容量相对33³减少83.22%；同容量单线程略慢，不称所有配置加速。
+- [2026-10-19 Velvia插值归因](stages/2026-10-19-velvia-interpolation.md)：同节点换三线性及源浮点顶点对照，区分最坏色节点偏移与一般p99残差。
+- [2026-10-19 Velvia成对节点](stages/2026-10-19-velvia-guarded-pair.md)：固定逐色上限的4+1调整，原色样本mean/p99下降但照片mean未达3%，不完整终验。
+- [2026-10-19 Velvia残差分布](stages/2026-10-19-velvia-error-mass.md)：照片mean主要由广泛小误差承载，局部G上沿的条件改善上界不足3%。
+- [2026-10-19 舍入区间目标](stages/2026-10-19-velvia-rounding-interval.md)：一次集中梯度合同与固定连续提议；部分尾部改善但真实硬cap违规，拒绝采用。
+- [2026-10-19 照片优先测度](stages/2026-10-19-velvia-photo-priority.md)：同预算单一权重对照，选择集未优于均衡质量，不扫描权重。
+- [2026-10-19 匹配算子拟合](stages/2026-10-19-velvia-matched-operators.md)：相同完整均匀L2和网格各自拟合，三线性仍未改善一般探针，不以同节点诊断代替公平对照。
+- [2026-10-19 唯一三次基](stages/2026-10-19-velvia-cubic-lagrange.md)：训练矩MSE恶化6.45%，未触发探针或完整测试。
+- [2026-10-19 完整单元单调DP](stages/2026-10-19-velvia-monotone-dp.md)：解除静态坐标边界后照片样本改善约2.46%，未入围。
+- [2026-10-19 整数节点/坐标交替](stages/2026-10-19-velvia-alternating-integer.md)：固定三轮后照片样本mean约降2.67%，原门槛失败且不追加轮数。
+- [2026-10-19 固定坐标表达能力证书](stages/2026-10-19-velvia-fixed-tetra-bound.md)：整数矩与有理运算证明原固定坐标四面体不可能全域RGB8验零；不等于当前模型接近最优，不外推新函数族。
+- [2026-10-19 唯一R反射](stages/2026-10-19-velvia-r-reflection.md)：改变体对角线后同条件连续MSE恶化52.01%，按预定门槛停止，没有生成新模型或追加完整测试。
+- [2026-10-19 输出裁剪归因](stages/2026-10-19-velvia-output-clipping.md)：旧完整字节显示照片73.53%距离误差来自内部输出组，不能把尾部端点关联当作裁剪因果。
+- [2026-10-19 节点RGB联合方向](stages/2026-10-19-velvia-rgb-joint.md)：集中解析和整数合同通过；真实单扫只有很小收益，仍未入围。
+- [2026-10-19 Emerald精确17³](stages/2026-10-19-emerald-calibrated.md)：PR41第二个可分离来源，实际完整域/百图验零，5原生后端一致；相对33³文件减少83.22%，没有新性能计时。
+- [2026-10-19 分输出坐标](stages/2026-10-19-velvia-channel-coordinates.md)：同33³节点的9块单调DP，固定样本选择入围，增加坐标容量与计算。
+- [2026-10-19 新表示完整精度](stages/2026-10-19-velvia-channel-coordinates-accept.md)：cube mean/p99约降5.84%/9.65%、百图mean降4.47%；保留audit与逐图退化。
+- [2026-10-19 原生落地及SIMD代价](stages/2026-10-19-channel-native.md)：单级/四级完整native一致，packed实现较首版耗时降约21%；相对原2dd仍慢约44%，4线程4.83ms/图。
+
 - [R27 已测版本 PDF](../report/latest/problem16-latest-tested-report.pdf)：对应本地固定数据和机器，不能当作官方成绩。
 - [历史 Typst 报告与重建说明](../report/README.md)。
 - [原始数据与哈希索引](../report/data/DATA_INDEX.md)。
@@ -63,3 +99,17 @@
 - [R15 工具链实验](../experiments/r15-zig-default-pixi.md)、[R16 路线探索](../experiments/r16-five-directions.md)。
 
 冻结证据继续保留原有文件与路径，避免破坏报告引用。需要新结论时，应固定新提交、输入清单、模型、构建与机器后重新测量，而不是改写历史记录。
+
+- [2026-10-19 两图频数归因](stages/2026-10-19-channel-frequency-transfer.md)：固定反例显示单图重复颜色可放大小码值退化，未加入训练。
+- [2026-10-19 分通道节点精化](stages/2026-10-19-velvia-channel-nodes.md)、[整块节点平移](stages/2026-10-19-velvia-channel-blocks.md)：两种各一次有限提议增量不足，未追加完整测试。
+
+- [2026-10-19 新几何连续空间](stages/2026-10-19-channel-continuous-floor.md)：三路完整整数矩与独立有理证书，区分连续可行空间和RGB8部署收益。
+
+- [2026-10-19 全局盒节点提议](stages/2026-10-19-channel-global-nodes.md)：连续代理下降，但量化及cap撤销后的真实RGB8目标回退，未入围；未做完整验收。
+
+- [2026-10-19 分通道几何的26方向联合节点](stages/2026-10-19-channel-joint-nodes.md)：用共享cube的奇偶角唯一性合并三路不同权重，真实整数目标提议增量仍不足；节点邻域研究收束。
+
+- [Cinema分输出坐标](stages/2026-10-19-cinema-channel-suffix-coordinates.md)与[后缀联合节点](stages/2026-10-19-cinema-channel-suffix-joint-nodes.md)：分别保留mean门槛不足和max回退的固定负结果。
+- [旧cap单色解释](stages/2026-10-19-cinema-cap-anchor-diagnosis.md)与[当前锚点修正](stages/2026-10-19-cinema-current-anchor.md)：首级1码值传播及全域统一约束，未把guard反例加入训练。
+- [Cinema完整终验与实际四级成本](stages/2026-10-19-cinema-current-anchor-accept.md)：百图mean全部改善，尾部代价与约46%运行成本分列。
+- [节点读取复用负结果](stages/2026-10-19-channel-runtime-reuse.md)与[固定四级专门化](stages/2026-10-19-channel-runtime-specialized.md)：两项不同假设各自冻结、各一次同机比较，不混合计时或隐去失败。

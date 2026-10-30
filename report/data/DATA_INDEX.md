@@ -1,5 +1,13 @@
 # 报告数据索引
 
+最新本地汇总见[当前精度结果](../../docs/stages/2026-10-19-precision-latest.md)。`cinema-current-anchor-accept-v1`保存a399真实四级完整域/百图/独立整数与原生终验、逐图退化、约46%成本背景；`channel-runtime-specialized-v1`保存同a399模型的唯一编译期专门化合同、完整原生等价和受控配对速度收益，两个阶段的速度不跨阶段相乘。
+
+`cinema-channel-suffix-coordinates-v1`、`cinema-channel-suffix-joint-nodes-v1`保留两个未入围候选；`cinema-cap-anchor-diagnosis-v1`保留唯一原色的逐级轨迹；`cinema-current-anchor-v1`保留统一收紧191色及唯一整合拟合/选择。`channel-runtime-reuse-v1`保留节点读取减少却变慢的负结果。新格式未接公共默认/GUI/C99，仍无官方数据或Threshold。
+
+2026-10-19本地精度研究新增：[Filmic静态解析校准](filmic-calibration-v1/report.md)、[直接单调m17](filmic-direct-monotone-v1/report.md)。同SHA恢复PR41来源与两尺寸基线，m33及后续独立m17候选完整256³/百图误差归零，保留逐图与实际单级后端证据；这是严格可分离单LUT特例，不代表通用三维或四级比赛链。另有[Cinema节点续优化](cinema-calibrated-nodes-v1/report.md)、[Cinema精确事件搜索](cinema-exact-axis-v1/report.md)、[Velvia事件搜索](velvia-exact-axis-v1/report.md)三个未入围对照，未执行新增完整验收或速度测试。历史PDF范围不变，不宣称官方成绩或SOTA。
+
+[通用精确单调API](separable-calibration-api-v1/README.md)集中11项合同通过并接入显式CLI方法，默认策略不变。[同家族四级先导](filmic-chain-calibrated-v1/report.md)发现旧链已精确、停止新增完整验收；另立[等距四级控制链](filmic-isometric-chain-v1/report.md)，在四张不同原表及逐级RGB8下，新17³完整256³/100图误差归零，标量/AVX2/C99一致。[独立性能](filmic-isometric-runtime-v1/report.md)保留18次交错同机调用，文件容量相对33³减少83.22%，同容量单线程略慢，不能称所有配置加速。[Velvia有界插值归因](velvia-interpolation-diagnosis-v1/report.md)显示单换算子或采样节点不能同时改善一般mean/p99，旧极端节点偏差远超纯量化；未产生新模型。
+
 [R51](r51/README.md)记录有界CG续算：四个已成功配置保持16张旧模型字节，一个原失败m33模型恢复并通过CPU/CUDA/C99三条完整色域一致性检查。其RGB误差仍高，不替换质量冠军。五配置追加方法边界标签，比较账本保留原38条有效观测及1条失败，原矩阵分母不变。
 
 [R50](r50/README.md)保存分片执行的一次集中验收、旧写入器受控退出检查点，以及45条R45/R47资格记录正式导入的凭据。2条新完整色域流精确复现原模型/输出/指标/23组探针，52条旧记录未重跑。新控制器最多4个普通子进程续跑；原7917项分母和数值版本不变，留出评估尚未执行。
@@ -38,3 +46,24 @@
 
 原始图像和完整 LUT 约 1.8 GiB，保留在被 Git 忽略的 `data/`；本归档只保存清单和实验记录。
 `run_records_exact.tar.gz` 包含运行目录中的 JSON、stdout、测试日志和代码差异；路径及字节不变。
+本地补充：`paired-grid-contract-v1`保存成对节点的纯合成实现合同；`velvia-guarded-pair-v1`保存实际Velvia固定4+1拟合与未入围选择证据。二者不能替代完整精度验收，后者没有新增百图或原生性能结果。
+
+本地后续：`velvia-error-mass-v1`为旧字节的完整质量归因；`rounding-interval-contract-v1`为合成目标/梯度合同；`velvia-rounding-interval-v1`和`velvia-photo-priority-v1`为两个分别冻结的真实拟合负结果，均未入围，无新增完整终验。
+
+本地插值归因：`velvia-matched-operators-v1`分别拟合匹配的四面体/三线性；`velvia-cubic-lagrange-v1`的单一三次基未达到训练矩门槛，未评价探针。`monotone-axis-contract-v1`保存完整单元DP集中合同，`velvia-monotone-dp-v1`保存真实未入围结果。
+
+本地后续归档：`velvia-alternating-integer-v1`保存固定三轮坐标/节点交替与未入围结果；`velvia-fixed-tetra-bound-v1`保存原固定坐标的有理MSE下界证书；`velvia-r-reflection-v1`保存唯一R反射同条件连续拟合的负结果。三者均无新完整输出、百图或运行时性能验收，不能替代已验收冠军。
+
+本地下一阶段：`velvia-output-clipping-v1`只分析旧完整输出与60图频数的饱和相关性；`rgb-joint-grid-contract-v1`验证26个RGB联合方向；`velvia-rgb-joint-v1`保存单次真实提议及未入围结果。无新增完整精度或性能验收。
+
+`emerald-calibrated-v1`完成另一可分离来源的17³实际模型，候选完整色域/百图误差均为零，5个原生后端与独立整数参考一致。包含三模型300条逐图与独立解析聚合；旧两基线cube指标是曲线卷积，未重映射旧cube。不新增四级或性能计时。
+
+`velvia-channel-coordinates-v1`保存9块一次新表示与选择；`velvia-channel-coordinates-accept-v1`保存唯一候选完整精度，cube mean/p99约降5.84%/9.65%、100图mean降4.47%，逐图/audit局限完整披露。`channel-native-v1`另存独立C ABI的合同、单级/四级等距控制完整输出回执、实际应用与两阶段串行性能比较；新表示有内存及速度代价，默认不变。
+
+`channel-frequency-transfer-v1`记录两图固定频数与118个中间反例，指出0843由重复灰色主导。`velvia-channel-nodes-v1`和`velvia-channel-blocks-v1`分别保存分通道坐标固定后的单点/2³块一次提议，均未达到额外双mean0.5%门槛，未做完整精度/native/性能验收。
+
+`channel-continuous-floor-v1`保存三路权威几何的完整整数矩、连续解和精确盒下界；独立标准库审计通过。当前节点与clip连续可行点有16.76%未舍入均匀MSE空间，不等于真实RGB8/照片mean或p99收益。
+
+`velvia-channel-global-nodes-v1`保存一次160步全局连续节点及三轮cap撤销；连续代理改善未转为真实RGB8收益，完整记录失败、离线内存和未执行范围。
+
+`velvia-channel-joint-nodes-v1`保存最后一次8色26方向RGB联合提议及集中独立整数合同；相对3e5选择双mean仅降约0.107%，未入围，节点族收束，未执行新完整精度或性能验收。

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "purpose": "同一3e5候选，唯一的同包两内点RGB地址复用SIMD改动后的集中完整字节验收",
+  "inputs": {
+    "library": {
+      "path": "artifacts/channel-native-runtime-reuse-v1/jshc_channel_reuse.dll",
+      "sha256": "d340e5956d5e67f82ce007f09b171966d49364bec5cfb66c0cdfd9f1656f0c80"
+    },
+    "build": {
+      "path": "artifacts/channel-native-runtime-reuse-v1/build.json",
+      "sha256": "5dbb339d403b26cbba964cf3aca543897df2daca2da59766bad8f270aeab9fee"
+    },
+    "contract": {
+      "path": "artifacts/channel-native-contract-reuse-v1/results.json",
+      "sha256": "82f8cbe73d7326b99a07a3ada2a0313a202c121c72f7702c811ac229839f062b"
+    },
+    "representation": {
+      "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+      "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+    },
+    "initial": {
+      "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+      "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+    },
+    "selection": {
+      "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+      "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+    },
+    "full_results": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/results.json",
+      "sha256": "290150d6d393d02fa9c51ffbfa3c75c3cbf5d64a4992abff498079b8c147b121"
+    },
+    "cube": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+      "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    }
+  },
+  "controls": [
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage2.slut",
+      "sha256": "b51fc9173e5161badd0af24cb78158d28320325ed72856e65cfeacb6e30b234c"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage3.slut",
+      "sha256": "d49c1c63ed2e252babf1432c1833b9c51c871f66290356e0d0a3698459040eee"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage4.slut",
+      "sha256": "e7185d15b0776e6ad84b013bc90fb85dc99f99ad0d052b4587f1cd6b4c5c9427"
+    }
+  ],
+  "source_lut_sha256": [
+    "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "abe7cce0a85a0d73dac433dc3031568bcc217c60b9f07585e1ad5eedbe9237e8",
+    "4ab8eed4247e35a693bea64a396413aa25679389c24d1e753b09845e8fcb157f",
+    "8d0c1a237f45f23ec4dec8f7f224408fa9f9409605a60c886fb4dab897482a29"
+  ],
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX/32GB/Python3.12.14/NumPy1.26.4；实际GCC15.2 Release -O3 -DNDEBUG，独立AVX2 TU/CPUID+OS检查。两个后端cube各完整，标量1线程/AVX2请求4；100图AVX2请求4；不测速。",
+  "limits": "新的每输出通道Q16权重及独立实验C ABI，不是SLUTv1公共入口已支持或官方认可。一个33³RGB8节点张量，base普通SLUT+9216字节原型侧表（理想替换原frac逻辑增6144），如实记容量。四级是Velvia+cycleGBR/invertRGB/swapRG三个不同且完整整数等距控制，非自然四级ISP泛化；参照复用已全域u64验证的冻结新模型流，控制全部节点及768码值精确证明，额外完整生成核三个源LUT SHA。每级独立RGB8/顺序执行。仅研究库标量/AVX2，不声称C99或其他ISA支持。无新拟合/选型，不改核心/默认/SLUTv1，不PR推送。",
+  "contract_history": "冻结channel-runtime-reuse-policy-v1后构建独立候选；集中m17/18/25/33、显式方向一致/不一致包及端点/尾部/未对齐合同通过。现在仅一次完整原生字节核验，不重拟合或重选精度。"
+}

@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "purpose": "同机同组比较三个固定上下文：原2dd、同一精度候选旧运行时、同一候选packed运行时；分离精度代价与硬件实现成本",
+  "inputs": {
+    "library": {
+      "path": "artifacts/channel-native-runtime-v3/jshc_channel_packed.dll",
+      "sha256": "7ceb30d7913a8cf032e1828c25c3fe062082be8e9d531d105282ba8d1794b072"
+    },
+    "native_acceptance": {
+      "path": "artifacts/channel-native-accept-packed-v1/results.json",
+      "sha256": "0f7bcc2ca62b12be45005b55f58f9dcf7ecb9a64330466beefbf08ceba650366"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    },
+    "baseline_model": {
+      "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+      "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+    },
+    "baseline_cube": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+      "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+    },
+    "candidate_base": {
+      "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+      "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+    },
+    "candidate_sidecar": {
+      "path": "artifacts/channel-native-accept-v1/channel-frac.bin",
+      "sha256": "a132c41acadb07894172dc0b9798566602fffb1cbd82ac7ce67d7408c9e6c7ba"
+    },
+    "candidate_cube": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+      "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+    },
+    "build": {
+      "path": "artifacts/channel-native-runtime-v3/build.json",
+      "sha256": "86d9c9003a4a9dbe230ae0b30f1973e395df1109785bdaa2b689c0b57f24bb24"
+    },
+    "baseline_library": {
+      "path": "artifacts/channel-native-runtime-v2/libjshc_channel_research.dll",
+      "sha256": "6905b23636eaadeb15af1756b108a35619042d3da131ebf40ea1718ea0ebf500"
+    },
+    "baseline_sidecar": {
+      "path": "artifacts/channel-native-accept-v1/channel-frac.bin",
+      "sha256": "a132c41acadb07894172dc0b9798566602fffb1cbd82ac7ce67d7408c9e6c7ba"
+    },
+    "original_model": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+      "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+    },
+    "original_cube": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+      "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+    }
+  },
+  "controls": [
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage2.slut",
+      "sha256": "b51fc9173e5161badd0af24cb78158d28320325ed72856e65cfeacb6e30b234c"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage3.slut",
+      "sha256": "d49c1c63ed2e252babf1432c1833b9c51c871f66290356e0d0a3698459040eee"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage4.slut",
+      "sha256": "e7185d15b0776e6ad84b013bc90fb85dc99f99ad0d052b4587f1cd6b4c5c9427"
+    }
+  ],
+  "repeats": 5,
+  "orders": [
+    [
+      "original",
+      "baseline",
+      "candidate"
+    ],
+    [
+      "baseline",
+      "candidate",
+      "original"
+    ],
+    [
+      "candidate",
+      "original",
+      "baseline"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ]
+  ],
+  "timing_scope": "三个新进程串行，同100图235929600字节，预加载后各上下文完整组预热+SHA校验，再5次原生完整组；ABC/BCA/CAB轮换配置位置。1/4线程分别对同进程求配对比。复制与apply分列；计时外不含加载/IO/hash，完整组摊销到每图。OMP_DYNAMIC=FALSE，不锁频/绑核/温度。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX/32GB/GCC15.2 Release -O3 -DNDEBUG，实际AVX2+OpenMP，NumPy1.26.4/Pillow10.4/Python3.12.14只做预加载与调度，BLAS/MKL/OMP各1；原生线程数按调用传1/4。无其他数值任务并行，未锁频/温度/绑核。",
+  "limits": "固定模型节点/idx/channel_frac及输入不变，原型old/packed输出已各自单级/四级完整色域及百图逐字节相同。两个DLL以不同basename显式载入并核revision/字节SHA，不混用历史机器时间。相对未优化运行时衡量三项合并改动整体收益，不拆分独立贡献；同时相对原2dd披露最终精度换来的剩余成本。四级仍为Velvia+3个不同整数等距控制，不是自然ISP泛化。三个进程五次完整组，不作统计显著/官方成绩。一次冻结硬件改进比较，不调线程/批量/内核矩阵，不改默认/PR/push。",
+  "variants": [
+    "original",
+    "baseline",
+    "candidate"
+  ],
+  "labels": {
+    "original": "原2dd普通四面体",
+    "baseline": "同一新模型的未合并轴/端点运行时",
+    "candidate": "同一新模型的packed轴/端点复用/高低轴运行时"
+  },
+  "required_revisions": {
+    "baseline": 1,
+    "candidate": 2
+  }
+}

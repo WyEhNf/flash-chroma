@@ -1,0 +1,116 @@
+{
+  "pass": true,
+  "purpose": "一次集中合同：不同通道几何下块联合收益/cap、完整缓存与独立整数oracle。",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "numba_threads": 4,
+  "seed": 2026101921,
+  "cases": [
+    {
+      "m": 17,
+      "channel": 0,
+      "points": 64,
+      "legal_directions_checked": 258,
+      "forbidden_directions": 63,
+      "zero_mass_cap_directions": 6,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    },
+    {
+      "m": 17,
+      "channel": 1,
+      "points": 64,
+      "legal_directions_checked": 256,
+      "forbidden_directions": 64,
+      "zero_mass_cap_directions": 6,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    },
+    {
+      "m": 17,
+      "channel": 2,
+      "points": 64,
+      "legal_directions_checked": 254,
+      "forbidden_directions": 50,
+      "zero_mass_cap_directions": 6,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    },
+    {
+      "m": 33,
+      "channel": 0,
+      "points": 64,
+      "legal_directions_checked": 277,
+      "forbidden_directions": 56,
+      "zero_mass_cap_directions": 6,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    },
+    {
+      "m": 33,
+      "channel": 1,
+      "points": 64,
+      "legal_directions_checked": 279,
+      "forbidden_directions": 51,
+      "zero_mass_cap_directions": 6,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    },
+    {
+      "m": 33,
+      "channel": 2,
+      "points": 64,
+      "legal_directions_checked": 272,
+      "forbidden_directions": 58,
+      "zero_mass_cap_directions": 5,
+      "maximum_gain_error": 0.0,
+      "integer_oracle_mismatches": 0,
+      "cap_count_mismatches": 0
+    }
+  ],
+  "full_24_block_cache_runs": [
+    17,
+    33
+  ],
+  "coherent_step_crosses_single_node_plateau": true,
+  "source_sha256": {
+    "scripts/verify_channel_blocks.py": "8dca2e62b7a233ffb74bda89e8c638e13ca3593ec6dc964f18d71d73bc787180",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "python/lutlab/channel_blocks.py": "035992c1f08977fc2f5ee1eafc40d27caec27ae25f70d63bb4eec2e16c006350",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/interp.py": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "limits": "合成整数合同，不是实际LUT精度、全色域验收或性能；没有证明任意块全局最优"
+}

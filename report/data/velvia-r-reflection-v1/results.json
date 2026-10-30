@@ -1,0 +1,77 @@
+{
+  "run_identity": "c78b28d5aeecbeff755f685a2615255805aa68ab153d313601789cfaac41f546",
+  "assembly_calls": 1,
+  "native_metadata": [
+    16777216,
+    4,
+    32,
+    1,
+    401381165656,
+    372708601024,
+    406395407002
+  ],
+  "integer_system_sha256": "f5ff3ad7dd20ae504a9695b7350e96fd61b8a2711ff627ab9d104da1eeb9af9a",
+  "reflected_table_array_sha256": "0b380beacad822dc3b386bd22963216da5889aec1c12eddacb90d8d22e87df51",
+  "support_certificate": {
+    "method": "nearest_rgb_symmetric_gershgorin_q16",
+    "witness_count": 35937,
+    "witness_rgb_sha256": "305792043ac6826c8e53a72dbd8fd09afa20eb12a27428bcf42cb2ce411f0421",
+    "axis_tables_sha256": "64965b0f664baf7cd1cb773fa18ae0a640b8d921f81335382b25318bd651d2e7",
+    "minimum_twice_symmetric_margin_q16": 80466,
+    "singular_value_lower_bound_ratio": [
+      80466,
+      131072
+    ],
+    "hessian_eigenvalue_lower_bound_ratio": [
+      6474777156,
+      1099511627776
+    ],
+    "hessian_eigenvalue_lower_bound": 0.0058887755185423885,
+    "integer_grid": false,
+    "scope": "互异见证均为完整RGB域子集；H=sum(w*w^T)/64；证书只证明当前权威Q16设计正定，不证明RGB8精度"
+  },
+  "solver": [
+    {
+      "channel": 0,
+      "info": 0,
+      "iterations": 25,
+      "relative_residual": 4.943459774767243e-14,
+      "residual_norm": 1.080216103659394e-08
+    },
+    {
+      "channel": 1,
+      "info": 0,
+      "iterations": 24,
+      "relative_residual": 9.65725108745942e-14,
+      "residual_norm": 2.073670925809577e-08
+    },
+    {
+      "channel": 2,
+      "info": 0,
+      "iterations": 25,
+      "relative_residual": 6.090290789162925e-14,
+      "residual_norm": 1.340452555751695e-08
+    }
+  ],
+  "effective_regularization": 0.0,
+  "continuous_uniform_mse_from_normal_moments": 2.816171668979223,
+  "matched_standard_mse": 1.8526704487157986,
+  "relative_reduction": -0.5200607700799067,
+  "gate_passed": false,
+  "gate_threshold_mse": 1.4821363589726388,
+  "continuous_node_min": -14.068891202300252,
+  "continuous_node_max": 257.4920492338434,
+  "continuous_node_channels_outside_rgb8": 14415,
+  "regenerated_grid_idx_mismatches": 0,
+  "regenerated_grid_frac_mismatches": 0,
+  "mirrored_grid_float32_maximum_change": 7.62939453125e-06,
+  "evaluation": {},
+  "folded_rgb8_model": null,
+  "artifact_sha256": {
+    "reflection-nodes.npz": "6062e2001d223272d0906f9926c4e71c425493b64aaef9674740a940a6958318",
+    "raw-integer-moments.npz": "9b4ca1328e7df831dc3b5fdffa2b044dd6cef015e10786e116ab582e80c50717",
+    "measured-source.zip": "cb35535fbd4fad9ab0c9930862b37dd745a2390e2a5ebd2506c8a34887f31215"
+  },
+  "limits": "唯一R轴反射一次匹配连续LS，非G/B或全部对角线扫描。降序权威轴表是明确新增参数化，文件字节数相同不代表原非降模型类或官方认可；节点仍原m33 RGB8容量。连续节点不可部署，RGB8节点仅clip+half-up控制不称整数最优。完整域已用于训练，探针不独立；旧2dd仅不同目标参照。旧严格下界不适用于本设计。不native映射、不新full输出/100图/性能，不改核心/默认/根驱动，不提交推送PR，不宣称SOTA。若库/支撑证书/公式矛盾即停止，不自动换方案。",
+  "interpretation": "连续矩MSE为浮点近似LS诊断，无区间舍入证书；probe及SLUT只在20%门槛触发后产生，native尚未验收"
+}

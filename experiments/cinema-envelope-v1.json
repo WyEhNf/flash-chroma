@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "status": "冻结实验设计；实际执行状态以独立输出目录记录为准",
+  "purpose": "保留首轮真实到达频数/本级原表目标和4扫，仅增加全色域整链尾部包络，检验能否保住max并同时降低mean/p99",
+  "case": "cinema-chain2",
+  "m": 33,
+  "optimized_stage": 4,
+  "frozen_stages": [
+    1,
+    2,
+    3
+  ],
+  "baseline_models": [
+    {
+      "path": "artifacts/full-domain-joint-v2/repaired-stage1.slut",
+      "sha256": "cef37f82a0335af370028083bd6254a53b72ca48cea7923bcf78e9ebc61fe57a"
+    },
+    {
+      "path": "artifacts/full-domain-joint-v2/repaired-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/full-domain-joint-v2/repaired-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/full-domain-joint-v2/repaired-stage4.slut",
+      "sha256": "d46a7a9256dae5f874138f57b7f5160e39def395ab56a2d4b0d1911d91b9e6c2"
+    }
+  ],
+  "tables": [
+    {
+      "stage": 1,
+      "path": "artifacts/chain-error-cache/source-307edcd6b7b55fff03392f5e/table.lut256",
+      "sha256": "37b1fa642957a648294301c281d6e261391857e93bd163fe2fd592df7f673944",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1910s.cube",
+      "source_sha256": "2ae2f4c62d028e41cf132f0d87f9098240fb8232195e602ed316c94cc0d38538"
+    },
+    {
+      "stage": 2,
+      "path": "artifacts/chain-error-cache/source-7b6980ce01910cd2b18ed3b9/table.lut256",
+      "sha256": "ccd454354df9a9e7da30e1022da31e66d65d2051b775a15995b76de09523aae8",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1920s.cube",
+      "source_sha256": "8f4f6ece25f0979b952c77e0d62a0e695310201a882fa8d7002471af0ff430f4"
+    },
+    {
+      "stage": 3,
+      "path": "artifacts/chain-error-cache/source-864defbd3b3e0712936e347c/table.lut256",
+      "sha256": "733f2578420247456b7b5bd07aa570c8d1b6a50173b1494a27c7dbaa5c330cfd",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1930s.cube",
+      "source_sha256": "a82f33eaeb5e834c15d845e3ce2cda26d9f2aadb179af3dd25b79cceec838bf9"
+    },
+    {
+      "stage": 4,
+      "path": "artifacts/chain-error-cache/source-d69ca4fa6f34c990a0bc752d/table.lut256",
+      "sha256": "5ffcbb5032b6c8a10aaad2c6649fa1ad85fd7e920121d8b0460ec6f181cb7b00",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1940s.cube",
+      "source_sha256": "d568987e472432d63afba500d4daa26022c86d1db1739056c19431e5175baee7"
+    }
+  ],
+  "baseline_evidence": {
+    "results": {
+      "path": "artifacts/full-domain-joint-v2/results.json",
+      "sha256": "4900141e5096c7f3f78ea88b0bfd63dd10ba235db79e1090957cfce9a44e3c14"
+    },
+    "run": {
+      "path": "artifacts/full-domain-joint-v2/run.json",
+      "sha256": "dce670974b1489d8e46303fdb3269cfc98ee14030614ffcfe133dbe088322bd6"
+    },
+    "selection": {
+      "path": "artifacts/full-domain-joint-v2/selection.json",
+      "sha256": "d66aa396cf16bdaeec22f1fa602659f94d76d988e6c779a403b4e85547305cde"
+    },
+    "cube": {
+      "path": "artifacts/full-domain-joint-v2/repaired.rgb",
+      "sha256": "2ad77e6a7ff6b4d761f0ced744bb236e4dc99c9313ca0c994fa243b7c31ea8e4"
+    },
+    "run_identity": "b63282a2da42ca8cc17d56640caf06782c25af00ba92efc6c663f84c49acf691",
+    "reference_cube_sha256": "493c9084a90186a15ec42cd4553e02ee6b915f9ee4511d77cb2b40adcb82f0a9",
+    "binding": "results.run_identity等于run.identity_sha256并复算规范身份；selection.model_sha256按阶段顺序绑定四模型；results.final包含完整cube、100图及三原生回执，原生完整流必须同SHA且零差异"
+  },
+  "baseline_metrics": {
+    "cube": {
+      "mean": 1.2773607105890834,
+      "rms": 1.6732741766835426,
+      "p99": 4.69041575982343,
+      "max": 8.774964387392123,
+      "cvar_1pct": 5.341760826647475
+    },
+    "photos": {
+      "mean": 1.0336680770889557,
+      "rms": 1.523476908377844,
+      "worst_image_p99": 5.385164807134504,
+      "max": 8.774964387392123,
+      "mean_image_cvar_1pct": 5.24392495601521
+    }
+  },
+  "photo_manifest": {
+    "path": "assets/photos/manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "partition": {
+    "path": "artifacts/full-photo-v1/photo-partition.json",
+    "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"
+  },
+  "training": {
+    "cube_count": 16777216,
+    "photo_count": 60,
+    "photo_pixels": 47185920,
+    "prefix": "严格执行冻结的前三张稀疏模型，每级Q16后立即半向上舍入成RGB8；原始cube及训练照片均通过同一基线前缀，不改前三模型",
+    "mass": {
+      "own_uniform": 0.1,
+      "cube_arrival": 0.45,
+      "photo_arrival": 0.45
+    },
+    "mass_formula": "w(z)=0.10/16777216+0.45*n_cube_prefix(z)/16777216+0.45*n_photo_prefix(z)/47185920",
+    "target": "T4(z)：第四张原始完整LUT在本级输入z处的RGB8标签；不使用最终复合或残差标签",
+    "representation": "本级RGB域逐色唯一行、R高位/G中位/B低位；照片及cube到达频数按重复次数计数，归约用uint64，质量用float64；两份频数分别守恒且保存SHA",
+    "identity": "逐图核验文件SHA与RGB8/1024x768契约，保存训练60图清单、实际前缀模型SHA、频数SHA、合并质量及标签身份；20选择/20审计频数不进入训练"
+  },
+  "proposal": "rounded_grid",
+  "sweeps": 4,
+  "candidate_sweeps": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "tail_at": 6,
+  "tail_weight": 0.02,
+  "maximum_squared": 195075,
+  "algorithm": "沿用真实Q16/RGB8距离的8色、逐通道整数节点±1精化；rho(d)=d+0.02*max(d-6,0)^2；float64质量归约，固定第四级权威idx/frac与网格，仅改变RGB8节点；不把整链max平方77套成本级硬上限；同色每个允许节点变化还必须满足逐原始颜色的整链尾部上限；该约束与本级真实损失分开",
+  "candidates": "仅将每个预定扫检查点替换第四级，前三模型逐字节不变；最多四个真实整链候选，不增加其他级替换或组合扫描；提早停止需记录原因，不补造未执行检查点，重复模型可按SHA去重",
+  "selection": {
+    "cube_count": 262144,
+    "cube_seed": 2026101802,
+    "cube_scheme": "每个4x4x4原始输入块一个固定分层颜色，沿用现有stratified_points",
+    "photo_count": 20,
+    "pixels_per_image": 4096,
+    "pixel_seed": 2026101701,
+    "reference": "同SHA的PR16完整四级基线，在同一固定选择样本上真实逐级执行；不是本级误差",
+    "gate": "cube与照片合并样本mean各至少降低3%，各自RMS/p99/max均不退化；最差单图p99不退化，cube或照片合并p99至少一项严格下降。全部候选生成后一次选型，不读取终验指标回头重选",
+    "rank": "依次比较两种mean最大相对比值、两种p99最大相对比值、两种mean比值和、扫序号；仅一个合格赢家进入终验",
+    "on_failure": "保存负结果，保留原四级基线，不追加候选，不执行重复完整终验"
+  },
+  "acceptance": {
+    "reference": "PR16同SHA四级模型的现存完整证据；本级目标下降不代替整链结论",
+    "mean_reduction_ratio": 0.97,
+    "p99_reduction_ratio": 0.97,
+    "gate": "同一候选的完整原始256^3 mean和100图mean均至少降低3%；全域RMS/p99/max/CVaR1%及百图RMS/最差逐图p99/max/平均逐图CVaR1%均不高于基线；全域p99或最差逐图p99至少一项降低3%",
+    "final_once": "选择冻结后，仅赢家一次完整256^3、100张完整照片及独立整数oracle/标量/AVX2/C99；四级完整输出逐字节一致，核模型/源/图片/参考流与程序SHA；未通过真实终验不得称成功",
+    "report": "保存每张图全部指标及改善/持平/退化数、60/20/20分组、完整域统计及原始回执；聚合门禁不等于逐图支配。任何最终失败如实保留，不放宽门槛或重选",
+    "metrics": "RGB欧氏码值距离sqrt(dR^2+dG^2+dB^2)，非Lab/CIEDE2000；照片p99为最差单图p99，CVaR分别列全域及逐图均值，不混成同一统计"
+  },
+  "environment": {
+    "operating_system": "Windows 11 10.0.26200 x64",
+    "cpu": "AMD Ryzen 9 8945HX，16核32线程",
+    "python": "artifacts/error-study-py312/Scripts/python.exe，Python3.12.14",
+    "numpy": "1.26.4",
+    "scipy": "1.15.2",
+    "numba": "0.60.0",
+    "llvmlite": "0.43.0",
+    "pillow": "10.4.0",
+    "threads": 4,
+    "blas_threads": 1,
+    "omp_threads": 1,
+    "executable": "build-engineering-alignment/jshc.exe",
+    "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+    "native": "沿用GCC15.2 Release，标量/AVX2/C99终验各单线程；执行前采集实际环境及Numba线程层，不把预计环境冒充实测",
+    "performance": "不做性能比较；离线缓存与峰值另列，不当作运行时内存"
+  },
+  "limits": "本级均匀RGB与原始均匀RGB通过前缀后的到达分布不同，故单列0.10与0.45两项；前三模型固定，因此所有本轮候选共享同一实际到达分布。PR13/14历史归因仅支持末级优先，不是本链当前新归因或可加贡献证明。保留四张独立源LUT、每级RGB8、SLUTv1及权威轴表，不做复合/残差标签。全部原始颜色参与训练，颜色选择不是未见颜色盲验；100张照片历史已观察，当前20审计仅不反馈。官方数据/Threshold仍未知，不宣布官方通过，不替换默认/冠军、不创建PR、不扫描参数。 新包络按完整原始色域定义，不针对照片分组；原始参考链仅作约束，不作为第四模型拟合标签。首轮所有候选因选择photos.max失败，其负结果保留，不放宽原门槛。",
+  "deliverables": "保存本轮独立源码快照、到达频数、尾部约束参考/上限及哈希、所有冻结候选与选择结果；只有合格赢家才一次完整验收，不替换默认、不创建PR。",
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "对每个原始RGB，d_new(x)^2<=max(49,d_PR16(x)^2)",
+    "scope": "所有256^3原始颜色的约束，不按选择图名单或热点追补；相同末级输入的多个原始参考分别保留",
+    "labels": "拟合质量和标签不变，仍是0.10本级均匀+0.45原始cube到达+0.45完整60图到达，标签仅第四原表T4(z)；整链参考只用于禁止位",
+    "guarantee": "不产生新的>7码值误差；原本>7的颜色误差不升。不能据此宣称mean/RMS/p99或每图max都改善，仍需真实整链选型和完整终验。"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "purpose": "只构建冻结的固定四级专门化候选；不修改已验v3、CMake或静态核心。",
+  "plan_sha256": "20480d26995b21897d7b6eee778d77b68ddc1d4b87e2765980547bf84c10c839",
+  "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "compiler_sha256": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f",
+  "source_sha256": {
+    "scripts/build_channel_specialized.py": "3ff92cf3d912c842d19be2dab0168f53413e71ef4333510cd38492ff6fbcf2c5",
+    "scripts/verify_channel_specialized.py": "62d70446d9700a33e58687f09d8e4e275758137209d018350bbddb8e3892b05c",
+    "experiments/channel-runtime-specialized/channel_avx2.cpp": "ee52b3d25936816a93678431f2564ac47252b9bb1b2c4641a45ef034f548abf2",
+    "experiments/channel-runtime/channel_runtime.cpp": "b4d3b3f573d4bcc92441d5ad23c6e178df4fe7c6fa83ea6bd64b64ba48a33f28",
+    "experiments/channel-runtime/channel_runtime.h": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+    "experiments/channel-runtime/channel_views.hpp": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+    "experiments/channel-runtime/channel_avx2.cpp": "efc4b862e9b3b74eea6160e32e940cafbda87f4a1a6c90f348dd012fdd7a6427",
+    "experiments/channel-runtime/channel_native.py": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+    "experiments/channel-runtime/native_provenance.py": "a0609687d20f57a9e63041fb1ceb8ef784c222caf36a6ae93dd2c2614724b6e5",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/channel_coordinates.py": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+    "scripts/verify_channel_coordinates.py": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+    "CMakeLists.txt": "d0927df71430f53225dbf098014b78c743bc2d096c3d17b7054bbe9aeb5c0582"
+  },
+  "static_core_path": "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+  "static_core_sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6",
+  "commands": [
+    {
+      "command": [
+        "E:\\mingw64\\bin\\g++.exe",
+        "-DJSHC_CC_HAVE_AVX2=1",
+        "-Djshc_channel_research_EXPORTS",
+        "-IF:\\Hackathon\\projects\\16-lut-color\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\projects\\16-lut-color\\cpp\\include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-c",
+        "F:\\Hackathon\\projects\\16-lut-color\\experiments\\channel-runtime\\channel_runtime.cpp",
+        "-o",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\runtime.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:\\mingw64\\bin\\g++.exe",
+        "-DJSHC_CC_HAVE_AVX2=1",
+        "-Djshc_channel_research_EXPORTS",
+        "-IF:\\Hackathon\\projects\\16-lut-color\\experiments\\channel-runtime",
+        "-IF:\\Hackathon\\projects\\16-lut-color\\cpp\\include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-mavx2",
+        "-c",
+        "F:\\Hackathon\\projects\\16-lut-color\\experiments\\channel-runtime-specialized\\channel_avx2.cpp",
+        "-o",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:\\mingw64\\bin\\g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-fopenmp",
+        "-shared",
+        "-o",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\runtime.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+        "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+        "-lwinpthread"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "files": {
+    "jshc_channel_specialized.dll": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+    "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+    "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "binary_sha256": {
+    "jshc_channel_specialized.dll": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372",
+    "libgcc_s_seh-1.dll": "b13395797cdc8f560144ca60a75af63c07d38805bb8eba7f8cf92db0dfeb08ec",
+    "libgomp-1.dll": "0ee0eacdc5c8e64072cb1cd8c06420bbf8ad955a4d315820a2f0a35fd78cacb3",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "abi": 1,
+  "revision": 2,
+  "scope": "唯一独立AVX2 TU；标量壳不含-mavx2，原CPUID/OS派发、读写/尾部/内存布局不变。未做完整域/百图/性能。"
+}

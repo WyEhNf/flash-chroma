@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "purpose": "固定3e5分通道坐标，单次24块RGB8节点精化，检验节点与新坐标的有限耦合收益",
+  "inputs": {
+    "baseline": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+      "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+    },
+    "baseline_stream": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+      "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+    },
+    "table": {
+      "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+      "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+    },
+    "frozen_samples": {
+      "path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz",
+      "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"
+    },
+    "caps": {
+      "path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy",
+      "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"
+    },
+    "prior_samples": {
+      "path": "artifacts/velvia-alternating-integer-v1/samples.json",
+      "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"
+    },
+    "initial": {
+      "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+      "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+    },
+    "prior_run": {
+      "path": "artifacts/velvia-channel-coordinates-v1/run.json",
+      "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"
+    },
+    "prior_selection": {
+      "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+      "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+    }
+  },
+  "contract": "artifacts/channel-nodes-contract-v1/results.json",
+  "threads": 4,
+  "blocks": 24,
+  "mass": {
+    "cube": 0.48,
+    "photos": 0.48,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "incremental_mean_reduction": 0.005,
+  "order": "输出R/G/B各按节点parity0..7，24块恰好一次；每节点/当前通道只允许±1，固定所有grid/shared idx/channel_frac",
+  "training": "直接复用完整canonical RGB8原表labels、原mass及caps=max(49,旧2dd误差平方)。每通道独立I/W；其它通道误差取当前缓存；同色正支撑互斥。rho=sqrt(d2)+.02*max(sqrt(d2)-6,0)^2。无新照片解码，不把两图反例入训练。",
+  "validation": "拟合前一次m17/m33合成独立uint64合同，含不同输出几何/±1精确收益/cap/0与255节点/零权重/零质量/其它通道缓存；每块核预测与实际收益，末尾fresh全训练RGB前向核缓存与cap。该训练核对不等于完整精度验收。",
+  "selection": "只最终一个候选，原cube262144/guard20*4096/hot8192一次选型；原2dd双mean至少降3%、mean/RMS/p99/max非增、至少一种p99严格改善、worst_image_p99/hotspot.max非增。同时相对3e5两mean均至少再降0.5%，mean/RMS/p99/max、worst_image_p99/hotspot.max均非增。记录CVaR，不冒称完整百图门禁。",
+  "failure_action": "未入围停止，不追加轮数/权重/参数、不full/native/性能。入围仅通知根代理，由其审查和另立终验。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；无原生/性能",
+  "limits": "实验NPZ扩展表示，不伪装SLUT v1/官方支持。冻结既有报告/数值模块/native/默认，不commit/PR/push；guard20及audit20历史已见，不称盲测。"
+}

@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "purpose": "一次冻结的同包地址复用AVX2改动，同一3e5模型与sidecar对已验packed；原2dd同机成本对照",
+  "inputs": {
+    "library": {
+      "path": "artifacts/channel-native-runtime-reuse-v1/jshc_channel_reuse.dll",
+      "sha256": "d340e5956d5e67f82ce007f09b171966d49364bec5cfb66c0cdfd9f1656f0c80"
+    },
+    "native_acceptance": {
+      "path": "artifacts/channel-native-accept-reuse-v1/results.json",
+      "sha256": "af398acd47b63ab7e3695b9dc9d38393659516f9503d622c17cf9d6ac176f935"
+    },
+    "manifest": {
+      "path": "assets/photos/manifest.json",
+      "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+    },
+    "baseline_model": {
+      "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+      "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+    },
+    "baseline_cube": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+      "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+    },
+    "candidate_base": {
+      "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+      "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+    },
+    "candidate_sidecar": {
+      "path": "artifacts/channel-native-accept-v1/channel-frac.bin",
+      "sha256": "a132c41acadb07894172dc0b9798566602fffb1cbd82ac7ce67d7408c9e6c7ba"
+    },
+    "candidate_cube": {
+      "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+      "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+    },
+    "build": {
+      "path": "artifacts/channel-native-runtime-reuse-v1/build.json",
+      "sha256": "5dbb339d403b26cbba964cf3aca543897df2daca2da59766bad8f270aeab9fee"
+    },
+    "baseline_library": {
+      "path": "artifacts/channel-native-runtime-v3/jshc_channel_packed.dll",
+      "sha256": "7ceb30d7913a8cf032e1828c25c3fe062082be8e9d531d105282ba8d1794b072"
+    },
+    "baseline_sidecar": {
+      "path": "artifacts/channel-native-accept-v1/channel-frac.bin",
+      "sha256": "a132c41acadb07894172dc0b9798566602fffb1cbd82ac7ce67d7408c9e6c7ba"
+    },
+    "original_model": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+      "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+    },
+    "original_cube": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+      "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+    },
+    "policy": {
+      "path": "experiments/channel-runtime-reuse-policy-v1.json",
+      "sha256": "d3dced8ea407039b81f18542d447a134b3e489df7288d74b7aa7b10dfcb79c9a"
+    }
+  },
+  "controls": [
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage2.slut",
+      "sha256": "b51fc9173e5161badd0af24cb78158d28320325ed72856e65cfeacb6e30b234c"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage3.slut",
+      "sha256": "d49c1c63ed2e252babf1432c1833b9c51c871f66290356e0d0a3698459040eee"
+    },
+    {
+      "path": "artifacts/filmic-isometric-chain-v1/calibrated17/31e27b34e109aa87a0d94f5b3ac29e8c50778586ef464e47bacc087b80d2dfc0/batch-ec5a67310c7e4ebd96a8e860c1b7bda2/stage4.slut",
+      "sha256": "e7185d15b0776e6ad84b013bc90fb85dc99f99ad0d052b4587f1cd6b4c5c9427"
+    }
+  ],
+  "repeats": 5,
+  "orders": [
+    [
+      "original",
+      "baseline",
+      "candidate"
+    ],
+    [
+      "baseline",
+      "candidate",
+      "original"
+    ],
+    [
+      "candidate",
+      "original",
+      "baseline"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ]
+  ],
+  "timing_scope": "三个新进程串行，同100图235929600字节，预加载后各上下文完整组预热+SHA校验，再5次原生完整组；ABC/BCA/CAB轮换配置位置。1/4线程分别对同进程求配对比。复制与apply分列；计时外不含加载/IO/hash，完整组摊销到每图。OMP_DYNAMIC=FALSE，不锁频/绑核/温度。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX/32GB/GCC15.2 Release -O3 -DNDEBUG，实际AVX2+OpenMP，NumPy1.26.4/Pillow10.4/Python3.12.14只做预加载与调度，BLAS/MKL/OMP各1；原生线程数按调用传1/4。无其他数值任务并行，未锁频/温度/绑核。",
+  "limits": "一次冻结实验；节点/idx/三输出frac完全相同，正确性已单级及等距四级完整256³、100图与独立u64流逐字节相同。库以不同basename及SHA加载，revision均为2，不能据revision当相同二进制。三个进程串行、三配置轮换、各1/4线程5次完整100图；无拟合并发，未锁频/绑核/控制温度，不作统计显著/官方成绩。相对同机packed v3判断一次复用改动；原2dd反映剩余精度成本。四级等距控制非自然ISP；不改默认，不PR/push。",
+  "variants": [
+    "original",
+    "baseline",
+    "candidate"
+  ],
+  "labels": {
+    "original": "原2dd普通四面体",
+    "baseline": "同一3e5候选已验packed v3",
+    "candidate": "同一3e5候选同包两内点地址复用"
+  },
+  "required_revisions": {
+    "baseline": 2,
+    "candidate": 2
+  }
+}

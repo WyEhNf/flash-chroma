@@ -14,7 +14,7 @@ from .runlog import Run
 from .axisbins import PROFILES as BIN_PROFILES
 
 METHODS = ("sample", "sample_interp", "box", "ls_tri", "ls_tetra", "ls_tetra_int",
-           "ls_tetra_q16", "ls_tetra_jitter", "ls_tetra_boundary", "ls_tetra_structured", "ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box",
+           "ls_tetra_q16", "ls_tetra_jitter", "ls_tetra_boundary", "ls_tetra_structured", "ls_tetra_supported", "ls_tetra_calibrated", "ls_tetra_full", "ls_tetra_full_box",
            "ls_tetra_guarded", "irls_tetra", "tail_tetra_int", "adaptive_full", *BIN_PROFILES)
 GRIDS = ("uniform", "curvature", "error", "dp")
 
@@ -28,12 +28,14 @@ def fit_parameters(args) -> dict:
         raise ValueError("residual fitting supports ls_tetra_int and tail_tetra_int only")
     if args.method == "adaptive_full" and args.mode != "seq":
         raise ValueError("adaptive_full supports four independent sequential stages only")
+    if args.method == 'ls_tetra_calibrated' and args.mode != 'seq':
+        raise ValueError('解析坐标校准仅支持四张独立原表的seq模式')
     if args.method in BIN_PROFILES and args.mode!="seq":
         raise ValueError("bin/prefix candidates require four independent sequential stages")
     grid = getattr(args, "grid", None) or ("curvature" if getattr(args, "adaptive", False) else "uniform")
     if grid not in GRIDS:
         raise ValueError(f"unknown grid mode: {grid}")
-    if args.method in ("ls_tetra_supported", "ls_tetra_full", "ls_tetra_full_box", "adaptive_full", *BIN_PROFILES) and grid != "dp":
+    if args.method in ("ls_tetra_supported", "ls_tetra_calibrated", "ls_tetra_full", "ls_tetra_full_box", "adaptive_full", *BIN_PROFILES) and grid != "dp":
         raise ValueError(f"{args.method} requires --grid dp for exact integer vertex observations")
     if getattr(args, "adaptive", False) and grid != "curvature":
         raise ValueError("--adaptive conflicts with a non-curvature --grid")

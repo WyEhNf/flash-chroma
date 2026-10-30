@@ -1,0 +1,6 @@
+# PowerShell；Numba4/BLAS1；集中事件合同、唯一9块训练/固定样本选择；非原生或性能验收
+$env:PYTHONIOENCODING='utf-8'; $env:PYTHONUTF8='1'; $env:PYTHONDONTWRITEBYTECODE='1'
+$env:OMP_NUM_THREADS='1'; $env:OPENBLAS_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'; $env:NUMBA_NUM_THREADS='4'
+& artifacts/error-study-py312/Scripts/python.exe scripts/verify_channel_suffix_coordinates.py --output artifacts/channel-suffix-coordinates-contract-v1
+& artifacts/error-study-py312/Scripts/python.exe scripts/run_cinema_channel_suffix_coordinates.py --output artifacts/cinema-channel-suffix-coordinates-v1
+# 不覆盖旧结果，不重新构造缺失cache，不重复真实拟合。

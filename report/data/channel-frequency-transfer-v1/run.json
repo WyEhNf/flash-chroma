@@ -1,0 +1,141 @@
+{
+  "plan": {
+    "schema": 1,
+    "purpose": "固定两图，读取旧/新全域流分析误差是否转移到训练低频或未见色；仅top反例小前向拆分中间阶段，不拟合或扫描",
+    "inputs": {
+      "old_cube": {
+        "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+        "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+      },
+      "new_cube": {
+        "path": "artifacts/velvia-channel-coordinates-accept-v1/cube.rgb",
+        "sha256": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0"
+      },
+      "table": {
+        "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+        "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+      },
+      "frequency": {
+        "path": "artifacts/cinema-prefix-stage1-v1/photo-arrival-frequency.npy",
+        "sha256": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e"
+      },
+      "frequency_metadata": {
+        "path": "artifacts/cinema-prefix-stage1-v1/training.json",
+        "sha256": "0fc03ba9ac8331269eeb6e50fe70e2c77dd87fd987ca26267f3c0b46593f8561"
+      },
+      "partition": {
+        "path": "artifacts/full-photo-v1/photo-partition.json",
+        "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"
+      },
+      "history": {
+        "path": "artifacts/velvia-channel-coordinates-accept-v1/results.json",
+        "sha256": "290150d6d393d02fa9c51ffbfa3c75c3cbf5d64a4992abff498079b8c147b121"
+      },
+      "candidate": {
+        "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+        "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+      },
+      "intermediate": {
+        "path": "artifacts/velvia-alternating-integer-v1/alternating_integer_iter003/model.slut",
+        "sha256": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+      }
+    },
+    "frequency_array_sha256": "20af718acb2868e9d2c1453aea7193bbbaac4c6cf91d8eff79c8185430dac300",
+    "images": [
+      {
+        "id": "div2k-0843",
+        "group": "audit",
+        "path": "assets/photos/div2k/rgb8-1024x768/0843.png",
+        "sha256": "480a3bc7de87c88e16d07e8b56a22f28cf5b3c901f587e34ffe6414a98f62e17",
+        "pixel_sha256": "8c8005525ec641cf7bda3acf45dcd730ae9695d65fb727ba01fc19e210d2e01b"
+      },
+      {
+        "id": "div2k-0841",
+        "group": "training",
+        "path": "assets/photos/div2k/rgb8-1024x768/0841.png",
+        "sha256": "666edc09a14afc324e130d94403c1c8fe810931ddc4d3ac2be05f7bc349bbc20",
+        "pixel_sha256": "c9f6d343e6eae48671501616b609dbfe2fc832ee1ed9db5a530f9092383c850c"
+      }
+    ],
+    "image_selection": "0843为已知最大mean退化图；0841从已保存完整结果的training60中按绝对mean下降最大、ID升序确定，不重新评价其它图片",
+    "frequency_bins": [
+      {
+        "id": "unseen",
+        "min": 0,
+        "max": 0
+      },
+      {
+        "id": "1..4",
+        "min": 1,
+        "max": 4
+      },
+      {
+        "id": "5..31",
+        "min": 5,
+        "max": 31
+      },
+      {
+        "id": ">=32",
+        "min": 32,
+        "max": 47185920
+      }
+    ],
+    "top_count_per_image": 64,
+    "ranking": "仅正距离增量颜色，按该图出现次数*(d_new-d_old)降序、RGB升序。训练60频数只作分组，未见色不因训练频数0而被排除；少于64时如实保留",
+    "metrics": "整图与各频数组old/new mean/RMS/p99/max、改善/退化/同距离像素比例、距离误差和/净变化及正负毛变化贡献，避免净改善掩盖局部退化；比较距离而非仅输出字节是否变动",
+    "intermediate_scope": "两个预定top64并集最多128色，一次独立比较器排序uint64前向；只拆这些颜色的old->iter003及iter003->new误差变化，检查新节点/shared idx/grid与iter003相同并列3x3相关码值frac偏移；无中间全图流，禁止声称整图累计阶段归因",
+    "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Pillow10.4，BLAS1；只解码固定两图，整图不模型前向，中间最多128色独立u64一次；无原生或性能",
+    "limits": "只两图和固定频数组；不拟合/改权重/约束/模型、不其它颜色或图片扫描、不原生测试。频数相关性不证明原因，top按结果选择也不是总体无偏估计。保存来源/命令/数值，不改核心/根driver，不commit/PR/push。"
+  },
+  "plan_sha256": "6abc5f1777eae0502783096b4c6319f80c5713a73ca106b00c8accea272866b8",
+  "source_sha256": {
+    "scripts/explain_channel_frequency_transfer.py": "edfeb1f739c3eb676f88ad750cc7388308b1798c1a6c0d0ddfcb14a17d79de3a",
+    "experiments/channel-frequency-transfer-v1.json": "6abc5f1777eae0502783096b4c6319f80c5713a73ca106b00c8accea272866b8",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "python/lutlab/study_provenance.py": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16"
+  },
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_name": "AMD Ryzen 9 8945HX with Radeon Graphics",
+    "logical_cpu_count": 32,
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.15.2",
+      "numba": "0.60.0",
+      "llvmlite": "0.43.0",
+      "Pillow": "10.4.0",
+      "tifffile": "2023.4.12",
+      "psutil": "5.9.0"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": null,
+      "NUMBA_THREADING_LAYER": null,
+      "NUMBA_CPU_NAME": null,
+      "NUMBA_CPU_FEATURES": null
+    }
+  },
+  "input_sha256": {
+    "old_cube": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7",
+    "new_cube": "945d4b906ae9aa184fdddd7f084da0105fa87b7e756f88ea700ca53f61ed37f0",
+    "table": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7",
+    "frequency": "1eff7aab15715845bbc3efda68043a62a5c2dd9162f33717cee8bea5d36b756e",
+    "frequency_metadata": "0fc03ba9ac8331269eeb6e50fe70e2c77dd87fd987ca26267f3c0b46593f8561",
+    "partition": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50",
+    "history": "290150d6d393d02fa9c51ffbfa3c75c3cbf5d64a4992abff498079b8c147b121",
+    "candidate": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0",
+    "intermediate": "1f0a9f1d84b3fd157aab7db348b340aca209c2e35f72dd3b195aa1023411c37c"
+  },
+  "image_sha256": {
+    "div2k-0843": "480a3bc7de87c88e16d07e8b56a22f28cf5b3c901f587e34ffe6414a98f62e17",
+    "div2k-0841": "666edc09a14afc324e130d94403c1c8fe810931ddc4d3ac2be05f7bc349bbc20"
+  },
+  "scope": "固定两图查旧/新字节；top<=128一次中间独立u64，不拟合/新模型/原生",
+  "identity_sha256": "72e48d0c132c6cffe174304a2abfd3e9cfa63ca40b546afa94f19ae30d8159da"
+}

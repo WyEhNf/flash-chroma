@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "status": "冻结实验设计；实际执行状态以独立输出目录记录为准",
+  "purpose": "固定首级整数节点，校准单调可分离Q16坐标，检验量化阈值与几何插值限制；模型字节不增但函数族扩大，不称普通几何网格调节",
+  "case": "cinema-chain2",
+  "m": 33,
+  "optimized_stage": 1,
+  "frozen_stages": [
+    2,
+    3,
+    4
+  ],
+  "baseline_models": [
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage1.slut",
+      "sha256": "cef37f82a0335af370028083bd6254a53b72ca48cea7923bcf78e9ebc61fe57a"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage2.slut",
+      "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage3.slut",
+      "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+    },
+    {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/selected-stage4.slut",
+      "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+    }
+  ],
+  "tables": [
+    {
+      "stage": 1,
+      "path": "artifacts/chain-error-cache/source-307edcd6b7b55fff03392f5e/table.lut256",
+      "sha256": "37b1fa642957a648294301c281d6e261391857e93bd163fe2fd592df7f673944",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1910s.cube",
+      "source_sha256": "2ae2f4c62d028e41cf132f0d87f9098240fb8232195e602ed316c94cc0d38538"
+    },
+    {
+      "stage": 2,
+      "path": "artifacts/chain-error-cache/source-7b6980ce01910cd2b18ed3b9/table.lut256",
+      "sha256": "ccd454354df9a9e7da30e1022da31e66d65d2051b775a15995b76de09523aae8",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1920s.cube",
+      "source_sha256": "8f4f6ece25f0979b952c77e0d62a0e695310201a882fa8d7002471af0ff430f4"
+    },
+    {
+      "stage": 3,
+      "path": "artifacts/chain-error-cache/source-864defbd3b3e0712936e347c/table.lut256",
+      "sha256": "733f2578420247456b7b5bd07aa570c8d1b6a50173b1494a27c7dbaa5c330cfd",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1930s.cube",
+      "source_sha256": "a82f33eaeb5e834c15d845e3ce2cda26d9f2aadb179af3dd25b79cceec838bf9"
+    },
+    {
+      "stage": 4,
+      "path": "artifacts/chain-error-cache/source-d69ca4fa6f34c990a0bc752d/table.lut256",
+      "sha256": "5ffcbb5032b6c8a10aaad2c6649fa1ad85fd7e920121d8b0460ec6f181cb7b00",
+      "source": "assets/LUT/sources/stripedpurple/Cinema Through The Ages/Striped Purple - 1940s.cube",
+      "source_sha256": "d568987e472432d63afba500d4daa26022c86d1db1739056c19431e5175baee7"
+    }
+  ],
+  "baseline_evidence": {
+    "results": {
+      "path": "artifacts/cinema-envelope-v1/full-results.json",
+      "sha256": "55cc9d587dbf010d072ef2297b0601a7291628990fed620501d6a0cd47703ea1"
+    },
+    "run": {
+      "path": "artifacts/cinema-envelope-v1/run.json",
+      "sha256": "fa75c4198571928872fdc8c4aa45975decce3232ebea1fe980827917b1f604d2"
+    },
+    "selection": {
+      "path": "artifacts/cinema-envelope-v1/selection.json",
+      "sha256": "57ad5f803b4559363e7f157733f43c3a14315b5cbc07d586db52cee189728101"
+    },
+    "cube": {
+      "path": "artifacts/cinema-envelope-v1/stage4_sweep004/cube.rgb",
+      "sha256": "daad012f981ec381ca6fb53c5f66722e126ccd02012ebb8c219028610986e5f0"
+    },
+    "run_identity": "5f85e9bb08bdec72d914a4b7d3955611c3520ce04b20a890c1c339be5e38fb76",
+    "reference_cube_sha256": "493c9084a90186a15ec42cd4553e02ee6b915f9ee4511d77cb2b40adcb82f0a9",
+    "binding": "复算run身份，selection冻结赢家、本轮父run原基线模型和完整结果model_sha256共同绑定四模型；完整三后端回执同SHA、零差异；仅复用已通过完整门禁的基线",
+    "layout": "cinema-rounded"
+  },
+  "baseline_metrics": {
+    "cube": {
+      "mean": 1.0974045735579039,
+      "rms": 1.5100897753156224,
+      "p99": 4.358898943540674,
+      "max": 8.774964387392123,
+      "cvar_1pct": 5.056273874274294
+    },
+    "photos": {
+      "mean": 0.9004279885613691,
+      "rms": 1.3985684023492753,
+      "worst_image_p99": 5.196152422706632,
+      "max": 8.774964387392123,
+      "mean_image_cvar_1pct": 5.076520788398937
+    }
+  },
+  "photo_manifest": {
+    "path": "assets/photos/manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "partition": {
+    "path": "artifacts/full-photo-v1/photo-partition.json",
+    "sha256": "e9833fc552619d36d9dae8920e2297db37ff4235aae805346c09aa50b7247c50"
+  },
+  "training": {
+    "cube_count": 16777216,
+    "photo_count": 60,
+    "photo_pixels": 47185920,
+    "prefix": "第一阶段无前缀，原始RGB即本级输入；完整cube与训练60图原始频数参与质量，选择/审计不进入训练",
+    "mass": {
+      "own_uniform": 0.1,
+      "cube_arrival": 0.45,
+      "photo_arrival": 0.45
+    },
+    "mass_formula": "w(z)=0.10/16777216+0.45*n_cube_prefix(z)/16777216+0.45*n_photo_prefix(z)/47185920",
+    "target": "T1(z)：第一张独立原始完整LUT标签，不使用最终复合或残差标签",
+    "representation": "本级RGB域逐色唯一行、R高位/G中位/B低位；照片及cube到达频数按重复次数计数，归约用uint64，质量用float64；两份频数分别守恒且保存SHA",
+    "identity": "逐图核验SHA/RGB8尺寸，保存60图频数和质量；固定后三模型SHA及完整稀疏后缀缓存SHA；整链参考只供禁止位"
+  },
+  "proposal": "axis_calibration",
+  "candidate_sweeps": [
+    4,
+    8,
+    12
+  ],
+  "tail_at": 6,
+  "tail_weight": 0.02,
+  "maximum_squared": 195075,
+  "algorithm": "固定节点，按R/G/B顺序串行优化坐标表，每轴不同码值slab互斥；12个预声明粗到细尺度，完整原表+固定后缀保持损失，逐色整链包络，有限预算非全局最优",
+  "candidates": "仅第4/8/12尺度各一个坐标模型；其余三模型及本级idx/grid metadata/RGB8节点不变，最多三候选一次选择，无追加搜索。提议起点另作为固定观察对照记录样本指标，不进入赢家选择，用于区分已有节点收益与本轮坐标收益",
+  "selection": {
+    "cube_count": 262144,
+    "cube_seed": 2026101802,
+    "cube_scheme": "每个4x4x4原始输入块一个固定分层颜色，沿用现有stratified_points",
+    "photo_count": 20,
+    "pixels_per_image": 4096,
+    "pixel_seed": 2026101701,
+    "reference": "同SHA已完整验收末级优化链，真实逐级四段映射，不以更弱PR16参考替代本轮基线",
+    "gate": "cube与照片合并样本mean各至少降低3%，各自RMS/p99/max均不退化；最差单图p99不退化，cube或照片合并p99至少一项严格下降。全部候选生成后一次选型，不读取终验指标回头重选",
+    "rank": "依次比较两种mean最大相对比值、两种p99最大相对比值、两种mean比值和、扫序号；仅一个合格赢家进入终验",
+    "on_failure": "保存负结果，保留原四级基线，不追加候选，不执行重复完整终验"
+  },
+  "acceptance": {
+    "reference": "相对同SHA末级优化链额外两种mean各3%，完整尾部非退化及至少一项p99再降3%；另报告相对原PR16累计变化",
+    "mean_reduction_ratio": 0.97,
+    "p99_reduction_ratio": 0.97,
+    "gate": "同一候选的完整原始256^3 mean和100图mean均至少降低3%；全域RMS/p99/max/CVaR1%及百图RMS/最差逐图p99/max/平均逐图CVaR1%均不高于基线；全域p99或最差逐图p99至少一项降低3%",
+    "final_once": "选择冻结后，仅赢家一次完整256^3、100张完整照片及独立整数oracle/标量/AVX2/C99；四级完整输出逐字节一致，核模型/源/图片/参考流与程序SHA；未通过真实终验不得称成功",
+    "report": "保存每张图全部指标及改善/持平/退化数、60/20/20分组、完整域统计及原始回执；聚合门禁不等于逐图支配。任何最终失败如实保留，不放宽门槛或重选",
+    "metrics": "RGB欧氏码值距离sqrt(dR^2+dG^2+dB^2)，非Lab/CIEDE2000；照片p99为最差单图p99，CVaR分别列全域及逐图均值，不混成同一统计"
+  },
+  "environment": {
+    "operating_system": "Windows 11 10.0.26200 x64",
+    "cpu": "AMD Ryzen 9 8945HX，16核32线程",
+    "python": "artifacts/error-study-py312/Scripts/python.exe，Python3.12.14",
+    "numpy": "1.26.4",
+    "scipy": "1.15.2",
+    "numba": "0.60.0",
+    "llvmlite": "0.43.0",
+    "pillow": "10.4.0",
+    "threads": 4,
+    "blas_threads": 1,
+    "omp_threads": 1,
+    "executable": "build-engineering-alignment/jshc.exe",
+    "executable_sha256": "ba088c682bb2b0e2e4634b23b35e662c52d87d38806d05827b876f08c8697f3a",
+    "native": "沿用GCC15.2 Release，标量/AVX2/C99终验各单线程；执行前采集实际环境及Numba线程层，不把预计环境冒充实测",
+    "performance": "不做性能比较；离线缓存与峰值另列，不当作运行时内存"
+  },
+  "limits": "题面允许选手自设计插值及联合优化，本地SLUT权威表可表示该函数；仍未得到官方格式认可。单调可分离坐标校准扩大插值函数族，不是仅修Q16舍入或移动93个真实网格坐标；R33先例不为本轮自由frac拟合提供精确性证明。四张原表独立标签、逐级RGB8、m33、整数节点、运行时模型字节数保持；第一原表是标签根，固定稀疏后缀参与保持度量及硬约束。全部颜色参与训练、照片历史已见、无官方Threshold；不升级默认、不创建PR、不作SOTA或硬件性能声明。",
+  "deliverables": "保存本轮独立源码快照、到达频数、尾部约束参考/上限及哈希、所有冻结候选与选择结果；只有合格赢家才一次完整验收，不替换默认、不创建PR。",
+  "chain_envelope": {
+    "floor_squared": 49,
+    "formula": "对每个原始RGB，d_new(x)^2<=max(49,d_本轮已验收末级优化基线(x)^2)",
+    "scope": "所有256^3原始颜色的约束，不按选择图名单或热点追补；相同末级输入的多个原始参考分别保留",
+    "labels": "唯一拟合标签T1(z)，质量比例与首轮相同；固定后缀为稀疏2/3/4级逐级RGB8映射，整链参考仅硬约束",
+    "guarantee": "不产生新的>7码值误差；原本>7的颜色误差不升。不能据此宣称mean/RMS/p99或每图max都改善，仍需真实整链选型和完整终验。"
+  },
+  "selection_basis": {
+    "path": "artifacts/cinema-after-stage4-attribution-v1.json",
+    "sha256": "a409e58b8e37b6e9f14521126120267d0b69d4d65e4d83a4cf100d2cc2a2d175",
+    "pixels": 16384,
+    "purpose": "单次固定样本归因，非完整终验；收益不可相加"
+  },
+  "suffix_objective": {
+    "weight": 1.0,
+    "formula": "rho(p-T1(z))+rho(S(p)-S(T1(z)))",
+    "scope": "S为固定稀疏第2/3/4级；两项1:1预先固定，不扫描；唯一标签根为T1(z)，没有精确最终Y(x)或残差拟合标签",
+    "reason": "第一轮本级损失下降，照片p99仍上升；使用离散后缀的真实输出差替代仅依赖局部欧氏距离的度量"
+  },
+  "initial_model": {
+    "path": "artifacts/cinema-suffix-metric-v1/stage1_sweep004/stage1.slut",
+    "sha256": "32cc90cc9ec4e59e60da00034a717c96b01655310e91697bb65634c4219fd99b"
+  },
+  "initial_evidence": {
+    "selection": {
+      "path": "artifacts/cinema-suffix-metric-v1/selection.json",
+      "sha256": "487878b98c48002332407c5ec7cd3e66c37a2eefbf39566463b505f339a57ef7"
+    },
+    "run": {
+      "path": "artifacts/cinema-suffix-metric-v1/run.json",
+      "sha256": "227e6442622215b1fa355b9fe3fb6ab66ced9ff0b147a77868935d4a6a15ce08"
+    },
+    "candidate": "stage1_sweep004",
+    "scope": "未入围模型仅作提议节点起点；验收基线仍为已全验末级优化链，不偷换参考"
+  },
+  "axis_calibration": {
+    "maximum_shift": 4096,
+    "steps": [
+      2048,
+      1024,
+      512,
+      256,
+      128,
+      64,
+      32,
+      16,
+      8,
+      4,
+      2,
+      1
+    ],
+    "checkpoints": [
+      4,
+      8,
+      12
+    ],
+    "scope": "总偏移相对冻结起始frac不超过4096，即1/16个单元参数；idx与RGB8节点/float grid metadata不变",
+    "monotonicity": "有符号q=idx*65536+frac非降，frac合法范围0..65536、端点固定；相邻静态中点隔开所有可选区间，同轴slab互斥，不同轴串行",
+    "branch": "每次完整重算新Q16四面体分支与全部权重，不复用旧I/W或节点8色分组",
+    "family": "增加最多762个非端点坐标自由度的自定义插值；同字节不等于相同几何插值族"
+  }
+}

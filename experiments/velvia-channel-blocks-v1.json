@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "purpose": "固定3e5坐标，2×2×2节点同通道整体±1平移，检验单点舍入停滞；固定000原点、单次24组",
+  "inputs": {
+    "baseline": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/model.slut",
+      "sha256": "2dd467b040a4ed25f9000e7debd085af4a07f08d780be2fbcd156c9aa8118947"
+    },
+    "baseline_stream": {
+      "path": "artifacts/joint-grid-budget-v2/joint_grid_iter1600/cube.rgb",
+      "sha256": "d5453bd8ab99eea82582b3f9710e9b9c40c79ea78e0e58f0c1d818d0910e74d7"
+    },
+    "table": {
+      "path": "artifacts/chain-error-cache/source-2ff0a4e385f9f9e49ca02f63/table.lut256",
+      "sha256": "6c4387352bd0845ce597f13dca32f2f808b39439d06ce78b4881922a4fc294b7"
+    },
+    "frozen_samples": {
+      "path": "artifacts/velvia-alternating-integer-v1/frozen-samples.npz",
+      "sha256": "80db0c6877e752ccaaae64e5c0ba06e06f9bac951307015f2167b5ea6698ac2b"
+    },
+    "caps": {
+      "path": "artifacts/velvia-alternating-integer-v1/envelope-caps.npy",
+      "sha256": "2b10f3a575f8d4e92caac8b669c456a494799bbab3af6da57faa6fc840e7f32a"
+    },
+    "prior_samples": {
+      "path": "artifacts/velvia-alternating-integer-v1/samples.json",
+      "sha256": "61dd2b898b4457867bee8e66b7c306f37570b5c3e6c6bdfa8f2b16600ed5002c"
+    },
+    "initial": {
+      "path": "artifacts/velvia-channel-coordinates-v1/channel-coordinates.npz",
+      "sha256": "3e5f8fd94e8dc9b97dbfea2823896b8dffb6e014b5e6056ab5c10b58a69af3d0"
+    },
+    "prior_run": {
+      "path": "artifacts/velvia-channel-coordinates-v1/run.json",
+      "sha256": "f46f1f9ced587c0218d33d8bf2d311a2079c1c4c845e2a70cd7c2e60e79fceff"
+    },
+    "prior_selection": {
+      "path": "artifacts/velvia-channel-coordinates-v1/selection.json",
+      "sha256": "efcebb8615b7a4626be991237158a396bc9070020334ccdeab3b70f237d01527"
+    }
+  },
+  "contract": "artifacts/channel-blocks-contract-v1/results.json",
+  "threads": 4,
+  "blocks": 24,
+  "mass": {
+    "cube": 0.48,
+    "photos": 0.48,
+    "boundary": 0.02,
+    "hotspots": 0.02
+  },
+  "tail_at": 6.0,
+  "tail_weight": 0.02,
+  "incremental_mean_reduction": 0.005,
+  "order": "输出R/G/B各按2×2×2节点块parity0..7，24组各一次；仅000原点划分，每块同通道同号±1；每节点至多移动1码",
+  "training": "原完整canonical RGB8 labels/mass/caps；合并同块全部顶点权重后才计算真实整数输出变化，不相加单节点收益。同色不同块正支撑互斥；固定rho与三份坐标，无新增训练颜色或照片。",
+  "validation": "一次m17/m33×3通道合成合同：块±1完整独立u64增量成本/cap、0/255边界、零权重和质量、其它通道、24组fresh缓存，并解析构造单节点台阶反例；训练每组收益/cap核对，末尾fresh前向核缓存。",
+  "selection": "只最终一个候选，原cube262144/guard20*4096/hot8192一次选型；原2dd双mean至少降3%、mean/RMS/p99/max非增、至少一种p99严格改善、worst_image_p99/hotspot.max非增。同时相对3e5两mean均至少再降0.5%，mean/RMS/p99/max、worst_image_p99/hotspot.max均非增。记录CVaR，不冒称完整百图门禁。",
+  "failure_action": "未入围停止，不追加轮数/权重/参数、不full/native/性能。入围仅通知根代理，由其审查和另立终验。",
+  "environment": "Windows11 26200 x64/Ryzen9 8945HX，Python3.12.14/NumPy1.26.4/Numba0.60，Numba4/BLAS1；无原生/性能",
+  "limits": "实验NPZ扩展表示，不伪装SLUT v1/官方支持。冻结既有报告/数值模块/native/默认，不commit/PR/push；guard20及audit20历史已见，不称盲测。 此为与单节点24组并行的另一有限算法提议，从相同3e5起点独立拟合，不续接失败节点候选，不扫描块偏移或重复轮次。"
+}
