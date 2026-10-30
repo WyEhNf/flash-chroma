@@ -1,0 +1,571 @@
+{
+  "purpose": "R连续8色离线结果的轻量独立审计；不重扫完整cube/照片、不运行原生或性能。",
+  "audit_passed": true,
+  "checks": {
+    "frozen_identity": true,
+    "fixed_gate": true,
+    "analysis_completed_without_native": true,
+    "generator_reproduces_exact_script": true,
+    "input_identities": true,
+    "cache_generation_identity": true,
+    "exact_230_palette_from_gold": true,
+    "palette_frequency_totals": true,
+    "logical_id_hash_crosscheck": true,
+    "mapping_boundary_examples": true,
+    "mapping_source_formulas": true,
+    "span_histogram": true,
+    "span_fraction": true,
+    "worst_block_consistent": true,
+    "encoding_resources": true,
+    "recorded_full_verification_zero": true,
+    "all_100_per_image_rows": true,
+    "photo_integer_totals": true,
+    "photo_floats": true,
+    "histograms_match_per_image_sums": true,
+    "original_histogram_matches_prior": true,
+    "coarsened_line_histogram_dominates": true,
+    "reported_output_hash_matches_prior": true,
+    "gate_recomputed": true,
+    "historical_axes_and_bits": true,
+    "history_claim_is_limited": true
+  },
+  "findings": [
+    "R低的c>>3/c&7及逆式严格双射；direct[b,g,r]按R低线性化，区别23/42的B低8色3bit；62为相同R连续8色但5bit。",
+    "正常base在0..229，255哨兵不冲突；8个3bit差值恰占bit8..31，例外24bit块编号与8B原ID块无损。",
+    "主词缓存行是c>>7，原ID行是c>>6；例外池按8B块/64B行计ordinal>>3且独立对齐，报告的是行集合而非miss或吞吐。",
+    "固定8像素包的异常率23.500732421875%，超过5%；主词行比0.9978266665810297，高于0.80；含例外池为1.109097968148663，停止结论成立。"
+  ],
+  "blocking_findings": [],
+  "identity": {
+    "analysis_sha256": "b73099cb170363ee50a266714363f4b74cecf1c86a3f4472dfb0cf87f05e0dc1",
+    "protocol_sha256": "590a8ccd128420197a1d6cfa1acc2047527d12d863dcfe4a7c0aced46cda73af",
+    "analyze_sha256": "b410ad95dcf8807303ba4a53fa974ef1d2623fcbc7ad683968c3c18589cf430e",
+    "generator_sha256": "a6339add8752bea4e30b6971369952ab08f71685ddec3a52e29bb841308c70e4",
+    "generator_source_sha256": "7bdfcecf7b2b261cfbd1bc57dd395205107267a8ae82c2a2ae398ff221794d6f",
+    "previous_profile_sha256": "0aa820d6411bbfc64dc1a0de95d2052e2534a7aee8d89d6dbbb78a9852953b6b",
+    "audit_script_sha256": "6375025b8cb50c88c525fa479854bcff52b10be393c5ee8abaf932826f6610ea"
+  },
+  "input_checks": [
+    {
+      "name": "cache_gold",
+      "path": "artifacts/skylake-matrix-cache-gold-v1/cache-gold.u32",
+      "recorded_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "bytes": 742400,
+      "matches_frozen_script_and_size": true,
+      "matches_prior_profile_identity": true,
+      "independently_rehashed_now": true,
+      "actual_sha256": "f223e56756ed281372b0ebd858b254110c04ca1f5b2afb6d091c40df3a1ffe90",
+      "pass": true
+    },
+    {
+      "name": "cube",
+      "path": "artifacts/cinema-current-anchor-accept-v1/cube.rgb",
+      "recorded_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+      "bytes": 50331648,
+      "matches_frozen_script_and_size": true,
+      "matches_prior_profile_identity": true,
+      "independently_rehashed_now": false,
+      "actual_sha256": null,
+      "pass": true
+    },
+    {
+      "name": "photos",
+      "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+      "recorded_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+      "bytes": 235929600,
+      "matches_frozen_script_and_size": true,
+      "matches_prior_profile_identity": true,
+      "independently_rehashed_now": false,
+      "actual_sha256": null,
+      "pass": true
+    },
+    {
+      "name": "manifest",
+      "path": "assets/photos/manifest.json",
+      "recorded_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "bytes": 101681,
+      "matches_frozen_script_and_size": true,
+      "matches_prior_profile_identity": true,
+      "independently_rehashed_now": true,
+      "actual_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+      "pass": true
+    },
+    {
+      "name": "old_palette_crosscheck",
+      "path": "artifacts/skylake-palette-bank-readonly-v1/palette.u32",
+      "recorded_sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "bytes": 1024,
+      "matches_frozen_script_and_size": true,
+      "matches_prior_profile_identity": true,
+      "independently_rehashed_now": true,
+      "actual_sha256": "53cedaeca7403d5afd1b96133339be866840059685abdd3846aad7fe10998fbe",
+      "pass": true
+    }
+  ],
+  "per_image_checks": [
+    {
+      "image_index": 0,
+      "pass": true
+    },
+    {
+      "image_index": 1,
+      "pass": true
+    },
+    {
+      "image_index": 2,
+      "pass": true
+    },
+    {
+      "image_index": 3,
+      "pass": true
+    },
+    {
+      "image_index": 4,
+      "pass": true
+    },
+    {
+      "image_index": 5,
+      "pass": true
+    },
+    {
+      "image_index": 6,
+      "pass": true
+    },
+    {
+      "image_index": 7,
+      "pass": true
+    },
+    {
+      "image_index": 8,
+      "pass": true
+    },
+    {
+      "image_index": 9,
+      "pass": true
+    },
+    {
+      "image_index": 10,
+      "pass": true
+    },
+    {
+      "image_index": 11,
+      "pass": true
+    },
+    {
+      "image_index": 12,
+      "pass": true
+    },
+    {
+      "image_index": 13,
+      "pass": true
+    },
+    {
+      "image_index": 14,
+      "pass": true
+    },
+    {
+      "image_index": 15,
+      "pass": true
+    },
+    {
+      "image_index": 16,
+      "pass": true
+    },
+    {
+      "image_index": 17,
+      "pass": true
+    },
+    {
+      "image_index": 18,
+      "pass": true
+    },
+    {
+      "image_index": 19,
+      "pass": true
+    },
+    {
+      "image_index": 20,
+      "pass": true
+    },
+    {
+      "image_index": 21,
+      "pass": true
+    },
+    {
+      "image_index": 22,
+      "pass": true
+    },
+    {
+      "image_index": 23,
+      "pass": true
+    },
+    {
+      "image_index": 24,
+      "pass": true
+    },
+    {
+      "image_index": 25,
+      "pass": true
+    },
+    {
+      "image_index": 26,
+      "pass": true
+    },
+    {
+      "image_index": 27,
+      "pass": true
+    },
+    {
+      "image_index": 28,
+      "pass": true
+    },
+    {
+      "image_index": 29,
+      "pass": true
+    },
+    {
+      "image_index": 30,
+      "pass": true
+    },
+    {
+      "image_index": 31,
+      "pass": true
+    },
+    {
+      "image_index": 32,
+      "pass": true
+    },
+    {
+      "image_index": 33,
+      "pass": true
+    },
+    {
+      "image_index": 34,
+      "pass": true
+    },
+    {
+      "image_index": 35,
+      "pass": true
+    },
+    {
+      "image_index": 36,
+      "pass": true
+    },
+    {
+      "image_index": 37,
+      "pass": true
+    },
+    {
+      "image_index": 38,
+      "pass": true
+    },
+    {
+      "image_index": 39,
+      "pass": true
+    },
+    {
+      "image_index": 40,
+      "pass": true
+    },
+    {
+      "image_index": 41,
+      "pass": true
+    },
+    {
+      "image_index": 42,
+      "pass": true
+    },
+    {
+      "image_index": 43,
+      "pass": true
+    },
+    {
+      "image_index": 44,
+      "pass": true
+    },
+    {
+      "image_index": 45,
+      "pass": true
+    },
+    {
+      "image_index": 46,
+      "pass": true
+    },
+    {
+      "image_index": 47,
+      "pass": true
+    },
+    {
+      "image_index": 48,
+      "pass": true
+    },
+    {
+      "image_index": 49,
+      "pass": true
+    },
+    {
+      "image_index": 50,
+      "pass": true
+    },
+    {
+      "image_index": 51,
+      "pass": true
+    },
+    {
+      "image_index": 52,
+      "pass": true
+    },
+    {
+      "image_index": 53,
+      "pass": true
+    },
+    {
+      "image_index": 54,
+      "pass": true
+    },
+    {
+      "image_index": 55,
+      "pass": true
+    },
+    {
+      "image_index": 56,
+      "pass": true
+    },
+    {
+      "image_index": 57,
+      "pass": true
+    },
+    {
+      "image_index": 58,
+      "pass": true
+    },
+    {
+      "image_index": 59,
+      "pass": true
+    },
+    {
+      "image_index": 60,
+      "pass": true
+    },
+    {
+      "image_index": 61,
+      "pass": true
+    },
+    {
+      "image_index": 62,
+      "pass": true
+    },
+    {
+      "image_index": 63,
+      "pass": true
+    },
+    {
+      "image_index": 64,
+      "pass": true
+    },
+    {
+      "image_index": 65,
+      "pass": true
+    },
+    {
+      "image_index": 66,
+      "pass": true
+    },
+    {
+      "image_index": 67,
+      "pass": true
+    },
+    {
+      "image_index": 68,
+      "pass": true
+    },
+    {
+      "image_index": 69,
+      "pass": true
+    },
+    {
+      "image_index": 70,
+      "pass": true
+    },
+    {
+      "image_index": 71,
+      "pass": true
+    },
+    {
+      "image_index": 72,
+      "pass": true
+    },
+    {
+      "image_index": 73,
+      "pass": true
+    },
+    {
+      "image_index": 74,
+      "pass": true
+    },
+    {
+      "image_index": 75,
+      "pass": true
+    },
+    {
+      "image_index": 76,
+      "pass": true
+    },
+    {
+      "image_index": 77,
+      "pass": true
+    },
+    {
+      "image_index": 78,
+      "pass": true
+    },
+    {
+      "image_index": 79,
+      "pass": true
+    },
+    {
+      "image_index": 80,
+      "pass": true
+    },
+    {
+      "image_index": 81,
+      "pass": true
+    },
+    {
+      "image_index": 82,
+      "pass": true
+    },
+    {
+      "image_index": 83,
+      "pass": true
+    },
+    {
+      "image_index": 84,
+      "pass": true
+    },
+    {
+      "image_index": 85,
+      "pass": true
+    },
+    {
+      "image_index": 86,
+      "pass": true
+    },
+    {
+      "image_index": 87,
+      "pass": true
+    },
+    {
+      "image_index": 88,
+      "pass": true
+    },
+    {
+      "image_index": 89,
+      "pass": true
+    },
+    {
+      "image_index": 90,
+      "pass": true
+    },
+    {
+      "image_index": 91,
+      "pass": true
+    },
+    {
+      "image_index": 92,
+      "pass": true
+    },
+    {
+      "image_index": 93,
+      "pass": true
+    },
+    {
+      "image_index": 94,
+      "pass": true
+    },
+    {
+      "image_index": 95,
+      "pass": true
+    },
+    {
+      "image_index": 96,
+      "pass": true
+    },
+    {
+      "image_index": 97,
+      "pass": true
+    },
+    {
+      "image_index": 98,
+      "pass": true
+    },
+    {
+      "image_index": 99,
+      "pass": true
+    }
+  ],
+  "recomputed_totals": {
+    "pixels": 78643200,
+    "packets8": 9830400,
+    "windows64": 1228800,
+    "exception_pixels": 8621803,
+    "exception_packets8": 2310216,
+    "sum_original_id_lines": 60721470,
+    "sum_word_lines": 60589502,
+    "sum_exception_pool_lines": 6756557
+  },
+  "histogram_checks": [
+    {
+      "field": "original_lines_histogram",
+      "count": 1228800,
+      "weighted_sum": 60721470,
+      "pass": true
+    },
+    {
+      "field": "word_lines_histogram",
+      "count": 1228800,
+      "weighted_sum": 60589502,
+      "pass": true
+    },
+    {
+      "field": "word_plus_exception_lines_histogram",
+      "count": 1228800,
+      "weighted_sum": 67346059,
+      "pass": true
+    }
+  ],
+  "full_domain_aggregate": {
+    "exception_blocks": 324748,
+    "max_span": 26,
+    "word_bytes": 8388608,
+    "exception_payload_bytes": 2597984,
+    "total_payload_bytes": 10986592
+  },
+  "history_sources": {
+    "revision23": {
+      "path": "experiments/skylake-exception-runtime/channel_avx2.cpp",
+      "sha256": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3"
+    },
+    "revision42": {
+      "path": "experiments/skylake-wordload-runtime/channel_avx2.cpp",
+      "sha256": "6526fcbc3e587da38dd460c0ed1b8ef4e5a7bb40867a121e944c68d88cd31de1"
+    },
+    "revision62": {
+      "path": "experiments/skylake-pack5-runtime/channel_avx2.cpp",
+      "sha256": "09d14e8f12f5c75bdbad44215714c47d86c8aec244400443c3e33d202a53ad57"
+    }
+  },
+  "generator_check": {
+    "generator_string_replacements": 10
+  },
+  "limitations": [
+    "不重扫完整16M颜色或100图；完整域零差、word/pool哈希及照片输出哈希为冻结原运行记录，独立审计只核对算法与汇总。",
+    "50MiB cube和225MiB照片未在本次重新哈希；按冻结脚本、原结果、此前brick2原件、文件长度及逐图manifest哈希交叉核对。",
+    "逐图原始结果仅保存计数汇总而非全部窗口序列；可验证直方图总数/加权和及100行汇总，不能据此重建每个窗口。"
+  ],
+  "full_profile_reexecutions": 0,
+  "large_input_bytes_read": 0,
+  "native_calls": 0,
+  "compiler_calls": 0,
+  "performance_calls": 0
+}
