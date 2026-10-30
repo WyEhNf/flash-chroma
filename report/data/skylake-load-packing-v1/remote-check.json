@@ -1,0 +1,128 @@
+{
+  "scope": "全量PR/issue正文、评论、reviews、行内及GraphQL Discussion/审查线程；完整分页；与已读上一阶段正文逐项比较",
+  "summary": {
+    "prs": 41,
+    "independent_issues": 2,
+    "rest_groups": 125,
+    "nonempty": {
+      "issues/5/comments": 1,
+      "issues/8/comments": 1,
+      "issues/9/comments": 1,
+      "issues/12/comments": 1,
+      "issues/13/comments": 1,
+      "issues/14/comments": 1,
+      "issues/15/comments": 1,
+      "issues/16/comments": 1,
+      "issues/17/comments": 1,
+      "issues/18/comments": 1,
+      "issues/19/comments": 1,
+      "issues/20/comments": 1,
+      "issues/21/comments": 1,
+      "issues/22/comments": 1,
+      "issues/23/comments": 1,
+      "issues/24/comments": 1,
+      "issues/25/comments": 1,
+      "issues/26/comments": 1,
+      "issues/27/comments": 1,
+      "issues/34/comments": 1,
+      "issues/37/comments": 2
+    },
+    "review_threads": 0,
+    "discussions": 2,
+    "all_pages_read": true
+  },
+  "existing_body_changes": [],
+  "existing_opinion_changes": [],
+  "existing_graphql_changes": [],
+  "new_prs": [
+    {
+      "html_url": "https://github.com/WyEhNf/flash-chroma/pull/47",
+      "number": 47,
+      "state": "open",
+      "title": "WIP研究：相对修订23三倍目标的七项精确优化与负结果",
+      "body": "修订23之后继续追求当前吞吐的300%。本检查点保存修订24—30七条精确优化路线、完整正确性与全部性能记录。**三倍目标尚未达到，保持WIP/Draft，继续研究；没有将接近三倍的新接口结果描述为整体完成。**\n\n[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/b55a444/docs/stages/2026-10-20-skylake-threefold.md) · [全部原始证据](https://github.com/WyEhNf/flash-chroma/tree/b55a444/report/data/skylake-threefold-v1) · 提交 b55a444cac7ac7e4438eefa524e723a983be9e92\n\n变更包括：精确16bit输出、16MiB字节ID、64MiB RGB32一次gather、对象自身THP、独立标量载荷、4×4×4颜色共缓存行，以及真实可调用的分离输入／输出API。所有表只由当前四个稀疏模型构造，不读取照片、完整源LUT或旧oracle；原23/16/4回退及公共默认保留。容量从23的11.27MB增加到28.05—78.38MB，官方派生表许可及预算仍未确认。\n\n| 同场配对耗时比，候选／23 | 1线程 | 4线程 |\n| --- | ---: | ---: |\n| 25 Windows，纯apply | 0.569640 | 0.626203 |\n| 27 WSL，纯apply | 0.569274 | 0.602745 |\n| 30 WSL，纯apply | 0.539994 | 0.637160 |\n| 30 WSL，旧copy＋apply | 0.633718 | 0.842519 |\n| 30 WSL，新输出接口 | 0.438003 | 0.336039 |\n\n完整七候选及所有进程比值在报告中。每个候选均在自身同场直接对23，不能跨Windows/WSL比较绝对时间或相乘历史收益。新API直接从只读源写目标，参考适配器执行memcpy后原23；两库共用同一真实API计时器。旧apply、旧copy＋apply完整保留，新增接口没有覆盖旧时间。接近三倍的单项不能替代未满足的纯映射及旧接口目标。七版accepted_on_this_host均为false。\n\n验证目的与实际环境：\n\n- 本机Ryzen9 8945HX，Windows11 26200／MinGW GCC15.2／Python3.12.14，或同机WSL2 Ubuntu／Linux6.18.33.2／GCC15.2／Python3.14.4标准库。Release独立AVX2 TU仅-mavx2 -mtune=skylake -ffp-contract=off，无AVX512/FMA/fast-math。用户确认按通用AVX2继续；不是Skylake实测，未锁频控温。\n- 七候选全部完整RGB8逐字节等价，固定模型精度不下降。24/25另有基础/缓存/证书、独立全表和多网格正负斜率合同；26/27有528次有限比较及12组完整域；28—30另有1056次分离/同址有限比较、44条非法/重叠/溢出拒绝和12组完整新接口色域。每轮100图完整SHA、源只读及哨兵均通过。26—30未重跑其他网格矩阵，分配失败未注入。\n- 七次固定AB/BA/BA/AB四新进程，1/4线程顺序平衡，每配置5轮100图，共560轮旧接口；28—30另加240轮真实输出。每轮计时外核对完整SHA，不删轮、不补测。独立标准库复算全部800轮的身份和公式，无新计时。\n- Linux每个计时候选句柄通过smaps证明实际主体THP；28/29额外4字节保护尾部允许普通页。Windows只读探测没有SeLockMemoryPrivilege，没有修改权限或全局设置。\n- 归档235份原始文件、31份源快照／2062项源成员、121项二进制成员全部核对；静态交付29份新Python语法、334项Git blob字节及107项冻结源码检查通过。原回退对象同场一致。全仓CI另看本头，其常规任务不覆盖这些显式实验库。\n\n创建前再次全量刷新40个PR、2个独立issue、2个Discussion和122组REST评论/review/行内记录，审查线程0，分页完整；既有正文及相关意见未变，#46头仍8355402、Draft且无评论/review/线程。[操作前核对](https://github.com/WyEhNf/flash-chroma/blob/b55a444/report/data/skylake-threefold-v1/pre-create-remote-check.json)及完整快照随档案保存。\n\n[#9基线/环境](https://github.com/WyEhNf/flash-chroma/pull/9#issuecomment-6213519540)、[#7内核绑定](https://github.com/WyEhNf/flash-chroma/issues/7)的337a3dd、[#27保护](https://github.com/WyEhNf/flash-chroma/pull/27#issuecomment-6229844096)的876e15b8、[#29相等mean](https://github.com/WyEhNf/flash-chroma/pull/29)的397cc367实际包含；相关公共实现未改，历史集成证据保留[#37](https://github.com/WyEhNf/flash-chroma/pull/37#issuecomment-6230455676)，不冒充本轮重跑。[Discussion #4](https://github.com/WyEhNf/flash-chroma/discussions/4)的模型误差与实现区分继续遵守；[#8](https://github.com/WyEhNf/flash-chroma/issues/8)接口/实板/预算及GUI #40待办不关闭。\n\n本PR依赖#46，以codex/skylake-palette-exceptions-20261020为base；main b19c5a0已包含。不合并，不称官方比赛验收，照片为已见数据。后续继续研究精确块字典和存储路径。\n\nAgent：Codex  \nOperator：WyEhNf  \nTask：精度不降，当前吞吐达到300%  \nStatus：In Progress（本检查点Draft，目标未完成）",
+      "draft": true
+    }
+  ],
+  "included_commits": {
+    "b19c5a0": true,
+    "337a3dd": true,
+    "876e15b8": true,
+    "397cc367": true,
+    "e3975ea": true,
+    "b3d7f4c": true,
+    "8355402": true,
+    "b55a444": true
+  },
+  "related": [
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/9#issuecomment-6213519540",
+      "status": "基线/环境修复337a3dd已包含；本轮模型/库/环境单独绑定"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+      "status": "内核绑定修复337a3dd已包含；相关公共实现未改"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/27#issuecomment-6229844096",
+      "status": "保护修复876e15b8已包含；固定模型且完整字节不变"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/29",
+      "status": "相等mean修复397cc367已包含；本轮不拟合"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/37#issuecomment-6230455676",
+      "status": "相关公共修复的历史集成证据；本轮不冒充重跑"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/discussions/4",
+      "status": "实现正确性与模型误差分列；无新评论"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+      "status": "接口迁移/官方预算/实板待办保留，不关闭"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/42",
+      "status": "固定同一a399模型与精度，不修改来源或训练"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/43",
+      "status": "保留16历史结果；本阶段唯一计时参考为23，不乘算历史收益"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/44",
+      "status": "五项静态停止保留；新22独立比较，依赖该分支"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/45",
+      "status": "22历史结果保留，不乘算收益"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/46",
+      "status": "23作为当前唯一参考；头8355402，Draft无新增意见"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/47",
+      "status": "依赖b55a444检查点，正文与已发送文本逐字相同；没有评论/review/线程，常规CI成功不代替实验验收"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/45",
+      "status": "22历史结果保留，不乘算收益"
+    },
+    {
+      "url": "https://github.com/WyEhNf/flash-chroma/pull/46",
+      "status": "23作为当前唯一参考；头8355402，Draft无新增意见"
+    }
+  ],
+  "unresolved": [
+    "实际Skylake环境与性能",
+    "官方侧表/派生缓存许可、内存预算和Threshold",
+    "issue8接口/实板与GUI40独立待办",
+    "相对23的3倍目标尚未达到，24—30全部保留负门槛结论",
+    "相对23的3倍目标尚未达到，31—37仍未满足整体门槛；37仅四线程真实输出达到3.03倍"
+  ],
+  "decision": "仅提交独立WIP/Draft研究，不合并、不改变已验23或公共默认",
+  "redaction": "快照递归剔除API临时克隆元数据字段；正文/评论不删改"
+}
