@@ -1,5 +1,7 @@
 # 当前推荐的CPU评分候选
 
+需要连续精度/时间/内存选择与独立头文件部署时，使用新的[单头接口](../docs/single-header-runtime.md)和[本轮配置目录](../report/data/p16-frontier-header-20261027/catalog.json)。新入口为 `pixi run --locked build-header`、`frontier` 和 `header-run`；下文保留原修订102的评分候选及历史耗时，不能把它们当作新头文件的重测结果。
+
 [性能与策略方法总结](../docs/p16-cpu-performance-summary.md)说明当前模型、等价direct编译、AVX2及内存取舍，并区分三种批次计时范围。
 
 当前推荐配置为 **373a固定模型＋修订100准备器＋AVX2线性direct＋4线程**，发布包在 [p16-cpu](p16-cpu/manifest.json)。这是已验证研究中的保守选择，不能在官方Threshold、精度换分及目标机结果未知时证明最高总分。[本轮完整结果与选择理由](../docs/stages/2026-10-27-p16-score-candidate.md)。

@@ -52,6 +52,7 @@ endif()
 add_executable(jshc_rtos.elf ${JSHC_PLATFORM_SOURCES} platform.c main.c ../tests/contract.c)
 target_link_libraries(jshc_rtos.elf PRIVATE jshc_embedded jshc_freertos gcc)
 jshc_attach_portable_contract(jshc_rtos.elf)
+jshc_attach_single_header_contract(jshc_rtos.elf)
 target_compile_definitions(jshc_rtos.elf PRIVATE "JSHC_RTOS_TARGET=\"${JSHC_TARGET_NAME}\"")
 target_compile_options(jshc_rtos.elf PRIVATE -Wall -Wextra -Werror -fstack-usage)
 target_link_options(jshc_rtos.elf PRIVATE -nostdlib
