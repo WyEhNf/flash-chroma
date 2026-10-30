@@ -1,0 +1,59 @@
+{
+  "purpose": "调色板22对16的正确性与50%吞吐目标，数值调用前固定新增验收代码身份",
+  "base_plan_sha256": "dec25980271c4eca4f219bbfae8151c2f7fed566fa91e5336d177f9c8844d440",
+  "seed": 2026102023,
+  "actual_lengths": [
+    0,
+    1,
+    7,
+    8,
+    9,
+    15,
+    16,
+    17,
+    4095,
+    4096,
+    4097
+  ],
+  "offsets": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "backends": [
+    [
+      "scalar",
+      1
+    ],
+    [
+      "avx2",
+      1
+    ],
+    [
+      "avx2",
+      4
+    ]
+  ],
+  "patterns": [
+    "fast",
+    "fallback",
+    "seven_fast_one_fallback",
+    "mixed",
+    "endpoints"
+  ],
+  "actual_full_decode": "从C++读取全部2097152编码词，独立Python以既有完整域oracle重建每个块及全部16M fast值；全部哨兵拒绝可编码条件",
+  "resource": "元数据差从非四级的两个真实句柄测得；链差须等于元数据差+编译表capacity；准备临时/时间单列",
+  "reject": "诊断错误大小/NULL、表长度错误、palette长度错误均不写调用者缓冲",
+  "fit": "不重新拟合；新编译准备只能从四个稀疏模型生成；验收的旧全流不可用作构造器输入",
+  "source_sha256": {
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/verify_skylake_palette_domain.py": "669a936a8c4ba1f67a11e78ae9e7bf75ae3a249451e45d331558c88ec42b7a2e",
+    "scripts/verify_skylake_palette_signed.py": "df7ac0173bf62b17a7180cffd0b72fa2e39b7867764f3d0247b5524e147c3bd3",
+    "scripts/accept_skylake_palette.py": "9e02c91dc656b91cbbaa02b6e2329dc3033594e96361c7e7fd2570f6ea07a057",
+    "scripts/bench_skylake_palette.py": "dd524a27931ed06bea81b3a9d54173e68b7a8e4d21b30456b6c8459a447539ba",
+    "scripts/verify_skylake_palette.py": "e69ac2f41cdf07e877be26984adaa8e963b8c1be8f672770f55846ce8df94978"
+  },
+  "revision": 3,
+  "revision_reason": "完整验收收尾在关闭句柄后读取调色板诊断导致回执失败；改在关闭前保存诊断。C++/模型/构建/比较公式不变，失败目录保留。"
+}

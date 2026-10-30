@@ -202,3 +202,10 @@ scripts/report_quantile_tail_study.py -text
 
 # LUT反例诊断按实测字节保存，确保来源与交付SHA一致
 /artifacts/lut-cause-study/20261018/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# 调色板研究源码/冻结计划按实测字节保存，避免换行改变构建与性能身份。
+/experiments/skylake-palette-runtime/** -text
+/experiments/skylake-palette-*.json -text
+/scripts/*skylake_palette*.py -text
+/scripts/palette_support.py -text
+# objdump原始输出保留其行尾空格；完整字节由档案SHA检查，不手工重排。
+/report/data/skylake-palette-v1/static/candidate.asm -text -diff

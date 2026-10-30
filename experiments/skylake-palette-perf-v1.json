@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "purpose": "修订22对当前已验16的唯一80轮比较；用户要求吞吐至少1.5倍；两线程档apply/copy均须达到，准备单列",
+  "plan": {
+    "path": "experiments/skylake-palette-v1.json",
+    "sha256": "dec25980271c4eca4f219bbfae8151c2f7fed566fa91e5336d177f9c8844d440"
+  },
+  "build_path": "artifacts/skylake-palette-build-v1",
+  "build": {
+    "path": "artifacts/skylake-palette-build-v1/build.json",
+    "sha256": "151e3c54f56cb423afd6546b001f3f8a26c0a7620819307a52bcf9248ef1a79f"
+  },
+  "full_acceptance": {
+    "path": "artifacts/skylake-palette-full-v2/results.json",
+    "sha256": "7ad0dd29953d2802226c6c0882e92aa2fbd147c3a44fd594de43ddf0428cb02f"
+  },
+  "topology": {
+    "path": "artifacts/skylake-packed-build-v1/topology.json",
+    "sha256": "7e06a94b0d34384a21c4af40583372c021a078778d9175a8d86a1cc276e687a0"
+  },
+  "affinity_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    [
+      "reference",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "candidate",
+      "reference"
+    ],
+    [
+      "reference",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "repeats": 5,
+  "adoption_gate": {
+    "median_apply_ratio_max": 0.6666666666666666,
+    "any_process_apply_ratio_max": 0.9,
+    "median_copy_apply_ratio_max": 0.6666666666666666,
+    "median_prepare_plus_100_ratio_max": 1.0
+  },
+  "limits": [
+    "本机AMD，不推断Skylake服务器实测",
+    "同L3域4物理核；未锁频控温",
+    "预载100图，原生apply与copy+apply分列，不含IO/解码/准备"
+  ],
+  "domain_contract": {
+    "path": "artifacts/skylake-palette-domain-contract-v1/results.json",
+    "sha256": "30f24b278bdb0aa9ac92502f9234d60a60aae465484f5ac746209ace1765f47b"
+  },
+  "verify_each_measured_round": true,
+  "packed_contract": {
+    "path": "artifacts/skylake-palette-packed-contract-v1/results.json",
+    "sha256": "a6616f3dc24b9ee4ae22e996b2b9ebffb226386455136b2acd4e52820aad8b00"
+  },
+  "signed_contract": {
+    "path": "artifacts/skylake-palette-signed-contract-v1/results.json",
+    "sha256": "8658736201bed9b83c08ebdbdf73dcf2904418efc75de612328393091f0501ce"
+  },
+  "validation": {
+    "path": "experiments/skylake-palette-validation-v3.json",
+    "sha256": "302de44592bfb8019b60e26604c174b703df9163c7c98393624e7c216523e75d"
+  }
+}

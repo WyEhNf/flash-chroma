@@ -107,3 +107,5 @@
 `skylake-layout-server-v2`保存4/13双库的独立标准库服务器包、v1依赖漏带拒绝及修正、WSL实际构建、3432次有限比较、12组完整域、209600物理槽与16组逐轮百图的正确性。没有新性能比较，不覆盖Windows失败；[阶段说明](../../docs/stages/2026-10-20-skylake-layout-server.md)给出完整本地传输包SHA和仍待执行的Skylake160组协议。
 
 `skylake-compact-cache-static-v1`保存修订14的半字组合剖面、精确条件、八候选/四参考全部24条MCA及静态停止。实际模型成本已超过预设1.03，未加载候选或运行新正确性/性能；[阶段说明](../../docs/stages/2026-10-20-skylake-compact-cache-static.md)把数学可逆、编译期断言和未验证实现明确分开，不升级默认或服务器包。
+
+`skylake-palette-v1`保存修订22相对已验16的精确编译缓存、完整域/100图零差、Linux标准库移植及唯一80轮：本机1/4线程apply吞吐提高84.99%/90.62%，copy+apply提高79.46%/66.71%。[阶段报告](../../docs/stages/2026-10-20-skylake-palette.md)分列额外8.39MB、构造成本、两次验证器失败、大调色板回退及Skylake/官方许可待验收；全部原始轮次和源字节保留。
