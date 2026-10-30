@@ -1,0 +1,67 @@
+--- experiments/skylake-andn-split-runtime/andn_inplace/channel_avx2.cpp
++++ experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp
+@@ -79,13 +79,14 @@
+   _mm256_storeu_si256(reinterpret_cast<__m256i*>(p+32),s1);
+   _mm256_storeu_si256(reinterpret_cast<__m256i*>(p+64),s2);
+ }
++// 保留既有预排与三条合并；本副本的stream命名沿用原函数，但存储已为普通对齐写。
+ inline __attribute__((always_inline)) void output_four_stream(uint8_t* p,__m256i v0,__m256i v1,__m256i v2,__m256i v3) {
+   const __m256i s0=_mm256_blend_epi32(v0,v1,0xc0);
+   const __m256i s1=_mm256_permute2x128_si256(v1,v2,0x30);
+   const __m256i s2=_mm256_blend_epi32(v3,v2,0x03);
+-  _mm256_stream_si256(reinterpret_cast<__m256i*>(p),s0);
+-  _mm256_stream_si256(reinterpret_cast<__m256i*>(p+32),s1);
+-  _mm256_stream_si256(reinterpret_cast<__m256i*>(p+64),s2);
++  _mm256_store_si256(reinterpret_cast<__m256i*>(p),s0);
++  _mm256_store_si256(reinterpret_cast<__m256i*>(p+32),s1);
++  _mm256_store_si256(reinterpret_cast<__m256i*>(p+64),s2);
+ }
+ inline __attribute__((always_inline)) void scalar_one(const uint32_t* table,const uint32_t* palette,const uint8_t* source,uint8_t* destination) {
+   const uint32_t code=uint32_t(source[0])|(uint32_t(source[1])<<8)|(uint32_t(source[2])<<16);
+@@ -94,30 +95,28 @@
+ }
+ inline __attribute__((always_inline)) void run(const uint32_t* table,const uint32_t* palette,const uint8_t* source,uint8_t* destination,size_t pixels) noexcept {
+   size_t p=0;
+-  // 初始窗口只形成有效输入范围内的地址；NTA为提示，CPU可以忽略。
++  // 初始窗口只形成有效输入范围内的地址；T0为提示，CPU可以忽略。
+   const size_t initial=pixels*3<1024?pixels*3:1024;
+-  for(size_t offset=0;offset<initial;offset+=64)_mm_prefetch(reinterpret_cast<const char*>(source+offset),_MM_HINT_NTA);
+-  // 对齐到完整64字节缓存行，避免前缀普通写与非临时写共享同一行。
++  for(size_t offset=0;offset<initial;offset+=64)_mm_prefetch(reinterpret_cast<const char*>(source+offset),_MM_HINT_T0);
++  // 保持原64字节目标对齐，六个普通32字节写恰好覆盖三个完整缓存行。
+   for(;p<pixels && (reinterpret_cast<uintptr_t>(destination+3*p)&63);++p)scalar_one(table,palette,source+3*p,destination+3*p);
+-  bool streamed=false;
+   for(;p+72<=pixels;p+=64) {
+     // 固定16缓存行前瞻；四个地址覆盖未来192字节，包括非对齐源末行。
+     if(p+406<=pixels) {
+       const uint8_t* future=source+3*p+1024;
+-      _mm_prefetch(reinterpret_cast<const char*>(future),_MM_HINT_NTA);
+-      _mm_prefetch(reinterpret_cast<const char*>(future+64),_MM_HINT_NTA);
+-      _mm_prefetch(reinterpret_cast<const char*>(future+128),_MM_HINT_NTA);
+-      _mm_prefetch(reinterpret_cast<const char*>(future+191),_MM_HINT_NTA);
++      _mm_prefetch(reinterpret_cast<const char*>(future),_MM_HINT_T0);
++      _mm_prefetch(reinterpret_cast<const char*>(future+64),_MM_HINT_T0);
++      _mm_prefetch(reinterpret_cast<const char*>(future+128),_MM_HINT_T0);
++      _mm_prefetch(reinterpret_cast<const char*>(future+191),_MM_HINT_T0);
+     }
+     // 全部64像素先读后写，主体输出恰好192字节即三条完整缓存行。
+     const __m256i r0=pack_stream_0(read_wide(table,palette,source+3*p)),r1=pack_stream_1(read_wide(table,palette,source+3*p+24));
+     const __m256i r2=pack_stream_2(read_wide(table,palette,source+3*p+48)),r3=pack_stream_3(read_wide(table,palette,source+3*p+72));
+     const __m256i r4=pack_stream_0(read_wide(table,palette,source+3*p+96)),r5=pack_stream_1(read_wide(table,palette,source+3*p+120));
+     const __m256i r6=pack_stream_2(read_wide(table,palette,source+3*p+144)),r7=pack_stream_3(read_wide(table,palette,source+3*p+168));
+-    output_four_stream(destination+3*p,r0,r1,r2,r3);output_four_stream(destination+3*p+96,r4,r5,r6,r7);streamed=true;
++    output_four_stream(destination+3*p,r0,r1,r2,r3);output_four_stream(destination+3*p+96,r4,r5,r6,r7);
+   }
+-  // 在普通尾部、调用方读取和OpenMP barrier之前发布非临时写入。
+-  if(streamed)_mm_sfence();
++  // 此独立路径只有普通写，没有NT发布需要；原pair48路径仍保留自己的SFENCE。
+   for(;p+40<=pixels;p+=32) {
+     const __m256i r0=read_wide(table,palette,source+3*p),r1=read_wide(table,palette,source+3*p+24),r2=read_wide(table,palette,source+3*p+48),r3=read_wide(table,palette,source+3*p+72);
+     output_four(destination+3*p,pack(r0),pack(r1),pack(r2),pack(r3));
+@@ -127,5 +126,5 @@
+ 
+ }
+  }
+-void avx2_chain_andn_split(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
++void avx2_chain_andn_normal_mt(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
+ }
