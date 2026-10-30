@@ -24,7 +24,7 @@ g++ -O2 -std=c++17 -o lut3d main.cpp
 
 实际环境：Windows11 26200 x64 / Ryzen9 8945HX / MinGW GCC15.2.0、Python3.12.14。无全局PATH/编译器修改。正式主程序没有-mavx2、-march=native、-fopenmp、额外链接库或外部.c/.cpp编译输入。
 
-1. [C++合同](../../tests/framework_auto_detection_contract.cpp)：64种CPU/OS必要位组合及64组无关位噪声、本机独立CPUID核对、Auto实际后端与解析像素输出；与[嵌入式合同](../../tests/framework_embedded_cpp_contract.cpp)定向CTest共2/2通过。
+1. [C++探测合同](../../tests/framework_auto_detection_contract.cpp)：64种CPU/OS必要位组合及64组无关位噪声、本机独立CPUID核对、Auto后端解析与不支持时拒绝；[嵌入式合同](../../tests/framework_embedded_cpp_contract.cpp)另覆盖ROM模型的四级解析像素输出，两项定向CTest共2/2通过。
 2. [Python合同](../../tests/test_framework_auto_detection.py)与[单hpp裁剪合同](../../tests/test_framework_embedded_cpp.py)：当前21例分别覆盖通过。首轮18通过、1项不合理的“freestanding强开宿主标准库”测试假设失败；修正该测试后只重跑它与新增2个正式导出静态合同，3/3通过，不写成一次全套21/21。无宏freestanding、host显式覆盖、bare ARM/RISC-V宏推导、非法强开、独立目录仅hpp+cpp及原8函数文本一致均覆盖。
 3. [题定命令验证器](../../scripts/validate_cpp_submission.py)在正式两文件的独立副本中实际执行O2/C++17命令，仅传data路径。真实四表、四张1024×768 RGB8样图全部完成；程序输出compiled=3、available=3、actual_backend=2（AVX2）、representation=3（RGB24）、threads=1。逐图第二个Delta为1.467711/1.562505/1.592951/1.303775，与上一阶段同模型一致。源、原LUT、图片和EXE前后SHA全部一致；没有把旧O3耗时当新成绩。[原始回执](../../report/data/p16-cpp-environment-20261030/evidence/gcc15-exact.json)。首次同指令运行也原样保存，后一次用于补齐严格的构建/源/输入/二进制回执，不作性能择优。
 4. 最终嵌入式示例按-ffreestanding/-fno-exceptions/-fno-rtti/-fno-builtin编译，不定义设备宏；对象nm无未定义符号。最终同一hpp的双TU仅一处IMPLEMENTATION本机链接也通过，见[最终头文本/链接合同](../../report/cpp-environment-final-contract-20261030.json)。标准库内部C链接声明不等于项目C交付接口，不能据标准stdint.h/cstring名称误判需要额外项目C源。
