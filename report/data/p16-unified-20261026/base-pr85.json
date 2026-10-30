@@ -1,0 +1,48 @@
+{
+  "base_pr": 85,
+  "records": [
+    {
+      "endpoint": "pulls/85",
+      "data": {
+        "title": "将WSL压至1GB并恢复三家真实RAW首帧处理",
+        "body": "Agent：Codex /root、/root/red_workflow\nOperator：WyEhNf\nTask：压缩本机WSL占用，使真实RAW/GUI工作流可在有限内存内运行\nStatus：Draft；1GB预算与三家真实首帧已验证，完整52帧和长时/性能仍待验证\n\n已实际应用1GB内存、4个来宾CPU、F盘2GB交换、关闭WSLg与嵌套虚拟化、30000ms VM空闲超时，保留Mirrored网络和配置原始字节备份。三家首帧重新解码→Log→四级LUT全部完成，12路reference16/runtime8输出SHA与原结果完全相等，所有处理像素native/scalar逐字节一致。GUI的旧WSL失败提示已由新成功任务更新，空闲后虚拟机自动退出而Windows GUI继续在线。\n\n增加配置预览/备份脚本、真实GUI内存采样入口和59份文本证据归档，生产内核、模型、解码参数、262144像素分块和精度核对均未修改。显式dropCache已是当前微软文档默认值，不单独算作新增内存优化；gpuSupport=false写入后/dev/dxg仍存在，没有证明GPU设备已完全禁用。本轮实际解码均为CPU。\n\n本阶段提交16ae431030a5c734a1485089c8b58d15b21902f6，目标为依赖Draft [#84](https://github.com/WyEhNf/flash-chroma/pull/84)头57e935c。\n[阶段说明、命令与回滚](https://github.com/WyEhNf/flash-chroma/blob/codex/wsl-memory-budget-20261023/docs/stages/2026-10-23-wsl-memory-budget.md) · [汇总与12路SHA](https://github.com/WyEhNf/flash-chroma/blob/codex/wsl-memory-budget-20261023/report/data/wsl-memory-budget-v1/summary.json) · [证据/交付回执](https://github.com/WyEhNf/flash-chroma/tree/codex/wsl-memory-budget-20261023/report/data/wsl-memory-budget-v1)\n\n验证目的为本机内存预算、真实任务可运行性与输出完整性，不是吞吐/完整色域/新画质门禁。环境：Windows11 26200.9711 / Ryzen9 8945HX / WSL2.7.10 / Ubuntu Linux6.18.33.2；Windows Python3.13.12，Linux Python3.14.4、NumPy2.4.6、OCIO2.6.0、OpenEXR3.5.2；原修订78普通AVX2四线程、标量核对单线程；官方CPU解码版本同#83。\n\n- ARRI 2880×1620、RED 6144×3160、BRAW 6144×3456各新跑一帧。ARRI任务201626-10263d、RED201639-f6949d、导入BRAW201656-b0a9c7（日期均20261023），12路逐文件SHA一致。\n- 每秒一次共50次采样，来宾MemTotal−MemAvailable采样峰值792739840字节（756.0MiB），交换峰值1429504字节（1.36MiB）。这是Linux估算占用，不是Windows vmmem工作集，也不是连续峰值保证；采样器本身包含在预算内。\n- 18种真实PNG、5项接口边界、启动窗口真实worker取消及新导入目录绑定/重载共25项通过。取消测试观察到worker PID并以kill -0确认退出，未宣称覆盖已运行很久的解码子进程取消。\n- 最后采样后约92秒检查无vmmemWSL、无运行发行版，Windows GUI仍ready；没有测定精确停止时刻。\n- 配置合并的注释/其他节/大小写/幂等和重复拒绝检查、3份Python AST、本地文档链接、Git规范化/冻结原字节和59份ZIP SHA/CRC通过。\n\n保留失败：首次2GB探针中Windows ART的EXR压缩器分配约2.4MB失败，返回0但留下不完整文件；后续EXR读取拒绝，GUI任务201344-2baf16明确失败，不能算作处理成功。降低至1GB后才取得上述三家成功结果。未关闭其他应用或更改Windows分页设置；主机提交空间仍紧张。此前MCE唯一根因没有因本轮成功而被证明。\n\n限制：没有在1GB下重跑完整52帧、长期泄漏或性能试验，当前F盘不足完整GUI任务约40GiB的事前空间预估；原54帧及失败输出均保留。集成脚本核对的四份视频来自旧ARRI导出，本阶段没有新编码。RAW/EXR/RGB/视频/交换文件/厂商工具不上传。沿用已有RGB8画质边界，不声称新的三倍或Skylake实机验收。内存/CPU/交换限制可能影响速度；该配置也会限制其他WSLg/嵌套虚拟机用途，可按备份回滚。\n\n操作前fetch，#84完整正文及全部comment/review/审查线程刷新无新增，目标头仍57e935c；WSL主题检索的8份完整PR正文与已读快照核对，无变化，新增#84单独全文读取。[issue7](https://github.com/WyEhNf/flash-chroma/issues/7)/[issue8](https://github.com/WyEhNf/flash-chroma/issues/8)全文及全部评论已刷新，337a3dd/876e15b8/397cc367实际祖先修复保留；绑定修复不变，接口/资源预算/实板未决事项继续跟踪。最终updated检索无新增，main仍b19c5a0。Discussion接口刷新缺口明确保留，本次不合并或关闭事项。",
+        "head": "16ae431030a5c734a1485089c8b58d15b21902f6",
+        "base": "codex/camera-workflow-gui-20261023"
+      }
+    },
+    {
+      "endpoint": "issues/85/comments?per_page=100",
+      "data": []
+    },
+    {
+      "status": "rejected",
+      "reason": "[object Object]"
+    },
+    {
+      "endpoint": "pulls/85/comments?per_page=100",
+      "data": []
+    }
+  ],
+  "reviews_retry": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "[]",
+      "title": "reviews",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/WyEhNf/flash-chroma/pulls/85/reviews?per_page=100",
+      "display_url": "https://api.github.com/repos/WyEhNf/flash-chroma/pulls/85/reviews?per_page=100",
+      "display_title": "reviews",
+      "structuredContent": {
+        "title": "reviews",
+        "content": "[]",
+        "display_url": "https://api.github.com/repos/WyEhNf/flash-chroma/pulls/85/reviews?per_page=100"
+      }
+    },
+    "isError": false
+  }
+}

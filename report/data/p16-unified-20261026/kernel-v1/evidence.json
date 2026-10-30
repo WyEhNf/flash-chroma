@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "通过",
+  "purpose": "独立AVX-512运行时字节正确性与内存边界合同，非拟合精度或性能",
+  "environment": {
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "architecture": "x86_64",
+    "cpu": "AMD Ryzen 9 8945HX with Radeon Graphics        ",
+    "compiler": "GCC 15.2.0 MinGW x86_64-win32-seh",
+    "kernel_flags": "-std=c++17 -O3 -Wall -Wextra -mavx512f -mavx512bw -mavx512dq -mavx512vl -mavx2 -mtune=skylake-avx512 -ffp-contract=off",
+    "driver_flags": "-std=c++17 -O2 -Wall -Wextra -mno-avx -mno-avx2 -mno-avx512f",
+    "threads": 1,
+    "cpu_os_probe": 1
+  },
+  "coverage": {
+    "formats": [
+      "u8",
+      "u16",
+      "RGB24"
+    ],
+    "finite_calls_per_format": 193,
+    "finite_lengths": "0..96",
+    "full_domain_pixels_per_format": 33554432,
+    "full_domain_pixels_total": 100663296,
+    "full_domain_modes": [
+      "原地",
+      "分离"
+    ],
+    "u8_table_guard_bytes": 0,
+    "u16_rgb24_guard_bytes": 4,
+    "image_padding_bytes": 0,
+    "image_end": "NOACCESS",
+    "table_end": "NOACCESS",
+    "source_readonly_check": "有限样例",
+    "sentinels": "前64B、模型guard"
+  },
+  "static_audit": {
+    "kernel_vector_mnemonics": [
+      "kmovq",
+      "kmovw",
+      "kxnorw",
+      "vbroadcasti32x4",
+      "vmovdqa32",
+      "vmovdqu8",
+      "vpaddd",
+      "vpandd",
+      "vpermd",
+      "vpgatherdd",
+      "vpshufb",
+      "vpslld",
+      "vpsrld",
+      "vpsrlvd",
+      "vpternlogd",
+      "vpxor",
+      "vzeroupper"
+    ],
+    "baseline_wide_register_lines": 0
+  },
+  "limits": [
+    "未在Xeon Gold 6140执行",
+    "未进行正式性能采样",
+    "该合同不替代真实模型或图像的拟合精度验收",
+    "部分重叠不受接口支持"
+  ],
+  "files": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.cpp",
+      "sha256": "72f6bbdc7c87b560a8af25e34f3740645c3b82e76af9abe4a634d2766278eaed"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512.h",
+      "sha256": "6f2bb342e4662b2be4b5bfeaa93c88828bb57cb86a285cc09c27b7d1f0082a3c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\experiments\\p16-unified-runtime\\direct_avx512_contract.cpp",
+      "sha256": "3254042aece1d7855aae3f7ff0db9ba97baf61a10e7e951d698b3c582f564343"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-avx512-kernel\\direct_avx512.o",
+      "sha256": "488921284b6fd759022e85eb6c1f12f58cc5c2270fe4eb7fd1285d862ae40e99"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-unified-avx512-20261026\\artifacts\\p16-unified-avx512-kernel\\direct_avx512_contract.exe",
+      "sha256": "139faa809a0a36e4ca44ae6760e6fc6f1c57d2c48ba1d3573fd2b5ce262848f0"
+    }
+  ]
+}
