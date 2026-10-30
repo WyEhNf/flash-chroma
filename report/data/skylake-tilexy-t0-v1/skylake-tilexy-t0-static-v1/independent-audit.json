@@ -1,0 +1,1799 @@
+{
+  "schema": 1,
+  "purpose": "修订73独立静态审计；仅解析已生成汇编和ELF对象字节，不执行原生、构建或性能",
+  "plan_sha256": "9935e28c5c00f1f2479ac02f58f8dd30338c1af6612ec7240a4fd52252ba61f2",
+  "original_inspect_sha256": "93d60c8f0723bf08e775f19d396fbd83f0f3a764ddcc323fe017483583fe3ce2",
+  "original_results_sha256": "07aef7b03f685dff57ff219b64e1a39bdb099f00bd694b4fff2d7c24daf5d023",
+  "frozen_source_count": 70,
+  "frozen_source_mismatch": [],
+  "method": {
+    "instruction_parser": "逐行匹配 ^\\s*([0-9a-f]+):\\s+([a-z][a-z0-9]*)\\s*(.*)$ 并去掉#注释",
+    "isa": "精确助记符白名单，单独拒绝call/gather/BMI2；完整匹配zmm、k0..7、xmm/ymm16以上及掩码/广播装饰；从ELF64小端节表定位.text，在每条指令起始跳过传统前缀后检查0x62，独立排除EVEX",
+    "four_ids": "按每循环movzbl (%rdi,index,1)顺序分四项，跟踪目标GPR版本，将(%rsi,id,4)调色板读取归属该组；要求每组四ID和四palette读取，且组内最后ID加载位置早于首次palette读取",
+    "ordering_limit": "这里验证编译后静态顺序；空asm不是硬件栅栏，不保证四个ID加载退休后才发射palette，也不证明提速",
+    "spills": "只检查明确64/32/8像素循环体的rsp/rbp引用，函数保存寄存器和线性后备路径的栈访问不等于主循环spill",
+    "packing": "tilexy主体最后ID读取0x80b、最后palette读取0x848、第一次普通输出0x8a6；六个vmovdqu各32字节，源码使用原pack/output_four，未混入57预排",
+    "encoding_note": "ENDBR64与传统NOP前缀存在；未出现AVX512编码/高向量寄存器或BMI2。静态验证不能替代完整RGB8正确性和Skylake实机性能"
+  },
+  "allowed_mnemonics": [
+    "add",
+    "and",
+    "cmova",
+    "cmp",
+    "cs",
+    "endbr64",
+    "inc",
+    "jae",
+    "jb",
+    "je",
+    "jmp",
+    "jne",
+    "lea",
+    "mov",
+    "movzbl",
+    "movzwl",
+    "nop",
+    "nopl",
+    "nopw",
+    "or",
+    "pop",
+    "prefetchnta",
+    "prefetcht0",
+    "push",
+    "ret",
+    "sfence",
+    "shl",
+    "shr",
+    "test",
+    "vblendps",
+    "vextracti128",
+    "vinserti128",
+    "vmovd",
+    "vmovdqa",
+    "vmovdqu",
+    "vmovntdq",
+    "vmovq",
+    "vpalignr",
+    "vpand",
+    "vpblendd",
+    "vpbroadcastd",
+    "vpermd",
+    "vpextrd",
+    "vpinsrd",
+    "vpor",
+    "vpshufb",
+    "vpslld",
+    "vpslldq",
+    "vpsrld",
+    "vpsrldq",
+    "vpunpcklqdq",
+    "vpxor",
+    "vzeroupper",
+    "xchg",
+    "xor"
+  ],
+  "objects": [
+    {
+      "role": "linear",
+      "asm_path": "artifacts/skylake-tilexy-t0-static-v1/linear.asm.txt",
+      "asm_sha256": "7abfdbfc6e3fd6b8ceef290ce1c37829b1f0e6ee4f505df769168141d9651526",
+      "object_path": "artifacts/skylake-tilexy-t0-linux-build-v1/CMakeFiles/jshc_skylake_tilexy_t0.dir/channel_avx2.cpp.o",
+      "object_sha256": "7e09d42a9161aab476c3cd26d9646254dbcdc313b2105794e09c01147a47c4ab",
+      "matches_original_results": true,
+      "instructions": 1579,
+      "mnemonics": [
+        "add",
+        "and",
+        "cmova",
+        "cmp",
+        "cs",
+        "endbr64",
+        "inc",
+        "jae",
+        "jb",
+        "je",
+        "jmp",
+        "jne",
+        "lea",
+        "mov",
+        "movzbl",
+        "movzwl",
+        "nopl",
+        "nopw",
+        "or",
+        "pop",
+        "prefetchnta",
+        "push",
+        "ret",
+        "sfence",
+        "shl",
+        "shr",
+        "test",
+        "vblendps",
+        "vextracti128",
+        "vinserti128",
+        "vmovd",
+        "vmovdqa",
+        "vmovdqu",
+        "vmovntdq",
+        "vmovq",
+        "vpalignr",
+        "vpblendd",
+        "vpermd",
+        "vpinsrd",
+        "vpor",
+        "vpshufb",
+        "vpslldq",
+        "vpsrldq",
+        "vpunpcklqdq",
+        "vzeroupper",
+        "xchg",
+        "xor"
+      ],
+      "forbidden_call_gather_bmi2": [],
+      "unapproved_mnemonics": [],
+      "avx512_register_or_decorator": [],
+      "evex_instruction_offsets": [],
+      "nt_stores": [
+        {
+          "offset": 1983,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm1,-0xa0(%rax)"
+        },
+        {
+          "offset": 1991,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm5,-0xc0(%rax)"
+        },
+        {
+          "offset": 1999,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm4,-0x80(%rax)"
+        },
+        {
+          "offset": 2004,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm10,-0x60(%rax)"
+        },
+        {
+          "offset": 2009,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm11,-0x40(%rax)"
+        },
+        {
+          "offset": 2045,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm1,-0x20(%rax)"
+        },
+        {
+          "offset": 6044,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm1,-0xa0(%rdx)"
+        },
+        {
+          "offset": 6052,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm5,-0xc0(%rdx)"
+        },
+        {
+          "offset": 6060,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm4,-0x80(%rdx)"
+        },
+        {
+          "offset": 6065,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm10,-0x60(%rdx)"
+        },
+        {
+          "offset": 6070,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm11,-0x40(%rdx)"
+        },
+        {
+          "offset": 6112,
+          "mnemonic": "vmovntdq",
+          "operands": "%ymm1,-0x20(%rdx)"
+        }
+      ],
+      "fences": [
+        {
+          "offset": 2059,
+          "mnemonic": "sfence",
+          "operands": ""
+        },
+        {
+          "offset": 6140,
+          "mnemonic": "sfence",
+          "operands": ""
+        }
+      ],
+      "prefetch": [
+        {
+          "offset": 48,
+          "mnemonic": "prefetchnta",
+          "operands": "(%rdx,%rax,1)"
+        },
+        {
+          "offset": 231,
+          "mnemonic": "prefetchnta",
+          "operands": "0x400(%rax)"
+        },
+        {
+          "offset": 238,
+          "mnemonic": "prefetchnta",
+          "operands": "0x440(%rax)"
+        },
+        {
+          "offset": 245,
+          "mnemonic": "prefetchnta",
+          "operands": "0x480(%rax)"
+        },
+        {
+          "offset": 252,
+          "mnemonic": "prefetchnta",
+          "operands": "0x4bf(%rax)"
+        },
+        {
+          "offset": 3952,
+          "mnemonic": "prefetchnta",
+          "operands": "(%r12,%rax,1)"
+        },
+        {
+          "offset": 4167,
+          "mnemonic": "prefetchnta",
+          "operands": "(%rax)"
+        },
+        {
+          "offset": 4170,
+          "mnemonic": "prefetchnta",
+          "operands": "0x40(%rax)"
+        },
+        {
+          "offset": 4174,
+          "mnemonic": "prefetchnta",
+          "operands": "0x80(%rax)"
+        },
+        {
+          "offset": 4181,
+          "mnemonic": "prefetchnta",
+          "operands": "0xbf(%rax)"
+        }
+      ],
+      "loops": [
+        {
+          "start": "0xd8",
+          "end": "0x805",
+          "pixels": 64,
+          "instructions": 321,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x118",
+                "0x11d",
+                "0x138",
+                "0x13d"
+              ],
+              "palette_offsets": [
+                "0x14a",
+                "0x150",
+                "0x176",
+                "0x17d"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x164",
+                "0x169",
+                "0x192",
+                "0x197"
+              ],
+              "palette_offsets": [
+                "0x1a0",
+                "0x1a6",
+                "0x1b4",
+                "0x1bb"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0x1d0",
+                "0x1d5",
+                "0x204",
+                "0x209"
+              ],
+              "palette_offsets": [
+                "0x216",
+                "0x21c",
+                "0x242",
+                "0x249"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0x230",
+                "0x235",
+                "0x25e",
+                "0x263"
+              ],
+              "palette_offsets": [
+                "0x26c",
+                "0x272",
+                "0x280",
+                "0x287"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0x29c",
+                "0x2a1",
+                "0x2d0",
+                "0x2d5"
+              ],
+              "palette_offsets": [
+                "0x2e2",
+                "0x2e8",
+                "0x30e",
+                "0x315"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0x2fc",
+                "0x301",
+                "0x32a",
+                "0x32f"
+              ],
+              "palette_offsets": [
+                "0x338",
+                "0x33e",
+                "0x34c",
+                "0x353"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0x368",
+                "0x36d",
+                "0x39c",
+                "0x3a1"
+              ],
+              "palette_offsets": [
+                "0x3ae",
+                "0x3b4",
+                "0x3da",
+                "0x3e1"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0x3c8",
+                "0x3cd",
+                "0x3f6",
+                "0x3fb"
+              ],
+              "palette_offsets": [
+                "0x404",
+                "0x40a",
+                "0x418",
+                "0x41f"
+              ],
+              "pass": true
+            },
+            {
+              "group": 8,
+              "id_offsets": [
+                "0x434",
+                "0x439",
+                "0x469",
+                "0x46e"
+              ],
+              "palette_offsets": [
+                "0x47b",
+                "0x481",
+                "0x4a7",
+                "0x4ae"
+              ],
+              "pass": true
+            },
+            {
+              "group": 9,
+              "id_offsets": [
+                "0x495",
+                "0x49a",
+                "0x4c3",
+                "0x4c8"
+              ],
+              "palette_offsets": [
+                "0x4d2",
+                "0x4d8",
+                "0x4e6",
+                "0x4ed"
+              ],
+              "pass": true
+            },
+            {
+              "group": 10,
+              "id_offsets": [
+                "0x507",
+                "0x50c",
+                "0x53a",
+                "0x53f"
+              ],
+              "palette_offsets": [
+                "0x552",
+                "0x558",
+                "0x584",
+                "0x58b"
+              ],
+              "pass": true
+            },
+            {
+              "group": 11,
+              "id_offsets": [
+                "0x56c",
+                "0x571",
+                "0x5a0",
+                "0x5a5"
+              ],
+              "palette_offsets": [
+                "0x5af",
+                "0x5b5",
+                "0x5c9",
+                "0x5d0"
+              ],
+              "pass": true
+            },
+            {
+              "group": 12,
+              "id_offsets": [
+                "0x5ea",
+                "0x5ef",
+                "0x620",
+                "0x625"
+              ],
+              "palette_offsets": [
+                "0x638",
+                "0x63e",
+                "0x66a",
+                "0x671"
+              ],
+              "pass": true
+            },
+            {
+              "group": 13,
+              "id_offsets": [
+                "0x652",
+                "0x657",
+                "0x686",
+                "0x68b"
+              ],
+              "palette_offsets": [
+                "0x694",
+                "0x69a",
+                "0x6ae",
+                "0x6b5"
+              ],
+              "pass": true
+            },
+            {
+              "group": 14,
+              "id_offsets": [
+                "0x6ca",
+                "0x6cf",
+                "0x705",
+                "0x70a"
+              ],
+              "palette_offsets": [
+                "0x71d",
+                "0x723",
+                "0x74f",
+                "0x756"
+              ],
+              "pass": true
+            },
+            {
+              "group": 15,
+              "id_offsets": [
+                "0x737",
+                "0x73c",
+                "0x76b",
+                "0x770"
+              ],
+              "palette_offsets": [
+                "0x77a",
+                "0x780",
+                "0x7aa",
+                "0x7b1"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 1983,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm1,-0xa0(%rax)"
+            },
+            {
+              "offset": 1991,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm5,-0xc0(%rax)"
+            },
+            {
+              "offset": 1999,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm4,-0x80(%rax)"
+            },
+            {
+              "offset": 2004,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm10,-0x60(%rax)"
+            },
+            {
+              "offset": 2009,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm11,-0x40(%rax)"
+            },
+            {
+              "offset": 2045,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm1,-0x20(%rax)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        },
+        {
+          "start": "0x838",
+          "end": "0xbd0",
+          "pixels": 32,
+          "instructions": 170,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x84d",
+                "0x852",
+                "0x86d",
+                "0x872"
+              ],
+              "palette_offsets": [
+                "0x87f",
+                "0x885",
+                "0x8ab",
+                "0x8b2"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x899",
+                "0x89e",
+                "0x8c7",
+                "0x8cc"
+              ],
+              "palette_offsets": [
+                "0x8dd",
+                "0x8e3",
+                "0x8f7",
+                "0x8fe"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0x905",
+                "0x90a",
+                "0x92f",
+                "0x934"
+              ],
+              "palette_offsets": [
+                "0x941",
+                "0x947",
+                "0x96d",
+                "0x974"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0x95b",
+                "0x960",
+                "0x989",
+                "0x98e"
+              ],
+              "palette_offsets": [
+                "0x99f",
+                "0x9a5",
+                "0x9b9",
+                "0x9c0"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0x9c7",
+                "0x9cc",
+                "0x9f1",
+                "0x9f6"
+              ],
+              "palette_offsets": [
+                "0xa03",
+                "0xa09",
+                "0xa2f",
+                "0xa36"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0xa1d",
+                "0xa22",
+                "0xa4b",
+                "0xa50"
+              ],
+              "palette_offsets": [
+                "0xa61",
+                "0xa67",
+                "0xa7b",
+                "0xa82"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0xa89",
+                "0xa8e",
+                "0xab3",
+                "0xab8"
+              ],
+              "palette_offsets": [
+                "0xac5",
+                "0xacb",
+                "0xaf1",
+                "0xaf8"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0xadf",
+                "0xae4",
+                "0xb0d",
+                "0xb12"
+              ],
+              "palette_offsets": [
+                "0xb1b",
+                "0xb21",
+                "0xb44",
+                "0xb4b"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 2978,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm7,-0x60(%rax)"
+            },
+            {
+              "offset": 3005,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm1,-0x40(%rax)"
+            },
+            {
+              "offset": 3016,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm0,-0x20(%rax)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        },
+        {
+          "start": "0x1038",
+          "end": "0x17e8",
+          "pixels": 64,
+          "instructions": 322,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x1078",
+                "0x107d",
+                "0x109e",
+                "0x10a3"
+              ],
+              "palette_offsets": [
+                "0x10b6",
+                "0x10bc",
+                "0x10e8",
+                "0x10ef"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x10d0",
+                "0x10d5",
+                "0x1104",
+                "0x1109"
+              ],
+              "palette_offsets": [
+                "0x1112",
+                "0x1118",
+                "0x112c",
+                "0x1133"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0x1148",
+                "0x114d",
+                "0x1182",
+                "0x1187"
+              ],
+              "palette_offsets": [
+                "0x119a",
+                "0x11a0",
+                "0x11cc",
+                "0x11d3"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0x11b4",
+                "0x11b9",
+                "0x11e8",
+                "0x11ed"
+              ],
+              "palette_offsets": [
+                "0x11f6",
+                "0x11fc",
+                "0x1210",
+                "0x1217"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0x122c",
+                "0x1231",
+                "0x1266",
+                "0x126b"
+              ],
+              "palette_offsets": [
+                "0x127e",
+                "0x1284",
+                "0x12b0",
+                "0x12b7"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0x1298",
+                "0x129d",
+                "0x12cc",
+                "0x12d1"
+              ],
+              "palette_offsets": [
+                "0x12da",
+                "0x12e0",
+                "0x12f4",
+                "0x12fb"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0x1310",
+                "0x1315",
+                "0x134b",
+                "0x1350"
+              ],
+              "palette_offsets": [
+                "0x1363",
+                "0x1369",
+                "0x1395",
+                "0x139c"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0x137d",
+                "0x1382",
+                "0x13b1",
+                "0x13b6"
+              ],
+              "palette_offsets": [
+                "0x13bf",
+                "0x13c5",
+                "0x13d9",
+                "0x13e0"
+              ],
+              "pass": true
+            },
+            {
+              "group": 8,
+              "id_offsets": [
+                "0x13f5",
+                "0x13fa",
+                "0x1430",
+                "0x1435"
+              ],
+              "palette_offsets": [
+                "0x1448",
+                "0x144e",
+                "0x147a",
+                "0x1481"
+              ],
+              "pass": true
+            },
+            {
+              "group": 9,
+              "id_offsets": [
+                "0x1462",
+                "0x1467",
+                "0x1496",
+                "0x149b"
+              ],
+              "palette_offsets": [
+                "0x14a5",
+                "0x14ab",
+                "0x14bf",
+                "0x14c6"
+              ],
+              "pass": true
+            },
+            {
+              "group": 10,
+              "id_offsets": [
+                "0x14e0",
+                "0x14e5",
+                "0x1516",
+                "0x151b"
+              ],
+              "palette_offsets": [
+                "0x152e",
+                "0x1534",
+                "0x1560",
+                "0x1567"
+              ],
+              "pass": true
+            },
+            {
+              "group": 11,
+              "id_offsets": [
+                "0x1548",
+                "0x154d",
+                "0x157c",
+                "0x1581"
+              ],
+              "palette_offsets": [
+                "0x158b",
+                "0x1591",
+                "0x15a5",
+                "0x15ac"
+              ],
+              "pass": true
+            },
+            {
+              "group": 12,
+              "id_offsets": [
+                "0x15c6",
+                "0x15cb",
+                "0x15fc",
+                "0x1601"
+              ],
+              "palette_offsets": [
+                "0x1614",
+                "0x161a",
+                "0x1646",
+                "0x164d"
+              ],
+              "pass": true
+            },
+            {
+              "group": 13,
+              "id_offsets": [
+                "0x162e",
+                "0x1633",
+                "0x1662",
+                "0x1667"
+              ],
+              "palette_offsets": [
+                "0x1670",
+                "0x1676",
+                "0x168a",
+                "0x1691"
+              ],
+              "pass": true
+            },
+            {
+              "group": 14,
+              "id_offsets": [
+                "0x16a6",
+                "0x16ab",
+                "0x16e1",
+                "0x16e6"
+              ],
+              "palette_offsets": [
+                "0x16f9",
+                "0x16ff",
+                "0x172b",
+                "0x1732"
+              ],
+              "pass": true
+            },
+            {
+              "group": 15,
+              "id_offsets": [
+                "0x1713",
+                "0x1718",
+                "0x1747",
+                "0x174c"
+              ],
+              "palette_offsets": [
+                "0x1756",
+                "0x175c",
+                "0x1787",
+                "0x178e"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 6044,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm1,-0xa0(%rdx)"
+            },
+            {
+              "offset": 6052,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm5,-0xc0(%rdx)"
+            },
+            {
+              "offset": 6060,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm4,-0x80(%rdx)"
+            },
+            {
+              "offset": 6065,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm10,-0x60(%rdx)"
+            },
+            {
+              "offset": 6070,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm11,-0x40(%rdx)"
+            },
+            {
+              "offset": 6112,
+              "mnemonic": "vmovntdq",
+              "operands": "%ymm1,-0x20(%rdx)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        },
+        {
+          "start": "0x1830",
+          "end": "0x1bac",
+          "pixels": 32,
+          "instructions": 171,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x1843",
+                "0x1848",
+                "0x1861",
+                "0x1866"
+              ],
+              "palette_offsets": [
+                "0x1872",
+                "0x1878",
+                "0x189c",
+                "0x18a3"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x188b",
+                "0x1890",
+                "0x18b7",
+                "0x18bc"
+              ],
+              "palette_offsets": [
+                "0x18cc",
+                "0x18d2",
+                "0x18e5",
+                "0x18ec"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0x18f3",
+                "0x18f8",
+                "0x191b",
+                "0x1920"
+              ],
+              "palette_offsets": [
+                "0x192c",
+                "0x1932",
+                "0x1956",
+                "0x195d"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0x1945",
+                "0x194a",
+                "0x1971",
+                "0x1976"
+              ],
+              "palette_offsets": [
+                "0x1986",
+                "0x198c",
+                "0x199f",
+                "0x19a6"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0x19ad",
+                "0x19b2",
+                "0x19d5",
+                "0x19da"
+              ],
+              "palette_offsets": [
+                "0x19e6",
+                "0x19ec",
+                "0x1a10",
+                "0x1a17"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0x19ff",
+                "0x1a04",
+                "0x1a2b",
+                "0x1a30"
+              ],
+              "palette_offsets": [
+                "0x1a40",
+                "0x1a46",
+                "0x1a59",
+                "0x1a60"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0x1a67",
+                "0x1a6c",
+                "0x1a8f",
+                "0x1a94"
+              ],
+              "palette_offsets": [
+                "0x1aa0",
+                "0x1aa6",
+                "0x1aca",
+                "0x1ad1"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0x1ab9",
+                "0x1abe",
+                "0x1ae5",
+                "0x1aea"
+              ],
+              "palette_offsets": [
+                "0x1af3",
+                "0x1af9",
+                "0x1b1c",
+                "0x1b23"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 7038,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm7,-0x60(%rdx)"
+            },
+            {
+              "offset": 7065,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm1,-0x40(%rdx)"
+            },
+            {
+              "offset": 7076,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm0,-0x20(%rdx)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        }
+      ]
+    },
+    {
+      "role": "tilexy",
+      "asm_path": "artifacts/skylake-tilexy-t0-static-v1/tilexy.asm.txt",
+      "asm_sha256": "a806cbbe3bfbd13e6bc52a373f90712095c5dcb0feb1bdde503cba960ddba573",
+      "object_path": "artifacts/skylake-tilexy-t0-linux-build-v1/CMakeFiles/jshc_skylake_tilexy_t0.dir/tilexy/channel_avx2.cpp.o",
+      "object_sha256": "5e10a14cda553e473326db74d3c5adf4237679808ba46d8359732192d3adc5f4",
+      "matches_original_results": true,
+      "instructions": 911,
+      "mnemonics": [
+        "add",
+        "and",
+        "cmova",
+        "cmp",
+        "endbr64",
+        "inc",
+        "jae",
+        "jb",
+        "je",
+        "jmp",
+        "jne",
+        "lea",
+        "mov",
+        "movzbl",
+        "movzwl",
+        "nop",
+        "nopl",
+        "or",
+        "pop",
+        "prefetcht0",
+        "push",
+        "ret",
+        "shl",
+        "shr",
+        "test",
+        "vextracti128",
+        "vinserti128",
+        "vmovd",
+        "vmovdqa",
+        "vmovdqu",
+        "vmovq",
+        "vpalignr",
+        "vpand",
+        "vpbroadcastd",
+        "vpermd",
+        "vpextrd",
+        "vpinsrd",
+        "vpor",
+        "vpshufb",
+        "vpslld",
+        "vpslldq",
+        "vpsrld",
+        "vpsrldq",
+        "vpunpcklqdq",
+        "vpxor",
+        "vzeroupper",
+        "xchg",
+        "xor"
+      ],
+      "forbidden_call_gather_bmi2": [],
+      "unapproved_mnemonics": [],
+      "avx512_register_or_decorator": [],
+      "evex_instruction_offsets": [],
+      "nt_stores": [],
+      "fences": [],
+      "prefetch": [
+        {
+          "offset": 48,
+          "mnemonic": "prefetcht0",
+          "operands": "(%rdx,%rax,1)"
+        },
+        {
+          "offset": 255,
+          "mnemonic": "prefetcht0",
+          "operands": "(%rax)"
+        },
+        {
+          "offset": 258,
+          "mnemonic": "prefetcht0",
+          "operands": "0x40(%rax)"
+        },
+        {
+          "offset": 262,
+          "mnemonic": "prefetcht0",
+          "operands": "0x80(%rax)"
+        },
+        {
+          "offset": 269,
+          "mnemonic": "prefetcht0",
+          "operands": "0xbf(%rax)"
+        }
+      ],
+      "loops": [
+        {
+          "start": "0xf0",
+          "end": "0x92e",
+          "pixels": 64,
+          "instructions": 378,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x15b",
+                "0x160",
+                "0x171",
+                "0x176"
+              ],
+              "palette_offsets": [
+                "0x17b",
+                "0x181",
+                "0x198",
+                "0x19f"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x1a6",
+                "0x1ab",
+                "0x1bc",
+                "0x1c1"
+              ],
+              "palette_offsets": [
+                "0x1ca",
+                "0x1d0",
+                "0x1d6",
+                "0x1dd"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0x23f",
+                "0x244",
+                "0x255",
+                "0x25a"
+              ],
+              "palette_offsets": [
+                "0x25f",
+                "0x265",
+                "0x27c",
+                "0x283"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0x28a",
+                "0x28f",
+                "0x2a0",
+                "0x2a5"
+              ],
+              "palette_offsets": [
+                "0x2ae",
+                "0x2b4",
+                "0x2ba",
+                "0x2c1"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0x323",
+                "0x328",
+                "0x339",
+                "0x33e"
+              ],
+              "palette_offsets": [
+                "0x343",
+                "0x349",
+                "0x360",
+                "0x367"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0x36e",
+                "0x373",
+                "0x384",
+                "0x389"
+              ],
+              "palette_offsets": [
+                "0x392",
+                "0x398",
+                "0x39e",
+                "0x3a5"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0x407",
+                "0x40c",
+                "0x41d",
+                "0x422"
+              ],
+              "palette_offsets": [
+                "0x427",
+                "0x42d",
+                "0x444",
+                "0x44b"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0x452",
+                "0x457",
+                "0x468",
+                "0x46d"
+              ],
+              "palette_offsets": [
+                "0x476",
+                "0x47c",
+                "0x482",
+                "0x489"
+              ],
+              "pass": true
+            },
+            {
+              "group": 8,
+              "id_offsets": [
+                "0x4eb",
+                "0x4f0",
+                "0x501",
+                "0x506"
+              ],
+              "palette_offsets": [
+                "0x50b",
+                "0x511",
+                "0x528",
+                "0x52f"
+              ],
+              "pass": true
+            },
+            {
+              "group": 9,
+              "id_offsets": [
+                "0x536",
+                "0x53b",
+                "0x54c",
+                "0x551"
+              ],
+              "palette_offsets": [
+                "0x55a",
+                "0x560",
+                "0x566",
+                "0x56d"
+              ],
+              "pass": true
+            },
+            {
+              "group": 10,
+              "id_offsets": [
+                "0x5d0",
+                "0x5d5",
+                "0x5e6",
+                "0x5eb"
+              ],
+              "palette_offsets": [
+                "0x5f0",
+                "0x5f6",
+                "0x60d",
+                "0x614"
+              ],
+              "pass": true
+            },
+            {
+              "group": 11,
+              "id_offsets": [
+                "0x61b",
+                "0x620",
+                "0x631",
+                "0x636"
+              ],
+              "palette_offsets": [
+                "0x640",
+                "0x646",
+                "0x64c",
+                "0x653"
+              ],
+              "pass": true
+            },
+            {
+              "group": 12,
+              "id_offsets": [
+                "0x6ba",
+                "0x6bf",
+                "0x6d0",
+                "0x6d5"
+              ],
+              "palette_offsets": [
+                "0x6da",
+                "0x6e0",
+                "0x6f7",
+                "0x6fe"
+              ],
+              "pass": true
+            },
+            {
+              "group": 13,
+              "id_offsets": [
+                "0x705",
+                "0x70a",
+                "0x71b",
+                "0x720"
+              ],
+              "palette_offsets": [
+                "0x72a",
+                "0x730",
+                "0x736",
+                "0x73d"
+              ],
+              "pass": true
+            },
+            {
+              "group": 14,
+              "id_offsets": [
+                "0x7a5",
+                "0x7aa",
+                "0x7bb",
+                "0x7c0"
+              ],
+              "palette_offsets": [
+                "0x7c5",
+                "0x7cb",
+                "0x7e2",
+                "0x7e9"
+              ],
+              "pass": true
+            },
+            {
+              "group": 15,
+              "id_offsets": [
+                "0x7f0",
+                "0x7f5",
+                "0x806",
+                "0x80b"
+              ],
+              "palette_offsets": [
+                "0x815",
+                "0x820",
+                "0x841",
+                "0x848"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 2214,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm2,-0x480(%rax)"
+            },
+            {
+              "offset": 2236,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm3,-0x4a0(%rax)"
+            },
+            {
+              "offset": 2258,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm12,-0x4c0(%rax)"
+            },
+            {
+              "offset": 2323,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm2,-0x460(%rax)"
+            },
+            {
+              "offset": 2331,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm1,-0x440(%rax)"
+            },
+            {
+              "offset": 2339,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm0,-0x420(%rax)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        },
+        {
+          "start": "0x970",
+          "end": "0xd5e",
+          "pixels": 32,
+          "instructions": 188,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0x9af",
+                "0x9b4",
+                "0x9c5",
+                "0x9ca"
+              ],
+              "palette_offsets": [
+                "0x9cf",
+                "0x9d5",
+                "0x9ec",
+                "0x9f3"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0x9fa",
+                "0x9ff",
+                "0xa10",
+                "0xa15"
+              ],
+              "palette_offsets": [
+                "0xa1e",
+                "0xa24",
+                "0xa2a",
+                "0xa31"
+              ],
+              "pass": true
+            },
+            {
+              "group": 2,
+              "id_offsets": [
+                "0xa82",
+                "0xa87",
+                "0xa98",
+                "0xa9d"
+              ],
+              "palette_offsets": [
+                "0xaa2",
+                "0xaa8",
+                "0xabf",
+                "0xac6"
+              ],
+              "pass": true
+            },
+            {
+              "group": 3,
+              "id_offsets": [
+                "0xacd",
+                "0xad2",
+                "0xae3",
+                "0xae8"
+              ],
+              "palette_offsets": [
+                "0xaf1",
+                "0xaf7",
+                "0xafd",
+                "0xb04"
+              ],
+              "pass": true
+            },
+            {
+              "group": 4,
+              "id_offsets": [
+                "0xb56",
+                "0xb5b",
+                "0xb6c",
+                "0xb71"
+              ],
+              "palette_offsets": [
+                "0xb76",
+                "0xb7c",
+                "0xb93",
+                "0xb9a"
+              ],
+              "pass": true
+            },
+            {
+              "group": 5,
+              "id_offsets": [
+                "0xba1",
+                "0xba6",
+                "0xbb7",
+                "0xbbc"
+              ],
+              "palette_offsets": [
+                "0xbc6",
+                "0xbcc",
+                "0xbd2",
+                "0xbd9"
+              ],
+              "pass": true
+            },
+            {
+              "group": 6,
+              "id_offsets": [
+                "0xc2f",
+                "0xc34",
+                "0xc45",
+                "0xc4a"
+              ],
+              "palette_offsets": [
+                "0xc4f",
+                "0xc55",
+                "0xc6c",
+                "0xc73"
+              ],
+              "pass": true
+            },
+            {
+              "group": 7,
+              "id_offsets": [
+                "0xc7a",
+                "0xc7f",
+                "0xc90",
+                "0xc95"
+              ],
+              "palette_offsets": [
+                "0xc9f",
+                "0xca9",
+                "0xcc7",
+                "0xcce"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 3387,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm3,-0x60(%rax)"
+            },
+            {
+              "offset": 3403,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm1,-0x40(%rax)"
+            },
+            {
+              "offset": 3414,
+              "mnemonic": "vmovdqu",
+              "operands": "%ymm0,-0x20(%rax)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        },
+        {
+          "start": "0xda0",
+          "end": "0xeab",
+          "pixels": 8,
+          "instructions": 53,
+          "stack_references": [],
+          "rip_constant_loads": [],
+          "four_id_groups": [
+            {
+              "group": 0,
+              "id_offsets": [
+                "0xddf",
+                "0xde4",
+                "0xdf5",
+                "0xdfa"
+              ],
+              "palette_offsets": [
+                "0xdff",
+                "0xe05",
+                "0xe1c",
+                "0xe23"
+              ],
+              "pass": true
+            },
+            {
+              "group": 1,
+              "id_offsets": [
+                "0xe2a",
+                "0xe2f",
+                "0xe40",
+                "0xe45"
+              ],
+              "palette_offsets": [
+                "0xe4e",
+                "0xe58",
+                "0xe69",
+                "0xe70"
+              ],
+              "pass": true
+            }
+          ],
+          "unmapped_palette_loads": [],
+          "four_id_pass": true,
+          "vector_stores": [
+            {
+              "offset": 3742,
+              "mnemonic": "vmovq",
+              "operands": "%xmm0,-0x8(%rax)"
+            },
+            {
+              "offset": 3747,
+              "mnemonic": "vmovdqu",
+              "operands": "%xmm1,-0x18(%rax)"
+            }
+          ],
+          "all_lookup_reads_before_first_store": true
+        }
+      ]
+    }
+  ],
+  "pixel_calls": 0,
+  "performance_calls": 0,
+  "compiler_calls": 0,
+  "accepted": true
+}
