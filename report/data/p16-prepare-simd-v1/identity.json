@@ -1,0 +1,55 @@
+{
+  "base_commit": "dee46cd",
+  "libraries": {
+    "libjshc_direct_compile.dll": "3778f0b46c161134837c54e4b19edc35cc38281a7776a2e7cea3aab2b8ecf018",
+    "libjshc_direct_prepare_simd.dll": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+  },
+  "sources": {
+    "experiments/p16-direct-compile/CMakeLists.txt": "de8b3f8c3671fdb946444c09661fd11bd7e94268fd496b3541d32d8f892a2fda",
+    "experiments/p16-direct-compile/channel_runtime.cpp": "363e1cbd2a667e94e482f3225c019cfc6d6d8826975b0ba253b60b664de87804",
+    "experiments/p16-direct-compile/compile_avx2.cpp": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+    "scripts/confirm_p16_direct_prepare.py": "48ad20974cb383d73bef0f2c1e409926c2560b094654089ccd50f60e38ed9006",
+    "scripts/study_p16_direct_compile.py": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e",
+    "scripts/audit_p16_speed_evidence.py": "381b85b456b2262fd3673c5459a0217c2c4e4fe79fb7ea67d055ff2c10a06960"
+  },
+  "unchanged_pixel_objects": [
+    {
+      "part": "channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "516b8015f17bfbf3fc3fa273af6f2e1a8c63c20b0e5b2df953c55b86f448acb8",
+      "candidate_obj_sha256": "516b8015f17bfbf3fc3fa273af6f2e1a8c63c20b0e5b2df953c55b86f448acb8",
+      "text_sha256": "b4916bf5f2675fc1e6ab37746e4aa9339dcf4357a9277b33885c28e1e7462074",
+      "text_identical": true
+    },
+    {
+      "part": "andn_inplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "4bc3fbe57e013918221ba8aa25a00b4d924e70fee8ec766a247c82011181ffe5",
+      "candidate_obj_sha256": "4bc3fbe57e013918221ba8aa25a00b4d924e70fee8ec766a247c82011181ffe5",
+      "text_sha256": "7d202fefe320a7cee1d1fe4f0746415b21c3f284827c96a998aafbb023d3c2ee",
+      "text_identical": true
+    },
+    {
+      "part": "andn_outplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "ea1c4afb3955235bf2187b2ee55efcbdc06853e038c7f915860bef7b84f1c480",
+      "candidate_obj_sha256": "ea1c4afb3955235bf2187b2ee55efcbdc06853e038c7f915860bef7b84f1c480",
+      "text_sha256": "c41cca2cf0e54faede5b0acb951892f9c736254050807f6dd1e88a2b157128cc",
+      "text_identical": true
+    },
+    {
+      "part": "normal_inplace/channel_avx2.cpp.obj",
+      "baseline_obj_sha256": "e78e6457f6f8492ecbce0aea2fbe58eed16681527c00d7a8d09ca6b5dc5b49e7",
+      "candidate_obj_sha256": "e78e6457f6f8492ecbce0aea2fbe58eed16681527c00d7a8d09ca6b5dc5b49e7",
+      "text_sha256": "d2e3434461669ce509349f7eca015a05ec82e2f7e5aabecd3d511d837746cc20",
+      "text_identical": true
+    },
+    {
+      "part": "outplace_bench.cpp.obj",
+      "baseline_obj_sha256": "410c7275b57c9d51fcc4bf6052f09d4d885d34a9e09c31557c2b02c76e06e7e1",
+      "candidate_obj_sha256": "410c7275b57c9d51fcc4bf6052f09d4d885d34a9e09c31557c2b02c76e06e7e1",
+      "text_sha256": "3966e19f4ef66966be55a7c756127e51b88119fd2588e4176fcd26f6049a79ce",
+      "text_identical": true
+    }
+  ],
+  "build_flags": "87-flags.make",
+  "runtime_macro": "P16_PREPARE_SIMD=1",
+  "execution_date_asia_shanghai": "2026-10-24"
+}

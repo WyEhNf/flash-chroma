@@ -1,0 +1,88 @@
+{
+  "purpose": "89显式不可变snapshot多owner生命周期：首次完整87准备全部计入；单句柄100图热像素不冒称受益",
+  "libraries": {
+    "baseline": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+      "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_prepared_plan.dll",
+      "sha256": "d4e98721aa7b60897e045783b9682f1002e18617ad19cad5074c981c151e89c2"
+    }
+  },
+  "model_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-final-model-pair-v1.json",
+    "sha256": "163b13ba1d2852d2636995a25bf54db429ca714598f44a9d130a4acb1f2e1894"
+  },
+  "script_sha256": "553022fddcbb6c2c51ff1f254f1b9ddbfc023eeeefab73df8478d0f85ebef8d2",
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "owner_counts": [
+    1,
+    10,
+    100
+  ],
+  "lifecycle_repeats": 3,
+  "concurrent_rounds": 16,
+  "mapping_repeats": 12,
+  "orders": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "control_min": 0.85,
+  "control_max": 1.1764705882352942,
+  "grades": [
+    100,
+    90,
+    80,
+    70,
+    60,
+    50
+  ],
+  "floor_retained": 0.5,
+  "lifecycle_boundary": "同新进程每配置3次交错，共首次create+N-1acquire(89)相对N次完整87create，循环/ctypes/所需token查询均在construct墙钟内，输入SHA在外；reverse destroy独立；RSS仅构造前后工作集快照，不是峰值",
+  "mapping_boundary": "独立标准单句柄完整100图原地与真分离，1/4请求，各12轮+A/A；89由acquire所得owner、销毁初始owner后运行；全部输出SHA核验，准备/内存测试不替代热像素底线",
+  "identity_contract": "acquire要求存活owner、expected实例generation一致；generation非模型/文件SHA；snapshot不重读后续路径，刷新须显式新create。无自动全局cache/磁盘格式。",
+  "limitations": "Windows/AMD、热文件缓存、无锁频控温/逐TID绑定/目标Intel，不称官方；1owner构造无理论收益，所有数值与失败控制完整保留",
+  "interpretation_gate": {
+    "pure_mapping_median_time_ratio_max": 1.05,
+    "pure_mapping_any_process_time_ratio_max": 1.1,
+    "meaning": "声明无明显热像素退化须有效控制且apply/真分离1/4全部满足；50档是严格底线，不能以constructor收益豁免。多owner构造收益独立报告，不对标准1owner作像素加速声明。"
+  }
+}

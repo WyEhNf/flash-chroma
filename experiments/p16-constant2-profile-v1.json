@@ -1,0 +1,20 @@
+{
+  "purpose": "固定2³恒色RGB头+异常整包精确回退的只读可行性筛查，区别旧8³常数与84残差解码，不做参数扫描",
+  "script_sha256": "886e33cfd10706dd6d6695f14871109efcebdd721b096e259258886ce9dfc29c",
+  "library": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+    "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+  },
+  "model_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-final-model-pair-v1.json",
+    "sha256": "163b13ba1d2852d2636995a25bf54db429ca714598f44a9d130a4acb1f2e1894"
+  },
+  "cube_edge": 2,
+  "header_format": "2,097,152项u32：完整RGB24或bit31异常tag；不编码残差，异常整8包回退16MiB ID+palette",
+  "interest_gate": {
+    "all_normal_packages_min": 0.5,
+    "meaning": "只决定是否值得原生实现；50%整包只是逻辑load预算平衡点，未计寻址/分支/缓存，不是用户50%吞吐底线或不可优化证明"
+  },
+  "memory_cost": "额外8MiB头，保留原16MiB精确fallback；官方派生表许可/预算未知",
+  "expected_photo_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+}

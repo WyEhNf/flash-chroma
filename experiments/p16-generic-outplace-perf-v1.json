@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "purpose": "同当前四级专门化比较，真分离输出消除整组memcpy，保持算式/块/线程和模型",
+  "libraries": {
+    "baseline": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_channel_copy.dll",
+      "sha256": "5af0bff84d5408c15aff75855a6999dae16ace76a6768106e9bbb383f042e752",
+      "revision": 2
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_channel_to.dll",
+      "sha256": "5765beaeeff628405b3272853efa08d6250d37ece0f3fc54622877895d70ff01",
+      "revision": 2
+    }
+  },
+  "source_identity": {
+    "script": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e"
+  },
+  "orders": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "repeats": 7,
+  "adoption_gate": {
+    "control_any_min": 0.9,
+    "control_group_median_max": 1.05,
+    "outplace_median_ratio_max": 0.97,
+    "control_group_median_min": 0.95,
+    "control_any_max": 1.1,
+    "outplace_any_process_ratio_max": 1.05
+  },
+  "scope": "完整百图1/4线程，原生纯apply/copy+apply/真实分离分列，源输出hash在计时外；候选不增加派生表，不以直表80为此接口的分母",
+  "correctness_sha256": "a74c9a1c2c05addd3932bf0020f463d24cc5caa83aaa940c3498d96cfa2aba21"
+}

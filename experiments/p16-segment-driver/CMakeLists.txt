@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(p16_segment_driver LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_library(jshc_segment_driver SHARED driver.cpp)
+target_compile_options(jshc_segment_driver PRIVATE -Wall -Wextra -fvisibility=hidden)

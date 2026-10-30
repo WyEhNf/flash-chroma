@@ -1,0 +1,1072 @@
+{
+  "date_asia_shanghai": "2026-10-24",
+  "libraries": {
+    "reference": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+      "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-shared-domain-build-v1\\libjshc_shared_domain.dll",
+      "sha256": "ac349c8d830ebc9f53520223eb684942d228cdcb95bdadf7bca4664b61871335"
+    }
+  },
+  "reference_source_identity": "3210857:report/data/p16-prepare-simd-v1/identity.json",
+  "copy_base_commit": "8381974",
+  "sources": {
+    "experiments/p16-shared-domain-runtime/CMakeLists.txt": "a7121ae2873ca5e7e822dfa0c085b47ab6e88a1d9334bd078620435e9138faea",
+    "experiments/p16-shared-domain-runtime/channel_runtime.cpp": "58deceffd2f085340308881e962f17bb55ad4ae2b7c330289135d2768b614383",
+    "experiments/p16-shared-domain-runtime/静态设计.md": "652de217e9ea0cd3a9f37890777a829eaa25b40a4a2225b731bb1bb9604758b4",
+    "experiments/p16-shared-domain-static-v1.json": "074c06dab85cd48ecbdb3fae44475863656912abd170e2e75a117185c12e0412",
+    "experiments/p16-shared-qualification-v1.json": "61bdce1633f768b2633bbab77845dd36775f94bd807dd068cf19fc56910a5529",
+    "experiments/p16-shared-domain-quality-v1.json": "ad82290dc8cfe87231c400eccfadca51c06f68b24e6150f25486b0b1da77547d",
+    "experiments/p16-shared-domain-performance-v1.json": "0f8ee04e4fb8ea70e7f708e7c8d8109b912598a53fa780f8d431ee38cf4af40c",
+    "scripts/qualify_p16_shared_domain.py": "2cbdb7c2a2a8cc7a2a320a7b7b6156e3e79115cae823850ba47090be599da687",
+    "scripts/verify_p16_shared_domain.py": "8c5de3709051e582e258783d9f800fee663fbe1c86454d43c96734c3b798e8ff",
+    "scripts/bench_p16_shared_domain.py": "99c0694575d3982d7461db8cbe67352425b60efa5c3cbfab6e7d7438ee3700ab",
+    "scripts/audit_p16_shared_domain.py": "0ec0a21c5395cdc245e57b57e092987a1bd95235d94218714cc76522a5e7f878"
+  },
+  "execution_dependencies": [
+    {
+      "path": "experiments/channel-runtime/channel_native.py",
+      "copy_member": "experiments/channel-runtime/channel_native.py",
+      "bytes": 5542,
+      "execution_sha256": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+      "git_blob_sha256": "5bffc6374e065cb8f840ae70203769b39e7fc8ff7c4e22d8e5a6be5da3607eee",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/__init__.py",
+      "copy_member": "python/lutlab/__init__.py",
+      "bytes": 23,
+      "execution_sha256": "dbd2daa19105ed5638dcafdfa9ccd6cf0e04dc46eadc8a6fbca724b2c49dab07",
+      "git_blob_sha256": "5706980ff5a83c0a9b4a93e98c0e29cc6807506b50bd516beb43666c095e96c8",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/__main__.py",
+      "copy_member": "python/lutlab/__main__.py",
+      "bytes": 98,
+      "execution_sha256": "5d7f53a81d9b3793f3e1c82d135a5dafb9b1565863b8cdcb5f3ab61ab69bb03e",
+      "git_blob_sha256": "4d478f6faff4d90aa283c2a6e672dada443373281f24bd8603da4232c7d3ccee",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/automatic_compensation.py",
+      "copy_member": "python/lutlab/automatic_compensation.py",
+      "bytes": 9307,
+      "execution_sha256": "156a2e75c77d29c00e6bad52c8a63ac7fe625f6a0a170d8086a2146e4748f3e0",
+      "git_blob_sha256": "156a2e75c77d29c00e6bad52c8a63ac7fe625f6a0a170d8086a2146e4748f3e0",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/axis_calibration.py",
+      "copy_member": "python/lutlab/axis_calibration.py",
+      "bytes": 10057,
+      "execution_sha256": "262e6cdfa80ba93d2b2294bc7f1cb23baa1ae224cd2648a7be9311f1913483ab",
+      "git_blob_sha256": "bf4dca0fe09887d599519029d6a97567a21769d769db4c89f5f2aea2b3383efc",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/axis_grid.py",
+      "copy_member": "python/lutlab/axis_grid.py",
+      "bytes": 7748,
+      "execution_sha256": "3cbc090714f8f4c7320f9e76986c18044ca8d2fffcebf4bc5f26b649065802be",
+      "git_blob_sha256": "3cbc090714f8f4c7320f9e76986c18044ca8d2fffcebf4bc5f26b649065802be",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/axisbins.py",
+      "copy_member": "python/lutlab/axisbins.py",
+      "bytes": 17843,
+      "execution_sha256": "531d4df5ed95fc59235d23e9e3143ac19b21ca6fb3a0989a0721326c78d17be9",
+      "git_blob_sha256": "477c1584c362b9b42db87decdc0d5d2c81448b7be916fd2de1fbf15a277e297a",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/box.py",
+      "copy_member": "python/lutlab/box.py",
+      "bytes": 6877,
+      "execution_sha256": "8b3c6205be688495e7c9ab768d85805a4dac4c0fe56326760526976f95e1d0f4",
+      "git_blob_sha256": "5d4ed9ef907483eb72f6a42a93dd5bb98c6d0583eb85897d0e382b9391472a78",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/cache.py",
+      "copy_member": "python/lutlab/cache.py",
+      "bytes": 19371,
+      "execution_sha256": "ab1537eac943e77019409dd64e478e1ff1727da00311447523dcab933f526fc1",
+      "git_blob_sha256": "6d649a8dfc2cddb2421eeb1b47fc32e7d7704906d954c2fb9aecf537a61ce0da",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/cascade.py",
+      "copy_member": "python/lutlab/cascade.py",
+      "bytes": 16240,
+      "execution_sha256": "b4aeacd9f97171cecb0282ed4db658eb18028808839bd9a8528d2b096cfdf78c",
+      "git_blob_sha256": "64c3ea6344f968616955df2b243d1454a910fcf5cc6519c98076d9d0c8ac548c",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/casebook.py",
+      "copy_member": "python/lutlab/casebook.py",
+      "bytes": 19434,
+      "execution_sha256": "5ac1302951dfef21977f6f586e7b824582760317bbd8afcaa9046d98976539be",
+      "git_blob_sha256": "c9f5b53be226e86e2ed311f324b406b7a1857782018ae4930170c75bf4f237b3",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/chain_envelope.py",
+      "copy_member": "python/lutlab/chain_envelope.py",
+      "bytes": 4952,
+      "execution_sha256": "fa0ddec038eb172c0c1effb04c90c04bfb47b76a19702b5817efd96a1f406e43",
+      "git_blob_sha256": "f52ea5cb54883286e08ff9a9b8fab40a5bcf3102a34d13b4c0e8d5f5ae522039",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_blocks.py",
+      "copy_member": "python/lutlab/channel_blocks.py",
+      "bytes": 8993,
+      "execution_sha256": "9db5c1d3e03f10c610a2e1743422ded594b7cbbdb24dcf6e1a187f869a32b0cd",
+      "git_blob_sha256": "035992c1f08977fc2f5ee1eafc40d27caec27ae25f70d63bb4eec2e16c006350",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_coordinates.py",
+      "copy_member": "python/lutlab/channel_coordinates.py",
+      "bytes": 11736,
+      "execution_sha256": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+      "git_blob_sha256": "a752250c90895e34bd56687521fed6a66c0ce1d54672d04a513521b84395be5a",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_global_nodes.py",
+      "copy_member": "python/lutlab/channel_global_nodes.py",
+      "bytes": 10303,
+      "execution_sha256": "ec314be203379721d08848c85458e44c9c495bbc79cbecad97ef5ba4f49d8b94",
+      "git_blob_sha256": "157912276ee73e76785290cf9a170f5fac4e5ababc146785ef62a13bae421638",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_joint_nodes.py",
+      "copy_member": "python/lutlab/channel_joint_nodes.py",
+      "bytes": 9176,
+      "execution_sha256": "c0a08d1d72b28410df1a8a0dd0d6c0ac6452c605d34d989da1c4ff479a9d0dc1",
+      "git_blob_sha256": "3fa44f2ab30012c40e27a3933d4471de12773abf762fd4f903185a0824fb074b",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_nodes.py",
+      "copy_member": "python/lutlab/channel_nodes.py",
+      "bytes": 8573,
+      "execution_sha256": "05e910a2f07e1c09df0232ace0824b02ed9a56e30f3ae4f6b4cf784eb5929f6d",
+      "git_blob_sha256": "ddef90dc90ab611007f4bddba0dc47a8083732873c45e7ed6fb8b32e8cb079ba",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_suffix_coordinates.py",
+      "copy_member": "python/lutlab/channel_suffix_coordinates.py",
+      "bytes": 10671,
+      "execution_sha256": "57274c5be41d94337f5741ec4eeb8bc73a5a538846a2a6bfd10ce68c927559c5",
+      "git_blob_sha256": "5c49cd8f086c828666b4814eebf90b2afab6e393b3a9e4f86c6593bd628b49cd",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/channel_suffix_joint_nodes.py",
+      "copy_member": "python/lutlab/channel_suffix_joint_nodes.py",
+      "bytes": 8731,
+      "execution_sha256": "c8b360b8f062532c8431eee8a1fc10a6d48316c2adce842efd42c11372d10add",
+      "git_blob_sha256": "4162918db57a6a9592dfed3c76cff65c26a6dbf26d757999b245dbc96d36cc47",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/cli.py",
+      "copy_member": "python/lutlab/cli.py",
+      "bytes": 12483,
+      "execution_sha256": "228d9e584c9ef7109bbea6cec110ce89cf28a759ae7973b95010e529110fabc2",
+      "git_blob_sha256": "6162e9cf9dbb12d871fa2dd2f7ab026e1832b7afb0d82d359cff32d52e3e4a1a",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/compatibility.py",
+      "copy_member": "python/lutlab/compatibility.py",
+      "bytes": 19325,
+      "execution_sha256": "4be9f6259a64e01cd62668f5f55b50126eb265be232d99798a2a6f55bef918fe",
+      "git_blob_sha256": "4be9f6259a64e01cd62668f5f55b50126eb265be232d99798a2a6f55bef918fe",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/corpus.py",
+      "copy_member": "python/lutlab/corpus.py",
+      "bytes": 34445,
+      "execution_sha256": "1687541c50cbab4a0f799a9d2325038dc708296d451aff9d731b7badf334d06a",
+      "git_blob_sha256": "8f9093405d287a27ce3661f111b1e475cb386c3a16a33f08a13da5a339e8c2de",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/curve.py",
+      "copy_member": "python/lutlab/curve.py",
+      "bytes": 5888,
+      "execution_sha256": "79006f7818a359d53e5cdb035e33330287a7089c575b3196697a66b1af99e335",
+      "git_blob_sha256": "6d8344aa6e191c5c0c08284e23dea9c3c97b39b7b1f657bb76810802ef05bb02",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/curve_search.py",
+      "copy_member": "python/lutlab/curve_search.py",
+      "bytes": 4438,
+      "execution_sha256": "8d10f48dea12d2a33c6b607ea49c464f4be460865dae7c1ffa521af2fbc1e117",
+      "git_blob_sha256": "4cb5025056d5af12eca7702588265e72addc256ba7f1f0a11188631999c25a2b",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/cvar_guard.py",
+      "copy_member": "python/lutlab/cvar_guard.py",
+      "bytes": 2509,
+      "execution_sha256": "a6de5cf4c7ecf8d5c9e599a82ab289d970036e066c23c5141ba0d7d0e94395d9",
+      "git_blob_sha256": "a6de5cf4c7ecf8d5c9e599a82ab289d970036e066c23c5141ba0d7d0e94395d9",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/data.py",
+      "copy_member": "python/lutlab/data.py",
+      "bytes": 10526,
+      "execution_sha256": "63e1f8ec604949844488b29fc6eb615075f9425ffb55a10e2d524bad59a75471",
+      "git_blob_sha256": "4f5b37c7dda5a91f594d9e456425d4945633d9d67133014fb25dcfdd99a87fd3",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/dataset.py",
+      "copy_member": "python/lutlab/dataset.py",
+      "bytes": 19863,
+      "execution_sha256": "0a1d21c0dc18ebe09bf697d876bf370b2dafe866cba5b73d6ef239c1d26210c3",
+      "git_blob_sha256": "25197aa6434365dc9f53fb413bf75747822358b64c19ded401dc373fa4126df1",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/entry.py",
+      "copy_member": "python/lutlab/entry.py",
+      "bytes": 6499,
+      "execution_sha256": "9a280d12622d0785cff136804895a474ab4bbcc4fb9de5d8e3fa3d38fc407ab6",
+      "git_blob_sha256": "74f12f0a5185d5d9dc399540e24bb67ae578f68e938827a33c8bf45e2a96b428",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/error_analysis.py",
+      "copy_member": "python/lutlab/error_analysis.py",
+      "bytes": 11782,
+      "execution_sha256": "2f33f18f6affd56a3f7158db15e6076ee6de912f289d28d0c51789624a7a20f3",
+      "git_blob_sha256": "2f33f18f6affd56a3f7158db15e6076ee6de912f289d28d0c51789624a7a20f3",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/error_certificate.py",
+      "copy_member": "python/lutlab/error_certificate.py",
+      "bytes": 2097,
+      "execution_sha256": "7d6a37c7447af3a69c1f77f6cdd4942775ff457e371587be4a587124e3dab98b",
+      "git_blob_sha256": "7d6a37c7447af3a69c1f77f6cdd4942775ff457e371587be4a587124e3dab98b",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/exact_axis.py",
+      "copy_member": "python/lutlab/exact_axis.py",
+      "bytes": 9837,
+      "execution_sha256": "f4a88c8852db560581e5b53226fe57d715717fd4a74221985eb01c1484ed8f23",
+      "git_blob_sha256": "746bb6a201b889fa62095370b1d0f118cab03320e08a890d8acd9abf3114c2ea",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/execution_proof.py",
+      "copy_member": "python/lutlab/execution_proof.py",
+      "bytes": 1133,
+      "execution_sha256": "461a01ac9cb35ae3ca567fc466ec9200da8d9db8375a2d091ee31a50d62281e6",
+      "git_blob_sha256": "bbb978298d4a087d676d81c4b6f97ae04483f405994879e5b597c14328f546e4",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/fit.py",
+      "copy_member": "python/lutlab/fit.py",
+      "bytes": 56857,
+      "execution_sha256": "5549c80062b7fb9e4bf38e693386e31193866dd03de57f616193bc00464659e6",
+      "git_blob_sha256": "5549c80062b7fb9e4bf38e693386e31193866dd03de57f616193bc00464659e6",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/full_domain_guard.py",
+      "copy_member": "python/lutlab/full_domain_guard.py",
+      "bytes": 11487,
+      "execution_sha256": "628732a6f29fe7081e802db0879249c75db7339db3e6232744c78d23b3b328b5",
+      "git_blob_sha256": "628732a6f29fe7081e802db0879249c75db7339db3e6232744c78d23b3b328b5",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/full_photo_fit.py",
+      "copy_member": "python/lutlab/full_photo_fit.py",
+      "bytes": 5140,
+      "execution_sha256": "97b3422d15958390d39770cd567652411bc824f1662774a8964ea13c22cdcde0",
+      "git_blob_sha256": "97b3422d15958390d39770cd567652411bc824f1662774a8964ea13c22cdcde0",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/fullfit.py",
+      "copy_member": "python/lutlab/fullfit.py",
+      "bytes": 7740,
+      "execution_sha256": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+      "git_blob_sha256": "ca1696993b65a5187b2a6b1e219c38a6f853510ce37c1dfd010831ca69b1105c",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/hackextend.py",
+      "copy_member": "python/lutlab/hackextend.py",
+      "bytes": 13693,
+      "execution_sha256": "610e3637c3a495439c6d0c61338a22e4e99240d5edca4f2630339658c90a54b3",
+      "git_blob_sha256": "7523152943cf502c41298b1fa5c0d07934b605a5acd41e796940da30758b88b4",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/hackset.py",
+      "copy_member": "python/lutlab/hackset.py",
+      "bytes": 28558,
+      "execution_sha256": "c4290455bcff5746f26ef4d52d07cc66540fd1774f3277ab25f9a828ca6e9f03",
+      "git_blob_sha256": "c516ca18816fe67bd6c7f7c0d54ae59f525e58980b5e7bd687897efa5ce73fbf",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/histogram_delta.py",
+      "copy_member": "python/lutlab/histogram_delta.py",
+      "bytes": 1447,
+      "execution_sha256": "53bbafe14ad81a9d10f693f4c266ccd096db1f956b34e5af585c93c6b48da14a",
+      "git_blob_sha256": "53bbafe14ad81a9d10f693f4c266ccd096db1f956b34e5af585c93c6b48da14a",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/interp.py",
+      "copy_member": "python/lutlab/interp.py",
+      "bytes": 3072,
+      "execution_sha256": "2b78cd847fb1a386d57ab98495e263feab5394019fd5b39433955026cc7e64e5",
+      "git_blob_sha256": "33fef9f472b0dfe50744ec7ccb46c46cf1a83122017f1905ea36da55d25562ff",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/io.py",
+      "copy_member": "python/lutlab/io.py",
+      "bytes": 9319,
+      "execution_sha256": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+      "git_blob_sha256": "c76bd05dfa1e84b8baf3f1304933ee764e305615ccad8d744ab75684cefb2909",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/joint_fit.py",
+      "copy_member": "python/lutlab/joint_fit.py",
+      "bytes": 7830,
+      "execution_sha256": "3ec347172f2142f06bb85f5cf2c749d5ba69a8c72e2b8e7d1ddace571e3ee495",
+      "git_blob_sha256": "3ec347172f2142f06bb85f5cf2c749d5ba69a8c72e2b8e7d1ddace571e3ee495",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/joint_grid.py",
+      "copy_member": "python/lutlab/joint_grid.py",
+      "bytes": 12667,
+      "execution_sha256": "0a69507f65386f198060d6225e6e8fe4b71dc460e4e07b25bb64b0842e2bef54",
+      "git_blob_sha256": "ceb01dad620ed06a10c7f13e1b9d8f8efef5eb617ea54ac0b8934155b69b92c4",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/joint_interval.py",
+      "copy_member": "python/lutlab/joint_interval.py",
+      "bytes": 8475,
+      "execution_sha256": "17f8e2c2be86560399caa7fa22f27492ca7b7481945b77011663f28c3078b7eb",
+      "git_blob_sha256": "17f8e2c2be86560399caa7fa22f27492ca7b7481945b77011663f28c3078b7eb",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/joint_minimax.py",
+      "copy_member": "python/lutlab/joint_minimax.py",
+      "bytes": 3285,
+      "execution_sha256": "1dc1d66d2064265b903d8e31c75a2611ee5844d605f8e2919b0fba0cffb5f671",
+      "git_blob_sha256": "1dc1d66d2064265b903d8e31c75a2611ee5844d605f8e2919b0fba0cffb5f671",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/joint_tail_repair.py",
+      "copy_member": "python/lutlab/joint_tail_repair.py",
+      "bytes": 6660,
+      "execution_sha256": "a7079d71c9efa3ea64af503311d8a04123bf38063f8d236d37d8f3321412bc7e",
+      "git_blob_sha256": "a7079d71c9efa3ea64af503311d8a04123bf38063f8d236d37d8f3321412bc7e",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/local_compensation.py",
+      "copy_member": "python/lutlab/local_compensation.py",
+      "bytes": 3012,
+      "execution_sha256": "736d383d0e4577e211823c5ca2be215f0ee251aaf56f36a21c09dcf55e309ed9",
+      "git_blob_sha256": "736d383d0e4577e211823c5ca2be215f0ee251aaf56f36a21c09dcf55e309ed9",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/local_minimax.py",
+      "copy_member": "python/lutlab/local_minimax.py",
+      "bytes": 6956,
+      "execution_sha256": "ce3051a5a338e76cee645770abc2b2bfa658cb8576362d658b945bce0462574d",
+      "git_blob_sha256": "ce3051a5a338e76cee645770abc2b2bfa658cb8576362d658b945bce0462574d",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/luts.py",
+      "copy_member": "python/lutlab/luts.py",
+      "bytes": 7378,
+      "execution_sha256": "7fe77315e5a8e6a8e2b19daa9f514ae0006b04a875374c0235b5465905c703db",
+      "git_blob_sha256": "82ddd1d00fa7724995a464b1301163ff67f7f518bcc44ea66735e2917042a4fa",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/metrics.py",
+      "copy_member": "python/lutlab/metrics.py",
+      "bytes": 3790,
+      "execution_sha256": "b5f9ae5535a34ce1b6c254d44247cb6f0e61e0811fd170849f2150024ada79d9",
+      "git_blob_sha256": "97e4932d99557fd73475216cd5db76688c884f29070be50ab5cf2579dd9d482b",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/monotone_axis.py",
+      "copy_member": "python/lutlab/monotone_axis.py",
+      "bytes": 7969,
+      "execution_sha256": "41d12ec131bb2acb4f64185290b9f72d1ce05953b35495b1b2060d9f6bacfaeb",
+      "git_blob_sha256": "46a6b84b84365a6f5520b3d9faf77a7195e9893e1c8d6993cf132bad504d3c2f",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/paired_baselines.py",
+      "copy_member": "python/lutlab/paired_baselines.py",
+      "bytes": 15631,
+      "execution_sha256": "84d207e1abb3b0eb5952ba8397be884fe696f0a739e2ca69cbe2f27bf176e814",
+      "git_blob_sha256": "84d207e1abb3b0eb5952ba8397be884fe696f0a739e2ca69cbe2f27bf176e814",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/paired_grid.py",
+      "copy_member": "python/lutlab/paired_grid.py",
+      "bytes": 13978,
+      "execution_sha256": "880114f7c1f0c7e034ede6b325e306c897ca21f00fc9508f90200bb9e9aaaf6e",
+      "git_blob_sha256": "4e8067b60c1d3facd811e3df8ac7f8611d71b5acfa10c1bb6e932e129b8e2d9c",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/perf.py",
+      "copy_member": "python/lutlab/perf.py",
+      "bytes": 2924,
+      "execution_sha256": "9cfe8821a30bf25dd38676b348ddd4f3a8002e346839bac071191fa53b2e7849",
+      "git_blob_sha256": "b1444c9157868557f7ccfbd24e832072f94cc6933700250d905833322c56dca0",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/performance.py",
+      "copy_member": "python/lutlab/performance.py",
+      "bytes": 13005,
+      "execution_sha256": "ec346db27a90023ab3ccd9fd73b2a438e03d4c6968228e002ece36566d4721de",
+      "git_blob_sha256": "b35ba00325e2ba1501827d30331e62d9301aa17da4c70d4b48d875a81001fd4f",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/portable_export.py",
+      "copy_member": "python/lutlab/portable_export.py",
+      "bytes": 8962,
+      "execution_sha256": "6fee0554fb0bb2ea5bfa3a8e49f3d23a3051f925c9378e6f08d331074e985f1d",
+      "git_blob_sha256": "af5a1de5190073136ceaf8c084d54b16fb910984777b18d2c3734847e812df76",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/primary_batch.py",
+      "copy_member": "python/lutlab/primary_batch.py",
+      "bytes": 3951,
+      "execution_sha256": "3ff2acd4e551d0e094616b8dc3c35d4e72e59c38aaf5248e2ed001c1ca412fa7",
+      "git_blob_sha256": "3ff2acd4e551d0e094616b8dc3c35d4e72e59c38aaf5248e2ed001c1ca412fa7",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/primary_budget.py",
+      "copy_member": "python/lutlab/primary_budget.py",
+      "bytes": 3004,
+      "execution_sha256": "5585d5712ae92ccf26841cf5b33cf217e23c2afaa03e6be37d49596cd750ac54",
+      "git_blob_sha256": "5585d5712ae92ccf26841cf5b33cf217e23c2afaa03e6be37d49596cd750ac54",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/qualification.py",
+      "copy_member": "python/lutlab/qualification.py",
+      "bytes": 8211,
+      "execution_sha256": "6b3179e11084aecdac91a061e8bbb8209de626f28c613ef1c5c34b614bdd2335",
+      "git_blob_sha256": "183f9f0033091d13a81be4b4a6138d93d1e600c4a487e5c165cfb841069586b7",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/quantile_compensation.py",
+      "copy_member": "python/lutlab/quantile_compensation.py",
+      "bytes": 5212,
+      "execution_sha256": "420d96526e130414e40d78eb2792f5ae505c35aa722ac88fd1bc52e0825f5179",
+      "git_blob_sha256": "420d96526e130414e40d78eb2792f5ae505c35aa722ac88fd1bc52e0825f5179",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/quantile_constraints.py",
+      "copy_member": "python/lutlab/quantile_constraints.py",
+      "bytes": 13917,
+      "execution_sha256": "b8f50aaadd25dce2366335de09d1f4e535544c17def73a2beeb6d6ed1668c06e",
+      "git_blob_sha256": "b8f50aaadd25dce2366335de09d1f4e535544c17def73a2beeb6d6ed1668c06e",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/quantile_global.py",
+      "copy_member": "python/lutlab/quantile_global.py",
+      "bytes": 4412,
+      "execution_sha256": "5175c3f605c6f25992cacf023d9889679f718b10613f254870246fa7b2e4c169",
+      "git_blob_sha256": "5175c3f605c6f25992cacf023d9889679f718b10613f254870246fa7b2e4c169",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/quantile_repair.py",
+      "copy_member": "python/lutlab/quantile_repair.py",
+      "bytes": 18269,
+      "execution_sha256": "55f9c9e2effa0e0699822f7e4528cab3f59784eee28fa55608e5c10a07c11c67",
+      "git_blob_sha256": "55f9c9e2effa0e0699822f7e4528cab3f59784eee28fa55608e5c10a07c11c67",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/reportio.py",
+      "copy_member": "python/lutlab/reportio.py",
+      "bytes": 2284,
+      "execution_sha256": "c93d821d0749aa16752caf0b1166b6aff49a682a988e4419f72591ef30f50acd",
+      "git_blob_sha256": "c1fd63dd42a7bc8587cc9d4d88c13e5488773d3867648e6f0a1a7759b4b8b56d",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/rgb_joint_grid.py",
+      "copy_member": "python/lutlab/rgb_joint_grid.py",
+      "bytes": 8624,
+      "execution_sha256": "aa783be8f5882d33ebb292afe833bcc414df7850c3c88f2191c0ffc3195e2646",
+      "git_blob_sha256": "56af33f64b28c80e7b7be287ca0be90195aefedfce0594844a791fceb411a3dd",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/robust_fit.py",
+      "copy_member": "python/lutlab/robust_fit.py",
+      "bytes": 5287,
+      "execution_sha256": "fa80d5b4d256c0eba5603c1e24b068dc5b85567f7be21407d62cf2b185438570",
+      "git_blob_sha256": "b2f47e3a079dd47789b780be584fc42f84a223ba454d43175af4f568e6a23e11",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/robust_solver.py",
+      "copy_member": "python/lutlab/robust_solver.py",
+      "bytes": 4342,
+      "execution_sha256": "f6d6222c2acbf5c551c036209f17416375bdd3152817d29851345b3123927988",
+      "git_blob_sha256": "a0a4f634d8706dd96e05531e20f86c01e1f183a150df68e040058d73a0a7161e",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/rounded_blocks.py",
+      "copy_member": "python/lutlab/rounded_blocks.py",
+      "bytes": 3661,
+      "execution_sha256": "a32123acda8baab65beaba12edd1daec6f8f54c8d07f41a6496f4d0a8541b7d4",
+      "git_blob_sha256": "a32123acda8baab65beaba12edd1daec6f8f54c8d07f41a6496f4d0a8541b7d4",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/rounded_budget.py",
+      "copy_member": "python/lutlab/rounded_budget.py",
+      "bytes": 15002,
+      "execution_sha256": "18d2af5082180df26253467a94822f0955400e56a38a0950eb586c173888cc6e",
+      "git_blob_sha256": "18d2af5082180df26253467a94822f0955400e56a38a0950eb586c173888cc6e",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/rounded_grid.py",
+      "copy_member": "python/lutlab/rounded_grid.py",
+      "bytes": 9030,
+      "execution_sha256": "b19b4e5a8eac49ee84c4622b35792eba3299dd29e03758d476f43e36028474e3",
+      "git_blob_sha256": "3e5a4031ae120dbc0fe5195749007e3ae61a817428b4c5c053e0a7689e660ee7",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/rounding_interval.py",
+      "copy_member": "python/lutlab/rounding_interval.py",
+      "bytes": 5965,
+      "execution_sha256": "d2327ad853fb1c66c42fc410b94804972416f9e781ba1ab3f64919ed70bcb250",
+      "git_blob_sha256": "b1b07973a018789620e023ca6b48e559717643b71f3e22e5b335c270c5770016",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/routes.py",
+      "copy_member": "python/lutlab/routes.py",
+      "bytes": 18139,
+      "execution_sha256": "38b188ad953bccdd8c21440d189a988ff0d3bcec1fc4baf42f4c213acabe8ca7",
+      "git_blob_sha256": "135480ac8259d1c443ecd011c482edf3359f9de31e1ffbaf5f9c0b6e4b374b1e",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/runlog.py",
+      "copy_member": "python/lutlab/runlog.py",
+      "bytes": 6309,
+      "execution_sha256": "533c5c96c16fb3fede0146039b3239f80154033f66ba97843149474c64254b1a",
+      "git_blob_sha256": "5dc779d31dc778bfdb169431d0bee112282924f3b9969a862b2712fb3cb4d65c",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/runtime.py",
+      "copy_member": "python/lutlab/runtime.py",
+      "bytes": 12029,
+      "execution_sha256": "6b07559a7aecae4e78017654d3d357be1947bb85ef7b39480c5e436804ad2d22",
+      "git_blob_sha256": "f2b5f7452fe5dd4fc5cc4a0d04d42cf97cffcda0656170d7985544ae229a874f",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/selection.py",
+      "copy_member": "python/lutlab/selection.py",
+      "bytes": 14514,
+      "execution_sha256": "80de637e84bec3f944c06c50998a14fe347c476c5fe2bef3df46c7f6658eee5a",
+      "git_blob_sha256": "d766a11bd103366e68f2037fc84cfdfef23f4a1b84bd1d1c6e41fdee5f90a802",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/separable_calibration.py",
+      "copy_member": "python/lutlab/separable_calibration.py",
+      "bytes": 15537,
+      "execution_sha256": "20e8a696e88f27e768cc39eb7df81724463881aa5fc7c14d334ea27b173040ac",
+      "git_blob_sha256": "634205cf82d9e5ee56d560f7dd5e2712abe3195b2ce00d8d9a1cf0d78041ee8d",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/source_lut.py",
+      "copy_member": "python/lutlab/source_lut.py",
+      "bytes": 3002,
+      "execution_sha256": "e84f2b416b071e6e0bed2624cb04cb21c31d36d117fd8b82f09300c0fb7932fd",
+      "git_blob_sha256": "e84f2b416b071e6e0bed2624cb04cb21c31d36d117fd8b82f09300c0fb7932fd",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/stability.py",
+      "copy_member": "python/lutlab/stability.py",
+      "bytes": 6144,
+      "execution_sha256": "57593a8a2f001a82dda7aa74ce74daa932e0908bf3647ea8af7b3f097ef5bd01",
+      "git_blob_sha256": "57593a8a2f001a82dda7aa74ce74daa932e0908bf3647ea8af7b3f097ef5bd01",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/stage_bundle.py",
+      "copy_member": "python/lutlab/stage_bundle.py",
+      "bytes": 8112,
+      "execution_sha256": "2639c78099fad600a892c9e755a1f64cf31faf80385824d8db7c7f69bcf4062f",
+      "git_blob_sha256": "2e286d635d1ab4f2e8e5342b733d7bc3f1893407ed507b7b156d6d26da2a9dfd",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/step.py",
+      "copy_member": "python/lutlab/step.py",
+      "bytes": 6136,
+      "execution_sha256": "8f245fd73939a9a368004607bffae0af2b6fd2b9e53258cbcdf854c5d0416144",
+      "git_blob_sha256": "f3c292aabe0125a86e69c447822e1eed34d0d465be12bfed184e538dfd5c456e",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/study_chains.py",
+      "copy_member": "python/lutlab/study_chains.py",
+      "bytes": 7647,
+      "execution_sha256": "3a036b124a5cd3a2d529b8568d0e42137239a55b6880e2ab42d712e27c11218b",
+      "git_blob_sha256": "3a036b124a5cd3a2d529b8568d0e42137239a55b6880e2ab42d712e27c11218b",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/study_kernels.py",
+      "copy_member": "python/lutlab/study_kernels.py",
+      "bytes": 4860,
+      "execution_sha256": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+      "git_blob_sha256": "e9c1467290028524dca3be892bfe51032458d9fcda81566bc55f284fc27d4204",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/study_provenance.py",
+      "copy_member": "python/lutlab/study_provenance.py",
+      "bytes": 3354,
+      "execution_sha256": "0a9047e15df49dc96e4891f8c4eda56b4eabc729b562de386cfadb7342af02e8",
+      "git_blob_sha256": "85e5e09879783f714f1bdaaa2c2753a74006db488a199b5aa933d7d4168a9a16",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/study_reporting.py",
+      "copy_member": "python/lutlab/study_reporting.py",
+      "bytes": 382,
+      "execution_sha256": "394af2a459175cffc5bc5b506edf66481aa251353340da02d7a9f58c53cd4b74",
+      "git_blob_sha256": "298d574f7baf82550673f0bcc73e4b6d438aa3c85f8ab4a66fd6306eadeb5667",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/suffix_objective.py",
+      "copy_member": "python/lutlab/suffix_objective.py",
+      "bytes": 3942,
+      "execution_sha256": "594a291fb81d2b5a626c2c10640719a34ce1a34d7bb37603b9f122058f6b32db",
+      "git_blob_sha256": "61931a8fd9347fc7e27c94a5ca18a8b3cf48c1071f2e74d0827743d11a76d386",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/support_certificate.py",
+      "copy_member": "python/lutlab/support_certificate.py",
+      "bytes": 3098,
+      "execution_sha256": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+      "git_blob_sha256": "28ae94ededc8509b08df37d027fca00e8dcdeafc6b27eee0d1bae9ac6d3a33cd",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/tail_repair.py",
+      "copy_member": "python/lutlab/tail_repair.py",
+      "bytes": 8293,
+      "execution_sha256": "7d0d74ef662b4c61a9bfdb9dbb3bdd6f82bc211085a97903bc5eeb240d072bbd",
+      "git_blob_sha256": "7d0d74ef662b4c61a9bfdb9dbb3bdd6f82bc211085a97903bc5eeb240d072bbd",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "python/lutlab/timingbook.py",
+      "copy_member": "python/lutlab/timingbook.py",
+      "bytes": 7048,
+      "execution_sha256": "b76d925ddc2dae53b926bc72cfb05e79d046851b241ea09ade424b6172c60e23",
+      "git_blob_sha256": "823a8f4ae474f92c0134a59a045481489708f01ce3f0366a15ae4fc1975928b2",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/validation.py",
+      "copy_member": "python/lutlab/validation.py",
+      "bytes": 13515,
+      "execution_sha256": "8cbf0b6651a8a34ac9ded4b311c530e9720991612b79fafcc2981ae06a40eae0",
+      "git_blob_sha256": "64e4cafb0ebf465d1ed485b02b3ddd792f3c22e111bea3bd791c9f3f4405bca9",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/workflow.py",
+      "copy_member": "python/lutlab/workflow.py",
+      "bytes": 6545,
+      "execution_sha256": "e8451fdb58a0c54e179e039dfbaf73837bd867877ebe79a9fbf8194b4e2403ff",
+      "git_blob_sha256": "9529036416c135d289f7c56e97c34488ae3cba8489b828021a781d4109c94828",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "python/lutlab/working_set.py",
+      "copy_member": "python/lutlab/working_set.py",
+      "bytes": 3928,
+      "execution_sha256": "4847e648db57660e1bba503d1e374b329d7a2889a1737ca15206318b0db0b17b",
+      "git_blob_sha256": "4847e648db57660e1bba503d1e374b329d7a2889a1737ca15206318b0db0b17b",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/bench_p16_model_pair.py",
+      "copy_member": "scripts/bench_p16_model_pair.py",
+      "bytes": 9425,
+      "execution_sha256": "d7c07556ab0af7fdde8465174aa3273b3133821f50f1b672d0e10cf7d305d0f0",
+      "git_blob_sha256": "d7c07556ab0af7fdde8465174aa3273b3133821f50f1b672d0e10cf7d305d0f0",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/direct16_support.py",
+      "copy_member": "scripts/direct16_support.py",
+      "bytes": 1344,
+      "execution_sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7",
+      "git_blob_sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/domain_cache_support.py",
+      "copy_member": "scripts/domain_cache_support.py",
+      "bytes": 2772,
+      "execution_sha256": "ff78716454a6c41d0330b4b046234ac509f0ad183c8bb2b8598f52b527cb7781",
+      "git_blob_sha256": "a9265b06f269040c65a30aebbe8ba7089115b7729c453a9eb5dc8bd1e37f207a",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "scripts/exception_support.py",
+      "copy_member": "scripts/exception_support.py",
+      "bytes": 1442,
+      "execution_sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645",
+      "git_blob_sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/outplace_support.py",
+      "copy_member": "scripts/outplace_support.py",
+      "bytes": 2252,
+      "execution_sha256": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+      "git_blob_sha256": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/palette_support.py",
+      "copy_member": "scripts/palette_support.py",
+      "bytes": 1764,
+      "execution_sha256": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+      "git_blob_sha256": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/study_p16_direct_compile.py",
+      "copy_member": "scripts/study_p16_direct_compile.py",
+      "bytes": 13025,
+      "execution_sha256": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e",
+      "git_blob_sha256": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "scripts/suffix_cache_support.py",
+      "copy_member": "scripts/suffix_cache_support.py",
+      "bytes": 2241,
+      "execution_sha256": "2c66197a7200c7bf434a7bcabce08fbb2a41f4cfa8f1c64333028d701c673a6e",
+      "git_blob_sha256": "9343ac7ea8b9fd005779150a416f5f62ba4994e4e2b6f987fb63a2034fbe85c3",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "scripts/verify_channel_coordinates.py",
+      "copy_member": "scripts/verify_channel_coordinates.py",
+      "bytes": 9752,
+      "execution_sha256": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab",
+      "git_blob_sha256": "5e542664e7c8f250f85591b6a15306d4d3d5b539f4b09a4624d8a17db817e2ce",
+      "relation": "crlf-to-lf"
+    }
+  ],
+  "compiled_project_dependencies": [
+    {
+      "path": "cpp/include/jshc/lut.hpp",
+      "copy_member": "cpp/include/jshc/lut.hpp",
+      "bytes": 5453,
+      "execution_sha256": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+      "git_blob_sha256": "fe43c5bb95c49dd0139017e268b90bf349ad864ae4868cb96f1213b4647ac85f",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/fit_r14.cpp",
+      "copy_member": "cpp/src/fit_r14.cpp",
+      "bytes": 24945,
+      "execution_sha256": "b56fddb1e1e26359595a3585e583e4b6acc90e21cd9b06f144c4ef01789cea71",
+      "git_blob_sha256": "a6b1f1561ad9a7836bf0f5c6b09940e3ef87184c136001b1009af6c1a0fe2c5b",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/lut.cpp",
+      "copy_member": "cpp/src/lut.cpp",
+      "bytes": 30492,
+      "execution_sha256": "e0bd4bb2230a2bde50d2e438e3a56a668ac20bf6d634a4ecf999e9b00b7bd94e",
+      "git_blob_sha256": "2db10b6950c7bf72898c097af65cf16d28f1bde8ee4f0f1ecb9b663bb6e847a5",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/lut_simd_avx2.cpp",
+      "copy_member": "cpp/src/lut_simd_avx2.cpp",
+      "bytes": 13550,
+      "execution_sha256": "7f9caf001b8d66e724e4b415a61be74e1c6b83182e0a75a8506a0d8c6bd140e7",
+      "git_blob_sha256": "bab392837e22838508b95cc0b55a041963e0d75c9d9741735cf147372d350d0c",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/lut_simd_avx2.hpp",
+      "copy_member": "cpp/src/lut_simd_avx2.hpp",
+      "bytes": 1494,
+      "execution_sha256": "374e7858822a4c38ccf3b4cfa92ed876862620a3cb88493afe1657da843ccc89",
+      "git_blob_sha256": "72e1b267b989dc3eafd6de61b4743bfce470cd038f4a86200bb098958e7c3c23",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/portable_bridge.cpp",
+      "copy_member": "cpp/src/portable_bridge.cpp",
+      "bytes": 4309,
+      "execution_sha256": "2f45baf1b80b3189b6a6f2ea6f65775cb73b9ad811b5ef957e5de7a6ec5d97ea",
+      "git_blob_sha256": "9d72950f6dc216188aa83c7d6e772c09c98578880900af260f3495317b659e6d",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "cpp/src/portable_bridge.hpp",
+      "copy_member": "cpp/src/portable_bridge.hpp",
+      "bytes": 788,
+      "execution_sha256": "81fb78e265a4855b9fb9b6b7641c44827906d106f490376d6caf8654f4349730",
+      "git_blob_sha256": "38ea7995053ad1992c8f0844fe06551c2c24d0facae093b9bdb32c7cba1d9169",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/channel-runtime/channel_runtime.h",
+      "copy_member": "experiments/channel-runtime/channel_runtime.h",
+      "bytes": 1412,
+      "execution_sha256": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+      "git_blob_sha256": "6b1d430b5bd9f1f3507d8a68735213ef921b7d4216664e674f6237d192fc3625",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/p16-direct-compile/compile_avx2.cpp",
+      "copy_member": "experiments/p16-direct-compile/compile_avx2.cpp",
+      "bytes": 1680,
+      "execution_sha256": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+      "git_blob_sha256": "3210754712a75c0bf1612bcbd977f22b4caf4d9f34535d4fb24bb3571f1741d7",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/p16-shared-domain-runtime/CMakeLists.txt",
+      "copy_member": "experiments/p16-shared-domain-runtime/CMakeLists.txt",
+      "bytes": 1842,
+      "execution_sha256": "a7121ae2873ca5e7e822dfa0c085b47ab6e88a1d9334bd078620435e9138faea",
+      "git_blob_sha256": "a7121ae2873ca5e7e822dfa0c085b47ab6e88a1d9334bd078620435e9138faea",
+      "relation": "new-stage-source"
+    },
+    {
+      "path": "experiments/p16-shared-domain-runtime/channel_runtime.cpp",
+      "copy_member": "experiments/p16-shared-domain-runtime/channel_runtime.cpp",
+      "bytes": 37124,
+      "execution_sha256": "58deceffd2f085340308881e962f17bb55ad4ae2b7c330289135d2768b614383",
+      "git_blob_sha256": "58deceffd2f085340308881e962f17bb55ad4ae2b7c330289135d2768b614383",
+      "relation": "new-stage-source"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/aligned_table.hpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/aligned_table.hpp",
+      "bytes": 1444,
+      "execution_sha256": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+      "git_blob_sha256": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp",
+      "bytes": 9236,
+      "execution_sha256": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+      "git_blob_sha256": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp",
+      "bytes": 9483,
+      "execution_sha256": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+      "git_blob_sha256": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/channel_avx2.cpp",
+      "bytes": 8643,
+      "execution_sha256": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+      "git_blob_sha256": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/channel_views.hpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/channel_views.hpp",
+      "bytes": 312,
+      "execution_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "git_blob_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp",
+      "bytes": 9117,
+      "execution_sha256": "b0c3f432259035dd028105764b2277e5dc025685db3655c28516f7634698fbe7",
+      "git_blob_sha256": "b0c3f432259035dd028105764b2277e5dc025685db3655c28516f7634698fbe7",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/outplace_bench.cpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/outplace_bench.cpp",
+      "bytes": 950,
+      "execution_sha256": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+      "git_blob_sha256": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-andn-normal-runtime/suffix_cache.hpp",
+      "copy_member": "experiments/skylake-andn-normal-runtime/suffix_cache.hpp",
+      "bytes": 3886,
+      "execution_sha256": "c1024c72928c145d58fa5578f5896f210b2a53ee11de064790b50734b9c6f780",
+      "git_blob_sha256": "c1024c72928c145d58fa5578f5896f210b2a53ee11de064790b50734b9c6f780",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-domain-isolated-runtime/channel_avx2.cpp",
+      "bytes": 6746,
+      "execution_sha256": "dd8a6ea2d36549d253703b416a621d40ce40218994ac679837833a1cc303f535",
+      "git_blob_sha256": "60858698333696656381d234eb6b7c79ead1c9d271276dfb60a59c76e93ef2b2",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/skylake-domain-isolated-runtime/channel_views.hpp",
+      "copy_member": "experiments/skylake-domain-isolated-runtime/channel_views.hpp",
+      "bytes": 324,
+      "execution_sha256": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+      "git_blob_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp",
+      "copy_member": "experiments/skylake-domain-isolated-runtime/suffix_cache.hpp",
+      "bytes": 1629,
+      "execution_sha256": "c77dbb77d076d4dd1b3c897af27d176ebf1e6ba1a484437ac38ba68803343cfa",
+      "git_blob_sha256": "68bfbb66efe27dcf2a2a4c768d9833410c7e62fdfa850ca295304ee84a7ad0d6",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/skylake-exception-runtime/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-exception-runtime/channel_avx2.cpp",
+      "bytes": 2711,
+      "execution_sha256": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+      "git_blob_sha256": "187f98bae847e3077e016d4eca41c26012b492e86cd83c6c8e91e9b016d9cdd3",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-exception-runtime/channel_views.hpp",
+      "copy_member": "experiments/skylake-exception-runtime/channel_views.hpp",
+      "bytes": 312,
+      "execution_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "git_blob_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-exception-runtime/suffix_cache.hpp",
+      "copy_member": "experiments/skylake-exception-runtime/suffix_cache.hpp",
+      "bytes": 2601,
+      "execution_sha256": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c",
+      "git_blob_sha256": "2b19b2bb7b728fb97a05aa854d7c5afd6c69110f8d2d054b700477d485e22a3c",
+      "relation": "byte-identical"
+    },
+    {
+      "path": "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+      "copy_member": "experiments/skylake-suffix-cache-runtime/channel_avx2.cpp",
+      "bytes": 8927,
+      "execution_sha256": "82a68ce75ca019510b70c9a5f0544bf8308a6e15d92f08a00bc57fd4241f5751",
+      "git_blob_sha256": "fb1ffabd1bad41abf44d1513c4feadd3479392e9cda625b2842db234e519ad79",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp",
+      "copy_member": "experiments/skylake-suffix-cache-runtime/suffix_cache.hpp",
+      "bytes": 1071,
+      "execution_sha256": "969dbc4274c8f72cf4e02702d5a490d813202d2b50f0e28cc46f85e0cef1e6dc",
+      "git_blob_sha256": "c31d01ead445ab1e3e432061d9cddd59835a70f14052a84d3e2050e06703e17f",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "portable/include/jshc_portable.h",
+      "copy_member": "portable/include/jshc_portable.h",
+      "bytes": 3983,
+      "execution_sha256": "9c887ea694c8f88479bc61d0c30f413de239f4a25ba8977d479292b9eddc0abb",
+      "git_blob_sha256": "b3806c58f07b2a097b3dafdfd23dcc5e5faf09a189b547c28fad65acbe6a3667",
+      "relation": "crlf-to-lf"
+    },
+    {
+      "path": "portable/src/jshc_portable.c",
+      "copy_member": "portable/src/jshc_portable.c",
+      "bytes": 12119,
+      "execution_sha256": "dec96a2fc97d5087da2f21220cd01124f4399b01eabbf137d4ba1508811ec40a",
+      "git_blob_sha256": "56bf10bc89a91a2b97bca9c63a7e4431621457a0cbb658a1e109797c79171897",
+      "relation": "crlf-to-lf"
+    }
+  ],
+  "python_source_scope": "性能/资格直接依赖及质量u64 oracle的lutlab包源码闭包；保守包括包支持模块，不声称每函数执行。",
+  "static_core": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-shared-domain-build-v1\\core\\libjshc_core.a",
+    "sha256": "ab81fe671ee07230022e116aa8bae02c8882213fc08939274043a56d15e69a20"
+  },
+  "compiler": "GCC15.2/CMake4.2 MinGW Makefiles Release; actual flags/link/rsp in build-files.zip",
+  "source_diff": "独立91仅revision与直表构造资格；旧domain_fast及失败fallback不改；未开启90、89或16bit宏。",
+  "performance_preflight": "2既有gui/server.py及PID138404 credential-manager get仍在；无本组编译/数值/ZIP/Gitpack并行，不称宿主独占。"
+}
