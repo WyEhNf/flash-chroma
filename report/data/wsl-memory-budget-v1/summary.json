@@ -1,0 +1,200 @@
+{
+  "purpose": "WSL固定预算与GUI真实首帧恢复；不是性能门禁或完整52帧验收",
+  "base_commit": "57e935cea832aeef0147c99673e64cf8e11cb564",
+  "environment": "Windows11 26200.9711 / Ryzen9 8945HX / WSL2.7.10 / Linux6.18.33.2；Python3.13.12及3.14.4，NumPy2.4.6、OCIO2.6.0、OpenEXR3.5.2；修订78 AVX2普通路径4线程，标量1线程",
+  "verification": {
+    "purpose": "固定预算内真实GUI首帧/取消/导入集成与每秒Linux采样；非52帧或性能验收",
+    "passed": true,
+    "wsl_config": "[wsl2]\nmemory=1GB\n\nnetworkingMode=Mirrored\nguiApplications=false\nprocessors=4\nswap=2GB\nswapFile=F:\\\\Hackathon\\\\projects\\\\16-lut-color\\\\artifacts\\\\wsl-memory-budget-v1\\\\swap.vhdx\ngpuSupport=false\nnestedVirtualization=false\nvmIdleTimeout=30000\n\n[experimental]\nautoMemoryReclaim=dropCache\n",
+    "before_state": "",
+    "new_arri_job": "20261023-201626-10263d",
+    "new_arri_sha_equal": [
+      "sdr-reference16",
+      "sdr-runtime8",
+      "hdr-reference16",
+      "hdr-runtime8"
+    ],
+    "after_state": "",
+    "memory": {
+      "sample_seconds": 1,
+      "count": 50,
+      "guest_used_estimate_peak_bytes": 792739840,
+      "swap_used_peak_bytes": 1429504,
+      "process_rss_high_water_bytes": {
+        "python3": 378048512,
+        "REDline": 163897344,
+        "decode_braw_cpu": 339566592
+      }
+    }
+  },
+  "integration": {
+    "purpose": "GUI API真实集成；三家各首帧，不重复完整52帧或性能门禁",
+    "checks": [
+      "arri/sdr/reference真实PNG",
+      "arri/sdr/runtime真实PNG",
+      "arri/sdr/difference真实PNG",
+      "arri/hdr/reference真实PNG",
+      "arri/hdr/runtime真实PNG",
+      "arri/hdr/difference真实PNG",
+      "red/sdr/reference真实PNG",
+      "red/sdr/runtime真实PNG",
+      "red/sdr/difference真实PNG",
+      "red/hdr/reference真实PNG",
+      "red/hdr/runtime真实PNG",
+      "red/hdr/difference真实PNG",
+      "blackmagic/sdr/reference真实PNG",
+      "blackmagic/sdr/runtime真实PNG",
+      "blackmagic/sdr/difference真实PNG",
+      "blackmagic/hdr/reference真实PNG",
+      "blackmagic/hdr/runtime真实PNG",
+      "blackmagic/hdr/difference真实PNG",
+      "非法帧拒绝",
+      "无效会话拒绝",
+      "外部Host拒绝",
+      "外部Origin拒绝",
+      "静态路径越界拒绝",
+      "启动窗口取消已终止真实worker，未误报成功",
+      "新导入首帧结果绑定/总52帧/重新载入目录均正确"
+    ],
+    "jobs": {
+      "arri": "20261023-201626-10263d",
+      "red": "20261023-201639-f6949d",
+      "blackmagic_import": "20261023-201656-b0a9c7",
+      "cancelled": "20261023-201638-5982ba",
+      "export": "20261023-181626-fa5881"
+    },
+    "baseline_first_frame_sha_equal": [
+      "arri/sdr/reference16",
+      "arri/sdr/runtime8",
+      "arri/hdr/reference16",
+      "arri/hdr/runtime8",
+      "red/sdr/reference16",
+      "red/sdr/runtime8",
+      "red/hdr/reference16",
+      "red/hdr/runtime8",
+      "blackmagic/sdr/reference16",
+      "blackmagic/sdr/runtime8",
+      "blackmagic/hdr/reference16",
+      "blackmagic/hdr/runtime8"
+    ],
+    "export_files_roundtrip_equal": 4,
+    "fixture_catalog_restored_after_test": true,
+    "all_passed": true
+  },
+  "output_hashes": [
+    {
+      "camera": "arri",
+      "branch": "sdr-reference16",
+      "bytes": 27993600,
+      "sha256": "f77f9908e56945da2d440ec32acf49fb871952dbbfbf1890eaba2c96b2ffcc7f"
+    },
+    {
+      "camera": "arri",
+      "branch": "sdr-runtime8",
+      "bytes": 13996800,
+      "sha256": "0e377a7dc0982df0da1f63bdfcae7b912a31daceb431874fe60f7e9b12af0d6b"
+    },
+    {
+      "camera": "arri",
+      "branch": "hdr-reference16",
+      "bytes": 27993600,
+      "sha256": "d8432d43390d9a14f4fdd719e99b4523925342bb9891766ccc399551e93e4ebe"
+    },
+    {
+      "camera": "arri",
+      "branch": "hdr-runtime8",
+      "bytes": 13996800,
+      "sha256": "fbb32155b4ace7d14e71db3ba3bee1e8c30d3cceee4252d27ab0a37442115fc4"
+    },
+    {
+      "camera": "red",
+      "branch": "sdr-reference16",
+      "bytes": 116490240,
+      "sha256": "b0369eb0d38106100f06e808c130112441a602be090af3734d9dc10b67f18fa8"
+    },
+    {
+      "camera": "red",
+      "branch": "sdr-runtime8",
+      "bytes": 58245120,
+      "sha256": "79929f68fc97167c86ffdc2b8206b00bb8704ca2dbd8d109d8fb3436bedcae0c"
+    },
+    {
+      "camera": "red",
+      "branch": "hdr-reference16",
+      "bytes": 116490240,
+      "sha256": "96bc27cc33343147c56b72b79ff0b0f87473deb82ae3112f304c164dd48e30a4"
+    },
+    {
+      "camera": "red",
+      "branch": "hdr-runtime8",
+      "bytes": 58245120,
+      "sha256": "746e336a4f6832d878f275e252d223599c16107576e006d5999e996693b7d85c"
+    },
+    {
+      "camera": "blackmagic_import",
+      "branch": "sdr-reference16",
+      "bytes": 127401984,
+      "sha256": "06131977797afc5060e6d3b6b2ace2fed4e07c1c60ecb64e55e6ddded56f503f"
+    },
+    {
+      "camera": "blackmagic_import",
+      "branch": "sdr-runtime8",
+      "bytes": 63700992,
+      "sha256": "d240721ed7976085c2fa5a6a49296bc1fa7401b86ae86006df57feaea5dca118"
+    },
+    {
+      "camera": "blackmagic_import",
+      "branch": "hdr-reference16",
+      "bytes": 127401984,
+      "sha256": "2d4ef94b7aff381240dfa7e0e6cfd16e2b0eef26b3032e4b8991d4da6a24049f"
+    },
+    {
+      "camera": "blackmagic_import",
+      "branch": "hdr-runtime8",
+      "bytes": 63700992,
+      "sha256": "f644d2a44b76f96ff39048aae12d882dbd7ee93f4db84c33614ece8bdd6836cd"
+    }
+  ],
+  "remote": {
+    "full_related_pr_bodies_compared": [
+      84,
+      47,
+      62,
+      59,
+      49,
+      43,
+      50,
+      6
+    ],
+    "unchanged": true,
+    "parent_head": "57e935cea832aeef0147c99673e64cf8e11cb564",
+    "parent_comments_reviews_threads": [
+      {
+        "comments": [],
+        "url": "https://github.com/WyEhNf/flash-chroma/issues/84",
+        "title": "WyEhNf/flash-chroma Issue #84 comments",
+        "display_url": "https://github.com/WyEhNf/flash-chroma/issues/84",
+        "display_title": "WyEhNf/flash-chroma Issue #84 comments"
+      },
+      {
+        "reviews": []
+      },
+      {
+        "review_threads": []
+      }
+    ],
+    "issues": [
+      7,
+      8
+    ],
+    "discussion_refresh_gap": true
+  },
+  "limits": [
+    "1秒采样可能漏掉短时峰值，RSS不是PSS",
+    "全52帧/长时/性能未重跑",
+    "视频回执复用旧ARRI，不算新编码",
+    "GPU设备禁用未证实",
+    "Windows提交压力仍可能影响其他输入"
+  ],
+  "static_python_ast": 3
+}
