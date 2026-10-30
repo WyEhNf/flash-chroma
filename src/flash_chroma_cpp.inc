@@ -12,11 +12,39 @@
 #define FLASH_CHROMA_TARGET_MOBILE 2
 #define FLASH_CHROMA_TARGET_EMBEDDED 3
 #define FLASH_CHROMA_TARGET_PORTABLE 4
+#if (defined(__STDC_HOSTED__) && __STDC_HOSTED__ == 0) || \
+    ((defined(__arm__) || defined(__aarch64__) || defined(__riscv)) && \
+     !defined(__linux__) && !defined(__ANDROID__) && !defined(__APPLE__) && !defined(_WIN32) && !defined(__unix__))
+#define FC_DETECTED_EMBEDDED 1
+#else
+#define FC_DETECTED_EMBEDDED 0
+#endif
 #ifndef FLASH_CHROMA_TARGET
+#if defined(FLASH_CHROMA_EMBEDDED)
+#if FLASH_CHROMA_EMBEDDED
+#define FLASH_CHROMA_TARGET FLASH_CHROMA_TARGET_EMBEDDED
+#else
 #define FLASH_CHROMA_TARGET FLASH_CHROMA_TARGET_DESKTOP
+#endif
+#elif FC_DETECTED_EMBEDDED
+#define FLASH_CHROMA_TARGET FLASH_CHROMA_TARGET_EMBEDDED
+#elif defined(__ANDROID__)
+#define FLASH_CHROMA_TARGET FLASH_CHROMA_TARGET_MOBILE
+#else
+#define FLASH_CHROMA_TARGET FLASH_CHROMA_TARGET_DESKTOP
+#endif
 #endif
 #if FLASH_CHROMA_TARGET < 1 || FLASH_CHROMA_TARGET > 4
 #error "FLASH_CHROMA_TARGET 必须是支持的部署目标"
+#endif
+#ifndef FLASH_CHROMA_EMBEDDED
+#define FLASH_CHROMA_EMBEDDED (FLASH_CHROMA_TARGET == FLASH_CHROMA_TARGET_EMBEDDED)
+#endif
+#if (FLASH_CHROMA_EMBEDDED != 0 && FLASH_CHROMA_EMBEDDED != 1)
+#error "FLASH_CHROMA_EMBEDDED 必须为0或1"
+#endif
+#if FLASH_CHROMA_EMBEDDED != (FLASH_CHROMA_TARGET == FLASH_CHROMA_TARGET_EMBEDDED)
+#error "FLASH_CHROMA_EMBEDDED 与 FLASH_CHROMA_TARGET 冲突"
 #endif
 #ifndef FLASH_CHROMA_ENABLE_DIRECT
 #define FLASH_CHROMA_ENABLE_DIRECT (FLASH_CHROMA_TARGET <= 2)
@@ -38,6 +66,9 @@
 #ifndef FLASH_CHROMA_ENABLE_PREPARE_CACHE
 #define FLASH_CHROMA_ENABLE_PREPARE_CACHE (FLASH_CHROMA_ENABLE_DIRECT && FLASH_CHROMA_ENABLE_AVX2)
 #endif
+#if FLASH_CHROMA_EMBEDDED && (FLASH_CHROMA_ENABLE_DIRECT || FLASH_CHROMA_ENABLE_AVX2 || FLASH_CHROMA_ENABLE_OPENMP || FLASH_CHROMA_ENABLE_PREPARE_CACHE)
+#error "嵌入式模式必须关闭direct、AVX2、OpenMP和准备缓存"
+#endif
 #if FLASH_CHROMA_ENABLE_PREPARE_CACHE && (!FLASH_CHROMA_ENABLE_DIRECT || !FLASH_CHROMA_ENABLE_AVX2)
 #error "准备缓存快路径需要direct与AVX2；可关闭FLASH_CHROMA_ENABLE_PREPARE_CACHE"
 #endif
@@ -57,6 +88,8 @@
 #endif
 
 namespace fc {
+// 默认识别编译目标，显式配置可覆盖；具体指令集还须经CPU及OS运行时探测。
+constexpr bool is_embedded() noexcept { return FLASH_CHROMA_EMBEDDED != 0; }
 using Bytes = fc_core::fc_bytes;
 constexpr std::size_t MiB = std::size_t{1024} * 1024;
 enum class Status : unsigned {
@@ -89,6 +122,13 @@ std::uint32_t available_backends() noexcept;
 const char* status_string(Status) noexcept;
 
 namespace detail {
+// 纯特性门控也供合同验证；不能仅凭CPU型号或AVX2位执行YMM指令。
+constexpr bool avx2_state_supported(std::uint32_t cpuid1_ecx, std::uint32_t xcr0,
+                                     std::uint32_t leaf7_ebx) noexcept {
+    constexpr std::uint32_t prerequisite = (1u << 26) | (1u << 27) | (1u << 28);
+    return (cpuid1_ecx & prerequisite) == prerequisite && (xcr0 & 6u) == 6u &&
+           (leaf7_ebx & (1u << 5)) != 0;
+}
 struct PackedView {
     const std::uint32_t* axes[3][3]{};
     const std::uint32_t* nodes=nullptr;
@@ -285,9 +325,11 @@ std::uint32_t available_backends() noexcept {
     std::uint32_t mask=1;
 #if FLASH_CHROMA_ENABLE_AVX2
     unsigned a=0,b=0,c=0,d=0;
-    if(__get_cpuid(1,&a,&b,&c,&d)&&(c&(1u<<27))&&(c&(1u<<28))) {
+    constexpr unsigned prerequisites=(1u<<26)|(1u<<27)|(1u<<28);
+    if(__get_cpuid(1,&a,&b,&c,&d)&&(c&prerequisites)==prerequisites) {
+        const unsigned leaf1_ecx=c;
         unsigned xlo=0,xhi=0;__asm__ volatile("xgetbv":"=a"(xlo),"=d"(xhi):"c"(0));
-        if((xlo&6)==6&&__get_cpuid_count(7,0,&a,&b,&c,&d)&&(b&(1u<<5)))mask|=2;
+        if(__get_cpuid_count(7,0,&a,&b,&c,&d)&&detail::avx2_state_supported(leaf1_ecx,xlo,b))mask|=2;
     }
 #endif
 #if FLASH_CHROMA_ENABLE_OPENMP

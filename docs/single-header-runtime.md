@@ -17,6 +17,8 @@ C++ 在一个翻译单元中定义实现宏：
 
 同一程序的所有翻译单元必须使用一致的 `FLASH_CHROMA_TARGET`、`FLASH_CHROMA_ENABLE_*` 宏和 OpenMP 构建设置，保持内联选择规则与实际实现的能力一致。
 
+默认按编译目标识别：freestanding或无宿主OS的ARM/AArch64/RISC-V为Embedded，Android为Mobile，其余为Desktop；无需追加设备构建宏。可选`FLASH_CHROMA_EMBEDDED=1`或显式TARGET仍能手动覆盖；`constexpr bool fc::is_embedded() noexcept`查询构建目标。非x86不会编译AVX2，host x86的Auto只在CPUID XSAVE/OSXSAVE/AVX/AVX2和XGETBV的XMM/YMM位全通过时才调用隔离的AVX2函数，否则Scalar。嵌入式纯C++的聚合hpp会整段裁掉宿主适配、IO、拟合与自动测速，只留下Runtime/基础选择器，应用只需hpp与自己的.cpp，无需项目.c/.h。宏0/1之外、与TARGET冲突、嵌入式强开Direct/AVX2/OpenMP/缓存均编译拒绝。所有TU配置须一致，仅一TU定义IMPLEMENTATION；模型可用const SLUT字节数组存ROM，Scalar/Sparse的工作区为0，图像由调用者持有。[纯C++接入示例](../single_header/embedded_example.cpp)可按设备目标编译，无文件IO、堆、异常或RTTI。标准C++工具链和真实BSP/驱动仍由设备工程提供；指定宿主模式不能给freestanding工具链补出文件/容器运行库。
+
 两份运行库都接受四个 SLUT v1 模型，每级 `m` 独立为 17..33；执行 Q16 四面体插值，每级先按 half-up 规则生成完整 RGB8 整数，再进入下一级。可选 sidecar 恰为 9216B，排列为 `[输出通道][轴][输入RGB码]` 的小端 u32 Q16 分数，允许 0..65536；没有 sidecar 时传空指针与 0 字节。索引仍由三个通道共享。
 
 模型、sidecar 和工作区都由调用方持有，必须在使用期间有效且保持模型不可变。运行库不根据当前图片重新拟合或换模型。direct 表从已固定的稀疏模型构造，精确保留上述四级语义；它不会消除稀疏模型相对原始密集 LUT 的近似误差。`tri` 和 `matched` 拟合模型需要各自正确的恢复器，不能因文件可解析就当作本接口的同精度模型。

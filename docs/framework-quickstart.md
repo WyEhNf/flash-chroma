@@ -1,13 +1,34 @@
 # 赛事框架现场操作指南
 
-交付工程位于 `F:\Hackathon\极速焕彩测试框架\FlashChroma`，由安装脚本新建。用户原有 `C`、`C++` 和 `data` 保留不变。核心交付是 `flash_chroma_framework.hpp` 与调用它的 `main.cpp`；该头文件已经合并运行库、框架适配、严格读取和拟合实现。编译、运行这份工程不需要 Python。仓库中的 Python 脚本用于安装、重复测量和独立核验。
+当前正式C++交付位于 `F:\Hackathon\极速焕彩测试框架\FlashChroma`，只有 `main.cpp` 和 `flash_chroma_framework.hpp`。按赛方main注释原样编译、启动，不需要脚本、额外构建宏或ISA参数：
 
-## 一条命令运行
+```powershell
+Set-Location 'F:\Hackathon\极速焕彩测试框架\FlashChroma'
+g++ -O2 -std=c++17 -o lut3d main.cpp
+./lut3d ../data
+```
+
+默认使用已验证的m33、framework网格、chain_ls、单线程和RGB24；无法建立直表时回退同模型Sparse。Backend始终Auto，hpp运行时同时检查CPU的XSAVE/OSXSAVE/AVX/AVX2及OS的XMM/YMM状态，满足才调用AVX2，否则Scalar；不是根据“i7”型号名猜测。编译时非x86不编译AVX2函数；freestanding或裸ARM/AArch64/RISC-V默认识别为Embedded并裁掉宿主模块，Android默认Mobile，其他宿主默认Desktop。裸机应用使用下方Runtime示例，赛方本身含文件IO的main适用于提供相应C++运行库的宿主环境。原 `C`、`C++` 和 `data` 均未修改。
+
+原带连续偏好CLI的调参工程已完整保留到 `F:\Hackathon\极速焕彩测试框架\FlashChromaTools-20261030`，以下脚本/扩展参数说明属于上一阶段调参工具，不是正式验收命令。其旧O3计时不能替代当前O2结果；正式验收不需要额外参数或标定文件。
+
+同一个hpp也提供纯C++嵌入式模式。目录 `F:\Hackathon\极速焕彩测试框架\FlashChromaEmbedded` 只含同一hpp和`embedded_example.cpp`，不包含项目`.c/.h`或脚本。编译器的目标环境会自动识别；只有需要手动裁剪/覆盖时才定义可选`FLASH_CHROMA_EMBEDDED=1`，且仅一个.cpp定义`FLASH_CHROMA_IMPLEMENTATION`：
+
+```cpp
+#define FLASH_CHROMA_EMBEDDED 1
+#define FLASH_CHROMA_IMPLEMENTATION
+#include "flash_chroma_framework.hpp"
+static_assert(fc::is_embedded(), "嵌入式目标");
+```
+
+该开关选择Embedded目标，裁掉整个宿主框架/文件读取/拟合/自动测速模块，保留`fc::Runtime`和基础选择器，默认关闭Direct、AVX2、OpenMP、准备缓存；显式冲突配置编译报错。嵌入式接入用预先压缩的SLUT只读字节数组和调用者图像缓冲，Scalar/Sparse不需要arena或堆；可按行/块调用以控制图像缓冲大小。`fc::is_embedded()`反映构建配置，不能在首次include后改宏或跨翻译单元混用配置。未定义开关时桌面赛事入口不变；也兼容原`FLASH_CHROMA_TARGET=3`写法。标准C++17头和目标工具链运行库仍须由设备环境提供，selector含double计算；四级像素映射沿用整数Q16。当前验证是本机独立构建与执行，未代替实际板卡BSP/驱动/资源验收。
+
+## 保留的调参工具运行方式
 
 在 PowerShell 中执行：
 
 ```powershell
-& 'F:\Hackathon\极速焕彩测试框架\FlashChroma\run.ps1'
+& 'F:\Hackathon\极速焕彩测试框架\FlashChromaTools-20261030\run.ps1'
 ```
 
 默认配置为四级 `m=33`、`Mode=auto`、后端自动选择、均匀取整网格、`Fit=sample`、四张原样图。脚本先编译，编译失败不会运行旧程序。指定编译器时可设置 `$env:FLASH_CHROMA_CXX = 'E:\mingw64\bin\g++.exe'`，也可使用 PATH 中的 `g++`。当前本机验证使用 GCC 15.2；交付构建参数包含 `-O3 -std=c++17 -static -DFLASH_CHROMA_ENABLE_OPENMP=0`。赛方指定的 GCC 13.2 下载失败，尚未完成该工具链验证；本机 15.2 的结果不能代替它。
@@ -15,7 +36,7 @@
 只编译用 `-BuildOnly`。更换数据目录用 `-Data '你的data目录'`；该目录需包含 `LUT/Test1.3DL` 至 `Test4.3DL`，以及 `image/1.bin` 至请求的末张图片。每张图片必须是 **1024×768、连续 RGB8、恰 2,359,296 字节**，不能将 PNG/JPEG 改名成 bin。
 
 ```powershell
-Set-Location 'F:\Hackathon\极速焕彩测试框架\FlashChroma'
+Set-Location 'F:\Hackathon\极速焕彩测试框架\FlashChromaTools-20261030'
 .\run.ps1 -GridSizes 33 -Mode sparse -Backend auto -Fit sample
 .\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Backend auto -Fit sample
 .\run.ps1 -GridSizes '17,25,33,33' -Mode sparse -Fit sample
@@ -27,7 +48,7 @@ Set-Location 'F:\Hackathon\极速焕彩测试框架\FlashChroma'
 
 当前补充百图上，`33 + framework + chain_ls` 的平均RGB误差1.484947、最差单图2.385774；它只基于LUT拟合。可先试这档，再用实际精度阈值验收。默认仍保留sample基线。若正式规则不允许额外全域运行缓存，用 `-Mode sparse`；相同模型的数值输出不变，耗时/内存不同。预处理约数秒，框架计时不含它。
 
-如需直接编译，在交付目录使用：
+如需直接编译旧调参入口，在上述调参目录使用（不是正式赛方命令）：
 
 ```powershell
 g++ -O3 -DNDEBUG -std=c++17 -static -DFLASH_CHROMA_ENABLE_OPENMP=0 main.cpp -o main_flash_chroma.exe
@@ -101,7 +122,7 @@ g++ -O3 -DNDEBUG -std=c++17 -static -DFLASH_CHROMA_ENABLE_OPENMP=0 main.cpp -o m
 ```powershell
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 python scripts/check_framework_delivery.py `
-  --exe 'F:\Hackathon\极速焕彩测试框架\FlashChroma\main_flash_chroma.exe' `
+  --exe 'F:\Hackathon\极速焕彩测试框架\FlashChromaTools-20261030\main_flash_chroma.exe' `
   --data 'F:\Hackathon\极速焕彩测试框架\data' `
   --output "artifacts/delivery-check-$stamp" --count 4 --reps 5 --affinity 16 `
   --config sparse33,33,sparse,avx2,uniform,sample `
