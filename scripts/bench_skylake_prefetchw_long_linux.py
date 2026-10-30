@@ -1,0 +1,422 @@
+"""冻结74对23的四进程长批次验收，附同句柄A/A控制；不重评旧候选或自动重试。"""
+import argparse
+import ctypes as ct
+import hashlib
+import math
+import os
+from pathlib import Path
+import statistics
+import subprocess
+import sys
+import time
+import zipfile
+
+from skylake_server_support import ROOT, read, save, digest, checked, topology, environment, loaded, driver_bind
+from verify_skylake_linux_stdlib import bind, create
+from paged_table_support import direct_info, paged_info
+from outplace_support import bind_to
+from quiet_host_support import require_quiet
+from pinned_openmp_support import probe as pinned_probe, state as pinned_state, require_environment, places
+
+
+def validate_policy(policy):
+    for key in ('plan', 'build', 'full_acceptance', 'validation', 'photos', 'driver',
+                'benchmark_script', 'pinning_support', 'pinning_probe', 'quiet_support'):
+        checked(policy[key])
+    if checked(policy['benchmark_script']).resolve() != Path(__file__).resolve():
+        raise ValueError('策略没有绑定实际长批次脚本')
+    expected_orders = [['reference', 'candidate'], ['candidate', 'reference'],
+                       ['candidate', 'reference'], ['reference', 'candidate']]
+    if policy['orders'] != expected_orders:
+        raise ValueError('四进程角色顺序必须为ABBA')
+    if policy['thread_orders'] != [[1, 4], [4, 1], [1, 4], [4, 1]]:
+        raise ValueError('线程顺序与冻结协议不同')
+    if policy['control_orders'] != [['A', 'B'], ['B', 'A'], ['B', 'A'], ['A', 'B']]:
+        raise ValueError('A/A标签顺序必须为ABBA')
+    if policy['inner_repeats'] != {'1': 16, '4': 64}:
+        raise ValueError('原生批次必须固定为单线程16轮、四线程64轮')
+    expected_control = {'median_min': 1/1.10, 'median_max': 1.10,
+                        'any_min': 1/1.25, 'any_max': 1.25}
+    if policy['control_gate'] != expected_control:
+        raise ValueError('A/A控制门槛不同')
+    gate = policy['adoption_gate']
+    if (gate['median_apply_ratio_max'] != 1/3 or gate['median_outplace_ratio_max'] != 1/3
+            or gate['any_process_apply_ratio_max'] != 0.9
+            or gate['median_prepare_plus_100_ratio_max'] != 1):
+        raise ValueError('不得改变原三倍验收门槛')
+
+
+def frozen_inputs(policy):
+    plan = read(checked(policy['plan']))
+    build = read(checked(policy['build']))
+    full = read(checked(policy['full_acceptance']))
+    validation = read(checked(policy['validation']))
+    if (build['plan_sha256'] != policy['plan']['sha256'] or not full['pass']
+            or full['build_sha256'] != policy['build']['sha256']
+            or full['libraries'] != build['libraries']
+            or build['source_sha256'] != plan['source_sha256']):
+        raise ValueError('构建、完整验收与冻结计划身份不符')
+    if (validation['plan_sha256'] != policy['plan']['sha256']
+            or validation['full_result']['sha256'] != policy['full_acceptance']['sha256']):
+        raise ValueError('独立验证身份单未绑定本次完整验收')
+    checked(validation['full_result'])
+    for name, sha in {**plan['source_sha256'], **validation['source_sha256']}.items():
+        if digest(ROOT/name) != sha:
+            raise ValueError('冻结源码变化：'+name)
+    if build['revisions'] != {'reference': 23, 'candidate': 74}:
+        raise ValueError('本次仅验收新候选74相对原23')
+    if full['prefetchw_enabled'] != {'single': 0, 'chain': 1}:
+        raise ValueError('完整域没有实际覆盖W路径')
+    return plan, build, full, validation
+
+
+def bind_bench(d):
+    u8 = ct.POINTER(ct.c_uint8)
+    doubles = ct.POINTER(ct.c_double)
+    text = ct.POINTER(ct.c_char)
+    f = d.jshc_cc_bench
+    f.argtypes = [ct.c_void_p, u8, u8, ct.c_size_t, ct.c_int, ct.c_int,
+                  ct.c_size_t, doubles, doubles, text, ct.c_size_t]
+    f.restype = ct.c_int
+    bind_to(d)
+    fto = d.jshc_cc_bench_to
+    fto.argtypes = [ct.c_void_p, u8, u8, ct.c_size_t, ct.c_int, ct.c_int,
+                    ct.c_size_t, doubles, text, ct.c_size_t]
+    fto.restype = ct.c_int
+    return f, fto
+
+
+def worker(args, policy):
+    cpus = policy['affinity_cpus']
+    require_environment(cpus)
+    os.sched_setaffinity(0, cpus)
+    top = topology(cpus)
+    plan, build, full, validation = frozen_inputs(policy)
+    models = [checked(plan['fixed_inputs']['base']), *[checked(s) for s in plan['suffix_models']]]
+    sides = [checked(plan['fixed_inputs']['sidecar']), None, None, None]
+    raw = checked(policy['photos']).read_bytes()
+    if len(raw) != 235929600:
+        raise ValueError('不是固定100图RGB8流')
+    source = (ct.c_uint8*len(raw)).from_buffer_copy(raw)
+    del raw
+    n = len(source)
+    source_sha = hashlib.sha256(source).hexdigest()
+    guard = ct.create_string_buffer(n+32)
+    ct.memset(guard, 0xa7, len(guard))
+    work = ct.cast(ct.addressof(guard)+16, ct.POINTER(ct.c_uint8))
+    src = ct.cast(source, ct.POINTER(ct.c_uint8))
+    expected = policy['expected_output_sha256']
+    error = ct.create_string_buffer(1024)
+    index = args.worker_index
+    libraries = {role: bind(checked(spec)) for role, spec in build['libraries'].items()}
+    benches = {}
+    for role, d in libraries.items():
+        if (d.jshc_cc_abi_version() != 1 or d.jshc_cc_revision() != build['revisions'][role]
+                or d.jshc_cc_capabilities() != 7):
+            raise ValueError('实际ABI、修订或后端不符')
+        benches[role] = bind_bench(d)
+    driver = driver_bind(checked(policy['driver']))
+    initial_team = pinned_probe(driver, 4, cpus)
+    handles = {}
+    result = {'measurement_completed': False, 'worker_index': index, 'pid': os.getpid(),
+        'parent_pid': os.getppid(), 'order': policy['orders'][index],
+        'thread_order': policy['thread_orders'][index], 'control_order': policy['control_orders'][index],
+        'inner_repeats': policy['inner_repeats'], 'initial_team': initial_team,
+        'selected_cpus': cpus, 'source_sha256': source_sha, 'source_bytes': n,
+        'topology': top, 'environment': environment(cpus), 'handles': {},
+        'control_records': [], 'records': [], 'batches': [],
+        'plan_sha256': policy['plan']['sha256'], 'build_sha256': policy['build']['sha256'],
+        'full_acceptance_sha256': policy['full_acceptance']['sha256'],
+        'validation_sha256': policy['validation']['sha256'], 'libraries': build['libraries'],
+        'per_inner_round_independent_sha': False,
+        'aggregation': '每原生批次内算术均值；每进程候选/参考，再取四进程配对比值中位数'}
+    save(args.output, result)
+
+    def checked_output():
+        if bytes(guard[:16]) != b'\xa7'*16 or bytes(guard[n+16:n+32]) != b'\xa7'*16:
+            raise AssertionError('原生批次越界写入哨兵')
+        sha = hashlib.sha256(memoryview(guard).cast('B')[16:n+16]).hexdigest()
+        if sha != expected:
+            raise AssertionError('完整100图输出SHA不同')
+        if hashlib.sha256(source).hexdigest() != source_sha:
+            raise AssertionError('只读源被改写')
+        return sha
+
+    def snapshot(role, phase):
+        d, h = libraries[role], handles[role]
+        state = {'direct_info': direct_info(d, h), 'paged_info': paged_info(d, h),
+                 'model_accounting_bytes': d.jshc_cc_model_bytes(h)}
+        if role == 'candidate':
+            feature=d.jshc_cc_prefetchw_enabled
+            feature.argtypes=[ct.c_void_p];feature.restype=ct.c_uint32
+            state['prefetchw_enabled']=int(feature(h))
+        # 在任何诊断断言前落盘，失败时也能确定到底是哪项条件不满足。
+        save(args.output.parent/f'worker{index}-handle-{role}-{phase}.json', state)
+        result['handles'][role][phase] = state
+        save(args.output, result)
+        if role == 'candidate':
+            ds, pg = state['direct_info'], state['paged_info']
+            checks = {'prefetchw_actual_enabled': state['prefetchw_enabled'] == 1, 'enabled': ds['enabled'] == 1, 'format9': ds['format'] == 9,
+                'entries': ds['entries'] == 2**22, 'table_bytes': ds['table_capacity_bytes'] == 2**24,
+                'paged_bytes': pg['bytes'] == 2**24,
+                'exact_vma_bytes': pg['smaps']['mapping_bytes'] == pg['bytes'] == 2**24,
+                'aligned_2m': pg['aligned_2m'],
+                'fully_huge': pg['fully_huge']}
+            failed = [key for key, passed in checks.items() if not passed]
+            if failed:
+                raise ValueError('候选16MiB直表诊断失败：'+','.join(failed))
+        return state
+
+    def measure_batch(role, threads, mode, purpose, label):
+        d, h = libraries[role], handles[role]
+        repeats = policy['inner_repeats'][str(threads)]
+        before_team = pinned_probe(driver, threads, cpus)
+        # 每个批次先独立预热完整100图，计时数组只由原生内部写入。
+        if mode == 'legacy':
+            ct.memmove(work, src, n)
+            rc = d.jshc_cc_apply(h, work, n, 1, threads, error, len(error))
+        else:
+            rc = d.jshc_cc_apply_to(h, src, work, n, 1, threads, error, len(error))
+        if rc:
+            raise RuntimeError(error.value.decode('utf-8', errors='replace'))
+        warm_sha = checked_output()
+        before_tasks = pinned_state(cpus)
+        a, c = (ct.c_double*repeats)(), (ct.c_double*repeats)()
+        f, fto = benches[role]
+        if mode == 'legacy':
+            rc = f(h, src, work, n, 1, threads, repeats, a, c, error, len(error))
+        else:
+            rc = fto(h, src, work, n, 1, threads, repeats, c, error, len(error))
+        # 无论成功与否先保存原始计时数组；失败不产生可接受的工作进程结果。
+        record = {'purpose': purpose, 'label': label, 'variant': role,
+            'requested_threads': threads, 'mode': mode, 'inner_repeats': repeats,
+            'layout': ('prefetchw' if mode == 'legacy' and threads > 1 else 'linear') if role == 'candidate' else 'reference23',
+            'handle_address': int(h.value), 'library_sha256': build['libraries'][role]['sha256'],
+            'actual_team_before': before_team, 'task_affinities_before_batch': before_tasks,
+            'warmup_output_sha256': warm_sha, 'native_return_code': rc,
+            'apply_seconds': list(a) if mode == 'legacy' else [],
+            'legacy_copy_apply_seconds': list(c) if mode == 'legacy' else [],
+            'outplace_seconds': list(c) if mode == 'outplace' else []}
+        path = args.output.parent/f'worker{index}-sample-{purpose}-{threads}-{label}-{mode}.json'
+        # 非法非有限时间无法进入严格JSON；以可读字符串保留原始值后拒绝。
+        raw_invalid = any(not math.isfinite(x) for x in c) or (mode == 'legacy' and any(not math.isfinite(x) for x in a))
+        if raw_invalid:
+            record['nonfinite_raw_times'] = True
+            for key in ('apply_seconds', 'legacy_copy_apply_seconds', 'outplace_seconds'):
+                record[key] = [x if math.isfinite(x) else repr(x) for x in record[key]]
+        save(path, record)
+        if rc:
+            raise RuntimeError(error.value.decode('utf-8', errors='replace'))
+        if raw_invalid or any(x <= 0 for x in c) or (mode == 'legacy' and any(x <= 0 or x > y for x, y in zip(a, c))):
+            raise ValueError('原生批次计时非法；原始数组已保存')
+        record['batch_final_output_sha256'] = checked_output()
+        record['source_unchanged'] = True
+        record['sentinels_unchanged'] = True
+        record['task_affinities_after_batch'] = pinned_state(cpus)
+        record['actual_team_after'] = pinned_probe(driver, threads, cpus)
+        record['actual_main_affinity_after'] = sorted(os.sched_getaffinity(0))
+        for key in ('apply_seconds', 'legacy_copy_apply_seconds', 'outplace_seconds'):
+            if record[key]:
+                record['mean_'+key] = statistics.mean(record[key])
+        save(path, record)
+        result['batches'].append({'path': path.name, 'sha256': digest(path)})
+        save(args.output, result)
+        return record
+
+    try:
+        # 每角色在本进程只创建一个句柄，两个线程配置和全部A/A共用它。
+        for role in policy['orders'][index]:
+            started = time.perf_counter()
+            handles[role] = create(libraries[role], models, sides)
+            prepare = time.perf_counter()-started
+            result['handles'][role] = {'creation_count': 1, 'handle_address': int(handles[role].value),
+                'prepare_wall_seconds': prepare, 'library_revision': libraries[role].jshc_cc_revision()}
+            snapshot(role, 'before')
+        for thread_index, threads in enumerate(policy['thread_orders'][index]):
+            for label in policy['control_orders'][index]:
+                record = measure_batch('candidate', threads, 'legacy', 'control', label)
+                result['control_records'].append(record)
+                save(args.output, result)
+            modes = ['legacy', 'outplace'] if (index+thread_index)%2 == 0 else ['outplace', 'legacy']
+            for role in policy['orders'][index]:
+                by_mode = {}
+                for mode in modes:
+                    by_mode[mode] = measure_batch(role, threads, mode, 'comparison', role)
+                legacy, output = by_mode['legacy'], by_mode['outplace']
+                handle_state = result['handles'][role]
+                prepare = handle_state['prepare_wall_seconds']
+                record = {'variant': role, 'requested_threads': threads, 'kernel': 'avx2',
+                    'images': 100, 'stages': 4, 'inner_repeats': policy['inner_repeats'][str(threads)],
+                    'library_revision': libraries[role].jshc_cc_revision(),
+                    'library_sha256': build['libraries'][role]['sha256'],
+                    'handle_address': int(handles[role].value), 'prepare_wall_seconds': prepare,
+                    'model_accounting_bytes': handle_state['before']['model_accounting_bytes'],
+                    'direct_info': handle_state['before']['direct_info'], 'paged_info': handle_state['before']['paged_info'],
+                    'mode_order': modes, 'batches': by_mode, 'apply_seconds': legacy['apply_seconds'],
+                    'legacy_copy_apply_seconds': legacy['legacy_copy_apply_seconds'],
+                    'outplace_seconds': output['outplace_seconds'],
+                    'mean_apply_seconds': legacy['mean_apply_seconds'],
+                    'mean_legacy_copy_apply_seconds': legacy['mean_legacy_copy_apply_seconds'],
+                    'mean_outplace_seconds': output['mean_outplace_seconds'],
+                    'prepare_plus_first_100_apply_seconds': prepare+legacy['apply_seconds'][0],
+                    'prepare_plus_first_100_copy_apply_seconds': prepare+legacy['legacy_copy_apply_seconds'][0],
+                    'prepare_plus_first_100_outplace_seconds': prepare+output['outplace_seconds'][0]}
+                result['records'].append(record)
+                save(args.output, result)
+            print('完成长批次控制及直接比较', index, threads, flush=True)
+        for role in policy['orders'][index]:
+            snapshot(role, 'after')
+        if len(result['control_records']) != 4 or len(result['records']) != 4 or len(result['batches']) != 12:
+            raise AssertionError('工作进程记录数量不同')
+        if hashlib.sha256(source).hexdigest() != source_sha:
+            raise AssertionError('只读源被改写')
+        frozen_inputs(policy)
+        result['loaded_libraries'] = loaded([*build['libraries'].values(), policy['driver']])
+        result['actual_affinity'] = sorted(os.sched_getaffinity(0))
+        result['measurement_completed'] = True
+        save(args.output, result)
+        return result
+    except BaseException as exc:
+        result['failure'] = {'type': type(exc).__name__, 'message': str(exc)}
+        save(args.output, result)
+        raise
+    finally:
+        for role, handle in handles.items():
+            libraries[role].jshc_cc_destroy(handle)
+
+
+def summarize(workers, policy):
+    summary, paired, controls, failed, control_failed = [], [], [], [], []
+    for threads in (1, 4):
+        matches = [{r['variant']: r for r in w['records'] if r['requested_threads'] == threads} for w in workers]
+        for role in ('reference', 'candidate'):
+            summary.append({'variant': role, 'requested_threads': threads,
+                'median_apply_ms_per_image': statistics.median(m[role]['mean_apply_seconds']*10 for m in matches),
+                'median_legacy_copy_apply_ms_per_image': statistics.median(m[role]['mean_legacy_copy_apply_seconds']*10 for m in matches),
+                'median_outplace_ms_per_image': statistics.median(m[role]['mean_outplace_seconds']*10 for m in matches),
+                'prepare_wall_seconds': [m[role]['prepare_wall_seconds'] for m in matches],
+                'model_accounting_bytes': matches[0][role]['model_accounting_bytes']})
+        a = [m['candidate']['mean_apply_seconds']/m['reference']['mean_apply_seconds'] for m in matches]
+        c = [m['candidate']['mean_legacy_copy_apply_seconds']/m['reference']['mean_legacy_copy_apply_seconds'] for m in matches]
+        out = [m['candidate']['mean_outplace_seconds']/m['reference']['mean_outplace_seconds'] for m in matches]
+        prep = [m['candidate']['prepare_plus_first_100_outplace_seconds']/m['reference']['prepare_plus_first_100_outplace_seconds'] for m in matches]
+        g = policy['adoption_gate']
+        if statistics.median(a) > g['median_apply_ratio_max']:
+            failed.append(f'{threads}线程apply未达3倍')
+        if statistics.median(out) > g['median_outplace_ratio_max']:
+            failed.append(f'{threads}线程真实输出未达3倍')
+        if max(a) > g['any_process_apply_ratio_max']:
+            failed.append(f'{threads}线程某apply进程回退超限')
+        if statistics.median(prep) > g['median_prepare_plus_100_ratio_max']:
+            failed.append(f'{threads}线程准备+首组回退')
+        paired.append({'requested_threads': threads, 'process_apply_ratios': a,
+            'median_apply_ratio': statistics.median(a), 'process_legacy_copy_apply_ratios': c,
+            'median_legacy_copy_apply_ratio': statistics.median(c), 'process_outplace_ratios': out,
+            'median_outplace_ratio': statistics.median(out), 'process_prepare_plus_100_outplace_ratios': prep,
+            'median_prepare_plus_100_outplace_ratio': statistics.median(prep)})
+        aa = [{r['label']: r for r in w['control_records'] if r['requested_threads'] == threads} for w in workers]
+        ratios = [m['B']['mean_apply_seconds']/m['A']['mean_apply_seconds'] for m in aa]
+        copy_ratios = [m['B']['mean_legacy_copy_apply_seconds']/m['A']['mean_legacy_copy_apply_seconds'] for m in aa]
+        cg = policy['control_gate']
+        median = statistics.median(ratios)
+        median_ok = cg['median_min'] <= median <= cg['median_max']
+        any_ok = all(cg['any_min'] <= x <= cg['any_max'] for x in ratios)
+        if not median_ok or not any_ok:
+            control_failed.append(f'{threads}线程测量控制失败：A/A纯apply的B/A超限')
+        controls.append({'requested_threads': threads, 'same_library_and_handle': True,
+            'process_mean_apply_ratios_B_over_A': ratios, 'median_ratio': median,
+            'minimum': min(ratios), 'maximum': max(ratios),
+            'process_mean_copy_apply_ratios_B_over_A': copy_ratios,
+            'median_copy_apply_ratio': statistics.median(copy_ratios),
+            'median_gate_passed': median_ok, 'all_pairs_gate_passed': any_ok,
+            'control_valid': median_ok and any_ok,
+            'gate_scope': '纯apply的B/A；旧copy+apply完整报告，不另设事后门槛'})
+    return summary, paired, controls, failed, control_failed
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--policy', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--worker-index', type=int)
+    args = parser.parse_args()
+    policy = read(args.policy)
+    validate_policy(policy)
+    if args.output.exists():
+        raise ValueError('不得覆盖或自动重试旧长批次证据')
+    if args.worker_index is not None:
+        if args.worker_index not in range(4):
+            raise ValueError('工作进程序号必须为0..3')
+        worker(args, policy)
+        print('完成Linux长批次工作进程', args.worker_index, flush=True)
+        return
+    plan, build, full, validation = frozen_inputs(policy)
+    args.output.mkdir(parents=True)
+    names = [*plan['source_sha256'], *validation['source_sha256'],
+        Path(__file__).resolve().relative_to(ROOT).as_posix(),
+        'scripts/pinned_openmp_support.py', 'scripts/quiet_host_support.py',
+        'scripts/paged_table_support.py', 'scripts/outplace_support.py',
+        'scripts/skylake_server_support.py', 'scripts/verify_skylake_linux_stdlib.py',
+        args.policy.resolve().relative_to(ROOT).as_posix()]
+    for key in ('plan', 'build', 'full_acceptance', 'validation', 'pinning_probe'):
+        names.append(checked(policy[key]).resolve().relative_to(ROOT).as_posix())
+    sources = {name: digest(ROOT/name) for name in sorted(set(names))}
+    save(args.output/'run.json', {'purpose': __doc__, 'policy': policy, 'source_sha256': sources,
+        'environment': environment(), 'inner_repeats': policy['inner_repeats'],
+        'aggregation': '每批次内均值形成每worker候选/参考比，再取四worker比值中位数',
+        'outer_repeats': 1, 'legacy_policy_repeats_used': False,
+        'scope': '同Linux实际主机；每内轮完整100图，计时外SHA仅核对每批次最后输出，不含IO、分配或SHA；非Skylake实测'})
+    with zipfile.ZipFile(args.output/'measured-source.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+        for name in sources:
+            archive.write(ROOT/name, name)
+    env = os.environ.copy()
+    env.update(OMP_NUM_THREADS='1', OMP_DYNAMIC='FALSE', OMP_PROC_BIND='TRUE',
+               OMP_PLACES=places(policy['affinity_cpus']), OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+    env.pop('GOMP_CPU_AFFINITY', None)
+    quiet = policy['quiet_protocol']
+    require_quiet(quiet, policy['affinity_cpus'], args.output, 'quiet-parent', quiet['minimum_parent_settle_seconds'])
+    workers = []
+    for index in range(4):
+        require_quiet(quiet, policy['affinity_cpus'], args.output, f'quiet-worker{index}', 0)
+        path = args.output/f'worker{index}.json'
+        proc = subprocess.run([sys.executable, '-u', str(Path(__file__).resolve()),
+            '--policy', str(args.policy.resolve()), '--output', str(path.resolve()),
+            '--worker-index', str(index)], cwd=ROOT, env=env, capture_output=True, text=True)
+        (args.output/f'worker{index}.stdout.log').write_text(proc.stdout, encoding='utf-8')
+        (args.output/f'worker{index}.stderr.log').write_text(proc.stderr, encoding='utf-8')
+        if proc.returncode:
+            save(args.output/'failure.json', {'worker_index': index, 'returncode': proc.returncode,
+                'completed_workers': len(workers), 'automatic_retry': False,
+                'message': '工作进程失败，保留部分原始样本；不生成通过结论'})
+            raise RuntimeError('长批次进程失败，保留所有原始数据：'+proc.stderr)
+        value = read(path)
+        if not value['measurement_completed'] or value['worker_index'] != index:
+            raise ValueError('工作进程回执未完成或身份不同')
+        workers.append(value)
+        print('完成串行Linux长批次进程', index, flush=True)
+    summary, paired, controls, failed, control_failed = summarize(workers, policy)
+    for name, sha in sources.items():
+        if digest(ROOT/name) != sha:
+            raise ValueError('测量期间源码或身份文件改变：'+name)
+    result = {'measurement_completed': True, 'accepted_on_this_host': not failed and not control_failed,
+        'measurement_control_valid': not control_failed, 'failed_gates': [*failed, *control_failed],
+        'performance_failed_gates': failed, 'control_failed_gates': control_failed,
+        'summary': summary, 'paired': paired, 'controls': controls,
+        'worker_sha256': [digest(args.output/f'worker{i}.json') for i in range(4)],
+        'plan_sha256': policy['plan']['sha256'], 'build_sha256': policy['build']['sha256'],
+        'full_acceptance_sha256': policy['full_acceptance']['sha256'],
+        'validation_sha256': policy['validation']['sha256'],
+        'selected_cpus': policy['affinity_cpus'], 'actual_parent_affinity': sorted(os.sched_getaffinity(0)),
+        'frequency_and_temperature_controlled': False, 'inner_repeats': policy['inner_repeats'],
+        'confirmation_policy': policy.get('confirmation'), 'confirmation_automatically_executed': False,
+        'handle_creations': 8, 'control_native_batch_calls': 16, 'comparison_native_batch_calls': 32,
+        'control_inner_rounds': 640, 'comparison_inner_rounds': 1280, 'warmup_calls': 48,
+        'batch_final_sha_checks': 48, 'per_inner_round_independent_sha': False,
+        'aggregation': '每批次内均值形成每worker候选/参考比，再取四worker比值中位数',
+        'scope': '仅新74对23；A/A失效则整轮不接受，全部数据保留，不重试或挑选；不重评旧失败，不外推Skylake实机。'}
+    save(args.output/'results.json', result)
+    print('Linux受控长批次比较完成', result['accepted_on_this_host'], paired, controls, flush=True)
+
+
+if __name__ == '__main__':
+    main()
