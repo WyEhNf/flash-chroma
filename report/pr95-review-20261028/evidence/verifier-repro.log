@@ -1,0 +1,21 @@
+完整RGB8通过 fitted sparse scalar
+完整RGB8通过 fitted sparse avx2
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "scripts/verify_flash_chroma.py", line 80, in <module>
+    main()
+  File "scripts/verify_flash_chroma.py", line 69, in main
+    row = verify(library, model, config, model.profile.get('oracle_sha256'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "scripts/verify_flash_chroma.py", line 13, in verify
+    with library.create(model, config) as engine:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\shenni\交大\Hackthon\flash-chroma\tmp\review-pr95\scripts\flash_chroma_support.py", line 154, in create
+    return Engine(self, model, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\shenni\交大\Hackthon\flash-chroma\tmp\review-pr95\scripts\flash_chroma_support.py", line 183, in __init__
+    raise RuntimeError(f'运行库准备失败：{status} {STATUS.get(status, "宿主适配错误")}；{config}')
+RuntimeError: 运行库准备失败：10 调色板容量不足；{'target': 'desktop', 'backend': 'avx2', 'representation': 'direct_u16', 'threads': 4, 'block_pixels': 65536, 'max_workspace_bytes': 9223372036854775807}
