@@ -1,0 +1,21 @@
+{
+  "purpose": "72首次受控长批次确认决定，不补测或择优",
+  "policy_sha256": "aaa7d166cb8c2259264e1f38616ee6434c621edfbe6019d68dafc6a8de351788",
+  "initial_result": {
+    "path": "artifacts/skylake-adaptive-dictionary-long-perf-v1/results.json",
+    "sha256": "351ee78ae52edaf8f323f1614bb38b8564bf53e369c02f30095f18ab94645383"
+  },
+  "initial_measurement_completed": true,
+  "initial_control_valid": false,
+  "initial_accepted": false,
+  "failed_gates": [
+    "1线程apply未达3倍",
+    "4线程apply未达3倍",
+    "4线程准备+首组回退",
+    "1线程测量控制失败：A/A纯apply的B/A超限"
+  ],
+  "confirmation_condition_met": false,
+  "confirmation_executed": false,
+  "additional_native_calls": 0,
+  "decision": "首次纯映射1/4线程和4线程准备门槛失败，单线程A/A也失败；按冻结规则跳过确认，完整保留首次数据，不重试择优"
+}
