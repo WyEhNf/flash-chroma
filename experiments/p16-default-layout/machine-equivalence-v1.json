@@ -1,0 +1,36 @@
+{
+  "scope": "93静态原因证据；仅比较原87/92已测DLL与构建对象，无DLL执行、测试或整库反汇编。不能由此否定92有效80档或追授失效。此附录不改变已冻结诊断参数。",
+  "reference_dll_sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158",
+  "candidate_dll_sha256": "64122d6aca9fe1f1ff2a22e85eb9869264a7fa0b730e5b6b779397875b885c7b",
+  "reference_object_root": "artifacts/p16-speed-direct-build-v1/CMakeFiles/jshc_direct_prepare_simd.dir",
+  "candidate_object_root": "artifacts/p16-workload-build-v1/CMakeFiles/jshc_workload.dir",
+  "object_relation": "两个根下面相同F_/Hackathon/worktrees/p16-speed-20261023/experiments路径的.obj完整字节SHA256相同，不只是汇编助记符相同。",
+  "objects": [
+    {"source": "skylake-andn-normal-runtime/channel_avx2.cpp", "both_sha256": "516b8015f17bfbf3fc3fa273af6f2e1a8c63c20b0e5b2df953c55b86f448acb8"},
+    {"source": "skylake-andn-normal-runtime/andn_inplace/channel_avx2.cpp", "both_sha256": "4bc3fbe57e013918221ba8aa25a00b4d924e70fee8ec766a247c82011181ffe5"},
+    {"source": "skylake-andn-normal-runtime/andn_outplace/channel_avx2.cpp", "both_sha256": "ea1c4afb3955235bf2187b2ee55efcbdc06853e038c7f915860bef7b84f1c480"},
+    {"source": "skylake-andn-normal-runtime/normal_inplace/channel_avx2.cpp", "both_sha256": "e78e6457f6f8492ecbce0aea2fbe58eed16681527c00d7a8d09ca6b5dc5b49e7"},
+    {"source": "skylake-exception-runtime/channel_avx2.cpp", "both_sha256": "8da2e2a6c77931a27be9b39eb3563373e965ce91a8fdd311a6da80df3389dae5"},
+    {"source": "skylake-suffix-cache-runtime/channel_avx2.cpp", "both_sha256": "823a27fa6b8018b969758d0e62597f3f60a2369a2be9018c34282769aee0d1d3"}
+  ],
+  "runtime_disassembly": {
+    "tool": "E:/mingw64/bin/objdump.exe -d --no-show-raw-insn --disassemble=<single_symbol> <dll>",
+    "normalization": "只保留指令行，去指令地址，将8..16位绝对注释/分支目标地址替换ADDR，RIP位移替换RIP，保留助记符/其它操作数/符号注释并折叠空格。不是完整机器码逐字节比较，也不证明运行时地址/cache状态相同。",
+    "functions": [
+      {"symbol": "jshc_cc_apply", "instructions_each": 201, "normalized_sha256_each": "5cf24a40dce1e0be6477d4162114eba2e4e0a932cf54862e8e89d053929ec349"},
+      {"symbol": "_ZN12_GLOBAL__N_1L5applyERNS_6HandleEPhyii", "instructions_each": 143, "normalized_sha256_each": "ec7786c4090815384ea0e485b3c79db6c358f89b9a10082a0b8ebcaac5d15cdb"},
+      {"symbol": "_ZN12_GLOBAL__N_1L5applyERNS_6HandleEPhyii._omp_fn.0", "instructions_each": 178, "normalized_sha256_each": "d9989906fe3f11bfe6dc62971b71ef1485115c90021aa1ad16c3794f76e8276e"},
+      {"symbol": "_ZN12_GLOBAL__N_1L8apply_toERNS_6HandleEPKhPhyii._omp_fn.0", "instructions_each": 357, "normalized_sha256_each": "1b4bc7808036d84986fb171c9a077d7e02504a6b308388d762902cb1fd85b4a4"}
+    ]
+  },
+  "rva": {
+    "apply_both": "0x3e00",
+    "apply_omp_both": "0x3620",
+    "jshc_cc_apply_both": "0x5fb0",
+    "cached_reference_candidate": ["0xf760", "0xf820"],
+    "pair48_reference_candidate": ["0xc6d0", "0xc790"],
+    "pair48_to_reference_candidate": ["0xd5c0", "0xd680"],
+    "andn_normal_mt_reference_candidate": ["0xe800", "0xe8c0"]
+  },
+  "interpretation": "未见新增hint热操作，函数链接位置/heap/角色调用顺序/CPU状态仍可能影响性能；93只辨别有限caller布局与角色分块交互，不做频率或全部heap/ASLR因果声称。"
+}

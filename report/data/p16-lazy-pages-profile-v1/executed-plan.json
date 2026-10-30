@@ -1,0 +1,33 @@
+{
+  "purpose": "只读固定4KiB输入页覆盖率，先冻结每张图和首1/10/100图所需编译范围与扫描预算，再决定是否原生实现；不测速度或后台工作",
+  "script_sha256": "c5a2f23a4d0006a8e5a57011c9ccf7b097efb5921a66af26c5d4aae73238b9ba",
+  "data_root": "F:\\Hackathon\\projects\\16-lut-color",
+  "manifest": {
+    "path": "F:\\Hackathon\\projects\\16-lut-color\\assets\\photos\\manifest.json",
+    "sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c"
+  },
+  "source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "scales": [
+    1,
+    2
+  ],
+  "prefix_images": [
+    1,
+    10,
+    100
+  ],
+  "page_bytes": 4096,
+  "layout": "R低字节地址；page=(R|(G<<8)|(B<<16))>>12=(G>>4)|(B<<4)，一页4096个ID/4096颜色",
+  "scan_budget": {
+    "single_scan_logical_gb_bytes_per_pixel": 2,
+    "source_cache_line_span_bytes_per_pixel": 3,
+    "naive_presence_stores_per_pixel": 1,
+    "thread_private_byte_flags_bytes": 4096,
+    "thread_private_bit_flags_bytes": 512,
+    "four_thread_byte_flags_plus_merged_bytes": 20480,
+    "distinct_page_indices_uint16_max_bytes": 8192,
+    "final_presence_read_bytes": 4096,
+    "meaning": "逻辑预算，未实现/计时。字节flags需清零，四线程要合并，位flags需位读改写；不把相同页反复store免费化。"
+  },
+  "limitations": "固定已见照片同源::2，无库create/原生执行，无模型修改。编译工作可按输入页数粗计，但不能把比例当时间；若以后lazy补全必须计CPU与ready时间，不隐藏后台。"
+}

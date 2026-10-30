@@ -1,0 +1,308 @@
+{
+  "purpose": "90显式分段API三角色36场景冻结性能：旧87逐图/旧87bulk/新90segments，真实非连续bulk含pack/scatter",
+  "libraries": {
+    "baseline": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_direct_prepare_simd.dll",
+      "sha256": "58591a725d367dce3713ff88af4d5549afea5af1ac4f3a39284443586893c158"
+    },
+    "candidate": {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\libjshc_segment_batch.dll",
+      "sha256": "8520ed20f891a66669c282ac23d3fd51175eb93a33ba03d0eddd384d52894825"
+    }
+  },
+  "driver": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-segment-driver-build-v1\\libjshc_segment_driver.dll",
+    "sha256": "04d9cba8e3073306fb15e013b5ef2e893ee16424de60f56d35b0289e610d8ff3"
+  },
+  "model_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-final-model-pair-v1.json",
+    "sha256": "163b13ba1d2852d2636995a25bf54db429ca714598f44a9d130a4acb1f2e1894"
+  },
+  "roles": {
+    "direct": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut",
+          "sha256": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut",
+          "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+        }
+      ],
+      "sidecars": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin",
+          "sha256": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff"
+        },
+        null,
+        null,
+        null
+      ],
+      "oracle": {
+        "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\cube.rgb",
+        "sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+      }
+    },
+    "fallback": {
+      "models": [
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-axis-calibration-v1\\stage1_sweep012\\stage1.slut",
+          "sha256": "af9747e4b396ee8382897cd9af717d7464eccfe066add1262c12ff95582f3fc0"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut",
+          "sha256": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut",
+          "sha256": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234"
+        },
+        {
+          "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut",
+          "sha256": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed"
+        }
+      ],
+      "sidecars": [
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  },
+  "role_scales": {
+    "direct": [
+      1,
+      2
+    ],
+    "fallback": [
+      1
+    ]
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "script_sha256": "79b1d58688e82dcf31936728e1bd6de7597d4b60aaae2f6ae70c62000db302a6",
+  "support_sha256": {
+    "scripts/p16_segment_support.py": "d09e8ba75433b5c56950d296a16e891d7db14abeba3a6de24daf24c824534f8f"
+  },
+  "diagnostic_proof": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-call-boundary-v1\\correctness.json",
+    "sha256": "aa059ae79b699e91cc488a7d7ae4415e84e9d3488fbb95965f0dfa5b6e5fd8e8"
+  },
+  "quality_boundary": "不计性能。完整RGB8分成10段含空/非整8/65536边界，scalar/AVX2、1/4线程；100照片真实独立输入输出。driver三角色连贯/非连续N1/10先验，N100正式每组先预热哈希再计时，避免质量与root任务并行时超过1GiB。",
+  "contract": "空批0..100，空段可null；目标与所有源/其它目标不重叠。重复只读源允许。验证、范围/任务构造都在新入口，所有验证拒绝必须不写首目标或任何源。",
+  "quality_plan": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-segment-quality-v1.json",
+    "sha256": "91eb6e8c08af6a271b80bfe832ecee109f229c72d9671abedf6d31fbc282fae2"
+  },
+  "quality_proof": {
+    "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-segment-quality-v1\\correctness.json",
+    "sha256": "51aadc8f1beeba6f57d97184930f88143d4e984bcb81ed369e17906d5bc99d8f"
+  },
+  "execution_dependencies": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\p16_segment_support.py",
+      "sha256": "d09e8ba75433b5c56950d296a16e891d7db14abeba3a6de24daf24c824534f8f"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\bench_p16_model_pair.py",
+      "sha256": "d7c07556ab0af7fdde8465174aa3273b3133821f50f1b672d0e10cf7d305d0f0"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\study_p16_direct_compile.py",
+      "sha256": "d7e3cd4f2ac8057e383cfccd7cc27095bf24fca46517b813df5b05d97e30d19e"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\channel-runtime\\channel_native.py",
+      "sha256": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\palette_support.py",
+      "sha256": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\outplace_support.py",
+      "sha256": "4adfcc9edd87b51b2eb178fa4c64c6394714338b4e78016e3f6d5ade16f10cc6"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\suffix_cache_support.py",
+      "sha256": "2c66197a7200c7bf434a7bcabce08fbb2a41f4cfa8f1c64333028d701c673a6e"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\direct16_support.py",
+      "sha256": "b2030b2fbfcbb0e446e9cc40f1aa202f0cccc3c0ceb4b54148cda29f5b0494a7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\domain_cache_support.py",
+      "sha256": "ff78716454a6c41d0330b4b046234ac509f0ad183c8bb2b8598f52b527cb7781"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\scripts\\exception_support.py",
+      "sha256": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645"
+    }
+  ],
+  "source_identities": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-direct-compile\\CMakeLists.txt",
+      "sha256": "efae79e7c6f683737fce2fbe6e5e4e23b4c99f949d5d4352e42dbdb1635f78b7"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-direct-compile\\channel_runtime.cpp",
+      "sha256": "e6e9c62c791ce2d7132a6272baa8a2cada98214ba0dda90b1fca792e3399f394"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-direct-compile\\segment_batch.h",
+      "sha256": "ed07727e606f0151fa09f066247bdd65dd8dde905874df8b8669203c73e7a9f8"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-segment-driver\\CMakeLists.txt",
+      "sha256": "cc8b6bcbc742173bd6387ebdce9338a29db69db64fa353345947f1ea0d9b7360"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\experiments\\p16-segment-driver\\driver.cpp",
+      "sha256": "71f2e095eef0941392257ebbf3bf8e05aaf7459f5bebf9ad3b7ab6904f8443db"
+    }
+  ],
+  "source_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      2,
+      1,
+      0
+    ],
+    [
+      1,
+      2,
+      0
+    ],
+    [
+      0,
+      2,
+      1
+    ]
+  ],
+  "model_orders": [
+    [
+      "direct",
+      "fallback"
+    ],
+    [
+      "fallback",
+      "direct"
+    ],
+    [
+      "direct",
+      "fallback"
+    ],
+    [
+      "fallback",
+      "direct"
+    ]
+  ],
+  "thread_orders": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      1
+    ]
+  ],
+  "layout_orders": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ]
+  ],
+  "image_orders": [
+    [
+      1,
+      10,
+      100
+    ],
+    [
+      100,
+      10,
+      1
+    ],
+    [
+      1,
+      10,
+      100
+    ],
+    [
+      100,
+      10,
+      1
+    ]
+  ],
+  "warm_repeats": 2,
+  "repeats": {
+    "1": 64,
+    "10": 16,
+    "100": 5
+  },
+  "control_min": 0.85,
+  "control_max": 1.15,
+  "grades": [
+    100,
+    90,
+    80,
+    70,
+    60,
+    50
+  ],
+  "no_obvious_median_max": 1.05,
+  "no_obvious_any_max": 1.1,
+  "variant_contract": {
+    "0": "旧87原生逐图；三角色共同driver，避免Python逐图循环",
+    "1": "旧87 bulk；连续布局直接同地址，非连续在每轮计时中pack全部源→bulk→scatter全部目标，scratch预分配",
+    "2": "新90非连续segments显式API；所有目标验证、O(N²)重叠校验、snapshot/task构造与分配、一次OMP调度和像素执行全计"
+  },
+  "layout_contract": {
+    "0": "三角色完全相同连续源与目标地址，pack scratch别名共同源/目标，不含适配拷贝",
+    "1": "独立每图源/目标；三角色共同图像指针，旧bulk显式计pack/scatter；scratch和fixture预分配不计建造但容量/RSS快照记录，不称峰值RSS"
+  },
+  "sample_unit": "4新进程三角色ABC/CBA/BCA/ACB，每对先后各2次；36场景每角色warm2、正式及独立AA，内轮64/16/5；每组实际caller-owned末work SHA，源首尾SHA。每场景按组内中位→同进程配对→四比中位；档位按最劣进程吞吐倒数，不跨布局/模型拼接。全部控制失败保留，无重选。",
+  "interpretation": "对逐图与同场bulk分别报告。不能把旧bulk诊断冒充新API，不能将时间差归为纯fork/join；不同API编译布局/任务分派/缓存访问也包含其中。连续尺寸恰整65536块，非整8/尾块覆盖由独立完整域及合同质量提供。",
+  "resources": "Windows原生预计最大fixture含预载frames约1.2GB；新增API生产临时任务N100为28,800B+2,400B snapshot，不是benchmark镜像容量。首次prepare/模型文件读取在稳态外，既有87完整prepare成果独立，不隐藏到热像素。"
+}
