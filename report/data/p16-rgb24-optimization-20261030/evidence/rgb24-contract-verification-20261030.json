@@ -1,0 +1,146 @@
+{
+  "schema": "rgb24_kernel_contract_v1",
+  "completed": true,
+  "performance_test": false,
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "compiler": "GCC 15.2.0 MinGW",
+    "build": "Release C++17",
+    "threads": 1,
+    "openmp": false,
+    "avx2_executed": true,
+    "non_bmi_hardware_executed": false,
+    "remote_ci_executed": false
+  },
+  "kernel_variants": [
+    "gather",
+    "block_cached",
+    "block_streaming",
+    "default"
+  ],
+  "complete_rgb24_inputs_per_variant": 16777216,
+  "full_domain_modes": [
+    "separate",
+    "in_place"
+  ],
+  "unique_table_colours": 16777216,
+  "table_guard_bytes": 4,
+  "guard_pages": true,
+  "input_output_alignment_combinations": 4096,
+  "comparisons": 174244,
+  "immediate_read_without_test_fence": true,
+  "instruction_audit": {
+    "fc::detail::direct_rgb24_run(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": {
+      "instruction_count": 12,
+      "sfence_count": 0,
+      "forbidden_bmi": []
+    },
+    "void fc::detail::direct_rgb24_block_run<false>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": {
+      "instruction_count": 1101,
+      "sfence_count": 0,
+      "forbidden_bmi": []
+    },
+    "void fc::detail::direct_rgb24_block_run<true>(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": {
+      "instruction_count": 1092,
+      "sfence_count": 1,
+      "forbidden_bmi": []
+    },
+    "fc::detail::direct_rgb24_gather_run(unsigned char const*, unsigned char const*, unsigned char*, unsigned long long)": {
+      "instruction_count": 104,
+      "sfence_count": 0,
+      "forbidden_bmi": []
+    }
+  },
+  "disassembly_sha256": "3c67201ded8afd67feecd1011f871489ca8815b4e1ede87e267f90f48594cd60",
+  "compiled_rgb24_command": "E:\\mingw64\\bin\\g++.exe -DFLASH_CHROMA_ENABLE_OPENMP=0 @CMakeFiles/fc_rgb24_contract.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -mno-bmi -mno-bmi2 -o CMakeFiles\\fc_rgb24_contract.dir\\F_\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\single_header_rgb24_contract.cpp.obj -c F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\single_header_rgb24_contract.cpp",
+  "first_build_note": "首次CMake处理器名称为空，未显式加入禁BMI选项；四函数指令审计仍无BMI。现已以编译器架构兜底，显式-mno-bmi -mno-bmi2重新编译并复跑同一合同通过。",
+  "scalar_compile": {
+    "passed": true,
+    "executed": false,
+    "command": "E:/mingw64/bin/g++.exe -std=c++17 -O2 -Wall -Wextra -Wpedantic -DFLASH_CHROMA_ENABLE_AVX2=0 -DFLASH_CHROMA_ENABLE_OPENMP=0 -Iinclude tests/single_header_runtime_contract.cpp -o artifacts/rgb24-scalar-runtime-contract-20261030.exe"
+  },
+  "tests_passed": [
+    "single_header_rgb24_contract",
+    "single_header_direct_contract",
+    "single_header_runtime_contract",
+    "framework_adapter_contract",
+    "framework_adapter_scalar_contract"
+  ],
+  "scope": "完整RGB24查表及边界正确性；额外AVX2关闭版本只编译，非性能或新的拟合精度实验。普通AVX2在支持BMI的本机执行，另用显式禁BMI编译和指令审计验证无BMI依赖。",
+  "files": [
+    {
+      "path": "tests/single_header_rgb24_contract.cpp",
+      "sha256": "f1d1bae8ff65942ef24253fead472324246267e82375b817dc05d3f82beafc00"
+    },
+    {
+      "path": "single_header/CMakeLists.txt",
+      "sha256": "ebe0a1fee13bd3cbcedcfbeb8528f77e9e951fe47b658020684f2247b6586cc2"
+    },
+    {
+      "path": "src/flash_chroma_direct.inc",
+      "sha256": "08ebe2f80bf9db376f8afdbccf963362f32d3c472c754b760930fc4309b7fe5d"
+    },
+    {
+      "path": "include/flash_chroma.hpp",
+      "sha256": "dd2ab58b099555add870513396f45c2bf8c1599a0aaa7e92638926f1b965ef59"
+    },
+    {
+      "path": "artifacts/rgb24-contract-cmake-configure-20261030.log",
+      "sha256": "799ac65c8d6b67db862f26d95290fc5b114b7a14fe6a9711f71985dd6c81d6da"
+    },
+    {
+      "path": "artifacts/rgb24-contract-cmake-build-20261030.log",
+      "sha256": "3804a7bddcbd102cb5179b05553891dec0d977e1bfc562b17e435c3a4c1dc625"
+    },
+    {
+      "path": "artifacts/rgb24-contract-cmake-tests-20261030.log",
+      "sha256": "7852956d8d4783803ab6d96432bd452c0b2c965dbf3a83d692c2bc1321d256a3"
+    },
+    {
+      "path": "artifacts/rgb24-contract-stdout-20261030.log",
+      "sha256": "a32a90d585aafe4ddf6adb880884f3b187237669adaf7c7568d623806a19b83f"
+    },
+    {
+      "path": "artifacts/rgb24-kernel-instruction-audit-20261030.json",
+      "sha256": "7c01fc2c7b8c5acddc6fea5df757bcce2c30aef7601e9624037291462b1e007b"
+    },
+    {
+      "path": "artifacts/rgb24-integration-cmake-build-20261030.log",
+      "sha256": "04ad494ec2b5f83dd024be66e9617e806a4213bd70e8b2be31353b0b93a9a0a1"
+    },
+    {
+      "path": "artifacts/rgb24-integration-cmake-tests-20261030.log",
+      "sha256": "8cb40fee1ce54be28ea380d05e8b92c47ca17e5e8319fecf9d69c07645d8c99d"
+    },
+    {
+      "path": "artifacts/rgb24-scalar-runtime-build-20261030.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/rgb24-scalar-runtime-contract-20261030.exe",
+      "sha256": "e470e5edb9c1e4afbbac6e6a9ed3d37255ed9b124c7307558bf03316887c29f5"
+    },
+    {
+      "path": "artifacts/rgb24-explicit-no-bmi-configure-20261030.log",
+      "sha256": "5d1fb73c3720ea84d5430b0cfdbf2d3b3d63eaa5d3eb9b0931352a01e4eb1a5c"
+    },
+    {
+      "path": "artifacts/rgb24-explicit-no-bmi-build-20261030.log",
+      "sha256": "3804a7bddcbd102cb5179b05553891dec0d977e1bfc562b17e435c3a4c1dc625"
+    },
+    {
+      "path": "artifacts/rgb24-explicit-no-bmi-tests-20261030.log",
+      "sha256": "8fccfffcda741d10254c10beccce7ffa99770aa679fac30e7fc7deff5b55f44b"
+    },
+    {
+      "path": "artifacts/rgb24-explicit-no-bmi-stdout-20261030.log",
+      "sha256": "27f698bacdd42f42cc6e08540eb76c852a0a4529646c675e6eb00b568d0c96af"
+    },
+    {
+      "path": "artifacts\\framework-contract-cmake-20261029\\fc_rgb24_contract.exe",
+      "sha256": "1d1c65bdc012fefb0f2ecac36831d439e19a795385e8197ee746a9cd0182a1c7"
+    }
+  ]
+}

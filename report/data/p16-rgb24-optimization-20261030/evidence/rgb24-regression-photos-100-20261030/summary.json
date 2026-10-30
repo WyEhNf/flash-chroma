@@ -1,0 +1,76 @@
+{
+  "schema": "rgb24_regression_summary_v1",
+  "completed": true,
+  "returncode": 3,
+  "sources_inputs_exe_unchanged": true,
+  "executed_input_output_verified": true,
+  "screen_only": false,
+  "performance_valid": false,
+  "aa": [
+    {
+      "scope": "hot",
+      "phase": "pre_aa",
+      "kernel": "legacy",
+      "median_a_ms": 256.485,
+      "median_b_ms": 262.771,
+      "relative_drift": 0.024508255843421648,
+      "passed": true
+    },
+    {
+      "scope": "hot",
+      "phase": "pre_aa",
+      "kernel": "cached",
+      "median_a_ms": 182.1880000000001,
+      "median_b_ms": 170.8369999999999,
+      "relative_drift": 0.06644345194542285,
+      "passed": false
+    }
+  ],
+  "observed_statistics": [],
+  "descriptive_speedups": [],
+  "child_process_wall_ms": 41528.90430000116,
+  "driver_validation_wall_ms": 44798.94980000245,
+  "process_observation": {
+    "peak_rss_bytes": 533360640,
+    "max_threads": 2,
+    "samples": 322,
+    "affinity": [
+      16
+    ],
+    "scope": "含拟合/原表/共享表/全部图像；进程线程数不等于算法线程数。"
+  },
+  "native_artifacts": {
+    "results.json": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\results.json",
+      "bytes": 78356,
+      "sha256": "ac52452277955d0eacccfbd9120dce0b320121c9cb9feff959913186b999f12a"
+    },
+    "shared-table.rgb24": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\shared-table.rgb24",
+      "bytes": 50331712,
+      "sha256": "77deaa2cd7fe82823c6d956bebaeef1af7c96bba2595af1c147dea693c5983c6"
+    },
+    "stage-1.slut": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\stage-1.slut",
+      "bytes": 112063,
+      "sha256": "a06a38890c90377c8683b5a86118c53062c873e9364be44589f67ee37464005b"
+    },
+    "stage-2.slut": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\stage-2.slut",
+      "bytes": 112063,
+      "sha256": "528ae36470ff282bb6b5f06856b32a3e64db3cd2b9eab9e88f51eea05c866b71"
+    },
+    "stage-3.slut": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\stage-3.slut",
+      "bytes": 112063,
+      "sha256": "528ae36470ff282bb6b5f06856b32a3e64db3cd2b9eab9e88f51eea05c866b71"
+    },
+    "stage-4.slut": {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\rgb24-regression-photos-100-20261030\\native\\stage-4.slut",
+      "bytes": 112063,
+      "sha256": "5551dc1f89e80be3a12f17ad3c86880b84b528201f09796b9d42415c462d621e"
+    }
+  },
+  "official_score_available": false,
+  "scope": "screen仅描述4图现象；正式前后双方A/A均须通过才赋予performance_valid。hot与allocated分开，后者仍是直接核加fresh输出，原框架最终确认另测。失败原始样本保留。"
+}

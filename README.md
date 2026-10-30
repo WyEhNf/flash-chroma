@@ -1,5 +1,7 @@
 # flash-chroma · 极速焕彩
 
+2026-10-30：[RGB24热核补齐与同场复测](docs/stages/2026-10-30-rgb24-kernel.md)将八路独立查表、64像素打包与普通/流式写入接入单hpp；同表、同图、单线程长批次对照中，含分配配对耗时下降28.06%，纯核下降35.39%，两侧前后8项A/A均通过。原框架五对确认输出一致，精度与查表内存不变；原首次A/A失败完整保留。
+
 2026-10-30：[赛事框架快速调试](docs/framework-quickstart.md)接入新增的3DL/RGB8 `.bin` 框架，提供单线程、单hpp交付、全LUT域可选链拟合及精度—速度—内存矩阵。新增用户目录 `FlashChroma/run.ps1`，保留原模板和数据；[阶段报告](docs/stages/2026-10-30-framework-adaptation.md)说明四样图/补充百图、原框架计时复核和规定编译器/正式阈值未验证的边界。此入口强制单线程，不沿用旧工作台的四线程配置。
 
 2026-10-29：[赛前快速调试指南](docs/event-quickstart.md)提供统一的 `init / doctor / fit / run` 入口，支持四张新LUT重新拟合、混合网格、固定整批参数、逐图精度门禁和失败回执。Windows运行 `.\start-event.ps1 -Mode studio` 打开[照片工作台](gui/README.md)：20张代表图片、18个LUT、17套组合，参数调整实际调用当前单头CPU库。另提供独立C++连续RGB8接入层和可校验的本机离线调试包；[本阶段验证与交付范围](docs/stages/2026-10-29-studio-event-ready.md)明确已测功能、官方协议/Threshold待确认及旧入口待修复事项。

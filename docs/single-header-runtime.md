@@ -43,6 +43,8 @@ python scripts/generate_flash_chroma_header.py --check
 
 Auto 在 Desktop/Mobile 上且 CPU/OS 与编译能力允许时选择 AVX2，否则选择 Scalar。它不在运行时测多个配置择优，也不改模型。配置目录中的候选应记录明确的 Scalar/Avx2 后端，避免实测身份随机器变化。
 
+RGB24的AVX2路径默认使用八路独立查表和64像素成块普通写出，保留精确短尾/原地处理及原有表尾guard。编译时设置 `FLASH_CHROMA_RGB24_STREAMING=1` 可选流式写出，返回前执行sfence；`FLASH_CHROMA_RGB24_LEGACY=1` 可重放旧gather用于回归。默认选择不在运行时重新测速；所有翻译单元必须使用一致的这些宏。详见[RGB24补齐与同场复测](stages/2026-10-30-rgb24-kernel.md)。
+
 | 表示与后端 | 准备与运行策略 |
 | --- | --- |
 | Sparse + Scalar | 直接读取只读模型及 sidecar；不需要 arena |
