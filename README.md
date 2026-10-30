@@ -1,5 +1,9 @@
 # flash-chroma · 极速焕彩
 
+当前版本的算法、批次性能与运行内存见[CPU版本性能与方法总结](docs/p16-cpu-performance-summary.md)。
+
+2026-10-27：当前推荐的[CPU评分候选入口](submission/README.md)已整合最新研究，默认373a＋AVX2，均值优先档为max_first；提供固定模型包、百图mean严格门、完整计时和运行内存账单。使用`pixi run --locked build-score`构建，`pixi run --locked score --help`查看入口。固定Cinema模型是回归示例，新LUT必须重新拟合；官方分数和Xeon6140成绩尚未获得。
+
 将四张 `256³` RGB8 LUT 拟合为四张边长 `17–33` 的稀疏 LUT，并在图像上执行逐级整数色彩映射。Python 负责离线拟合和验收，C++17 负责运行时；默认构建提供标量回退、运行时检测的 AVX2 后端、OpenMP 和独立的完整色域拟合库。
 
 本项目源于 2026 Hackathon 第 16 题。仓库中的数据与报告包含模拟场景和历史实验，不能据此推断官方验收结果或比赛分数。题目与待确认规则见 [PROBLEM.md](PROBLEM.md)、[DECISION.md](DECISION.md)。
