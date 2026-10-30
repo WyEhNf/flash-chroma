@@ -36,6 +36,39 @@ g++ -O3 -DNDEBUG -std=c++17 -static -DFLASH_CHROMA_ENABLE_OPENMP=0 main.cpp -o m
 
 直接调用的位置参数依次为 `data、m或四个m、mode、backend、grid、图片数、fit`。其他机器编译时，`Backend=auto` 会检查可用指令集；显式 `avx2` 在不支持的机器上会拒绝。
 
+## 按连续性能偏好选型
+
+新版入口支持 `-Preference 'A,B,C'`，依次代表精度、速度、紧凑程度，各在0..1内且不能全零。权重不必加起来等于1；程序在硬约束内计算Pareto前沿，再按归一化加权代价选一个离散模型/执行计划。偏好连续可调，模型与机器实际档位仍是有限集合。
+
+```powershell
+.\run.ps1 -Preference '0.6,0.3,0.1' -Grid framework -Fit chain_ls -SelectionReport 'balanced.json'
+.\run.ps1 -Preference '0.2,0,0.8' -Grid framework -Fit chain_ls -MaxRuntimeMiB 2 -SelectionReport 'compact.json'
+```
+
+默认候选是m17/25/33与Sparse/RGB24组合。`-CandidateSizes '17;33;17,25,33,33'`指定有限候选尺寸组合；`-CandidateModes 'sparse'`可限定为不使用Direct缓存。偏好模式由候选列表决定m与表示，原`GridSizes/Mode`不参与这条选择；Grid、Fit和Backend仍生效。未传Preference时保持原有手动路径与auto结构证明语义，不启动自动标定。
+
+全部模型生成、完整RGB域质量核验和固定合成输入校准均在第一次打开图片之前完成。每个候选实际输出与同模型Scalar完整域逐字节核对；只用本次LUT/程序/机器的现场记录，不载入旧Cinema评分目录。选中后重建并核对实际计划和资源，整批图片使用固定计划，不在图间更新偏好。候选多或使用chain_ls会延长启动时间；可先缩小CandidateSizes/Modes。
+
+| 参数 | 约束口径 |
+| --- | --- |
+| `MaxMeanError` | 均匀完整256³ RGB域的RGB欧氏mean，不能代替正式每张图mean阈值 |
+| `MaxPixelError` | 完整RGB域的最大RGB欧氏误差；同时给任意图片mean一个保守上界 |
+| `MaxMsPerMP` | 固定算法合成输入、含fresh输出分配和apply的毫秒/百万像素；不是正式照片TimeCost |
+| `MaxRuntimeMiB` | 选中计划的模型、arena、对象、框架节点副本和shared管理估算；不是RSS、精确分配器开销或准备峰值 |
+| `MaxWorkspaceMiB` | 选中运行器工作区；原uint16表、拟合与候选/校准临时内存另计 |
+
+速度权重为0且无时间预算时不校准速度。否则每个候选分别保留前后A/A和原始计时，控制失败默认不授时间资格；`-AllowUnstableTime`显式允许临时选择，JSON仍标记provisional，不升级为稳定性能证明。校准次数`-CalibrationReps`须为3..31的奇数。无合格候选或预算不可行时退出非零，并保留拒绝原因；不会静默放宽预算。
+
+`SelectionReport`须为尚不存在的路径，成功或无可行方案都写JSON；不提供时仍打印`PreferenceReport=`单行JSON。报告包括源/模型FNV指纹、编译信息、合成输入方案、全部候选状态与完整域误差、计时样本及最终选择。FNV是本次进程内身份指纹，不是密码学真实性校验；归档和部署文件另用SHA256。选择器内部兼容字段`worst_image_mean`在本入口存完整域max保守上界，不是照片实测mean。预算、能力和输出验证须全部通过才可选中。
+
+直接调用已编译EXE可反复调参数，无需重编译：
+
+```powershell
+.\main_flash_chroma.exe '..\data' 33 auto auto framework 4 chain_ls --preference '0.6,0.3,0.1' --candidate-sizes '17;33' --candidate-modes sparse,direct_rgb24 --selection-report 'selection-01.json'
+```
+
+每次调用仍会重新准备当前LUT并校准；目前不缓存标定、不支持同一批次中热切换。额外Direct缓存许可、正式阈值、目标服务器与规定编译器仍按下方边界验收。
+
 ## 先选精度模型，再选执行表示
 
 四级 `m` 均允许 17..33，可逐级不同；`uniform` 与 `framework` 是两种不同节点坐标，不能仅因 m 相同就认为模型相同。默认 `uniform` 按均匀坐标取整，`framework` 保留原框架的步长构造，方便比较。
