@@ -1,0 +1,18 @@
+--- experiments/skylake-input256-deferred-runtime/deferred_inplace/channel_avx2.cpp
++++ experiments/skylake-input256-ordered-runtime/ordered_inplace/channel_avx2.cpp
+@@ -117,6 +117,8 @@
+     asm volatile("" : : "x"(s0),"x"(s1),"x"(pending) : "memory");
+     _mm256_stream_si256(reinterpret_cast<__m256i*>(destination+3*p),s0);
+     _mm256_stream_si256(reinterpret_cast<__m256i*>(destination+3*p+32),s1);
++    // 阻止第二组输入被编译器前移到首行两次NT之间；这不是硬件栅栏。
++    asm volatile("" : : : "memory");
+     // 第二组源从96B开始，不读取已写首行；全部读取后补写中间行，再完成末行。
+     const __m256i r4=pack_stream_0(read_wide(table,palette,source+3*p+96)),r5=pack_stream_1(read_wide(table,palette,source+3*p+120));
+     const __m256i r6=pack_stream_2(read_wide(table,palette,source+3*p+144)),r7=pack_stream_3(read_wide(table,palette,source+3*p+168));
+@@ -134,5 +136,5 @@
+ 
+ }
+  }
+-void avx2_chain_input256_deferred_mt(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
++void avx2_chain_input256_ordered_mt(const uint32_t* table,const uint32_t* palette,uint8_t* data,size_t pixels) noexcept {run(table,palette,data,data,pixels);}
+ }
