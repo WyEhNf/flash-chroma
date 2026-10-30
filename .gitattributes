@@ -209,3 +209,9 @@ scripts/report_quantile_tail_study.py -text
 /scripts/palette_support.py -text
 # objdump原始输出保留其行尾空格；完整字节由档案SHA检查，不手工重排。
 /report/data/skylake-palette-v1/static/candidate.asm -text -diff
+# 例外池阶段按测量原字节保存，objdump输出不手工整理。
+/experiments/skylake-exception-runtime/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/experiments/skylake-exception-*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/*skylake_exception*.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/scripts/exception_support.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/report/data/skylake-exception-v1/static/candidate.asm -text -diff

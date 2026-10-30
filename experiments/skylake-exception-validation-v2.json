@@ -1,0 +1,60 @@
+{
+  "purpose": "相对修订22再提高50%吞吐；全部主块与例外池的独立完整域重建，先数值后唯一性能",
+  "base_plan_sha256": "07a35255dc684158dedba50143481c24c6d160b07a4c9db6707f69c79a87f3af",
+  "seed": 2026102023,
+  "actual_lengths": [
+    0,
+    1,
+    7,
+    8,
+    9,
+    15,
+    16,
+    17,
+    4095,
+    4096,
+    4097
+  ],
+  "offsets": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "backends": [
+    [
+      "scalar",
+      1
+    ],
+    [
+      "avx2",
+      1
+    ],
+    [
+      "avx2",
+      4
+    ]
+  ],
+  "patterns": [
+    "fast",
+    "fallback",
+    "seven_fast_one_fallback",
+    "mixed",
+    "endpoints"
+  ],
+  "actual_full_decode": "完整16M颜色，低8位255的主块地址必须按RGB顺序连续；两零词+每例外块两个精确8bit词独立重建",
+  "resource": "候选与参考载荷分别核算主块/例外池，真实非四级句柄给出元数据差24字节；不能把参考已有8MiB算作新增加速",
+  "reject": "诊断错误大小/NULL、表长度错误、palette长度错误均不写调用者缓冲",
+  "fit": "不重新拟合；新编译准备只能从四个稀疏模型生成；验收的旧全流不可用作构造器输入",
+  "source_sha256": {
+    "scripts/exception_support.py": "71cb564b42a45842b19760f5ca73e734804bdd35631b307973bf1d48b3c30645",
+    "scripts/palette_support.py": "16168813631357d5dd34c20c131b167b17f218feeec4b538c41aa87409e3d4b8",
+    "scripts/verify_skylake_exception.py": "9b624d6b6773d68a4e91404be202722b4a5a02796e4a6d393639a21c866959e2",
+    "scripts/verify_skylake_exception_domain.py": "553caa0e56ec158d0692ff52d987ecdd82b2a1d70d15e9fecad69b07ab6e9632",
+    "scripts/verify_skylake_exception_signed.py": "cdda65b1a5ccc6710d5e55461c726656ff95d0a7a1a18f6b90f6607d6e44f85a",
+    "scripts/accept_skylake_exception.py": "eca3198379893187a30346bda3ee3b7fbd22a6b70cc33064d0701cb878106bb5",
+    "scripts/bench_skylake_palette.py": "dd524a27931ed06bea81b3a9d54173e68b7a8e4d21b30456b6c8459a447539ba"
+  },
+  "revision": 2,
+  "revision_reason": "验证器导入storage函数被后续同名局部guard数组遮蔽；仅将导入别名改为compiled_storage，原生源/构建/模型不变，初次失败目录保留"
+}
