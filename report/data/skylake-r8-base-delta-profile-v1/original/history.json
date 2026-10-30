@@ -1,0 +1,52 @@
+{
+  "direct_equivalent_found": false,
+  "scope": "针对既有小源码与阶段文档，未发现相同8R/24bit合成基值/固定2+2+1差分/32B例外池机制；不声称所有历史提交均已形式验证",
+  "distinctions": [
+    "24/28/29分别为同一全局R8+DG4+DB4每色16bit编码的不同加载方法，不共享每8输入的局部基值。",
+    "26为64MiB逐色RGB32直表；不是本次16MiB块基值。",
+    "62为R连续8色的1B palette ID基数+8个5bit ID差；仍依赖palette。",
+    "早期delta16/delta-cache/domain-delta压缩插值坐标；compact-cache使用全局16bit输出编码；均不等同本方案。"
+  ],
+  "sources": [
+    {
+      "path": "experiments/skylake-direct16-runtime/channel_avx2.cpp",
+      "sha256": "4154054b36d71c2ef9da29d8d122c290109dce5a34adb0f39eca4fca77722879"
+    },
+    {
+      "path": "experiments/skylake-fused16-runtime/channel_avx2.cpp",
+      "sha256": "35bf96e75689a516b9f558c7c2f9a91552611f1fb25bc115736aad49464e449b"
+    },
+    {
+      "path": "experiments/skylake-load16-runtime/channel_avx2.cpp",
+      "sha256": "784623b053fa596a96e82f4d14be67281ccf5ad9b019c96e86ffeb00bc34ea18"
+    },
+    {
+      "path": "experiments/skylake-paged32-runtime/channel_avx2.cpp",
+      "sha256": "fc764017f7622a28c4b73d5ef51456ba7afc7a75472be16b918322256f3092d0"
+    },
+    {
+      "path": "experiments/skylake-pack5-runtime/channel_avx2.cpp",
+      "sha256": "09d14e8f12f5c75bdbad44215714c47d86c8aec244400443c3e33d202a53ad57"
+    },
+    {
+      "path": "experiments/skylake-compact-cache-runtime/channel_runtime.cpp",
+      "sha256": "8899380c35fab475c94d2b9dc305392f0f6ce59c4fdfe0d6f4d408a551867312"
+    },
+    {
+      "path": "experiments/skylake-domain-delta-runtime/channel_avx2.cpp",
+      "sha256": "73a5ae3dbeb5aa27056e69c65699f3333b605a66c4a8e0f4a39256b9fc7a447d"
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-delta16.md",
+      "sha256": "ea54e24d152dfd7a12bba48351484785f63ad3d8eed8d7b9e5a31f34c9018384"
+    },
+    {
+      "path": "docs/stages/2026-10-20-skylake-delta-cache.md",
+      "sha256": "e34c4fc0d284c6bc1717b3238be169de1970ea8c7b22aa3296da241081535da9"
+    },
+    {
+      "path": "docs/stages/2026-10-21-skylake-pack5.md",
+      "sha256": "369343ef49f658127c621acf9563187e42dd32ca0a5fd1d6e65e962dce995d94"
+    }
+  ]
+}
