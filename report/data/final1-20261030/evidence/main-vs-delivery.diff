@@ -1,0 +1,32 @@
+--- F:\Hackathon\极速焕彩测试框架\FlashChroma-delivery-20261030\main.cpp
++++ final1/main.cpp
+@@ -255,8 +255,10 @@
+ } // namespace
+ 
+ int main(int argc, char** argv) {
+-    std::string data_dir = "../data";
++    std::string data_dir = "data";
+     if (argc >= 2) data_dir = argv[1];
++    const int image_count = argc >= 3 ? std::atoi(argv[2]) : 4;
++    if (image_count < 1 || image_count > MAX_IMAGES) return 1;
+ 
+     auto join = [&](const std::string& sub) {
+         return data_dir + "/" + sub;
+@@ -281,7 +283,7 @@
+     std::array<Lut3D, 4> lut256, lut17;
+     for (int i = 0; i < 4; i++) {
+         if (!lut_sparse_ref(luts_raw[i], 256, lut256[i])) return 1;
+-        if (!lut_sparse(luts_raw[i], 17,  lut17[i]))  return 1;
++        if (!lut_sparse(luts_raw[i], 33,  lut17[i]))  return 1;
+     }
+ // FC_DELIVERY_BEGIN prepare
+     if (!fc_delivery_pipeline.prepare(luts_raw, lut17)) return 1;
+@@ -295,7 +297,7 @@
+     deltas.reserve(MAX_IMAGES);
+     perfs.reserve(MAX_IMAGES);
+ 
+-    for (int i = 1; i <= 4; i++) {
++    for (int i = 1; i <= image_count; i++) {
+         std::string path = data_dir + "/image/" + std::to_string(i) + ".bin";
+         if (!file_exists(path)) {
+             deltas.push_back(255);
