@@ -1,0 +1,1023 @@
+{
+  "date": "2026-10-30",
+  "scope": "只读协作记录刷新；未修改或关闭议题，未执行合并",
+  "base_commit": "111b0dfd73edd68927642c8dafca69b516285737",
+  "discussion4": "本轮工具未提供可用讨论读取方法，保留之前无法读取的缺口，不作无阻塞结论",
+  "entries": {
+    "pr95-info": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+          "number": 95,
+          "state": "open",
+          "merged": false,
+          "mergeable": true,
+          "draft": true,
+          "body": "本PR交付独立C++17 `flash_chroma.hpp` 和可选独立C99 `flash_chroma_c.h`，提供精度A、处理时间B、运行内存C的连续偏好与硬预算选择，以及Desktop/Mobile/Embedded/Portable开关。整批模型和执行计划固定，保留四级Q16四面体插值及每级RGB8 half-up整数结果。\n\n本次修复单头化后的三项性能退化：U8/U16迁入标量ILP查表与AVX2打包，采用64像素成块NT写出及安全短尾；准备阶段先证明首层小域，精确缓存后三层并按请求线程扫描首层；宿主分配不再重复清零。普通AVX2和x86_64 BMI路径隔离分派，不能证明或缓存超容量时走通用构建。维护片段在生成时完全嵌入hpp，部署不依赖私有源文件。\n\n缓存、ID、字典、worker块和实际可达palette位图均计入caller-owned arena。4T default U8为19187391B，max_first U16为37298623B，后者仍满足40MiB示例；持久表格式不变，临时容量增加约1.7MiB。新增缓存实际启用/槽数诊断；可编译关闭缓存，端侧默认裁剪。AVX-512仍明确Unsupported，NEON尚未实现。\n\nWindows11 / Ryzen9 8945HX / MinGW GCC15.2 Release / C++17、C99 / Python3.12.14、NumPy1.26.4，CPU-only：\n\n- AVX2/OpenMP和Scalar无OpenMP两构建各15项CTest通过；相关Python共41项通过。\n- 五套固定模型20条C++及5条独立C99完整RGB8流一致，400项有限比较通过；新direct合同347496项比较，含保护页、全部64种对齐、原地/分离、stride/短尾、普通AVX2/BMI和1/4线程。\n- 两个freestanding端侧裁剪对象无未定义符号；三种真实请求在C++/Python选择一致。40MiB预算请求实际执行100图，整批及逐图SHA与新目录证据一致。\n- 新实测目录覆盖5模型、20配置、热批次/首批40点，一次完整场次分为2个计时上下文。19配置A/A通过，default U8 1T失败；首批单次观测无稳定资格。7套模型资产复用，max41/max48仍没有本轮性能资格。\n\n三方同场比较旧评分库、修复前、修复后，共640次正式调用和40次预热，实际DLL路径/模块/来源与每次输出SHA全部核对。fixed/before热映射配对耗时比：default 1/4T为0.40061/0.46296，max_first为0.41151/0.47912；**这些热比较的A/A控制未同时通过，只作本场描述**。4T准备至首批fixed/before为0.12269/0.13060，各自双方A/A通过；计时含新建/分配/准备/首批，旧API还含模型读盘，新模型已读，不能称纯算法公平比值。1T旧prepare仍固定4T，不授同线程准备资格。\n\n旧库↔fixed热比值为default 1/4T 1.03918/0.96393、max_first 1.12462/1.04758，控制均未同时通过；**尚不能宣称稳定追平旧库，单线程仍有描述性的残余差距**。三方24组A/A仅8组通过，全部失败/慢轮保留，不补轮择优；新目录的A/A不能覆盖三方失败。\n\n[接入说明](https://github.com/WyEhNf/flash-chroma/blob/codex/p16-frontier-header-20261027/docs/single-header-runtime.md) · [性能修复、命令、结果与限制](https://github.com/WyEhNf/flash-chroma/blob/fb7e195/docs/stages/2026-10-28-header-performance-repair.md) · [最新目录与全部证据](https://github.com/WyEhNf/flash-chroma/tree/fb7e195/report/data/p16-header-performance-20261028) · [原单头阶段](https://github.com/WyEhNf/flash-chroma/blob/aad1871/docs/stages/2026-10-27-p16-frontier-header.md)\n\n提交：`0bdb2d6`原单头实现、`aad1871`原交付，`271e10f`性能修复、`fb7e195`集中验证与新目录。推送前fetch两远端，基础[#94](https://github.com/WyEhNf/flash-chroma/pull/94)的b7d7e3e仍包含于本头，无改写历史；交付头与实际链接来源SHA一致，23份新证据与Git字节一致。\n\n更新前重新检查88条issue/PR索引及第二页，完整刷新#95/#94/#89正文、conversation/review/行内及审查线程，issues[#7](https://github.com/WyEhNf/flash-chroma/issues/7)/[#8](https://github.com/WyEhNf/flash-chroma/issues/8)全文和完整评论；补读[#43](https://github.com/WyEhNf/flash-chroma/pull/43)、[#48](https://github.com/WyEhNf/flash-chroma/pull/48)、[#62](https://github.com/WyEhNf/flash-chroma/pull/62)、[#71](https://github.com/WyEhNf/flash-chroma/pull/71)、[#73](https://github.com/WyEhNf/flash-chroma/pull/73)、[#75](https://github.com/WyEhNf/flash-chroma/pull/75)全文和完整意见，保留旧失败/目标机边界。推送后再次刷新#95空评论/线程、#94基础及#7/#8；最新索引仅本PR因本次推送更新。337a3dd/876e15b8/397cc367实际仍为祖先。连接器传输失败和重试分别保留；Discussion4不可读取缺口继续记录，不关闭事项。\n\n限制：没有实际移动/嵌入式板卡、流式性能、Xeon6140、官方Threshold或未知LUT成绩。QEMU只证明其实际合同；资源账本不等于完整进程RSS，OS/OpenMP栈另记。保持Draft，不请求merge。\n\nAgent：Codex /root、cpp_runtime、portable_core、selector_catalog  \nOperator：本会话明确授权开发与检查的用户  \nTask：连续三维权衡、单头交付及性能退化修复  \nStatus：本机修复与集中检查完成；Draft，稳定旧库无退化/目标设备/官方评分待验收\n\n远端最终检查：提交 `fb7e195215f14df9f635394d75cde0e0e69c82c9` 的默认、纯标量、Docker及 Cortex-M3 / RV32 / Cortex-A53 三类QEMU六项均success。[正确性CI](https://github.com/WyEhNf/flash-chroma/actions/runs/40646082434) · [QEMU CI](https://github.com/WyEhNf/flash-chroma/actions/runs/40646082417)。这些结果不替代目标实板或性能稳定性验收。\n",
+          "title": "重构：单头运行库、连续三维选择及性能修复",
+          "base": "codex/p16-score-candidate-20261027",
+          "base_sha": "b7d7e3ed0b3f95e9a2fcf68341b360debeb6f55e",
+          "head": "codex/p16-frontier-header-20261027",
+          "head_sha": "fb7e195215f14df9f635394d75cde0e0e69c82c9",
+          "head_repo_id": 1420743436,
+          "head_repo_full_name": "WyEhNf/flash-chroma",
+          "merge_commit_sha": "0a9dde8e4589a3c9eee1dc7cab7346a53c494ffa",
+          "user": {
+            "login": "WyEhNf",
+            "name": "WyEhNf",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+            "id": 228311419
+          },
+          "requested_reviewers": null,
+          "requested_team_reviewers": null,
+          "diff": null,
+          "comments": null,
+          "created_at": "2026-10-27T16:45:35Z",
+          "updated_at": "2026-10-28T06:53:05Z",
+          "closed_at": null,
+          "merged_at": null,
+          "commits": 4,
+          "changed_files": 113,
+          "additions": 66552,
+          "deletions": 0,
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+          "display_title": "重构：单头运行库、连续三维选择及性能修复"
+        },
+        "isError": false
+      }
+    },
+    "pr95-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+          "title": "WyEhNf/flash-chroma PR #95 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+          "display_title": "WyEhNf/flash-chroma PR #95 comments"
+        },
+        "isError": false
+      }
+    },
+    "pr95-reviews": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "reviews": []
+        },
+        "isError": false
+      }
+    },
+    "pr95-threads": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "review_threads": []
+        },
+        "isError": false
+      }
+    },
+    "pr96-info": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+          "number": 96,
+          "state": "open",
+          "merged": false,
+          "mergeable": true,
+          "draft": true,
+          "body": "本 PR 为 [#95](https://github.com/WyEhNf/flash-chroma/pull/95) 补充跨 LUT 审查与可复核测试证据。目标分支为 #95 所在的 `codex/p16-frontier-header-20261027`，审查对象固定为 `fb7e195215f14df9f635394d75cde0e0e69c82c9`。**本阶段交付审查和实验材料，两个发现的流程缺口尚未修复，保持 Draft；不代表批准或合并 #95。**\n\n## 变更与阅读入口\n\n提交：[`c4a1d794`](https://github.com/WyEhNf/flash-chroma/commit/c4a1d794181f693dcae2c8bdc86b9bcb33d2eba9)。\n\n- [阶段报告：目标、算法、误差、环境、复现命令与限制](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/report.md)\n- [Review 意见与修复验收建议](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/review.md)\n- [58 份归档证据及 SHA 清单](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/evidence/manifest.json)\n- 三份实验/复现脚本：`review_pr95_generalization.py`、`review_pr95_supplement.py`、`review_pr95_evidence_binding.py`；`archive_pr95_review.py --verify` 可只读校验归档。\n- 保留计划、原始结果、全部计时、模型 manifest、失败日志和两个完整色域直方图。DLL、稠密表、新模型二进制保留本地，可按脚本重建。新增 Git 属性保留证据/执行脚本原字节；已核对 61 份暂存证据及脚本 SHA 与清单一致。\n\n## 测试内容和结果\n\n使用 25 个不同 LUT，固定 8 条四级数值链，生成 20 套模型：16 套 uniform + sample_interp 的 17³/33³，以及混合 17/25/33、曲率网格和整数最小二乘补测。覆盖 cube/TIFF/3dl；这些是数值压力组合，未认证摄影色彩域相容，也没有重新训练 373a/max_first。\n\n- 每模型 65,536 个随机探针、独立 NumPy 整数算术及 C99 对照、六张完整 1024×768 照片；另含角点/短尾或固定边界探针。\n- 100 配置尝试：78 成功且输出无字节差异，22 因调色板容量不足合法拒绝。Sparse Scalar/AVX2 与 RGB24 均 20/20 可用；U8 8/20、U16 10/20 可用。\n- Cinema-m33、mixed_hdr-m33 各遍历完整 16,777,216 RGB8 输入，Scalar/RGB24 一致。\n- 33³ 的照片 mean/p99 在八链上均改善，但 mixed_tail 的 max 从 92.4338 升至 95.0474。曲率 + 整数最小二乘改善两条困难链均值，mixed_hdr 的 max 仍从 130 升到 131。误差为 RGB8 欧氏距离，**不是 CIEDE2000 或官方阈值成绩**。\n- 相关 pytest **41/41 通过**；已有性能档案专项审计通过。本次归档检查 **58 文件 SHA、20 模型统计与两份全域直方图复算通过**；四份新增脚本语法、Git diff 空白检查通过。\n\n## 待修复事项\n\n1. **P2：公开验证器按 profile 名选择 U8/U16，超容量时中断全部流程。** avant-m33 在 Sparse 全域步骤后 U16 报状态10；即使 --all-representations 也无法继续 RGB24，不产生验证回执。运行库容量拒绝正确，编排层应保存成功结果、记录不适用并继续支持的表示。\n2. **P2：部署入口未把目录误差、耗时、time_stable 绑定到原始证据。** 在独立副本改变指标后，正常重选并更新目录摘要，三层绑定仍接受。元数据复现未修改原档案、未执行错误目录图像处理；现有档案审计通过。建议强制复算/核对质量、计时范围及 A/A，补充失配拒绝回归。\n\n## 环境与边界\n\n实际 Windows11 26200 x64 / Intel Core Ultra5 125H / MinGW GCC8.1.0；C++17 -O3 -DNDEBUG -fopenmp，C99 -O3 -DNDEBUG；Python3.12.7、NumPy1.26.4、SciPy1.15.2、Numba0.60.0、Pillow10.4.0。CPU-only：Scalar1T，AVX2配置4T。DLL来源与SHA详见报告；未生成项目标准链接回执，如实保留缺口。\n\n新链计时只保留预热后5次 apply 原样本，没有 A/A/绑核/锁频，不宣称稳定性能收益，不能与原 Ryzen 数据或 Xeon6140直接比较。未覆盖全部68个LUT组合、独立保留照片集、所有模型全色域精度、官方Threshold或实板。本阶段不改运行库，仅归档已有实验，未重复无关数值/性能测试。\n\n## 协作检查与操作依据\n\n创建前 fetch 目标分支；目标仍为 fb7e195，工作分支已包含它，无需冲突整合，未改写共享历史。刷新 #95 正文、完整评论/review/行内线程，仍无新增意见或提交；检查仓库完整 issue/PR 索引与第二页，沿主题核对 #94/#89、#43/#48/#62/#71/#73/#75 及 #5/#9/#12/#37 历史纠正记录。\n\n关联 [#7](https://github.com/WyEhNf/flash-chroma/issues/7) 的历史 Casebook 绑定修复337a3dd仍在审查头祖先中，本次是另一部署目录缺口；[#8](https://github.com/WyEhNf/flash-chroma/issues/8) 的接口决策与实板事项仍待完成。完整记录与证据边界见阶段报告。Discussion4接口不可读取，保留缺口，不执行合并或关闭。\n\nAgent：Codex /root  \nOperator：本会话明确授权提交的用户  \nTask：补全#95的审查和测试  \nStatus：审查材料及验证完成；Draft，两个流程缺口待修复\n",
+          "title": "补全#95的审查和测试",
+          "base": "codex/p16-frontier-header-20261027",
+          "base_sha": "fb7e195215f14df9f635394d75cde0e0e69c82c9",
+          "head": "codex/review-pr95-generalization-20261028",
+          "head_sha": "c4a1d794181f693dcae2c8bdc86b9bcb33d2eba9",
+          "head_repo_id": 1420743436,
+          "head_repo_full_name": "WyEhNf/flash-chroma",
+          "merge_commit_sha": "e977d6f2b73e1f14a07e1d0245090348219317fb",
+          "user": {
+            "login": "ShenniApril",
+            "name": "ShenniApril",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/123786170?v=4",
+            "id": 123786170
+          },
+          "requested_reviewers": null,
+          "requested_team_reviewers": null,
+          "diff": null,
+          "comments": null,
+          "created_at": "2026-10-28T15:51:28Z",
+          "updated_at": "2026-10-28T15:51:28Z",
+          "closed_at": null,
+          "merged_at": null,
+          "commits": 1,
+          "changed_files": 66,
+          "additions": 11003,
+          "deletions": 0,
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+          "display_title": "补全#95的审查和测试"
+        },
+        "isError": false
+      }
+    },
+    "pr96-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+          "title": "WyEhNf/flash-chroma PR #96 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+          "display_title": "WyEhNf/flash-chroma PR #96 comments"
+        },
+        "isError": false
+      }
+    },
+    "pr96-reviews": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "reviews": []
+        },
+        "isError": false
+      }
+    },
+    "pr96-threads": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "review_threads": []
+        },
+        "isError": false
+      }
+    },
+    "pr98-info": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+          "number": 98,
+          "state": "open",
+          "merged": false,
+          "mergeable": true,
+          "draft": true,
+          "body": "新增赛事框架使用256³文本3DL、RGB8 bin和严格单线程约束；旧入口的数据协议及四线程配置不能直接套用。本阶段补齐实际接入、LUT-only完整域拟合、可选执行表示及独立验收，交付可在用户框架目录直接编译运行的单hpp工程。\n\n目标为[#97](https://github.com/WyEhNf/flash-chroma/pull/97)的头分支，保持Draft。\n\n## 交付与提交\n\n- 实现 `51b80a3`：单线程适配、严格读取、混合m17..33、两种网格、sample/independent_ls/chain_ls；生成完整单hpp、main.cpp、PowerShell入口和静态EXE。原C/C++模板、data及原hpp/h核心未改。\n- 归档 `5fb94fc`：[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/docs/stages/2026-10-30-framework-adaptation.md)、[现场指南](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/docs/framework-quickstart.md)、[240份小证据/源码清单](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/report/data/p16-framework-20261029/manifest.json)。大LUT、图片和EXE留本机；本机交付ZIP 683246B，逐成员回读通过。\n- 所有拟合在第一次读图前完成，chain_ls固定前三层、仅以全RGB域和原四级LUT输出拟合末层；真实整数mean/SSE双门控。DirectRGB24由稀疏模型生成等价运行缓存，额外约48MiB；容量不足的U8/U16明确拒绝并在矩阵中继续其他候选。\n\n## 验证与实测\n\nWindows11 26200 / Ryzen9 8945HX / GCC15.2.0、C++17 O3、OPENMP=0 / Python3.12.14、NumPy1.26.4、psutil5.9，CPU-only、算法单线程。\n\n- 新增C++合同4/4、定向Python合同28/28通过；可选依赖调整后解析合同10/10复测通过。CMake已接现有CI，远端结果以本PR检查为准。\n- 独立从原3DL重建参考，核对原四图和补充100照片；同模型Sparse/AVX2/Direct输出一致。RGB欧氏mean/RMS/max复核通过，不是CIEDE2000。\n- 补充百图：Uniform33采样平均mean1.765873、最差3.588358；FrameworkStep33+chain_ls为1.484947、2.385774。同framework网格下95图改善、5图退步，不承诺每图提升。\n- 同采样模型受控百图Sparse AVX2中位3237.701ms、Direct338.846ms，约9.56倍，分别约1/49MiB自有运行内存。A/A漂移3.53%通过预设5%；额外网格对照A/A为1.10%。最初core2的6.77%失败完整保留，没有候选计时资格。\n- 最终原main三配置×五次独立进程共15次通过，保留图间参考/色差位置及输出申请计时；Sparse/sample、Direct/sample、Direct/chain的四图中位119.365/12.870/11.566ms。该确认没有独立A/A，不与受控runner混算。最终一键重编译、四图运行及framework网格单次调用均通过。\n- 六个原参考/加载/时钟函数和成功计时片段逐字相同；缺图/非法m/不完整批次非零退出。最终与计时EXE全部PE节SHA一致，头部时间戳差异分别登记；仅Windows系统DLL，无MinGW/OpenMP DLL依赖。\n- `python scripts/archive_framework.py --verify`通过；240份归档和19份实现源码共259项已核对Git原始字节。\n\n## 协作检查与限制\n\n创建前fetch，#97仍为9ac5fda，无待整合目标提交；完整读取并再次刷新#95/#96/#97正文及所有comments/reviews/行内线程，均无新增意见。读取#7/#8全文及评论、#96版本化review.md，检索88项PR索引与框架议题；另读新增远端65d4679的官方框架测试报告和publication，据其网格差异补充有限对照，不跨机器比较性能。\n\n[#96](https://github.com/WyEhNf/flash-chroma/pull/96)的旧verify容量中断、旧目录指标绑定两个P2仍未修复；新框架入口独立处理，不把绕过称作修复。[#7](https://github.com/WyEhNf/flash-chroma/issues/7)历史修复337a3dd/876e15b8/397cc367仍为祖先；[#8](https://github.com/WyEhNf/flash-chroma/issues/8)接口/实板待办及Discussion4读取缺口保留。没有合并或关闭事项。\n\n题面指定GCC13.2下载失败，本次实际15.2，不能称规定工具链已验收。两个阈值、评分公式、正式服务器/正式百图尚未提供；样例Test2/3/4重复、Test1不用于最终验收。额外Direct缓存需按最终规则采用，低内存Sparse路线保留。现有照片仅作评价，不参与拟合；不宣称全局最优或官方满分。\n\nAgent：Codex /root及framework_adapter、framework_contract、framework_strategy  \nOperator：本会话授权开发、归档和提交PR的用户  \nTask：新增赛事测试框架适配与可复核优化  \nStatus：本机实现、验证及归档完成；Draft，规定工具链与正式评分待验收",
+          "title": "适配赛事单线程框架并交付全色域链拟合与验证包",
+          "base": "codex/p16-studio-ui-20261028",
+          "base_sha": "9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d",
+          "head": "codex/p16-framework-adapter-20261029",
+          "head_sha": "5fb94fc63a5c39e545b0631a22797e7d85727acb",
+          "head_repo_id": 1420743436,
+          "head_repo_full_name": "WyEhNf/flash-chroma",
+          "merge_commit_sha": "19464e764f2cb51eadfcaf4f380b9116d0df24da",
+          "user": {
+            "login": "WyEhNf",
+            "name": "WyEhNf",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+            "id": 228311419
+          },
+          "requested_reviewers": null,
+          "requested_team_reviewers": null,
+          "diff": null,
+          "comments": null,
+          "created_at": "2026-10-29T16:26:41Z",
+          "updated_at": "2026-10-29T16:26:41Z",
+          "closed_at": null,
+          "merged_at": null,
+          "commits": 2,
+          "changed_files": 264,
+          "additions": 47873,
+          "deletions": 0,
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+          "display_title": "适配赛事单线程框架并交付全色域链拟合与验证包"
+        },
+        "isError": false
+      }
+    },
+    "pr98-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+          "title": "WyEhNf/flash-chroma PR #98 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+          "display_title": "WyEhNf/flash-chroma PR #98 comments"
+        },
+        "isError": false
+      }
+    },
+    "pr98-reviews": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "reviews": []
+        },
+        "isError": false
+      }
+    },
+    "pr98-threads": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "review_threads": []
+        },
+        "isError": false
+      }
+    },
+    "pr99-info": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+          "number": 99,
+          "state": "open",
+          "merged": false,
+          "mergeable": true,
+          "draft": true,
+          "body": "RGB24此前仍使用逐8像素gather，未覆盖U8/U16已有的独立查表与成块写出。本阶段补齐该路线，默认64像素普通写，保留流式与旧核编译开关；模型、表格式、误差及查表内存均不变。\n\n目标为[#98](https://github.com/WyEhNf/flash-chroma/pull/98)头分支，保持Draft。\n\n## 变更与交付\n\n- 实现 `be11fc9`：八路独立RGB24读取、64像素打包、精确短尾/对齐前缀及流式sfence，生成完整单hpp。旧gather保留，`FLASH_CHROMA_RGB24_LEGACY=1`可重放；`FLASH_CHROMA_RGB24_STREAMING=1`可选流式。\n- 归档 `111b0df`：[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/111b0df/docs/stages/2026-10-30-rgb24-kernel.md)、[148份源码及原始证据清单](https://github.com/WyEhNf/flash-chroma/blob/111b0df/report/data/p16-rgb24-optimization-20261030/manifest.json)。归档与实现Git原字节共159项通过。\n- 用户目录FlashChroma已更新为新hpp与验证过的同一静态EXE，只有一个136558B的hpp；686132B ZIP逐成员回读通过，旧版本已备份。编译源main/hpp与原框架实测逐字节相同，未用事后重编译替代计时二进制。\n\n## 同场复测\n\nWindows11 26200 / Ryzen9 8945HX / GCC15.2 C++17 O3、OPENMP=0，AVX2单线程core16。固定同一FrameworkStep33/chain_ls、同100张补充照片、同一48MiB表及65536分块；准备完成后才读图，无图拟合。\n\n| 100图等价范围 | 旧核中位ms | 新核中位ms | 7轮配对耗时降幅 |\n| --- | ---: | ---: | ---: |\n| 含fresh输出分配/清零 | 259.5598 | 184.5710 | 28.06% |\n| 纯核、预分配 | 217.8592 | 139.3325 | 35.39% |\n\n两个范围均7/7轮更快，配对吞吐分别1.3901/1.5479倍。每统计点是同100图连续重放3遍后除3，原始每遍/逐图及累计值全部保留，不能称300张独立图。前后双方8组A/A漂移0.1330%–2.1815%，均通过5%门槛；188统计点、56400次图片映射全字节/hash一致，源/输入/EXE前后身份通过。\n\n首场单百图新核A/A漂移6.6443%失败，退出3且未进入ABBA，原样保留；第二场是预声明的唯一长批次协议，未给首场补轮或删除慢值。v1/screen/v2全部执行源码分别按原收据SHA保存。hot和allocated独立验收，不继承对方资格。471秒child墙钟含大量计时外校验，不能当映射耗时。\n\n原main另做5对/10独立进程，保持原参考图间位置与输出分配范围：四图中位10.960→7.877ms，逐图误差一致，配对耗时下降28.38%；该确认无独立A/A，不与长批次混算。RGB平均误差仍1.484947、最差单图mean2.385774，模型+arena+对象仍51372819B，非整个进程RSS。\n\n## 正确性与边界\n\n四条路径完整24位输入域、原地/分离、保护页/4B表guard、短尾和64×64相位共174244项比较通过；显式-mno-bmi/-mno-bmi2再次通过，反汇编无BMI/BMI2。默认改缓存写后复跑合同，两block核机器字节不变。现有runtime/direct含stride/两种框架合同4/4通过，关闭AVX2/OpenMP目标编译通过；4项报告契约通过，生成来源检查通过。本PR远端CI以实际检查为准，不继承#98六项通过。\n\n创建前fetch并刷新#95/#96/#98完整评论/reviews/行内线程，均无新增意见；#98仍5fb94fc。保留[#96](https://github.com/WyEhNf/flash-chroma/pull/96)旧验证/目录绑定P2、[#8](https://github.com/WyEhNf/flash-chroma/issues/8)实板/接口及Discussion4既有读取缺口，本阶段未改这些入口，没有merge或关闭事项。\n\nGCC13.2、正式阈值/服务器及额外Direct缓存许可仍待验收；未测真实无BMI硬件、实板或新正式图集。这里的1.39倍是相同RGB24新旧核，不是之前Direct对Sparse的9.56倍，也不是相对历史Cinema四线程最优。\n\nAgent：Codex /root及framework_contract、framework_strategy  \nOperator：本会话授权补齐优化并重测的用户  \nTask：RGB24执行核补齐、单线程同场复测及单hpp交付  \nStatus：本机实现、验证及归档完成；Draft，正式赛事条件待验收",
+          "title": "补齐RGB24成块查表并验证单线程耗时下降28%",
+          "base": "codex/p16-framework-adapter-20261029",
+          "base_sha": "5fb94fc63a5c39e545b0631a22797e7d85727acb",
+          "head": "codex/p16-rgb24-kernel-20261030",
+          "head_sha": "111b0dfd73edd68927642c8dafca69b516285737",
+          "head_repo_id": 1420743436,
+          "head_repo_full_name": "WyEhNf/flash-chroma",
+          "merge_commit_sha": "c13eed83466e8d9170c09df9000c3ee056a6ba1f",
+          "user": {
+            "login": "WyEhNf",
+            "name": "WyEhNf",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/228311419?v=4",
+            "id": 228311419
+          },
+          "requested_reviewers": null,
+          "requested_team_reviewers": null,
+          "diff": null,
+          "comments": null,
+          "created_at": "2026-10-29T17:29:36Z",
+          "updated_at": "2026-10-29T17:29:36Z",
+          "closed_at": null,
+          "merged_at": null,
+          "commits": 2,
+          "changed_files": 163,
+          "additions": 31313,
+          "deletions": 4,
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+          "display_title": "补齐RGB24成块查表并验证单线程耗时下降28%"
+        },
+        "isError": false
+      }
+    },
+    "pr99-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+          "title": "WyEhNf/flash-chroma PR #99 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+          "display_title": "WyEhNf/flash-chroma PR #99 comments"
+        },
+        "isError": false
+      }
+    },
+    "pr99-reviews": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "reviews": []
+        },
+        "isError": false
+      }
+    },
+    "pr99-threads": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "review_threads": []
+        },
+        "isError": false
+      }
+    },
+    "issue7": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "issue": {
+            "url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+            "title": "[P2] 账本登记未核对实际执行内核，可接受不一致的内核证据",
+            "issue_number": 7,
+            "body": "## 最新核验（2026-10-17）\n\n执行内核/后端绑定修复337a3dd已随[集成PR #37](https://github.com/WyEhNf/flash-chroma/pull/37)进入main，合并提交99b2424d34165cdaadfaea6f682cc47838a7fc71。登记校验实际调用execution_proof，覆盖显式内核与auto解析结果；不匹配拒绝且账本原状保留。\n\n本次最终源码本机默认Release CTest3/3、Python117/117（无跳过），包含原正/负登记回归；主干的[默认/纯标量/Docker](https://github.com/WyEhNf/flash-chroma/actions/runs/39007728433)与[三类QEMU](https://github.com/WyEhNf/flash-chroma/actions/runs/39007728642)六项成功。[审计范围、环境及日志](https://github.com/WyEhNf/flash-chroma/tree/main/report/data/pr-stack-audit-20261017)已归档。此前4602条记录仅做过只读证据绑定核对，未因此升级历史质量/速度证据。\n\n本次按用户授权审计并合并PR，保持本issue打开，不自动作关闭决定。以下原始问题及验收建议作为历史记录保留。\n\nAgent：Codex\nOperator：WyEhNf\nTask：合并后的#7修复状态对齐\nStatus：修复已进入main并验证；issue保留打开\n\n---\n\n## 问题与影响\n\n在 `codex/zig-default-pixi` 的提交 `3a79f5a29436e159b62acc90b19991369d6d02b2` 中，`Casebook.record()` 对 `casebook_native_cube_screen_v1` 证据没有核对实际执行的内核与登记的内核。实际记录为 `tetra_scalar`、登记为 `tetra_structured_avx2` 时仍能成功写入账本，并参与观测、冠军及 Pareto 计算。\n\n这使某个内核可以获得来自另一个内核的正确性/质量证据。复现证明的是校验缺口；本次没有发现现有 4,602 条观测已经误登记的证据，不应据此直接宣布历史结果失效。\n\n## 代码位置\n\n[python/lutlab/casebook.py 第 161–167 行](https://github.com/WyEhNf/flash-chroma/blob/3a79f5a29436e159b62acc90b19991369d6d02b2/python/lutlab/casebook.py#L161)\n\n这一分支核对 cube 统计、源/模型哈希、返回码和 `inputs_unchanged`，漏掉内核绑定。同文件 `backends` 证据路径在第 154 行已经比较 `cpu[\"kernel\"]` 与 `value[\"kernel\"]`。\n\n## 最小复现\n\n在上述提交的独立检出中，使用具备项目依赖的 Python，将下列脚本保存后以 `PYTHONPATH=python python reproduce_casebook.py` 运行。所有写入都发生在临时目录。源文件和质量记录仅为 schema 夹具，用来验证登记协议，不是真实拟合、全色域执行或性能实验。\n\n```python\n\"\"\"只用临时 schema 夹具复现登记校验问题，不构造或宣称真实测量。\"\"\"\nfrom pathlib import Path\nimport json\nimport sys\nimport tempfile\nimport numpy as np\nfrom lutlab import cache, casebook, corpus, io\n\nwith tempfile.TemporaryDirectory() as directory:\n    root = Path(directory)\n    sources = [root / f'source{i}.fixture' for i in range(4)]\n    for i, path in enumerate(sources):\n        path.write_bytes(bytes([i]) * 16)\n    parameters = dict(mode='seq', method='sample', m=17, grid='uniform', semantics='independent', n_stages=4)\n    identity = cache.build_identity(sources, parameters)\n    models = [io.SparseLut(io.uniform_grid(17), np.full((17,17,17,3),i,np.uint8)) for i in range(4)]\n    entry = cache.publish(root/'models', identity, models, dict(fit_s=0.))\n    hashes = [r['sha256'] for r in identity['inputs']]\n    book = casebook.Casebook(root/'book')\n    book.add_case('fixture',dict(family='fixture', split='regression', intensity='control'), hashes)\n    cube = dict(n_colors=256**3,mean=0.,rms=0.,p99=0.,max=0.)\n    primary = dict(kind='casebook_native_cube_screen_v1', source_sha256=hashes,cube=cube,inputs_unchanged=True,\n        runtime=dict(models_sha256={str(p):corpus.digest_file(p) for p in entry.paths},returncode=0,kernel='tetra_scalar',backend='cpu'))\n    evidence = root/'primary.json'\n    evidence.write_text(json.dumps(primary))\n    value = dict(case_id='fixture', source_sha256=hashes, semantics='independent', correctness_pass=True,\n        strategy='fixture',m=[17]*4,models=list(map(str,entry.paths)),model_sha256=list(primary['runtime']['models_sha256'].values()),\n        kernel='tetra_structured_avx2',node_payload_bytes=sum(m.nodes.nbytes for m in models),cube=cube,\n        evidence=[dict(path=str(evidence),sha256=corpus.digest_file(evidence))])\n    path = root/'observation.json'\n    path.write_text(json.dumps(value))\n    key = book.record(path)\n    recorded = json.loads((book.root/'observations'/f'{key}.json').read_text())\n    print(json.dumps(dict(primary_kernel=primary['runtime']['kernel'],declared_kernel=recorded['kernel'],accepted=True),ensure_ascii=False))\n```\n\n当前输出：\n\n```json\n{\"primary_kernel\": \"tetra_scalar\", \"declared_kernel\": \"tetra_structured_avx2\", \"accepted\": true}\n```\n\n预期：登记被拒绝，且不写入新观测、不改变 case 索引或冠军。\n\n## 建议修复与验收\n\n- [ ] 在发布观测前，将登记内核绑定到实际执行结果中的内核；需要处理 `auto` 时使用实际解析结果。\n- [ ] 核对相应后端信息，明确不同证据格式的绑定规则。\n- [ ] 增加“内核不一致必须拒绝，账本保持原状”的回归检查，并保留匹配时的正向用例。\n- [ ] 运行默认与纯标量正确性门禁。\n\n本次审查在 Linux/Pixi 下对该提交的默认和无 AVX2/OpenMP 构建均得到 CTest 1/1、Python 28/28 通过，说明现有门禁尚未覆盖该缺口。\n\nAgent：Codex  \nOperator：Mooooonkrui（mo5nk，本会话用户）  \nTask：远端分支审查后的 bug 跟踪  \nStatus：Proposed（缺口已复现，待修复）\n",
+            "state": "open",
+            "user": {
+              "login": "Mooooonkrui",
+              "name": "Mooooonkrui",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/u/153734027?v=4",
+              "id": 153734027
+            },
+            "assignees": null,
+            "labels": null,
+            "milestone": null,
+            "state_reason": null,
+            "comments": 0,
+            "created_at": "2026-10-16T07:27:03Z",
+            "updated_at": "2026-10-17T06:01:08Z",
+            "closed_at": null,
+            "display_url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+            "display_title": "[P2] 账本登记未核对实际执行内核，可接受不一致的内核证据"
+          },
+          "url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+          "title": "[P2] 账本登记未核对实际执行内核，可接受不一致的内核证据",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+          "display_title": "[P2] 账本登记未核对实际执行内核，可接受不一致的内核证据"
+        },
+        "isError": false
+      }
+    },
+    "issue7-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+          "title": "WyEhNf/flash-chroma Issue #7 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/issues/7",
+          "display_title": "WyEhNf/flash-chroma Issue #7 comments"
+        },
+        "isError": false
+      }
+    },
+    "issue8": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "issue": {
+            "url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+            "title": "协调 portable/ 与 embedded/ 的 C99 接口、资源预算和 QEMU 验证",
+            "issue_number": 8,
+            "body": "## 最新核验（2026-10-17，替代下方2026-10-16的历史状态）\n\nportable与embedded现已共同进入main：[集成PR #37](https://github.com/WyEhNf/flash-chroma/pull/37)，合并提交99b2424d34165cdaadfaea6f682cc47838a7fc71，原#12–#34均已完成merge。此前“portable无PR/未集成”、构建冲突及QEMU仅覆盖embedded的描述已过时，原文保留为历史。\n\n本次集成保留两套API和各自所有权/范围/失败语义，落实[共同数值合同](https://github.com/WyEhNf/flash-chroma/blob/main/docs/c99-shared-contract.md)，没有删除接口或强制调用者迁移。已完成同一序列化模型的独立u64 oracle、默认/强制通用/结构化路径、宿主完整RGB及三类QEMU共同夹具。最终源码本机CTest3/3、Python117/117无跳过；主干[默认/标量/Docker](https://github.com/WyEhNf/flash-chroma/actions/runs/39007728433)和[三类QEMU](https://github.com/WyEhNf/flash-chroma/actions/runs/39007728642)六项成功。[阶段审计与日志](https://github.com/WyEhNf/flash-chroma/blob/main/docs/stages/2026-10-17-review-stack-integration.md)明确各自环境和来源。\n\n仍待完成：最终接口合并/分层决策及调用者迁移、目标资源预算的完整评估、实板BSP/存储/缓存/DMA、实时性与功耗。现有QEMU/对象大小/测试任务栈信息不能替代实板或最小生产资源验收。#7的独立绑定修复也已进入main，不混作接口迁移完成。\n\n本issue继续打开。下方原验收清单保留其历史状态；已完成部分以上述当前证据为准，不将仍待决策的项目标为完成。\n\nAgent：Codex\nOperator：WyEhNf\nTask：合并后的双C99集成及待办对齐\nStatus：集成/共有数值门禁已完成；接口迁移和实板继续跟踪\n\n---\n\n## 目标\n\n以已进入 `main` 的 `embedded/` 方案为基线，协调尚未集成的 `portable/` 方案，明确公共数值语义、接口分层、资源预算与 CI/QEMU 覆盖。关联 [已合并 PR #6](https://github.com/WyEhNf/flash-chroma/pull/6)；本议题继续跟踪两套实现的协调与集成。\n\n## 最新状态（2026-10-16 更新）\n\n- [PR #6](https://github.com/WyEhNf/flash-chroma/pull/6) 已由维护者 `WyEhNf` 于 2026-10-16 18:00:22（北京时间）合并，合并提交为 [`4d716f8e715d9e72d23d1db82ea0c18f519e2915`](https://github.com/WyEhNf/flash-chroma/commit/4d716f8e715d9e72d23d1db82ea0c18f519e2915)。`origin/main` 与 `origin/dev/mo5nk` 当前指向同一提交，原先“继续保留 PR #6 为 Draft/WIP”的描述已失效。\n- `codex/zig-default-pixi` 仍为 `3a79f5a29436e159b62acc90b19991369d6d02b2`，未被 main 包含；与 main 互有 3 个独有提交，当前没有对应 PR，也没有该分支的 Actions 运行记录。**已合并的是 embedded，不是 portable。**\n- main 的[默认/标量/Docker 检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313191)及[Cortex-M3、RV32 FreeRTOS、Cortex-A53 Linux 的 QEMU 检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313291)共六项全部成功。这些证据适用于 main 中的实现。\n- 当前 [embedded.yml](https://github.com/WyEhNf/flash-chroma/blob/4d716f8e715d9e72d23d1db82ea0c18f519e2915/.github/workflows/embedded.yml) 从 `embedded/` 构建，不覆盖尚未集成的 `portable/`。不能把现有三个 QEMU 通过结论直接算作 portable 的系统级验证。\n- 本次重新执行只读 `git merge-tree`，`CMakeLists.txt` 与 `README.md` 仍有内容冲突；尚未实施集成。\n- workflow 目前对 main push、PR 和手动调度触发，普通开发分支直接 push 不会自动触发。建议 portable 后续先提出集成草稿 PR，解决与 main 的冲突，运行共有正确性检查，并为选定的 portable 路径补齐明确的 QEMU 验证。\n\n初次审查快照（历史基线，当前状态见上）：\n- `dev/mo5nk`：`9afcf4bb8a626f4d936885e6f81167e0f39482ee`，提供 [embedded/](https://github.com/WyEhNf/flash-chroma/tree/9afcf4bb8a626f4d936885e6f81167e0f39482ee/embedded)。\n- `codex/zig-default-pixi`：`3a79f5a29436e159b62acc90b19991369d6d02b2`，提供 [portable/](https://github.com/WyEhNf/flash-chroma/tree/3a79f5a29436e159b62acc90b19991369d6d02b2/portable)、桌面桥接及 ROM 导出。\n\n## 现状与差异\n\n两套实现都消费 SLUT v1，并保留各级 RGB8/Q16 四面体映射和逐级取整；接口约束与预处理代价不同。\n\n| 项目 | portable | embedded |\n| --- | --- | --- |\n| 网格范围 | m=17..33 | m=2..256 |\n| 链长度 | 固定四级 | 0..4 级；竞赛流程另约束四级 |\n| 网格元数据 | 检查有限值、严格递增和覆盖范围 | 不参与映射；核验头部、idx/frac 和精确长度 |\n| 图像接口 | 二维尺寸、行步长、容量、重叠检查；支持原地/非原地 | 连续 RGB 像素块，原地处理 |\n| 准备阶段 | 完整节点结构证明，生成每模型 3,072 字节曲线表，支持常量/曲线/节点捷径 | 只读模型视图及通用整数映射 |\n| 工作区 | 现有 64 位 ABI 四模型加链为 12,560 字节，另计调用栈 | 模型视图在 32/64 位 ABI 分别为 16/32 字节，另计链指针和调用栈 |\n| 初始化失败 | 保持原对象 | 使视图失效 |\n| 已有执行证据 | 分支文档记录 AArch64 用户态 LE/BE 执行；本轮 Linux/Pixi 默认/标量门禁通过 | Cortex-M3/FreeRTOS、RV32/FreeRTOS、Cortex-A53/Linux 的 QEMU 系统级门禁通过 |\n\n初次审查及本次更新均通过只读 `git merge-tree` 确认 `CMakeLists.txt` 与 `README.md` 存在冲突。PR #6 已合并；portable 与当前 main 的集成仍未执行。\n\n## 建议的协调方向\n\n建议保留适合低 RAM MCU 的通用路径，并将结构证明/曲线缓存作为显式可选能力；二维步长、容量检查和 ROM 导出可通过统一适配层复用。最终可以选择一个核心加多个前端，或职责清楚的两层接口，需由维护者确定。\n\n需要明确：\n1. 通用库与竞赛约束的边界，m 范围及 0..4/固定四级的语义。\n2. 元数据校验和初始化失败契约如何一致，既有调用者如何迁移。\n3. 曲线缓存是否可关闭；低 RAM 模式下准备阶段与执行阶段的栈/RAM 上限。\n4. ROM 导出、只读模型寿命、行步长及重叠校验由哪层负责。\n5. 桌面 `tetra_c99` / `tetra_structured_avx2` 与端侧接口如何共享语义和回归证据。\n\n## 验收建议\n\n- [x] embedded 通过 PR #6 合入 main，合并提交的默认/标量/Docker 和三个系统级 QEMU 检查全部成功。\n- [ ] portable 基于当前 main 提出可评审的集成 PR，解决冲突并产生该集成提交的 CI 证据。\n- [ ] 记录维护者选择的接口分层与兼容策略。\n- [ ] 为同一组序列化模型建立跨实现差分检查，使用独立整数 oracle；覆盖混合 m、非均匀轴、Q16 边界和四级逐级取整。\n- [ ] 将选定的 portable 通用/可选优化路径接入 Cortex-M3、RV32 FreeRTOS 和 Cortex-A53 Linux 的既有 QEMU 门禁；同时保留 embedded 回归，明确各目标未支持的配置。\n- [ ] 测量各目标 ABI 下的模型视图、曲线缓存及准备/执行栈需求，保留最小模式。\n- [ ] 覆盖截断、非法表项、空输入、短尾、行填充及适用的重叠/容量/失败状态契约。\n- [ ] 解决构建和文档冲突，统一接入说明；按接口/内核、数据入口、历史实验材料拆分可评审变更。\n\n现有 [三项嵌入式 CI](https://github.com/WyEhNf/flash-chroma/actions/runs/38865748524) 和 [默认/标量/Docker CI](https://github.com/WyEhNf/flash-chroma/actions/runs/38865748481) 已通过。待审分支的默认与无 AVX2/OpenMP 构建在本地各通过 CTest 1/1、Python 28/28；这些证据分别属于各自实现，集成后仍需对应验证。实板、实时截止期与功耗尚未验证。\n\n关联的独立 bug：[#7 账本登记未核对实际执行内核](https://github.com/WyEhNf/flash-chroma/issues/7)，应单独修复，避免将接口协调与证据校验混成一个任务。\n\nAgent：Codex  \nOperator：Mooooonkrui（mo5nk，本会话用户）  \nTask：两套嵌入式兼容方案的协调  \nStatus：In Progress（embedded 已合入 main；portable 分层、集成与跨实现验证待完成）\n",
+            "state": "open",
+            "user": {
+              "login": "Mooooonkrui",
+              "name": "Mooooonkrui",
+              "email": null,
+              "avatar_url": "https://avatars.githubusercontent.com/u/153734027?v=4",
+              "id": 153734027
+            },
+            "assignees": null,
+            "labels": null,
+            "milestone": null,
+            "state_reason": null,
+            "comments": 1,
+            "created_at": "2026-10-16T07:27:37Z",
+            "updated_at": "2026-10-17T06:01:09Z",
+            "closed_at": null,
+            "display_url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+            "display_title": "协调 portable/ 与 embedded/ 的 C99 接口、资源预算和 QEMU 验证"
+          },
+          "url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+          "title": "协调 portable/ 与 embedded/ 的 C99 接口、资源预算和 QEMU 验证",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+          "display_title": "协调 portable/ 与 embedded/ 的 C99 接口、资源预算和 QEMU 验证"
+        },
+        "isError": false
+      }
+    },
+    "issue8-comments": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/issues/8#issuecomment-6213698494",
+              "body": "Agent：Codex  \nOperator：Mooooonkrui（mo5nk，本会话用户）  \nTask：更新 #8 的合并状态、集成基线与 CI/QEMU 协调事项  \nStatus：In Progress（状态核对与议题更新完成，协调事项继续跟踪）\n\n已更新议题正文，纠正此前“保留 PR #6 为 WIP”的历史描述：\n\n- **PR #6 已合并**：维护者 `WyEhNf` 于北京时间 2026-10-16 18:00:22 合入 `main`，提交 `4d716f8e715d9e72d23d1db82ea0c18f519e2915`；main 与 dev/mo5nk 当前一致。[默认三项检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313191)和[三个系统级 QEMU 检查](https://github.com/WyEhNf/flash-chroma/actions/runs/38884313291)全部成功。\n- **portable 尚未合并**：`codex/zig-default-pixi` 仍为 `3a79f5a29436e159b62acc90b19991369d6d02b2`，未进入 main，且没有对应 PR/Actions 运行记录。本次只读合并探测仍发现 `CMakeLists.txt`、`README.md` 冲突。\n- 现有 QEMU workflow 仅构建 `embedded/`。后续应以 main 为基线提交 portable 集成草稿 PR，保留 embedded 回归，为选定 portable 路径补齐 QEMU 覆盖，并继续完成接口契约、RAM/栈预算和跨实现差分验证。\n\n因此 #8 继续保持打开。此次更新记录已完成的 embedded 合并及验证，未将其视为两套实现已经统一；#7 的独立证据校验 bug 继续分开跟踪。\n",
+              "user": {
+                "login": "Mooooonkrui",
+                "name": "Mooooonkrui",
+                "email": null,
+                "avatar_url": "https://avatars.githubusercontent.com/u/153734027?v=4",
+                "id": 153734027
+              },
+              "id": 6213698494,
+              "pull_request_review_id": null,
+              "in_reply_to_id": null,
+              "created_at": null,
+              "updated_at": null,
+              "review": null,
+              "side": null,
+              "line": null,
+              "start_line": null,
+              "path": null,
+              "body_html": "<p dir=\"auto\">Agent：Codex<br>\nOperator：Mooooonkrui（mo5nk，本会话用户）<br>\nTask：更新 <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880154751\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/8\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/8/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/8\">#8</a> 的合并状态、集成基线与 CI/QEMU 协调事项<br>\nStatus：In Progress（状态核对与议题更新完成，协调事项继续跟踪）</p>\n<p dir=\"auto\">已更新议题正文，纠正此前“保留 PR <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5879810734\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/6\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/WyEhNf/flash-chroma/pull/6/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/pull/6\">#6</a> 为 WIP”的历史描述：</p>\n<ul dir=\"auto\">\n<li><strong>PR <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5879810734\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/6\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/WyEhNf/flash-chroma/pull/6/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/pull/6\">#6</a> 已合并</strong>：维护者 <code class=\"notranslate\">WyEhNf</code> 于北京时间 2026-10-16 18:00:22 合入 <code class=\"notranslate\">main</code>，提交 <code class=\"notranslate\">4d716f8e715d9e72d23d1db82ea0c18f519e2915</code>；main 与 dev/mo5nk 当前一致。<a href=\"https://github.com/WyEhNf/flash-chroma/actions/runs/38884313191\">默认三项检查</a>和<a href=\"https://github.com/WyEhNf/flash-chroma/actions/runs/38884313291\">三个系统级 QEMU 检查</a>全部成功。</li>\n<li><strong>portable 尚未合并</strong>：<code class=\"notranslate\">codex/zig-default-pixi</code> 仍为 <code class=\"notranslate\">3a79f5a29436e159b62acc90b19991369d6d02b2</code>，未进入 main，且没有对应 PR/Actions 运行记录。本次只读合并探测仍发现 <code class=\"notranslate\">CMakeLists.txt</code>、<code class=\"notranslate\">README.md</code> 冲突。</li>\n<li>现有 QEMU workflow 仅构建 <code class=\"notranslate\">embedded/</code>。后续应以 main 为基线提交 portable 集成草稿 PR，保留 embedded 回归，为选定 portable 路径补齐 QEMU 覆盖，并继续完成接口契约、RAM/栈预算和跨实现差分验证。</li>\n</ul>\n<p dir=\"auto\">因此 <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880154751\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/8\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/8/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/8\">#8</a> 继续保持打开。此次更新记录已完成的 embedded 合并及验证，未将其视为两套实现已经统一；<a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5880148345\" data-permission-text=\"Title is private\" data-url=\"https://github.com/WyEhNf/flash-chroma/issues/7\" data-hovercard-type=\"issue\" data-hovercard-url=\"/WyEhNf/flash-chroma/issues/7/hovercard\" href=\"https://github.com/WyEhNf/flash-chroma/issues/7\">#7</a> 的独立证据校验 bug 继续分开跟踪。</p>"
+            }
+          ],
+          "url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+          "title": "WyEhNf/flash-chroma Issue #8 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/issues/8",
+          "display_title": "WyEhNf/flash-chroma Issue #8 comments"
+        },
+        "isError": false
+      }
+    },
+    "ci40921847192": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "jobs": [
+            {
+              "id": 123616903802,
+              "name": "correctness (Docker)",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847192,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "构建默认环境镜像",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "验证本机缓存未进入镜像",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "在容器中运行同一正确性门禁",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 5
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 10
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                }
+              ]
+            },
+            {
+              "id": 123616904011,
+              "name": "correctness (test)",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847192,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "安装锁定的默认环境",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "运行 C++ 与 Python 正确性测试",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "构建并验证评分候选CPU交付包",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 5
+                },
+                {
+                  "name": "构建并验证单头文件与连续目标接口",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 6
+                },
+                {
+                  "name": "Post 安装锁定的默认环境",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 12
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 13
+                }
+              ]
+            },
+            {
+              "id": 123616904101,
+              "name": "correctness (test-scalar)",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847192,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "安装锁定的默认环境",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "运行 C++ 与 Python 正确性测试",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "构建并验证评分候选CPU交付包",
+                  "status": "completed",
+                  "conclusion": "skipped",
+                  "number": 5
+                },
+                {
+                  "name": "构建并验证单头文件与连续目标接口",
+                  "status": "completed",
+                  "conclusion": "skipped",
+                  "number": 6
+                },
+                {
+                  "name": "Post 安装锁定的默认环境",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 12
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 13
+                }
+              ]
+            }
+          ]
+        },
+        "isError": false
+      }
+    },
+    "ci40921847210": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "jobs": [
+            {
+              "id": 123616904029,
+              "name": "Linux / Cortex-A53 / QEMU",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847210,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "安装 Linux 交叉工具链与 QEMU",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "构建静态 init 与最小 initramfs",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "启动 AArch64 Linux 并验证 PID 1 中的 LUT 契约",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 5
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 10
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                }
+              ]
+            },
+            {
+              "id": 123616904486,
+              "name": "FreeRTOS / cortex-m3 / QEMU",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847210,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "安装裸机工具链与 QEMU",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "交叉构建无堆分配的 FreeRTOS 固件",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "在 QEMU 中运行调度器与 LUT 契约测试",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 5
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 10
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                }
+              ]
+            },
+            {
+              "id": 123616904593,
+              "name": "FreeRTOS / riscv32 / QEMU",
+              "status": "completed",
+              "conclusion": "success",
+              "run_id": 40921847210,
+              "logs_url": null,
+              "steps": [
+                {
+                  "name": "Set up job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 1
+                },
+                {
+                  "name": "检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 2
+                },
+                {
+                  "name": "安装裸机工具链与 QEMU",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 3
+                },
+                {
+                  "name": "交叉构建无堆分配的 FreeRTOS 固件",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 4
+                },
+                {
+                  "name": "在 QEMU 中运行调度器与 LUT 契约测试",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 5
+                },
+                {
+                  "name": "Post 检出代码",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 10
+                },
+                {
+                  "name": "Complete job",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "number": 11
+                }
+              ]
+            }
+          ]
+        },
+        "isError": false
+      }
+    },
+    "recent_pr_search": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "issues": [
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+              "title": "补齐RGB24成块查表并验证单线程耗时下降28%",
+              "issue_number": 99,
+              "body": "RGB24此前仍使用逐8像素gather，未覆盖U8/U16已有的独立查表与成块写出。本阶段补齐该路线，默认64像素普通写，保留流式与旧核编译开关；模型、表格式、误差及查表内存均不变。\n\n目标为[#98](https://github.com/WyEhNf/flash-chroma/pull/98)头分支，保持Draft。\n\n## 变更与交付\n\n- 实现 `be11fc9`：八路独立RGB24读取、64像素打包、精确短尾/对齐前缀及流式sfence，生成完整单hpp。旧gather保留，`FLASH_CHROMA_RGB24_LEGACY=1`可重放；`FLASH_CHROMA_RGB24_STREAMING=1`可选流式。\n- 归档 `111b0df`：[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/111b0df/docs/stages/2026-10-30-rgb24-kernel.md)、[148份源码及原始证据清单](https://github.com/WyEhNf/flash-chroma/blob/111b0df/report/data/p16-rgb24-optimization-20261030/manifest.json)。归档与实现Git原字节共159项通过。\n- 用户目录FlashChroma已更新为新hpp与验证过的同一静态EXE，只有一个136558B的hpp；686132B ZIP逐成员回读通过，旧版本已备份。编译源main/hpp与原框架实测逐字节相同，未用事后重编译替代计时二进制。\n\n## 同场复测\n\nWindows11 26200 / Ryzen9 8945HX / GCC15.2 C++17 O3、OPENMP=0，AVX2单线程core16。固定同一FrameworkStep33/chain_ls、同100张补充照片、同一48MiB表及65536分块；准备完成后才读图，无图拟合。\n\n| 100图等价范围 | 旧核中位ms | 新核中位ms | 7轮配对耗时降幅 |\n| --- | ---: | ---: | ---: |\n| 含fresh输出分配/清零 | 259.5598 | 184.5710 | 28.06% |\n| 纯核、预分配 | 217.8592 | 139.3325 | 35.39% |\n\n两个范围均7/7轮更快，配对吞吐分别1.3901/1.5479倍。每统计点是同100图连续重放3遍后除3，原始每遍/逐图及累计值全部保留，不能称300张独立图。前后双方8组A/A漂移0.1330%–2.1815%，均通过5%门槛；188统计点、56400次图片映射全字节/hash一致，源/输入/EXE前后身份通过。\n\n首场单百图新核A/A漂移6.6443%失败，退出3且未进入ABBA，原样保留；第二场是预声明的唯一长批次协议，未给首场补轮或删除慢值。v1/screen/v2全部执行源码分别按原收据SHA保存。hot和allocated独立验收，不继承对方资格。471秒child墙钟含大量计时外校验，不能当映射耗时。\n\n原main另做5对/10独立进程，保持原参考图间位置与输出分配范围：四图中位10.960→7.877ms，逐图误差一致，配对耗时下降28.38%；该确认无独立A/A，不与长批次混算。RGB平均误差仍1.484947、最差单图mean2.385774，模型+arena+对象仍51372819B，非整个进程RSS。\n\n## 正确性与边界\n\n四条路径完整24位输入域、原地/分离、保护页/4B表guard、短尾和64×64相位共174244项比较通过；显式-mno-bmi/-mno-bmi2再次通过，反汇编无BMI/BMI2。默认改缓存写后复跑合同，两block核机器字节不变。现有runtime/direct含stride/两种框架合同4/4通过，关闭AVX2/OpenMP目标编译通过；4项报告契约通过，生成来源检查通过。本PR远端CI以实际检查为准，不继承#98六项通过。\n\n创建前fetch并刷新#95/#96/#98完整评论/reviews/行内线程，均无新增意见；#98仍5fb94fc。保留[#96](https://github.com/WyEhNf/flash-chroma/pull/96)旧验证/目录绑定P2、[#8](https://github.com/WyEhNf/flash-chroma/issues/8)实板/接口及Discussion4既有读取缺口，本阶段未改这些入口，没有merge或关闭事项。\n\nGCC13.2、正式阈值/服务器及额外Direct缓存许可仍待验收；未测真实无BMI硬件、实板或新正式图集。这里的1.39倍是相同RGB24新旧核，不是之前Direct对Sparse的9.56倍，也不是相对历史Cinema四线程最优。\n\nAgent：Codex /root及framework_contract、framework_strategy  \nOperator：本会话授权补齐优化并重测的用户  \nTask：RGB24执行核补齐、单线程同场复测及单hpp交付  \nStatus：本机实现、验证及归档完成；Draft，正式赛事条件待验收",
+              "state": null,
+              "user": null,
+              "assignees": null,
+              "labels": null,
+              "milestone": null,
+              "state_reason": null,
+              "comments": null,
+              "created_at": null,
+              "updated_at": null,
+              "closed_at": null,
+              "display_url": "https://github.com/WyEhNf/flash-chroma/pull/99",
+              "display_title": "补齐RGB24成块查表并验证单线程耗时下降28%"
+            },
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+              "title": "适配赛事单线程框架并交付全色域链拟合与验证包",
+              "issue_number": 98,
+              "body": "新增赛事框架使用256³文本3DL、RGB8 bin和严格单线程约束；旧入口的数据协议及四线程配置不能直接套用。本阶段补齐实际接入、LUT-only完整域拟合、可选执行表示及独立验收，交付可在用户框架目录直接编译运行的单hpp工程。\n\n目标为[#97](https://github.com/WyEhNf/flash-chroma/pull/97)的头分支，保持Draft。\n\n## 交付与提交\n\n- 实现 `51b80a3`：单线程适配、严格读取、混合m17..33、两种网格、sample/independent_ls/chain_ls；生成完整单hpp、main.cpp、PowerShell入口和静态EXE。原C/C++模板、data及原hpp/h核心未改。\n- 归档 `5fb94fc`：[阶段报告](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/docs/stages/2026-10-30-framework-adaptation.md)、[现场指南](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/docs/framework-quickstart.md)、[240份小证据/源码清单](https://github.com/WyEhNf/flash-chroma/blob/5fb94fc/report/data/p16-framework-20261029/manifest.json)。大LUT、图片和EXE留本机；本机交付ZIP 683246B，逐成员回读通过。\n- 所有拟合在第一次读图前完成，chain_ls固定前三层、仅以全RGB域和原四级LUT输出拟合末层；真实整数mean/SSE双门控。DirectRGB24由稀疏模型生成等价运行缓存，额外约48MiB；容量不足的U8/U16明确拒绝并在矩阵中继续其他候选。\n\n## 验证与实测\n\nWindows11 26200 / Ryzen9 8945HX / GCC15.2.0、C++17 O3、OPENMP=0 / Python3.12.14、NumPy1.26.4、psutil5.9，CPU-only、算法单线程。\n\n- 新增C++合同4/4、定向Python合同28/28通过；可选依赖调整后解析合同10/10复测通过。CMake已接现有CI，远端结果以本PR检查为准。\n- 独立从原3DL重建参考，核对原四图和补充100照片；同模型Sparse/AVX2/Direct输出一致。RGB欧氏mean/RMS/max复核通过，不是CIEDE2000。\n- 补充百图：Uniform33采样平均mean1.765873、最差3.588358；FrameworkStep33+chain_ls为1.484947、2.385774。同framework网格下95图改善、5图退步，不承诺每图提升。\n- 同采样模型受控百图Sparse AVX2中位3237.701ms、Direct338.846ms，约9.56倍，分别约1/49MiB自有运行内存。A/A漂移3.53%通过预设5%；额外网格对照A/A为1.10%。最初core2的6.77%失败完整保留，没有候选计时资格。\n- 最终原main三配置×五次独立进程共15次通过，保留图间参考/色差位置及输出申请计时；Sparse/sample、Direct/sample、Direct/chain的四图中位119.365/12.870/11.566ms。该确认没有独立A/A，不与受控runner混算。最终一键重编译、四图运行及framework网格单次调用均通过。\n- 六个原参考/加载/时钟函数和成功计时片段逐字相同；缺图/非法m/不完整批次非零退出。最终与计时EXE全部PE节SHA一致，头部时间戳差异分别登记；仅Windows系统DLL，无MinGW/OpenMP DLL依赖。\n- `python scripts/archive_framework.py --verify`通过；240份归档和19份实现源码共259项已核对Git原始字节。\n\n## 协作检查与限制\n\n创建前fetch，#97仍为9ac5fda，无待整合目标提交；完整读取并再次刷新#95/#96/#97正文及所有comments/reviews/行内线程，均无新增意见。读取#7/#8全文及评论、#96版本化review.md，检索88项PR索引与框架议题；另读新增远端65d4679的官方框架测试报告和publication，据其网格差异补充有限对照，不跨机器比较性能。\n\n[#96](https://github.com/WyEhNf/flash-chroma/pull/96)的旧verify容量中断、旧目录指标绑定两个P2仍未修复；新框架入口独立处理，不把绕过称作修复。[#7](https://github.com/WyEhNf/flash-chroma/issues/7)历史修复337a3dd/876e15b8/397cc367仍为祖先；[#8](https://github.com/WyEhNf/flash-chroma/issues/8)接口/实板待办及Discussion4读取缺口保留。没有合并或关闭事项。\n\n题面指定GCC13.2下载失败，本次实际15.2，不能称规定工具链已验收。两个阈值、评分公式、正式服务器/正式百图尚未提供；样例Test2/3/4重复、Test1不用于最终验收。额外Direct缓存需按最终规则采用，低内存Sparse路线保留。现有照片仅作评价，不参与拟合；不宣称全局最优或官方满分。\n\nAgent：Codex /root及framework_adapter、framework_contract、framework_strategy  \nOperator：本会话授权开发、归档和提交PR的用户  \nTask：新增赛事测试框架适配与可复核优化  \nStatus：本机实现、验证及归档完成；Draft，规定工具链与正式评分待验收",
+              "state": null,
+              "user": null,
+              "assignees": null,
+              "labels": null,
+              "milestone": null,
+              "state_reason": null,
+              "comments": null,
+              "created_at": null,
+              "updated_at": null,
+              "closed_at": null,
+              "display_url": "https://github.com/WyEhNf/flash-chroma/pull/98",
+              "display_title": "适配赛事单线程框架并交付全色域链拟合与验证包"
+            },
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/pull/97",
+              "title": "集成照片工作台与赛前四级LUT调试包",
+              "issue_number": 97,
+              "body": "这次把当前单头CPU版本整合为可直接看图调参、接入四张新LUT并逐图验收的本机工具。工作台的参数变化实际调用原生库；赛事入口集中配置、来源校验、拟合、流式运行和失败回执，避免现场沿用旧Cinema或旧目录的资格。\n\n目标为 #95 分支；保留 Draft，未合并或关闭任何议题。\n\n## 变更与提交\n\n- 实现：`b3d9dab`，20张代表图、18个CUBE、15套创意组合与2套固定模型；分割/差异/缩放、逐级强度、连续偏好和原尺寸PNG；处理中的配置导出不再混入旧actual_config。\n- 统一 `init / doctor / fit / run` 与PowerShell入口，支持混合m和正式新四表；无limit时图数必须匹配expected_images，任何显式limit都标调试；独立C++连续RGB8接入层。\n- 验证归档：`9ac5fda`。[阶段说明](https://github.com/WyEhNf/flash-chroma/blob/9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d/docs/stages/2026-10-29-studio-event-ready.md)、[赛前指南](https://github.com/WyEhNf/flash-chroma/blob/9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d/docs/event-quickstart.md)、[工作台说明](https://github.com/WyEhNf/flash-chroma/blob/9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d/gui/README.md)、[91份证据/源码清单](https://github.com/WyEhNf/flash-chroma/blob/9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d/report/data/p16-studio-event-20261029/manifest.json)。\n- 本机v2离线包含源码、100张样例PNG、18份CUBE、7套模型、DLL/EXE和MinGW运行依赖，159126441B、370个ZIP成员；大素材包留本机，PR只保存身份与运行回执。Python复用现有本机环境，未宣称跨机免依赖。\n\n## 验证\n\nWindows11 26200 / Ryzen9 8945HX / Python3.12.14、NumPy1.26.4、Pillow10.4、SciPy1.15.2；MinGW GCC15.2 Release，CPU-only，实际Scalar/AVX2及1/4线程。DLL SHA `39a1d80ec8974bb190d3fd99689bb378f8120171bcb6ba5ed7bdec1a62c44b17`，hpp/h数值核心没有改动。\n\n- 最终Python契约55项、打包契约7项通过；前端Node语法、DOM/ARIA/SVG引用及6种复制状态通过。\n- 84项HTTP检查、10次真实渲染通过：四级分别生效、四级关闭还原、detail/compact网格变化、原尺寸PNG像素SHA和Host/Origin/token/路径拒绝。\n- 新四表混合m实际fit、两图run、严格门故意失败退出2，5份PNG回读一致；独立C++两帧与FFI/C99逐字节一致，8项接入检查通过。\n- 工作树和最终包的隐藏启动、同PID复用及库身份均实际通过；包内catalog/doctor/限1图/PNG/三套原生渲染通过，目录及ZIP逐成员SHA复核通过。WMI观测失败的首次回执保留，随后用Get-Process+health完成检查。\n- 归档核验：`python scripts/archive_studio_event.py --verify`；22份源码已核对暂存Git字节与归档一致。上述为本机功能、数值执行与格式契约，不是官方精度或受控性能成绩。\n\n远端提交 `9ac5fda7cbf7ad8d6a82d25cf254f02ef248fd7d` 的六项CI全部成功：[默认/纯标量/Docker](https://github.com/WyEhNf/flash-chroma/actions/runs/40893005202)、[三类QEMU](https://github.com/WyEhNf/flash-chroma/actions/runs/40893005462)。这些是对应工作流的正确性和构建覆盖，不替代正式精度、性能或实板验收。\n\n## 协作检查与限制\n\n创建前fetch并刷新 #95/#96 的正文、完整comments/reviews/行内线程，无新增意见；目标仍为fb7e195。已检查完整issue/PR索引及空第二页、#84/#40和#7/#8正文/评论，读取 #96 的版本化review.md；历史修复337a3dd、876e15b8、397cc367在本分支祖先中。\n\n- [#96](https://github.com/WyEhNf/flash-chroma/pull/96) 两个旧入口P2仍待修：旧verify强制direct超容量中断、旧bind_evidence未逐项绑定目录指标。新event默认Sparse且直接重测当前图集，不经过这两条路径；不把绕开路径称作修复旧问题。\n- [#7](https://github.com/WyEhNf/flash-chroma/issues/7)历史内核绑定修复已包含；[#8](https://github.com/WyEhNf/flash-chroma/issues/8)接口决策/实板继续保留。Discussion4接口不可读取，不把缺口当作没有问题。\n- 官方Threshold、文件协议/位深/轴序及计时边界未知；当前适配是每份50331648B的uint8[R,G,B,C]、B最快。未跑正式百图、Xeon6140、实板或新的稳定性能矩阵，不宣称上一阶段性能差距已消除。\n- 旧RAW保留路由与代码，本轮不重跑解码/导出。浏览器已完成切图/组合/强度/性能面板交互后出现origin权限拒绝，随即停止；无归档截图或移动视口实际验收，后续只做源码和命令行验证。\n\nAgent：Codex /root及并行subagent  \nOperator：本会话授权开发和整合的用户  \nTask：照片工作台与明日赛事调试交付  \nStatus：本机集成及验证完成，Draft；正式数据和旧入口待办保留",
+              "state": null,
+              "user": null,
+              "assignees": null,
+              "labels": null,
+              "milestone": null,
+              "state_reason": null,
+              "comments": null,
+              "created_at": null,
+              "updated_at": null,
+              "closed_at": null,
+              "display_url": "https://github.com/WyEhNf/flash-chroma/pull/97",
+              "display_title": "集成照片工作台与赛前四级LUT调试包"
+            },
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+              "title": "补全#95的审查和测试",
+              "issue_number": 96,
+              "body": "本 PR 为 [#95](https://github.com/WyEhNf/flash-chroma/pull/95) 补充跨 LUT 审查与可复核测试证据。目标分支为 #95 所在的 `codex/p16-frontier-header-20261027`，审查对象固定为 `fb7e195215f14df9f635394d75cde0e0e69c82c9`。**本阶段交付审查和实验材料，两个发现的流程缺口尚未修复，保持 Draft；不代表批准或合并 #95。**\n\n## 变更与阅读入口\n\n提交：[`c4a1d794`](https://github.com/WyEhNf/flash-chroma/commit/c4a1d794181f693dcae2c8bdc86b9bcb33d2eba9)。\n\n- [阶段报告：目标、算法、误差、环境、复现命令与限制](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/report.md)\n- [Review 意见与修复验收建议](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/review.md)\n- [58 份归档证据及 SHA 清单](https://github.com/WyEhNf/flash-chroma/blob/c4a1d794/report/pr95-review-20261028/evidence/manifest.json)\n- 三份实验/复现脚本：`review_pr95_generalization.py`、`review_pr95_supplement.py`、`review_pr95_evidence_binding.py`；`archive_pr95_review.py --verify` 可只读校验归档。\n- 保留计划、原始结果、全部计时、模型 manifest、失败日志和两个完整色域直方图。DLL、稠密表、新模型二进制保留本地，可按脚本重建。新增 Git 属性保留证据/执行脚本原字节；已核对 61 份暂存证据及脚本 SHA 与清单一致。\n\n## 测试内容和结果\n\n使用 25 个不同 LUT，固定 8 条四级数值链，生成 20 套模型：16 套 uniform + sample_interp 的 17³/33³，以及混合 17/25/33、曲率网格和整数最小二乘补测。覆盖 cube/TIFF/3dl；这些是数值压力组合，未认证摄影色彩域相容，也没有重新训练 373a/max_first。\n\n- 每模型 65,536 个随机探针、独立 NumPy 整数算术及 C99 对照、六张完整 1024×768 照片；另含角点/短尾或固定边界探针。\n- 100 配置尝试：78 成功且输出无字节差异，22 因调色板容量不足合法拒绝。Sparse Scalar/AVX2 与 RGB24 均 20/20 可用；U8 8/20、U16 10/20 可用。\n- Cinema-m33、mixed_hdr-m33 各遍历完整 16,777,216 RGB8 输入，Scalar/RGB24 一致。\n- 33³ 的照片 mean/p99 在八链上均改善，但 mixed_tail 的 max 从 92.4338 升至 95.0474。曲率 + 整数最小二乘改善两条困难链均值，mixed_hdr 的 max 仍从 130 升到 131。误差为 RGB8 欧氏距离，**不是 CIEDE2000 或官方阈值成绩**。\n- 相关 pytest **41/41 通过**；已有性能档案专项审计通过。本次归档检查 **58 文件 SHA、20 模型统计与两份全域直方图复算通过**；四份新增脚本语法、Git diff 空白检查通过。\n\n## 待修复事项\n\n1. **P2：公开验证器按 profile 名选择 U8/U16，超容量时中断全部流程。** avant-m33 在 Sparse 全域步骤后 U16 报状态10；即使 --all-representations 也无法继续 RGB24，不产生验证回执。运行库容量拒绝正确，编排层应保存成功结果、记录不适用并继续支持的表示。\n2. **P2：部署入口未把目录误差、耗时、time_stable 绑定到原始证据。** 在独立副本改变指标后，正常重选并更新目录摘要，三层绑定仍接受。元数据复现未修改原档案、未执行错误目录图像处理；现有档案审计通过。建议强制复算/核对质量、计时范围及 A/A，补充失配拒绝回归。\n\n## 环境与边界\n\n实际 Windows11 26200 x64 / Intel Core Ultra5 125H / MinGW GCC8.1.0；C++17 -O3 -DNDEBUG -fopenmp，C99 -O3 -DNDEBUG；Python3.12.7、NumPy1.26.4、SciPy1.15.2、Numba0.60.0、Pillow10.4.0。CPU-only：Scalar1T，AVX2配置4T。DLL来源与SHA详见报告；未生成项目标准链接回执，如实保留缺口。\n\n新链计时只保留预热后5次 apply 原样本，没有 A/A/绑核/锁频，不宣称稳定性能收益，不能与原 Ryzen 数据或 Xeon6140直接比较。未覆盖全部68个LUT组合、独立保留照片集、所有模型全色域精度、官方Threshold或实板。本阶段不改运行库，仅归档已有实验，未重复无关数值/性能测试。\n\n## 协作检查与操作依据\n\n创建前 fetch 目标分支；目标仍为 fb7e195，工作分支已包含它，无需冲突整合，未改写共享历史。刷新 #95 正文、完整评论/review/行内线程，仍无新增意见或提交；检查仓库完整 issue/PR 索引与第二页，沿主题核对 #94/#89、#43/#48/#62/#71/#73/#75 及 #5/#9/#12/#37 历史纠正记录。\n\n关联 [#7](https://github.com/WyEhNf/flash-chroma/issues/7) 的历史 Casebook 绑定修复337a3dd仍在审查头祖先中，本次是另一部署目录缺口；[#8](https://github.com/WyEhNf/flash-chroma/issues/8) 的接口决策与实板事项仍待完成。完整记录与证据边界见阶段报告。Discussion4接口不可读取，保留缺口，不执行合并或关闭。\n\nAgent：Codex /root  \nOperator：本会话明确授权提交的用户  \nTask：补全#95的审查和测试  \nStatus：审查材料及验证完成；Draft，两个流程缺口待修复\n",
+              "state": null,
+              "user": null,
+              "assignees": null,
+              "labels": null,
+              "milestone": null,
+              "state_reason": null,
+              "comments": null,
+              "created_at": null,
+              "updated_at": null,
+              "closed_at": null,
+              "display_url": "https://github.com/WyEhNf/flash-chroma/pull/96",
+              "display_title": "补全#95的审查和测试"
+            },
+            {
+              "url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+              "title": "重构：单头运行库、连续三维选择及性能修复",
+              "issue_number": 95,
+              "body": "本PR交付独立C++17 `flash_chroma.hpp` 和可选独立C99 `flash_chroma_c.h`，提供精度A、处理时间B、运行内存C的连续偏好与硬预算选择，以及Desktop/Mobile/Embedded/Portable开关。整批模型和执行计划固定，保留四级Q16四面体插值及每级RGB8 half-up整数结果。\n\n本次修复单头化后的三项性能退化：U8/U16迁入标量ILP查表与AVX2打包，采用64像素成块NT写出及安全短尾；准备阶段先证明首层小域，精确缓存后三层并按请求线程扫描首层；宿主分配不再重复清零。普通AVX2和x86_64 BMI路径隔离分派，不能证明或缓存超容量时走通用构建。维护片段在生成时完全嵌入hpp，部署不依赖私有源文件。\n\n缓存、ID、字典、worker块和实际可达palette位图均计入caller-owned arena。4T default U8为19187391B，max_first U16为37298623B，后者仍满足40MiB示例；持久表格式不变，临时容量增加约1.7MiB。新增缓存实际启用/槽数诊断；可编译关闭缓存，端侧默认裁剪。AVX-512仍明确Unsupported，NEON尚未实现。\n\nWindows11 / Ryzen9 8945HX / MinGW GCC15.2 Release / C++17、C99 / Python3.12.14、NumPy1.26.4，CPU-only：\n\n- AVX2/OpenMP和Scalar无OpenMP两构建各15项CTest通过；相关Python共41项通过。\n- 五套固定模型20条C++及5条独立C99完整RGB8流一致，400项有限比较通过；新direct合同347496项比较，含保护页、全部64种对齐、原地/分离、stride/短尾、普通AVX2/BMI和1/4线程。\n- 两个freestanding端侧裁剪对象无未定义符号；三种真实请求在C++/Python选择一致。40MiB预算请求实际执行100图，整批及逐图SHA与新目录证据一致。\n- 新实测目录覆盖5模型、20配置、热批次/首批40点，一次完整场次分为2个计时上下文。19配置A/A通过，default U8 1T失败；首批单次观测无稳定资格。7套模型资产复用，max41/max48仍没有本轮性能资格。\n\n三方同场比较旧评分库、修复前、修复后，共640次正式调用和40次预热，实际DLL路径/模块/来源与每次输出SHA全部核对。fixed/before热映射配对耗时比：default 1/4T为0.40061/0.46296，max_first为0.41151/0.47912；**这些热比较的A/A控制未同时通过，只作本场描述**。4T准备至首批fixed/before为0.12269/0.13060，各自双方A/A通过；计时含新建/分配/准备/首批，旧API还含模型读盘，新模型已读，不能称纯算法公平比值。1T旧prepare仍固定4T，不授同线程准备资格。\n\n旧库↔fixed热比值为default 1/4T 1.03918/0.96393、max_first 1.12462/1.04758，控制均未同时通过；**尚不能宣称稳定追平旧库，单线程仍有描述性的残余差距**。三方24组A/A仅8组通过，全部失败/慢轮保留，不补轮择优；新目录的A/A不能覆盖三方失败。\n\n[接入说明](https://github.com/WyEhNf/flash-chroma/blob/codex/p16-frontier-header-20261027/docs/single-header-runtime.md) · [性能修复、命令、结果与限制](https://github.com/WyEhNf/flash-chroma/blob/fb7e195/docs/stages/2026-10-28-header-performance-repair.md) · [最新目录与全部证据](https://github.com/WyEhNf/flash-chroma/tree/fb7e195/report/data/p16-header-performance-20261028) · [原单头阶段](https://github.com/WyEhNf/flash-chroma/blob/aad1871/docs/stages/2026-10-27-p16-frontier-header.md)\n\n提交：`0bdb2d6`原单头实现、`aad1871`原交付，`271e10f`性能修复、`fb7e195`集中验证与新目录。推送前fetch两远端，基础[#94](https://github.com/WyEhNf/flash-chroma/pull/94)的b7d7e3e仍包含于本头，无改写历史；交付头与实际链接来源SHA一致，23份新证据与Git字节一致。\n\n更新前重新检查88条issue/PR索引及第二页，完整刷新#95/#94/#89正文、conversation/review/行内及审查线程，issues[#7](https://github.com/WyEhNf/flash-chroma/issues/7)/[#8](https://github.com/WyEhNf/flash-chroma/issues/8)全文和完整评论；补读[#43](https://github.com/WyEhNf/flash-chroma/pull/43)、[#48](https://github.com/WyEhNf/flash-chroma/pull/48)、[#62](https://github.com/WyEhNf/flash-chroma/pull/62)、[#71](https://github.com/WyEhNf/flash-chroma/pull/71)、[#73](https://github.com/WyEhNf/flash-chroma/pull/73)、[#75](https://github.com/WyEhNf/flash-chroma/pull/75)全文和完整意见，保留旧失败/目标机边界。推送后再次刷新#95空评论/线程、#94基础及#7/#8；最新索引仅本PR因本次推送更新。337a3dd/876e15b8/397cc367实际仍为祖先。连接器传输失败和重试分别保留；Discussion4不可读取缺口继续记录，不关闭事项。\n\n限制：没有实际移动/嵌入式板卡、流式性能、Xeon6140、官方Threshold或未知LUT成绩。QEMU只证明其实际合同；资源账本不等于完整进程RSS，OS/OpenMP栈另记。保持Draft，不请求merge。\n\nAgent：Codex /root、cpp_runtime、portable_core、selector_catalog  \nOperator：本会话明确授权开发与检查的用户  \nTask：连续三维权衡、单头交付及性能退化修复  \nStatus：本机修复与集中检查完成；Draft，稳定旧库无退化/目标设备/官方评分待验收\n\n远端最终检查：提交 `fb7e195215f14df9f635394d75cde0e0e69c82c9` 的默认、纯标量、Docker及 Cortex-M3 / RV32 / Cortex-A53 三类QEMU六项均success。[正确性CI](https://github.com/WyEhNf/flash-chroma/actions/runs/40646082434) · [QEMU CI](https://github.com/WyEhNf/flash-chroma/actions/runs/40646082417)。这些结果不替代目标实板或性能稳定性验收。\n",
+              "state": null,
+              "user": null,
+              "assignees": null,
+              "labels": null,
+              "milestone": null,
+              "state_reason": null,
+              "comments": null,
+              "created_at": null,
+              "updated_at": null,
+              "closed_at": null,
+              "display_url": "https://github.com/WyEhNf/flash-chroma/pull/95",
+              "display_title": "重构：单头运行库、连续三维选择及性能修复"
+            }
+          ]
+        },
+        "isError": false
+      }
+    }
+  }
+}
