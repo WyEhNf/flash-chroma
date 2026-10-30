@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "purpose": "CMake注册和编译比赛适配契约，验证运行时分派及强制标量，不测性能",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "compiler": "g++.exe (x86_64-win32-seh-rev0, Built by MinGW-Builds project) 15.2.0",
+    "configuration": "Release / C++17 / OPENMP=0"
+  },
+  "ctest_cases": 2,
+  "ctest_passed": 2,
+  "commands": [
+    {
+      "directory": "F:/Hackathon/worktrees/p16-frontier-header-20261027/artifacts/framework-contract-cmake-20261029",
+      "command": "E:\\mingw64\\bin\\g++.exe -DFLASH_CHROMA_ENABLE_OPENMP=0 @CMakeFiles/fc_framework_adapter_contract.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\fc_framework_adapter_contract.dir\\F_\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\framework_adapter_contract.cpp.obj -c F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\framework_adapter_contract.cpp",
+      "file": "F:/Hackathon/worktrees/p16-frontier-header-20261027/tests/framework_adapter_contract.cpp",
+      "output": "CMakeFiles/fc_framework_adapter_contract.dir/F_/Hackathon/worktrees/p16-frontier-header-20261027/tests/framework_adapter_contract.cpp.obj"
+    },
+    {
+      "directory": "F:/Hackathon/worktrees/p16-frontier-header-20261027/artifacts/framework-contract-cmake-20261029",
+      "command": "E:\\mingw64\\bin\\g++.exe -DFLASH_CHROMA_ENABLE_AVX2=0 -DFLASH_CHROMA_ENABLE_OPENMP=0 @CMakeFiles/fc_framework_adapter_scalar_contract.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles\\fc_framework_adapter_scalar_contract.dir\\F_\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\framework_adapter_contract.cpp.obj -c F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\tests\\framework_adapter_contract.cpp",
+      "file": "F:/Hackathon/worktrees/p16-frontier-header-20261027/tests/framework_adapter_contract.cpp",
+      "output": "CMakeFiles/fc_framework_adapter_scalar_contract.dir/F_/Hackathon/worktrees/p16-frontier-header-20261027/tests/framework_adapter_contract.cpp.obj"
+    }
+  ],
+  "sources": {
+    "single_header\\CMakeLists.txt": "b38f3e5c36164a1dd09675cdf4acd6d8c88f2e0dc211f7f7d62224eddaa7bef7",
+    "tests\\framework_adapter_contract.cpp": "2c3a316c3615bfdec1c906443817796f22c9dd2b9d7ed6221e27287eadd64612",
+    "framework\\flash_chroma_adapter.hpp": "951302cf6f4d7a417c81c6694b8eb91c52a258b74aa8fa19c807c8c416b6e617",
+    "include\\flash_chroma.hpp": "f09079b092233d5376100dec7895fef80eb34f1c50b5bc0324f9a42e76346fa8"
+  },
+  "binaries": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-20261029\\fc_framework_adapter_contract.exe",
+      "bytes": 248507,
+      "sha256": "9ace28087acc5c48d2a8a6b4196e52361b3f63808ef601d323e823a5245f4f91"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-20261029\\fc_framework_adapter_scalar_contract.exe",
+      "bytes": 124228,
+      "sha256": "dc063c60fcbae34d00b41e5efe9d82e1c33e6db6bc18914a62811194209efc7f"
+    }
+  ],
+  "logs": [
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-configure.log",
+      "bytes": 727,
+      "sha256": "3347ecce47d34de034a51d43e11beff9c55639d1c59f35b4f639825ea98e3848"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-build.log",
+      "bytes": 585,
+      "sha256": "bdd7e44282678dc3de895c4bf9b5b1d696afe939c4175efef7dc208a90c28dcc"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-tests.log",
+      "bytes": 545,
+      "sha256": "b50b0b0bb087a4f2567f477023714e76663b4d7d40983d0c8a8137aec036a33c"
+    },
+    {
+      "path": "F:\\Hackathon\\worktrees\\p16-frontier-header-20261027\\artifacts\\framework-contract-cmake-20261029\\Testing\\Temporary\\LastTest.log",
+      "bytes": 2036,
+      "sha256": "0542a600c47c04408702fddde23833fe0baffe2dcbf41a37e11f502c8a477ea9"
+    }
+  ],
+  "ci_integration": "现有correctness/test任务的single_header构建与ctest步骤自动包含两新目标；本回执仅证明本机MinGW运行，远端本阶段尚待root推送检查。",
+  "scope": "解析公式自建原表、全域结构反例、uint16边界、混合网格、独立u64与Scalar/AVX2、线程/预算/失败契约；非正式样图或新性能资格。"
+}

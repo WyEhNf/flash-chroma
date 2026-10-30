@@ -1,0 +1,68 @@
+{
+  "schema": "framework_fit_contract_verification_v1",
+  "completed": true,
+  "purpose": "拟合格式/门控和小型数值正确性，不测性能",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "compiler": "GCC 15.2.0 MinGW",
+    "build": "Release C++17",
+    "openmp": false,
+    "test_threads": 1,
+    "remote_ci_executed": false
+  },
+  "tests_passed": [
+    "framework_fit_contract",
+    "framework_fit_numerics_contract"
+  ],
+  "scope": "3375个非均匀轴Q16探针、四级标量执行、小型3³设计矩阵及无支持节点；不是新增完整域拟合或完整域求解验证",
+  "commands": [
+    "cmake --build artifacts/framework-contract-cmake-20261029 --target fc_framework_fit_contract fc_framework_fit_numerics_contract --parallel 2",
+    "ctest --test-dir artifacts/framework-contract-cmake-20261029 -R ^framework_fit(_numerics)?_contract$ --output-on-failure --no-tests=error"
+  ],
+  "files": [
+    {
+      "path": "single_header/CMakeLists.txt",
+      "sha256": "c89214f76a61fd95122886af145c055e532501f4afdc43087b8cfcdbd2ef8e18"
+    },
+    {
+      "path": "framework/fit_experiment.hpp",
+      "sha256": "a291f9fc7add905499da525d32aed5f1cf3dc9fd3f10acc5c2424341e5a45052"
+    },
+    {
+      "path": "framework/fit_chain_experiment.hpp",
+      "sha256": "537bfea1286024c4cc450976f3e589f676905742e0a88bc07c98504ebd149bb6"
+    },
+    {
+      "path": "framework/benchmark.cpp",
+      "sha256": "07f681794cf071ce367f48a2cca1f3703ee942c38f68a4e2a0e7ad9d93ca6c67"
+    },
+    {
+      "path": "tests/framework_fit_contract.cpp",
+      "sha256": "1b13a43c9df822acf453283fc968aab65d9096211406426e2d9cf49293794bb0"
+    },
+    {
+      "path": "tests/framework_fit_numerics_contract.cpp",
+      "sha256": "eabeb7dafafc76addf6646fbd2a81f70bd26270d708863bb68998ccdd4b77849"
+    },
+    {
+      "path": "artifacts/framework-fit-cmake-configure.log",
+      "sha256": "c5aaa1c8ac63dfb26fed98e1973b81b9fc3e6c9fa28a4c188d78e0643da5ba61"
+    },
+    {
+      "path": "artifacts/framework-fit-cmake-build.log",
+      "sha256": "3d4bde1fa6b7ccba2ab003eb332ae128a24c8a67f81620d7e5a56c0aba6d824a"
+    },
+    {
+      "path": "artifacts/framework-fit-cmake-tests.log",
+      "sha256": "9c8a5f326a4a3afcc706133274b823da44ba78f0042d425b20e9932dc684f147"
+    },
+    {
+      "path": "artifacts/framework-contract-cmake-20261029/fc_framework_fit_contract.exe",
+      "sha256": "428cd9fc6cb0ab85a060c918cdfacd434e352c815cc9c1fffcd30b9f7b14f832"
+    },
+    {
+      "path": "artifacts/framework-contract-cmake-20261029/fc_framework_fit_numerics_contract.exe",
+      "sha256": "f033d5d1f7d291def48ccb8f2ab05aa8eefb4d5d16aa7cf98540779a45fdeef0"
+    }
+  ]
+}
