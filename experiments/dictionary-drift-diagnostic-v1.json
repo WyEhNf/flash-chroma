@@ -1,0 +1,116 @@
+{
+  "purpose": "冻结并诊断原3B变动：同进程全驻留，固定ABBA/BAAB，不恢复速度资格。",
+  "source_sha256": {
+    "experiments/banked-dictionary-runtime/memory_rom.h": "1e868353ed02906efde300317bbb710a5e90b14990ea90053a3d3b1ddf8f9dee",
+    "experiments/banked-dictionary-runtime/memory_rom.c": "f154dcb00e8c9a235d66bf08a9c59a10ceba581b81fbb61768121c34b8c79f42",
+    "experiments/banked-dictionary-runtime/memory_parallel.cpp": "74c5ee1849ce5982d96f930e3283371b5d3e0a6f551ac48d4a0d114707b9665b",
+    "experiments/banked-dictionary-runtime/channel_avx2_bank.cpp": "601b7db8f27439c808a73131d8a50caae503b56c6727c47999f8dafa13cce79e",
+    "scripts/profile_banked_dictionary.py": "84fecbe3a07ead5e48e407c7c07a8df8b1a71ece40409ba39760be0d9f1454f8",
+    "scripts/generate_banked_dictionary.py": "38b3683dd4717714e008c50ececfffa3009379f90c66c4dd93c7d43e8b9445bc",
+    "scripts/banked_dictionary_support.py": "61b6a7695066b1608cb97a3e4ff964b72285b81a11cd1e730a9cfd46b30d1f6f",
+    "scripts/export_banked_dictionary.py": "ed0a0f38ee4f6f4bd31c69c7ebc3b7c95223c6e59e2590d3bfaeb5c6b5651ac8",
+    "scripts/build_banked_dictionary.py": "80464637638261442cecc0d81cbaeabc79d75dae509e734821664a9db2da6a8a",
+    "scripts/verify_banked_dictionary.py": "f68e1801c0e48f2a627f8d6c5d9cbbeaa703a0bc9437d19e5c8ef072e46d8202",
+    "scripts/bench_banked_dictionary.py": "c25970400b3b844de0a550b0100823b1a2b15bb39685265b41c7520175e32b58",
+    "scripts/freeze_banked_dictionary.py": "be213ed650ffbb99a3d952ef318eae9b58d326715bf5097924442afd46aff12f",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "experiments/banked-dictionary-profile-v1.json": "1e895cbedaba306befe564085f37d33ffc5f183f25d56a09407915850a2b3545",
+    "experiments/split-dictionary-runtime/memory_rom.h": "93eae508d8d6af3a9b0debe795c710cc07e1143675996238e4ae1f87dc818f3f",
+    "experiments/split-dictionary-runtime/memory_rom.c": "2d7c12f1bd9d7eee5c89ca5e7954f0cb6e6b9f842164f5738cc7189d523ce0f6",
+    "experiments/split-dictionary-runtime/memory_parallel.cpp": "32eee0b5be4d7dba19d916639d238391406ea74733cb1f61e7de6af002ffad5c",
+    "experiments/split-dictionary-runtime/channel_avx2_split.cpp": "5724422079a6144165ee9caaca6b4348a8f75a6731725e11216d05eae86ec798",
+    "scripts/build_split_dictionary.py": "07e4132c75624a34da4f6f2002e10e665b8fe29929e69e8bc3d1cd5348095483",
+    "scripts/verify_split_dictionary.py": "7b24b1354de6012bc509a769632bf4d7414d6a0140911424d6c52edcabae2ff6",
+    "scripts/diagnose_dictionary_drift.py": "9b06c4972acd0d1751c1f1e5114bc308afd1fce89e2d56398d0cfaff199c69bd",
+    "experiments/dictionary-drift-diagnostic-design.md": "be67daa9630bb259ae9a42063584b0948e0bdc3e94a38ac23d88d098c9d8cbc0"
+  },
+  "input_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-17.bin": "33dc6d0ba3a57d0b62f51ebef910eb4862811473420602e03c238c08cc4448da",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-rom-v1\\rom-24.bin": "e7845552f2cfb19dd60151413b15527d8386b2ed3b5375d46fd91f1bd89b2285",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\candidate-base.slut": "8136e92d13b2a0d747007969377618d53066715400c4b8b772fb2581dafc6a51",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-current-anchor-accept-v1\\channel-frac.bin": "85b045f0247aca016f986b61237302d4f812705d71a390226b8df04189dd7fff",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage2.slut": "933a4311800dabfafdec534cc149c56aeb7043e5e57df8bef4dd174058b57650",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage3.slut": "95cb685e2298c49744cf91502bc06a3f8f20e97d1e654872ba1cfd59a48e7234",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\cinema-envelope-v1\\stage4_sweep004\\selected-stage4.slut": "932f61f56d76baa77f336a6f4b5788c0a1b97d84b2ccb4e8ebd7eda95bb335ed",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-banked-dictionary-rom-v1\\rom-4.bin": "8492d8b7376d86d9442ef53023574aa8345333a16cc7dd8dceba34998e659cfd",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-banked-dictionary-build-v1\\jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-banked-dictionary-build-v1\\jshc_memory_bank.dll": "ef2469eeba143e5787d7c6d3fe3ea0b73eb3acdbb5ce7d20feb3a98fce5e3733"
+  },
+  "resident_roles": [
+    "ref78",
+    "ref80",
+    "dict32",
+    "avx2_24",
+    "avx2_17",
+    "avx2_bank",
+    "c99_bank"
+  ],
+  "role_identities": {
+    "ref78": {
+      "capacity": 28046644,
+      "library": "artifacts\\p16-banked-dictionary-build-v1\\jshc_memory_ref78.dll",
+      "library_sha256": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce"
+    },
+    "ref80": {
+      "capacity": 28046644,
+      "library": "F:\\Hackathon\\worktrees\\p16-speed-20261023\\artifacts\\p16-speed-direct-build-v1\\baseline\\libjshc_skylake_andn_normal.dll",
+      "library_sha256": "c9d8a28ecac46de47037572f1985bc2010c0c8a745df74450ca204e6f9721917"
+    },
+    "dict32": {
+      "capacity": 5919728,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-build-v2\\jshc_memory_rom.dll",
+      "library_sha256": "88bddba254d4ad7755778c2c24a6a5660af1d463704db90c556b7889e28d57f6"
+    },
+    "avx2_24": {
+      "capacity": 4871152,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll",
+      "library_sha256": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d"
+    },
+    "avx2_17": {
+      "capacity": 3953648,
+      "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-compact-dictionary-build-v1\\jshc_memory_rom.dll",
+      "library_sha256": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d"
+    },
+    "avx2_bank": {
+      "capacity": 4248656,
+      "library": "artifacts\\p16-banked-dictionary-build-v1\\jshc_memory_bank.dll",
+      "library_sha256": "ef2469eeba143e5787d7c6d3fe3ea0b73eb3acdbb5ce7d20feb3a98fce5e3733"
+    },
+    "c99_bank": {
+      "capacity": 4248656,
+      "library": "artifacts\\p16-banked-dictionary-build-v1\\jshc_memory_bank.dll",
+      "library_sha256": "ef2469eeba143e5787d7c6d3fe3ea0b73eb3acdbb5ce7d20feb3a98fce5e3733"
+    }
+  },
+  "timed_roles": {
+    "A": "ref80",
+    "B": "avx2_24"
+  },
+  "workers": 4,
+  "groups_per_sequence": 16,
+  "sequences": [
+    "ABBA",
+    "BAAB"
+  ],
+  "calls_per_worker": 128,
+  "extra_warmup_calls": 0,
+  "group_hashes_per_worker": 32,
+  "protocol": "每新进程先准备全部七角色保持驻留，只计ref80及原3B。两块各16组；偶数ABBA后BAAB，奇数相反；同一不可变source和同一target地址，实际原地IO均target。每次输入恢复不计时；组内无大IO/整幅SHA，组末核完整输出SHA。不额外预热或追加调用，首组/坏组全部保留。",
+  "instrumentation": "每call记录perf_counter_ns壁钟、QueryThreadCycleTime、GetThreadTimes用户/内核、CPU前后号及地址；process/thread affinity只读不改。cycle/time计数边界略包围壁钟边界，差异不扣除；CPU时间/壁钟可因粒度超过1，不截断。周期不转换秒/GHz，不是retired指令。",
+  "hypotheses": {
+    "H1": "单一共同乘性速率足以解释变动：每worker若group A壁钟p90/p10<=1.10，而局部B/A比p90/p10>=1.25，则反驳该简化解释；其它情况只描述相容/不足，不认定调频原因。",
+    "H2": ">=10%的可重复序列效应：ABBA/BAAB局部B/A中位比若至少3/4worker同向偏离>=10%，记与顺序关联相容；若全部worker偏离<5%，不支持本场>=10%量级效应；其余不足。序列块与时间交互不当作随机因果。",
+    "H3": "壁钟/线程CPU时间/周期并列检验仅抢占解释；计时粒度及不同计数器边界可能妨碍辨别。",
+    "H4": "记录端点迁移/affinity；端点CPU不同为观察迁移，同CPU不排除中途迁移。不选择核心/样本，不把H1/H2当唯二原因。"
+  },
+  "quantile": "numpy.quantile(method=linear)，全部32组，不删除控制或异常组。",
+  "qualification": "此诊断无100..50档、不恢复原3B推荐、不撤销39.8454%有效反例；不补跑/不改门槛/不绑核/不换输入。"
+}

@@ -1,0 +1,19 @@
+{
+  "purpose": "第四独立阶段：唯一8像素ID先读/LE序列化palette字节组内重叠4B写；前7项memcpy4、末项3，全部短尾3，无裸uint32 store、不扫描批宽。",
+  "base_commit": "f691223",
+  "source_sha256": {
+    "experiments/memory-rom/memory_rom_store.c": "e9a116e3a0b03242d01a90ebc8eee905947120e48cad030aede65cc71c772a10",
+    "experiments/memory-rom/memory_rom_store.h": "b0fd5aeb12cc02970c52a3764049d73659995efbfb71320dd1453dd3646f68db",
+    "experiments/memory-rom/memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "experiments/memory-rom/memory_rom.h": "1568e6019824ef3f15e71e91274a20640a79beef0a4ad013bab5034503207b2d",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666",
+    "scripts/build_memory_rom_store.py": "a129c9752ccab95f388df54c45b6f06434fb74fb2170220d2104ac6094808db2",
+    "scripts/verify_memory_rom_store.py": "533d2ad869e27fc52f1bfb53350f27d2ac55f4a1411ce5357f60808bb9f73987",
+    "scripts/bench_memory_rom_store.py": "c49ed807dcdd06445bd00a7f74a14b87ed00074ccd2fee974814f7180caa9e42",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c"
+  },
+  "protocol": "五角色78/80/C99三容量，四新进程双接口1/4线程，预热1/计时5，80 A/A单对0.8..1.25且中位1/1.1..1.1。",
+  "gate": "全域/逐图完全精确，最劣worker速度保留至少50%，100..50六档；控制失败仅观察；不拼接前三阶段比值。"
+}

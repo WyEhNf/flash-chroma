@@ -1,0 +1,175 @@
+{
+  "purpose": "只用Clang21重编译原严格C99 store，原GCC核心/OMP/AVX2对象原字节链接。",
+  "plan_sha256": "d764ffd3a1590c43db6aff3cf88104d2dc63d2680e1e31fec18084dd3f6d296d",
+  "source_sha256": {
+    "experiments/memory-rom/memory_rom.h": "1568e6019824ef3f15e71e91274a20640a79beef0a4ad013bab5034503207b2d",
+    "experiments/memory-rom/memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "experiments/memory-rom/memory_rom_store.h": "b0fd5aeb12cc02970c52a3764049d73659995efbfb71320dd1453dd3646f68db",
+    "experiments/memory-rom/memory_rom_store.c": "e9a116e3a0b03242d01a90ebc8eee905947120e48cad030aede65cc71c772a10",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666",
+    "scripts/build_memory_rom_clang_store.py": "5b1204b1a902acf9557fa7e219dcc0518d0d6d4e83383bac5e4dce6f28768561",
+    "scripts/bench_memory_rom_clang_store.py": "6d3b82f696a22465117cea29d0e2be1169d3b423d7a3ea90d685d7c3dc1e4d1d",
+    "scripts/freeze_memory_rom_clang_store.py": "3b0e85eee7e0961cd6642b8af1849aab79ad5f658d85fe60cbd500351f1ca554",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/verify_memory_rom_store.py": "533d2ad869e27fc52f1bfb53350f27d2ac55f4a1411ce5357f60808bb9f73987",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e"
+  },
+  "input_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_c.o": "60c497d0e2a749b09866770ae1ea9bd605849724387047ae22e7cac09c28f921",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_store.o": "f6cc49699ddd7d99cafecceb984f07f447fa8ee1266cda2f404d88563170717c",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_parallel.o": "fd62b06152c6b802ad400e380b3ab6fa1b3411ffcfe5fa58c3787a5f2115edda",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_0.o": "7b996da28d85ce28d80902d1d862de8ef921d8550406bf24bf13c8f0bebde061",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_10.o": "2b6f5329fbaca9137cc8c2957ec4678493bd6a3c820a1b6327a07242567bec9f",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_4.o": "abbceff32bec4c81d4ce65d6adacc664bf6342dbe59db52837871c5c6983f62d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_6.o": "c9838142e25a336d6ba23404ea95bcf7ce6b681088ad514a976b8219f0251ed8",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_8.o": "e61308b9ac0d982ccb5c3166acecc6898be5b10b9e1c716cc785e37e1d84fba5",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_inplace.o": "31c94a94ccee79acaeaa3836854ea6b53176edfceaea8682ab9b15a4e0e6de59",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_outplace.o": "459d9d89e808f178af452af4a872922ee1668190846fc6dc87805e13bec74a10",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\jshc_memory_rom.dll": "8dc0fb199080f1ff6b6128b3fa3010dfc549335c2de5ba585d4424207ff3cc1e",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\build.json": "bcc702ee4e3d2b02871893915816a900b5ffc677cab9c6d6a693faaadaa5eee9",
+    "C:\\Program Files\\LLVM\\bin\\clang.exe": "07e62068e7cbce378c053cfd0633b1a235fa8b38ebd57b27998dda17fe375a8c",
+    "E:\\mingw64\\bin\\gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:\\mingw64\\bin\\g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "commands": [
+    {
+      "command": [
+        "C:/Program Files/LLVM/bin/clang.exe",
+        "--target=x86_64-w64-windows-gnu",
+        "--sysroot=E:/mingw64",
+        "-isystem",
+        "E:/mingw64/x86_64-w64-mingw32/include",
+        "-std=c99",
+        "-pedantic-errors",
+        "-O3",
+        "-Wall",
+        "-Wextra",
+        "-march=x86-64",
+        "-mtune=generic",
+        "-mno-avx",
+        "-mno-avx2",
+        "-mno-avx512f",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\memory-rom\\memory_rom_store.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\memory_store_clang.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\memory_store_clang.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_0.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_10.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_4.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_6.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_8.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_inplace.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_outplace.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\memory_store_clang.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/objdump.exe",
+        "-d",
+        "-Mintel",
+        "--no-show-raw-insn",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\memory_store_clang.o"
+      ],
+      "returncode": 0,
+      "stdout": "\nF:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\memory_store_clang.o:     file format pe-x86-64\n\n\nDisassembly of section .text:\n\n0000000000000000 <jshc_mem_apply_store>:\n   0:\tpush   r15\n   2:\tpush   r14\n   4:\tpush   r13\n   6:\tpush   r12\n   8:\tpush   rsi\n   9:\tpush   rdi\n   a:\tpush   rbp\n   b:\tpush   rbx\n   c:\tsub    rsp,0x38\n  10:\tmov    rsi,r9\n  13:\tmov    rdi,r8\n  16:\tmov    rbx,rdx\n  19:\tmov    r14,rcx\n  1c:\tcall   21 <jshc_mem_apply_store+0x21>\n  21:\tmov    r12d,0x1\n  27:\ttest   eax,eax\n  29:\tje     3f <jshc_mem_apply_store+0x3f>\n  2b:\tmov    eax,r12d\n  2e:\tadd    rsp,0x38\n  32:\tpop    rbx\n  33:\tpop    rbp\n  34:\tpop    rdi\n  35:\tpop    rsi\n  36:\tpop    r12\n  38:\tpop    r13\n  3a:\tpop    r14\n  3c:\tpop    r15\n  3e:\tret\n  3f:\tmov    ecx,DWORD PTR [r14+0x418]\n  46:\tmov    rdx,QWORD PTR [r14+0x10]\n  4a:\ttest   ecx,ecx\n  4c:\tje     238 <jshc_mem_apply_store+0x238>\n  52:\tmov    r8d,0xffffffff\n  58:\tshl    r8d,cl\n  5b:\tnot    r8d\n  5e:\txor    r12d,r12d\n  61:\tcmp    rsi,0x8\n  65:\tjb     3b4 <jshc_mem_apply_store+0x3b4>\n  6b:\tmov    r10d,0x15\n  71:\txor    r15d,r15d\n  74:\tmov    QWORD PTR [rsp+0x20],r14\n  79:\tmov    QWORD PTR [rsp+0x28],rsi\n  7e:\txchg   ax,ax\n  80:\tmovzx  eax,WORD PTR [rbx+r10*1-0x15]\n  86:\tmovzx  r11d,BYTE PTR [rbx+r10*1-0x13]\n  8c:\tshl    r11d,0x10\n  90:\tor     r11d,eax\n  93:\tmov    eax,r11d\n  96:\tshr    eax,cl\n  98:\tand    r11d,r8d\n  9b:\tadd    r11d,DWORD PTR [rdx+rax*4]\n  9f:\tmovzx  r11d,BYTE PTR [rdx+r11*1]\n  a4:\tmovzx  eax,WORD PTR [rbx+r10*1-0x12]\n  aa:\tmovzx  r14d,BYTE PTR [rbx+r10*1-0x10]\n  b0:\tshl    r14d,0x10\n  b4:\tor     r14d,eax\n  b7:\tmov    eax,r14d\n  ba:\tshr    eax,cl\n  bc:\tand    r14d,r8d\n  bf:\tadd    r14d,DWORD PTR [rdx+rax*4]\n  c3:\tmovzx  eax,BYTE PTR [rdx+r14*1]\n  c8:\tmov    QWORD PTR [rsp+0x30],rax\n  cd:\tmovzx  eax,WORD PTR [rbx+r10*1-0xf]\n  d3:\tmovzx  r14d,BYTE PTR [rbx+r10*1-0xd]\n  d9:\tshl    r14d,0x10\n  dd:\tor     r14d,eax\n  e0:\tmov    eax,r14d\n  e3:\tshr    eax,cl\n  e5:\tand    r14d,r8d\n  e8:\tadd    r14d,DWORD PTR [rdx+rax*4]\n  ec:\tmovzx  eax,WORD PTR [rbx+r10*1-0xc]\n  f2:\tmovzx  r13d,BYTE PTR [rbx+r10*1-0xa]\n  f8:\tshl    r13d,0x10\n  fc:\tor     r13d,eax\n  ff:\tmov    eax,r13d\n 102:\tshr    eax,cl\n 104:\tand    r13d,r8d\n 107:\tadd    r13d,DWORD PTR [rdx+rax*4]\n 10b:\tmovzx  eax,WORD PTR [rbx+r10*1-0x9]\n 111:\tmovzx  esi,BYTE PTR [rbx+r10*1-0x7]\n 117:\tshl    esi,0x10\n 11a:\tor     esi,eax\n 11c:\tmov    eax,esi\n 11e:\tshr    eax,cl\n 120:\tmovzx  r12d,BYTE PTR [rdx+r14*1]\n 125:\tand    esi,r8d\n 128:\tadd    esi,DWORD PTR [rdx+rax*4]\n 12b:\tmovzx  ebp,BYTE PTR [rdx+r13*1]\n 130:\tmovzx  r13d,BYTE PTR [rdx+rsi*1]\n 135:\tmovzx  eax,WORD PTR [rbx+r10*1-0x6]\n 13b:\tmovzx  esi,BYTE PTR [rbx+r10*1-0x4]\n 141:\tshl    esi,0x10\n 144:\tor     esi,eax\n 146:\tmov    eax,esi\n 148:\tshr    eax,cl\n 14a:\tand    esi,r8d\n 14d:\tadd    esi,DWORD PTR [rdx+rax*4]\n 150:\tmovzx  r14d,BYTE PTR [rdx+rsi*1]\n 155:\tmovzx  eax,WORD PTR [rbx+r10*1-0x3]\n 15b:\tmovzx  esi,BYTE PTR [rbx+r10*1-0x1]\n 161:\tshl    esi,0x10\n 164:\tor     esi,eax\n 166:\tmov    eax,esi\n 168:\tshr    eax,cl\n 16a:\tand    esi,r8d\n 16d:\tadd    esi,DWORD PTR [rdx+rax*4]\n 170:\tmovzx  eax,WORD PTR [rbx+r10*1]\n 175:\tmovzx  r9d,BYTE PTR [rbx+r10*1+0x2]\n 17b:\tshl    r9d,0x10\n 17f:\tor     r9d,eax\n 182:\tmov    eax,r9d\n 185:\tshr    eax,cl\n 187:\tmovzx  esi,BYTE PTR [rdx+rsi*1]\n 18b:\tand    r9d,r8d\n 18e:\tadd    r9d,DWORD PTR [rdx+rax*4]\n 192:\tmovzx  eax,BYTE PTR [rdx+r9*1]\n 197:\tmov    r9,QWORD PTR [rsp+0x20]\n 19c:\tmov    r9,QWORD PTR [r9]\n 19f:\tmov    r11d,DWORD PTR [r9+r11*4+0x20]\n 1a4:\tmov    DWORD PTR [rdi+r10*1-0x15],r11d\n 1a9:\tmov    r11,QWORD PTR [rsp+0x30]\n 1ae:\tmov    r11d,DWORD PTR [r9+r11*4+0x20]\n 1b3:\tmov    DWORD PTR [rdi+r10*1-0x12],r11d\n 1b8:\tmov    r11d,DWORD PTR [r9+r12*4+0x20]\n 1bd:\tmov    DWORD PTR [rdi+r10*1-0xf],r11d\n 1c2:\tmov    r11d,DWORD PTR [r9+rbp*4+0x20]\n 1c7:\tmov    DWORD PTR [rdi+r10*1-0xc],r11d\n 1cc:\tmov    r11d,DWORD PTR [r9+r13*4+0x20]\n 1d1:\tmov    DWORD PTR [rdi+r10*1-0x9],r11d\n 1d6:\tmov    r11d,DWORD PTR [r9+r14*4+0x20]\n 1db:\tmov    DWORD PTR [rdi+r10*1-0x6],r11d\n 1e0:\tmov    r11d,DWORD PTR [r9+rsi*4+0x20]\n 1e5:\tmov    rsi,QWORD PTR [rsp+0x28]\n 1ea:\tmov    DWORD PTR [rdi+r10*1-0x3],r11d\n 1ef:\tmovzx  r11d,BYTE PTR [r9+rax*4+0x22]\n 1f5:\tmov    BYTE PTR [rdi+r10*1+0x2],r11b\n 1fa:\tmovzx  eax,WORD PTR [r9+rax*4+0x20]\n 200:\tmov    WORD PTR [rdi+r10*1],ax\n 205:\tadd    r10,0x18\n 209:\tlea    rax,[rsi+r15*1]\n 20d:\tadd    rax,0xfffffffffffffff8\n 211:\tadd    r15,0xfffffffffffffff8\n 215:\tcmp    rax,0x7\n 219:\tja     80 <jshc_mem_apply_store+0x80>\n 21f:\tneg    r15\n 222:\tmov    r14,QWORD PTR [rsp+0x20]\n 227:\txor    r12d,r12d\n 22a:\tsub    rsi,r15\n 22d:\tjbe    2b <jshc_mem_apply_store+0x2b>\n 233:\tjmp    3c0 <jshc_mem_apply_store+0x3c0>\n 238:\txor    r12d,r12d\n 23b:\tcmp    rsi,0x8\n 23f:\tjb     41a <jshc_mem_apply_store+0x41a>\n 245:\tmov    r8d,0x15\n 24b:\txor    ecx,ecx\n 24d:\tmov    QWORD PTR [rsp+0x20],r14\n 252:\tdata16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]\n 260:\tmovzx  r9d,WORD PTR [rbx+r8*1-0x15]\n 266:\tmovzx  r10d,BYTE PTR [rbx+r8*1-0x13]\n 26c:\tshl    r10d,0x10\n 270:\tadd    r10,rdx\n 273:\tmovzx  eax,BYTE PTR [r9+r10*1]\n 278:\tmovzx  r10d,WORD PTR [rbx+r8*1-0x12]\n 27e:\tmovzx  r11d,BYTE PTR [rbx+r8*1-0x10]\n 284:\tshl    r11d,0x10\n 288:\tadd    r11,rdx\n 28b:\tmovzx  r10d,BYTE PTR [r10+r11*1]\n 290:\tmovzx  r11d,WORD PTR [rbx+r8*1-0xf]\n 296:\tmovzx  r14d,BYTE PTR [rbx+r8*1-0xd]\n 29c:\tshl    r14d,0x10\n 2a0:\tadd    r14,rdx\n 2a3:\tmovzx  r11d,BYTE PTR [r11+r14*1]\n 2a8:\tmovzx  r14d,WORD PTR [rbx+r8*1-0xc]\n 2ae:\tmovzx  r15d,BYTE PTR [rbx+r8*1-0xa]\n 2b4:\tshl    r15d,0x10\n 2b8:\tadd    r15,rdx\n 2bb:\tmovzx  r14d,BYTE PTR [r14+r15*1]\n 2c0:\tmovzx  r15d,WORD PTR [rbx+r8*1-0x9]\n 2c6:\tmovzx  r12d,BYTE PTR [rbx+r8*1-0x7]\n 2cc:\tshl    r12d,0x10\n 2d0:\tadd    r12,rdx\n 2d3:\tmovzx  r15d,BYTE PTR [r15+r12*1]\n 2d8:\tmovzx  r12d,WORD PTR [rbx+r8*1-0x6]\n 2de:\tmovzx  r13d,BYTE PTR [rbx+r8*1-0x4]\n 2e4:\tshl    r13d,0x10\n 2e8:\tadd    r13,rdx\n 2eb:\tmovzx  r12d,BYTE PTR [r12+r13*1]\n 2f0:\tmovzx  r13d,WORD PTR [rbx+r8*1-0x3]\n 2f6:\tmovzx  ebp,BYTE PTR [rbx+r8*1-0x1]\n 2fc:\tshl    ebp,0x10\n 2ff:\tadd    rbp,rdx\n 302:\tmovzx  r13d,BYTE PTR [r13+rbp*1+0x0]\n 308:\tmovzx  ebp,WORD PTR [rbx+r8*1]\n 30d:\tmovzx  r9d,BYTE PTR [rbx+r8*1+0x2]\n 313:\tshl    r9d,0x10\n 317:\tadd    r9,rdx\n 31a:\tmovzx  r9d,BYTE PTR [rbp+r9*1+0x0]\n 320:\tmov    rbp,QWORD PTR [rsp+0x20]\n 325:\tmov    rbp,QWORD PTR [rbp+0x0]\n 329:\tmov    eax,DWORD PTR [rbp+rax*4+0x20]\n 32d:\tmov    DWORD PTR [rdi+r8*1-0x15],eax\n 332:\tmov    eax,DWORD PTR [rbp+r10*4+0x20]\n 337:\tmov    DWORD PTR [rdi+r8*1-0x12],eax\n 33c:\tmov    eax,DWORD PTR [rbp+r11*4+0x20]\n 341:\tmov    DWORD PTR [rdi+r8*1-0xf],eax\n 346:\tmov    eax,DWORD PTR [rbp+r14*4+0x20]\n 34b:\tmov    DWORD PTR [rdi+r8*1-0xc],eax\n 350:\tmov    eax,DWORD PTR [rbp+r15*4+0x20]\n 355:\tmov    DWORD PTR [rdi+r8*1-0x9],eax\n 35a:\tmov    eax,DWORD PTR [rbp+r12*4+0x20]\n 35f:\tmov    DWORD PTR [rdi+r8*1-0x6],eax\n 364:\tmov    eax,DWORD PTR [rbp+r13*4+0x20]\n 369:\tmov    DWORD PTR [rdi+r8*1-0x3],eax\n 36e:\tmovzx  eax,BYTE PTR [rbp+r9*4+0x22]\n 374:\tmov    BYTE PTR [rdi+r8*1+0x2],al\n 379:\tmovzx  eax,WORD PTR [rbp+r9*4+0x20]\n 37f:\tmov    WORD PTR [rdi+r8*1],ax\n 384:\tadd    r8,0x18\n 388:\tlea    rax,[rsi+rcx*1]\n 38c:\tadd    rax,0xfffffffffffffff8\n 390:\tadd    rcx,0xfffffffffffffff8\n 394:\tcmp    rax,0x7\n 398:\tja     260 <jshc_mem_apply_store+0x260>\n 39e:\tneg    rcx\n 3a1:\tmov    r14,QWORD PTR [rsp+0x20]\n 3a6:\txor    r12d,r12d\n 3a9:\tcmp    rsi,rcx\n 3ac:\tjbe    2b <jshc_mem_apply_store+0x2b>\n 3b2:\tjmp    425 <jshc_mem_apply_store+0x425>\n 3b4:\txor    r15d,r15d\n 3b7:\tsub    rsi,r15\n 3ba:\tjbe    2b <jshc_mem_apply_store+0x2b>\n 3c0:\tlea    r9,[r15+r15*2]\n 3c4:\tdata16 data16 cs nop WORD PTR [rax+rax*1+0x0]\n 3d0:\tmovzx  eax,WORD PTR [rbx+r9*1]\n 3d5:\tmovzx  r10d,BYTE PTR [rbx+r9*1+0x2]\n 3db:\tshl    r10d,0x10\n 3df:\tor     r10d,eax\n 3e2:\tmov    eax,r10d\n 3e5:\tshr    eax,cl\n 3e7:\tand    r10d,r8d\n 3ea:\tadd    r10d,DWORD PTR [rdx+rax*4]\n 3ee:\tmovzx  eax,BYTE PTR [rdx+r10*1]\n 3f3:\tmov    r10,QWORD PTR [r14]\n 3f6:\tmovzx  r11d,BYTE PTR [r10+rax*4+0x22]\n 3fc:\tmov    BYTE PTR [rdi+r9*1+0x2],r11b\n 401:\tmovzx  eax,WORD PTR [r10+rax*4+0x20]\n 407:\tmov    WORD PTR [rdi+r9*1],ax\n 40c:\tadd    r9,0x3\n 410:\tdec    rsi\n 413:\tjne    3d0 <jshc_mem_apply_store+0x3d0>\n 415:\tjmp    2b <jshc_mem_apply_store+0x2b>\n 41a:\txor    ecx,ecx\n 41c:\tcmp    rsi,rcx\n 41f:\tjbe    2b <jshc_mem_apply_store+0x2b>\n 425:\tmov    r9d,esi\n 428:\tsub    r9d,ecx\n 42b:\tlea    r8,[rcx+0x1]\n 42f:\ttest   r9b,0x1\n 433:\tje     46c <jshc_mem_apply_store+0x46c>\n 435:\tlea    rcx,[rcx+rcx*2]\n 439:\tmovzx  r9d,WORD PTR [rbx+rcx*1]\n 43e:\tmovzx  r10d,BYTE PTR [rbx+rcx*1+0x2]\n 444:\tshl    r10d,0x10\n 448:\tadd    r10,rdx\n 44b:\tmovzx  r9d,BYTE PTR [r9+r10*1]\n 450:\tmov    r10,QWORD PTR [r14]\n 453:\tmovzx  r11d,BYTE PTR [r10+r9*4+0x22]\n 459:\tmov    BYTE PTR [rdi+rcx*1+0x2],r11b\n 45e:\tmovzx  r9d,WORD PTR [r10+r9*4+0x20]\n 464:\tmov    WORD PTR [rdi+rcx*1],r9w\n 469:\tmov    rcx,r8\n 46c:\tcmp    rsi,r8\n 46f:\tje     2b <jshc_mem_apply_store+0x2b>\n 475:\tlea    r8,[rcx+rcx*2]\n 479:\tsub    rsi,rcx\n 47c:\tnop    DWORD PTR [rax+0x0]\n 480:\tmovzx  eax,WORD PTR [rbx+r8*1]\n 485:\tmovzx  ecx,BYTE PTR [rbx+r8*1+0x2]\n 48b:\tshl    ecx,0x10\n 48e:\tadd    rcx,rdx\n 491:\tmovzx  eax,BYTE PTR [rax+rcx*1]\n 495:\tmov    rcx,QWORD PTR [r14]\n 498:\tmovzx  r9d,BYTE PTR [rcx+rax*4+0x22]\n 49e:\tmov    BYTE PTR [rdi+r8*1+0x2],r9b\n 4a3:\tmovzx  eax,WORD PTR [rcx+rax*4+0x20]\n 4a8:\tmov    WORD PTR [rdi+r8*1],ax\n 4ad:\tmovzx  eax,WORD PTR [rbx+r8*1+0x3]\n 4b3:\tmovzx  ecx,BYTE PTR [rbx+r8*1+0x5]\n 4b9:\tshl    ecx,0x10\n 4bc:\tadd    rcx,rdx\n 4bf:\tmovzx  eax,BYTE PTR [rax+rcx*1]\n 4c3:\tmov    rcx,QWORD PTR [r14]\n 4c6:\tmovzx  r9d,BYTE PTR [rcx+rax*4+0x22]\n 4cc:\tmov    BYTE PTR [rdi+r8*1+0x5],r9b\n 4d1:\tmovzx  eax,WORD PTR [rcx+rax*4+0x20]\n 4d6:\tmov    WORD PTR [rdi+r8*1+0x3],ax\n 4dc:\tadd    r8,0x6\n 4e0:\tadd    rsi,0xfffffffffffffffe\n 4e4:\tjne    480 <jshc_mem_apply_store+0x480>\n 4e6:\tjmp    2b <jshc_mem_apply_store+0x2b>\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:/Program Files/LLVM/bin/clang.exe",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "clang version 21.1.0\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\LLVM\\bin\n",
+      "stderr": ""
+    }
+  ],
+  "compiler_version": "clang version 21.1.0\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\LLVM\\bin\n",
+  "clang_object_sha256": "d0a2e30675c474ad384a534f866680345c7d64a985fbeb7d88378b1b775bab1e",
+  "reused_objects": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_c.o": "60c497d0e2a749b09866770ae1ea9bd605849724387047ae22e7cac09c28f921",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_parallel.o": "fd62b06152c6b802ad400e380b3ab6fa1b3411ffcfe5fa58c3787a5f2115edda",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_0.o": "7b996da28d85ce28d80902d1d862de8ef921d8550406bf24bf13c8f0bebde061",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_10.o": "2b6f5329fbaca9137cc8c2957ec4678493bd6a3c820a1b6327a07242567bec9f",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_4.o": "abbceff32bec4c81d4ce65d6adacc664bf6342dbe59db52837871c5c6983f62d",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_6.o": "c9838142e25a336d6ba23404ea95bcf7ce6b681088ad514a976b8219f0251ed8",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\memory_avx2_8.o": "e61308b9ac0d982ccb5c3166acecc6898be5b10b9e1c716cc785e37e1d84fba5",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_inplace.o": "31c94a94ccee79acaeaa3836854ea6b53176edfceaea8682ab9b15a4e0e6de59",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-store-build-v1\\andn_outplace.o": "459d9d89e808f178af452af4a872922ee1668190846fc6dc87805e13bec74a10"
+  },
+  "libraries": {
+    "jshc_memory_c99.dll": "b970713c22ea5f6f79d0b16e41d5ea1661c2edc11dd90c200a732ac07d97e84d",
+    "jshc_memory_clang_store.dll": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "generic_x64_mnemonics": [
+    "add",
+    "and",
+    "call",
+    "cmp",
+    "data16",
+    "dec",
+    "ja",
+    "jb",
+    "jbe",
+    "je",
+    "jmp",
+    "jne",
+    "lea",
+    "mov",
+    "movzx",
+    "neg",
+    "nop",
+    "not",
+    "or",
+    "pop",
+    "push",
+    "ret",
+    "shl",
+    "shr",
+    "sub",
+    "test",
+    "xchg",
+    "xor"
+  ],
+  "forbidden_mnemonics": [],
+  "scope": "唯一新编译的映射对象是相同C99 store源；原GCC验证/准备、OMP适配器、旧AVX2/ANDN对象与链接顺序均复用，不用native或AVX512。"
+}

@@ -1,0 +1,29 @@
+{
+  "purpose": "独立只读观察P4 v2同加载顺序的实际依赖模块；不改正式源/环境，不计时。",
+  "source_sha256": {
+    "scripts/observe_page_id16_modules.py": "3be20f95b9e763b425d80d6727b6c7e00cb37fb78c4877dcbbc54180cd85be1f"
+  },
+  "performance_plan": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\page-id16-performance-v2.json",
+  "performance_plan_sha256": "b54be80781190763245429eb8743433063ccf3d04bb448f5afd0f8a2999f2608",
+  "roles": [
+    "ref78",
+    "ref80",
+    "linear_avx",
+    "linear_c99",
+    "p4_avx",
+    "p4_c99"
+  ],
+  "process_allowed_mask": 85,
+  "dependency_names": [
+    "libgcc_s_seh-1.dll",
+    "libgomp-1.dll",
+    "libstdc++-6.dll",
+    "libwinpthread-1.dll"
+  ],
+  "protocol": "同v2 imports和0x55；按正式六角色原顺序prepare，准备前/每个角色后/全部关闭后用K32EnumProcessModulesEx LIST_MODULES_ALL+GetModuleFileNameW只读枚举实际加载绝对路径/地址；四依赖记录SHA/字节/数量。未分配照片，不调用像素或计时。",
+  "scope": "磁盘四目录的冻结SHA不是实际加载证明；不选择/更换DLL或环境、不通过此观察授速度/稳定性资格。仅一个fresh，首次失败保存STOP。API返回HMODULE为借用快照，不CloseHandle。",
+  "primary_sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodulesex",
+    "https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew"
+  ]
+}

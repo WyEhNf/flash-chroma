@@ -1,0 +1,25 @@
+{
+  "purpose": "在唯一4KiB页普查前冻结源、原M16D与固定容量门，不运行映射。",
+  "source_sha256": {
+    "scripts/profile_page_alias.py": "aa7c08959dc7af2515f3202e78cafde253d16f1c0b16ab79302c51bb04d8c787",
+    "scripts/freeze_page_alias_census.py": "717aba56d1a38578241823cebcd6acd87e69d1854f13e58d2a17feff743a9b2d",
+    "experiments/page-alias-census-design-v1.md": "e4af899d6afda6b438395031a08df19a6361d2226363d079aaf95672e8815c31"
+  },
+  "rom": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin",
+  "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+  "logical_id_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "page_bytes": 4096,
+  "pages": 4096,
+  "original_header_bytes": 1056,
+  "header_page_bytes": 4096,
+  "metadata_bytes": 16384,
+  "model_bytes": 1056,
+  "owner_state_expected_bytes": 48,
+  "gate": "基线16779328-(4096+16384+4096*uniquePages+实际原型owner状态48+原model1056)>=1048576；否则STOP。部署若增加必需常驻字段必须再扣账，不以原型投影代替实际容量。",
+  "protocol": "唯一完整4096页exact-byte census；全ID流及独立pool重放SHA、独立Counter、16384有限索引公式+2非法code；不读照片/gold、不扫页尺寸、不生成新ROM/MapViewOfFile3/性能。",
+  "scope": "虚拟跨度/逻辑blob_bytes不减少；unique backing不等物理RAM，后续QueryWorkingSetEx无PFN、PTE/VAD成本须另测/列未知。",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile3",
+    "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc2"
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "passed": true,
+  "purpose": "新RO加载方式的8完整域/8百图与原M16D边界，质量失败即停止。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "95b289d4f0a40baa1974fd902a6ceb59f7986c5bc67216f8ae8714468d1cc855",
+  "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+  "library_sha256": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+  "model_bytes": 1056,
+  "rom_bytes": 16778272,
+  "resident": 16779328,
+  "hashes": {
+    "c99_1_out": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "c99_1_in": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "c99_4_out": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "c99_4_in": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx_1_out": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx_1_in": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx_4_out": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx_4_in": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "photo_hashes": {
+    "c99_1_out": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "c99_1_in": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "c99_4_out": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "c99_4_in": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "avx_1_out": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "avx_1_in": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "avx_4_out": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+    "avx_4_in": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528"
+  },
+  "photo_input_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "finite": 580,
+  "rejections": 39,
+  "image_guards": 144,
+  "rom_guards": 24,
+  "fixtures": {
+    "actual": {
+      "input_cases": 65536,
+      "rom_bytes": 16778272,
+      "expected_sha256": "e78a1cb5c1cf2169c3f8a6448475b4c87e3d367b61663615702063b947a2976d",
+      "last_rgb": [
+        234,
+        231,
+        231
+      ]
+    },
+    "count1": {
+      "input_cases": 65536,
+      "rom_bytes": 16778272,
+      "expected_sha256": "3381de4ca9f3a477f25989dfc8b744e7916046b7aa369f61a9a2f7dc0963ec9e",
+      "last_rgb": [
+        0,
+        0,
+        0
+      ]
+    },
+    "count256": {
+      "input_cases": 65536,
+      "rom_bytes": 16778272,
+      "expected_sha256": "1a084cfcfe9c094b9ed0a17011f1a85f23e407c99320cdcb59fc1c5c65403794",
+      "last_rgb": [
+        255,
+        255,
+        255
+      ]
+    }
+  },
+  "lifecycle": [
+    {
+      "injected_stage": "file",
+      "events": [
+        "file"
+      ]
+    },
+    {
+      "injected_stage": "size",
+      "events": [
+        "file",
+        "size",
+        "close11"
+      ]
+    },
+    {
+      "injected_stage": "mapping",
+      "events": [
+        "file",
+        "size",
+        "mapping",
+        "close11"
+      ]
+    },
+    {
+      "injected_stage": "view",
+      "events": [
+        "file",
+        "size",
+        "mapping",
+        "view",
+        "close22",
+        "close11"
+      ]
+    },
+    {
+      "injected_cleanup_stage": "unmap",
+      "failed_then_explicit_retry": true
+    },
+    {
+      "injected_cleanup_stage": "close",
+      "failed_then_explicit_retry": true
+    },
+    {
+      "mode": "cow",
+      "closed_model_zero": true,
+      "idempotent": true
+    },
+    {
+      "mode": "readonly",
+      "closed_model_zero": true,
+      "idempotent": true
+    }
+  ],
+  "failure_handles_before": 158,
+  "failure_handles_after": 158,
+  "writer_error": 32,
+  "before": {
+    "PeakWorkingSetSize": 36630528,
+    "WorkingSetSize": 36630528,
+    "PrivateUsage": 24154112,
+    "PeakPagefileUsage": 24154112
+  },
+  "after": {
+    "PeakWorkingSetSize": 108490752,
+    "WorkingSetSize": 47325184,
+    "PrivateUsage": 29093888,
+    "PeakPagefileUsage": 95674368
+  },
+  "scope": "只有RO加载方式新增，C99/AVX/ROM字节未改；质量非吞吐，文件EOF页取整与独立字节精确NOACCESS夹具分开；Windows loader不代表跨平台。"
+}

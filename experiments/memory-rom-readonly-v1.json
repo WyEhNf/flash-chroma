@@ -1,0 +1,37 @@
+{
+  "purpose": "在三fresh与完整质量前冻结RO部署loader，原ROM/计算对象绝不重建。",
+  "source_sha256": {
+    "scripts/win_readonly_rom.py": "3ec0892acd472c5b44fb8d595698fcf2889693f5056bb6287115e532617aac16",
+    "scripts/measure_readonly_rom.py": "d97525d127812ecbf99fab5210dc5075ad4caeb763c685441b878f4522a4d02d",
+    "scripts/verify_readonly_rom.py": "c70ee9c8a4e1cde0c134fe6043bbfa264da0ce7d3f9f93ca7b103d7101c50de8",
+    "scripts/run_readonly_rom_quality.py": "61bd125d5ec619f9e58285b6ac08d10ad7f1c39ecc6cee36c8e0ee4be9b9ed2d",
+    "scripts/freeze_readonly_rom.py": "09bd9e91f729d91784482c54fedc117a858835219a1f0e5f9ed6fbfd4ff1b0a9",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "experiments/memory-rom/memory_rom.h": "1568e6019824ef3f15e71e91274a20640a79beef0a4ad013bab5034503207b2d",
+    "experiments/memory-rom/memory_rom.c": "590641300a72b8101d44d58e77b6ae817f067d39ca90e5ac15d764118163ede3",
+    "experiments/memory-rom/memory_rom_store.c": "e9a116e3a0b03242d01a90ebc8eee905947120e48cad030aede65cc71c772a10"
+  },
+  "input_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+    "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+  "rom": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin",
+  "photos": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\skylake-server-matrix-v1\\server-inputs\\photos.rgb",
+  "photos_sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd",
+  "model_bytes": 1056,
+  "rom_bytes": 16778272,
+  "resident_bytes": 16779328,
+  "protocol": "原study.loadrom ACCESS_COPY、相同WinAPI owner COW、RO各唯一fresh进程；同imports，DLL与流式SHA在before前。记录before/mapped_untouched/prepared/all_pages_read/closed，原构造器仅观察地址与状态后立刻还原。页触碰不复制ROM。",
+  "commit_gate": "三个打开后时点各要求min(两个COW各自PrivateUsage增量)-RO增量>=1MiB；否则STOP不做完整质量；系统commit仅辅助。",
+  "quality": "通过提交门槛后RO C99/AVX各1/4线程原地/分离共8完整256³与100图；580有限、IO拒绝、双图像guard、actual/count1/count256 ROM字节精确NOACCESS另夹具、WinAPI四失败位置清理、真实无效文件/共享写拒绝/close幂等和model清零。",
+  "performance": "尚未授权、不执行、不授100..50速度档；质量精确不代表部署速度保持旧成绩。",
+  "scope": "Windows专属loader；ROM与计算库/ISA未改，capacity保持16779328B，不称物理WS/跨平台改进；新进程微实验与旧RSS口径独立。",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile",
+    "https://docs.python.org/3.12/library/mmap.html",
+    "https://docs.python.org/3.12/library/ctypes.html"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "purpose": "完整域与有限形状验证M16P C99/AVX2原地及分离接口，金标准固定a399。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "source_sha256": {
+    "experiments/compact-dictionary-runtime/memory_rom.h": "8c79929d4753c8c9a469d128e340a5ab50a4e06eb078de3c8551bce632ecb246",
+    "experiments/compact-dictionary-runtime/memory_rom.c": "4c753f5045ca3ce79bb273b5233319f741199f531abaeb4908041510f7bc1636",
+    "experiments/compact-dictionary-runtime/memory_parallel.cpp": "57c5eb02b2660b6a8125c4ba01253e96331042391d7c580dbf50dd39ebfd7dc2",
+    "experiments/compact-dictionary-runtime/channel_avx2_17.cpp": "a378a9308ee755cbf6f5f5fb62ca8e420a6f9ba85dc0d21dbd47638790991d53",
+    "experiments/compact-dictionary-runtime/channel_avx2_24.cpp": "9b088cb7029f5f855fbbc314580bc83f96c0a870fb40669b8d5f271f5c06819a",
+    "scripts/generate_compact_dictionary.py": "74257cc0fa692cd79b4fc9aead9704e8daddc330d53ca974dcd946de66cac2c7",
+    "scripts/freeze_compact_dictionary.py": "a125c65edfb5827afb7357e4331d58f828b7eb89a4f7ecfe249ffe6d5ef9a588",
+    "scripts/export_compact_dictionary.py": "e2a0e947b6c0f5cf3055bd13763dfa1418f54604dd731782d2d76ca3ed69d727",
+    "scripts/build_compact_dictionary.py": "3ac0b9eb5de54f757574278a3348b610427f327affca14916ae93b947419b9bd",
+    "scripts/verify_compact_dictionary.py": "92d6cc8ab7694a74def0d07ef46738ab2f5e71419282b718de2c237f2b85b45f",
+    "scripts/verify_compact_dictionary_contract.py": "7ed16c4379f6cca1b7392c5736220685f5fbbd23f8d82fe3792fab14fbf666f8",
+    "scripts/bench_compact_dictionary.py": "250b3780ae7d7f7c7d0494dbd2bdb7fb27b797da084d616025000ead29c142dd",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "scripts/verify_memory_rom_contract.py": "cd096b4776b0f53cffbbffaa6541fea58d1c87b66af54637dcd06759b3718b6c",
+    "experiments/skylake-andn-split-runtime/channel_avx2.cpp": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+    "experiments/memory-rom/memory_parallel.cpp": "b7ef7f427de6aea9575b6bdf72ac3537e820989f5423cec66cb0c25dd1681666"
+  },
+  "comparisons": 720,
+  "refusals": 4,
+  "records": [
+    {
+      "entry_bits": 17,
+      "file_bytes": 3952592,
+      "model_size": 1056,
+      "resident": 3953648,
+      "rom_sha256": "33dc6d0ba3a57d0b62f51ebef910eb4862811473420602e03c238c08cc4448da",
+      "hashes": {
+        "c99": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "desktop_scalar": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "avx2_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "avx2_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+      }
+    },
+    {
+      "entry_bits": 24,
+      "file_bytes": 4870096,
+      "model_size": 1056,
+      "resident": 4871152,
+      "rom_sha256": "e7845552f2cfb19dd60151413b15527d8386b2ed3b5375d46fd91f1bd89b2285",
+      "hashes": {
+        "c99": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "desktop_scalar": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "avx2_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+        "avx2_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+      }
+    }
+  ],
+  "libraries": {
+    "jshc_memory_rom.dll": "90c4081d16d4f8929247ba15af4a1a58afbc6f99246ccb95ddf35a8b9db33a6d",
+    "jshc_dict_c99.dll": "9e896b65571c5aa35946a2ed1c0e27e48c2b899e02b14a6f3fb8effcc95df91b"
+  },
+  "scope": "两种索引宽度的独立C99及桌面scalar/AVX2完整256^3；有限原地/分离和偏移哨兵；额外保护页/通用拒绝另记。"
+}

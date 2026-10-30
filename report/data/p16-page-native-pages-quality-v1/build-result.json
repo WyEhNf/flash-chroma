@@ -1,0 +1,89 @@
+{
+  "purpose": "复用唯一已编译核心；独立观察等价scale1地址，不改v1失败或重编核心。",
+  "original_plan_sha256": "65838f3968302872b8fbd7dfb734cb3d8ca7a1cd2410f02c9885a8e5bb41a997",
+  "observer_plan_sha256": "ae1dbf8d0e5e110f31653704f49456a12f36478b405385b2e83106f9a0195cca",
+  "machine_code_gate": {
+    "passed": true,
+    "evidence": {
+      "3a3": "mov r8,QWORD PTR [rcx+0x28]",
+      "3a7": "shr esi,0x9",
+      "3aa": "and esi,0x7ff8",
+      "3b0": "mov rcx,QWORD PTR [r8+rsi*1]",
+      "3bb": "movzx r9d,BYTE PTR [rcx+r9*1]",
+      "3d6": "mov rsi,QWORD PTR [r8+r14*1]",
+      "3f4": "mov r14,QWORD PTR [r8+rbp*1]",
+      "419": "mov r12,QWORD PTR [r8+r13*1]",
+      "438": "mov rcx,QWORD PTR [r8+rcx*1]",
+      "45e": "mov r10,QWORD PTR [r8+rbp*1]",
+      "47c": "mov r13,QWORD PTR [r8+r13*1]",
+      "4a5": "mov r8,QWORD PTR [r8+r13*1]",
+      "4bd": "mov r9d,DWORD PTR [rsi+r9*4]",
+      "56f": "mov r10,QWORD PTR [r14+0x28]",
+      "573": "shr r8d,0x9",
+      "577": "and r8d,0x7ff8",
+      "57e": "mov r8,QWORD PTR [r10+r8*1]",
+      "58b": "movzx ecx,BYTE PTR [r8+rdx*1]"
+    },
+    "mismatched": {},
+    "old_hot_shift12": [],
+    "original_object_sha256": "ac60efa6170af82cf9d285697f3b2a82123a32a908be8e29a4e680d0aedbb6bd",
+    "original_assembly_sha256": "4a780e1cfa496b69555e432b28f776c4cab3cbdea548eb149df49e144475d99d",
+    "original_gate_passed": false,
+    "explanation": "原scale8字面规则机械误拒绝；Clang把8*(code>>12)折成(code>>9)&0x7ff8并以scale1读QWORD。固定8主lane及1尾部lane均从view+40页表读pointer，之后仍pool byte和palette；不改核心/优化/结果。"
+  },
+  "actual_layout": {
+    "view_bytes": 48,
+    "pointer_alignment": 8,
+    "view_alignment": 8,
+    "slots_bytes": 32768,
+    "rom_bytes": 12633124,
+    "actual_capacity": 12665940,
+    "increase_over_original_p4": 32776,
+    "saving_vs_linear_capacity": 4113388
+  },
+  "reused_new_core": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-native-pages-v1\\build\\page_native_pages.o",
+    "sha256": "ac60efa6170af82cf9d285697f3b2a82123a32a908be8e29a4e680d0aedbb6bd"
+  },
+  "reused_old_core": {
+    "path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-page-id16-runtime-v1\\build\\page_core.o",
+    "sha256": "4c6b215a054708a6803628bbfa9ea419a262b9447a18ddec658be53b45260216"
+  },
+  "outputs": {
+    "jshc_page_native_pages.dll": {
+      "bytes": 46797,
+      "sha256": "b326a9f3cc6dfa933964b65bf345bf15887d56c62904ad569554b42cf2e93ced"
+    },
+    "jshc_page_native_pages_c99.dll": {
+      "bytes": 44123,
+      "sha256": "11860791a48ea49e85c32e1e8277bf7b5ad98fbae3ffc58c5102bbf9da9a80bf"
+    },
+    "libgcc_s_seh-1.dll": {
+      "bytes": 142848,
+      "sha256": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e"
+    },
+    "libgomp-1.dll": {
+      "bytes": 293376,
+      "sha256": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88"
+    },
+    "libstdc++-6.dll": {
+      "bytes": 2354176,
+      "sha256": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f"
+    },
+    "libwinpthread-1.dll": {
+      "bytes": 57344,
+      "sha256": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+    },
+    "page_native_pages_parallel.o": {
+      "bytes": 1839,
+      "sha256": "83d58786fb95f102aa837cd31170cb2dbdcefbce7f4b6e1e59ca9de3f934c990"
+    },
+    "page_native_pages_parallel.su": {
+      "bytes": 416,
+      "sha256": "62ac55f1eae9d4412f10e39235aa847f2cd46c86cdce5afebb2d78afb79e0ebb"
+    }
+  },
+  "metadata_native_calls": 4,
+  "model_native_calls": 0,
+  "scope": "原v1机械误拒绝永久保留；只复用唯一Clang对象，首次编OMP胶水并链接新DLL，只4个布局元数据；没有prepare/apply/有限/full/photos/性能/WASM。容量不含代码/宿主/OS，未测RSS。"
+}

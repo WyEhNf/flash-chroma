@@ -1,0 +1,16 @@
+{
+  "purpose": "独立RSS补充：流式1MiB身份预检，同一M16S七角色setup，不分配照片数组。",
+  "script_sha256": "da12afdbc60abf6b2b88db403886468e97595624109c17a3a650c6c4a378a863",
+  "parent_plan_sha256": "46b971e07a722a497de3e041f30570d82670734241a7b45cbcb8993fb081a2b4",
+  "roles": [
+    "ref78",
+    "ref80",
+    "dict32",
+    "avx2_24",
+    "avx2_17",
+    "avx2_split",
+    "c99_split"
+  ],
+  "protocol": "原正式计时不改不重跑。七角色各独立新进程，流式1MiB SHA验证相同输入与源后复用bench_split_dictionary.setup及bench_memory_rom.worker的RSS-only分支，不分配照片数组；完整import群相同。原全文件SHA污染peak原件另存，两个群绝对峰不拼接。",
+  "scope": "Windows进程当前/峰值工作集及private commit，包括Python/NumPy/模块/运行库和流式预检，不当作核心RAM或纯prepare单函数峰值。"
+}

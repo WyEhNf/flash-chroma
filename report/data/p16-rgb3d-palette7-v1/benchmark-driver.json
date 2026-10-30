@@ -1,0 +1,58 @@
+{
+  "purpose": "C7BK六角色同场：全部最劣worker、双接口1/4线程与A/A原件保留。",
+  "plan_sha256": "b847f81c987476a6250d8c643cab70464f80764c7d367ed4c39cbe1fcd19f145",
+  "script_sha256": "344c4f3d2377b4d8dee90965b55c56fed136ab29ac225a64d19cb5057e537f33",
+  "benchmark_module_sha256": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+  "affinity_start": {
+    "before": {
+      "process_mask": "0xffffffff",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "actual": {
+      "process_mask": "0x55",
+      "system_mask": "0xffffffff",
+      "allowed": [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    "scope": "自有Python子进程允许0/2/4/6；非逐OMP线程绑定，未锁频，不与旧unbound绝对耗时归因。"
+  },
+  "scope": "精度/速度独立100..50；旧线性仅配对，分母仍每worker较快78/80；AA失效清空全部档位。"
+}

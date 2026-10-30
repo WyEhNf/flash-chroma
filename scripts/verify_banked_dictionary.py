@@ -1,0 +1,121 @@
+"""验证M16B完整域、有限IO、非法索引、图像保护页及强制map/pool末端。"""
+import argparse
+import ctypes as ct
+import hashlib
+from pathlib import Path
+import struct
+import numpy as np
+from study_memory_rom import ROOT,U8,sha,read,save,env
+from banked_dictionary_support import BankModel as Model,banklib as romlib,loadbank as loadrom
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    for name in ('build','roms','output'):p.add_argument('--'+name,type=Path,required=True)
+    a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False);plan=read(ROOT/'experiments/banked-dictionary-native-v1.json')
+    if any(sha(ROOT/n)!=v for n,v in plan['source_sha256'].items()):raise ValueError('冻结源码变化')
+    library=a.build/'jshc_memory_bank.dll';pure=a.build/'jshc_bank_c99.dll';d=romlib(library);c=romlib(pure);path=a.roms/'rom-4.bin';m,keep=loadrom(d,path);portable,pk=loadrom(c,path);raw=path.read_bytes();rng=np.random.default_rng(2026102412);finite=0;rejects=0;image_guards=0;rom_guards=0
+    def apply(source,target,n,kernel=1,threads=1,model=m):return d.jshc_mem_apply_parallel(ct.byref(model),ct.cast(source,U8),ct.cast(target,U8),n,kernel,threads)
+    def expected(src):
+        target=np.empty_like(src)
+        if c.jshc_mem_apply(ct.byref(portable),src.ctypes.data_as(U8),target.ctypes.data_as(U8),len(src)//3):raise AssertionError('纯C99失败')
+        return target
+    for n in (0,1,7,8,9,15,16,17,31,32,33,73,4095,4096,4097):
+        values=rng.integers(0,256,3*n,dtype=np.uint8);gold=expected(values)
+        for kernel,threads in ((0,1),(1,1),(1,4)):
+            for same in (False,True):
+                for offset in (0,1,3,7):
+                    source=np.full(3*n+offset+17,0xa7,dtype=np.uint8);source[offset:offset+3*n]=values;target=source if same else np.full_like(source,0xa7)
+                    if apply(source.ctypes.data+offset,target.ctypes.data+offset,n,kernel,threads) or not np.array_equal(target[offset:offset+3*n],gold) or not np.all(target[:offset]==0xa7) or not np.all(target[offset+3*n:]==0xa7):raise AssertionError('有限接口/哨兵不同')
+                    finite+=1
+    hashes={}
+    for label,lib,model,k,t in [('c99',c,portable,0,1),('desktop_scalar',d,m,0,1),('avx2_1',d,m,1,1),('avx2_4',d,m,1,4)]:
+        digest=hashlib.sha256()
+        for start in range(0,1<<24,1<<18):
+            codes=np.arange(start,start+(1<<18),dtype=np.uint32);src=np.empty((len(codes),3),dtype=np.uint8);src[:,0]=codes>>16;src[:,1]=codes>>8;src[:,2]=codes;target=np.empty_like(src)
+            rc=lib.jshc_mem_apply(ct.byref(model),src.ctypes.data_as(U8),target.ctypes.data_as(U8),len(src)) if label=='c99' else apply(src.ctypes.data,target.ctypes.data,len(src),k,t,model)
+            if rc:raise AssertionError('完整域调用失败')
+            digest.update(target)
+        hashes[label]=digest.hexdigest()
+        if hashes[label]!='3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22':raise AssertionError('完整域SHA不同')
+    def bad(data):
+        nonlocal rejects
+        buf=(ct.c_uint8*len(data)).from_buffer(data);model=Model()
+        if not d.jshc_mem_prepare(ct.byref(model),buf,len(data)) or any(bytes(model)):raise AssertionError('坏ROM未拒绝/清零')
+        rejects+=1
+    for n in (0,1,31,1055,len(raw)-1):bad(bytearray(raw[:n]))
+    for offset,value in ((4,2),(8,17),(12,0),(12,257),(16,4),(20,1),(32,0xffffffff)):
+        data=bytearray(raw);struct.pack_into('<I',data,offset,value);bad(data)
+    data=bytearray(raw);data[:4]=b'M16P';bad(data)
+    data=bytearray(raw);data[1056:1058]=b'\xff\xff';bad(data)
+    data=bytearray(raw);data[-1]=255;bad(data)
+    for byte,value in ((1056+2097152,0),(1056+2097152+4,0),(1056+2097152+12,0xffffffff)):
+        data=bytearray(raw);struct.pack_into('<I',data,byte,value);bad(data)
+    for offset in (1,3,7,31):
+        storage=bytearray(offset)+raw;buffer=(ct.c_uint8*len(storage)).from_buffer(storage);model=Model()
+        if d.jshc_mem_prepare(ct.byref(model),ct.addressof(buffer)+offset,len(raw)):raise AssertionError('非对齐ROM失败')
+        values=rng.integers(0,256,3*4097,dtype=np.uint8);target=np.empty_like(values)
+        if apply(values.ctypes.data,target.ctypes.data,4097,1,4,model) or not np.array_equal(target,expected(values)):raise AssertionError('非对齐ROM输出不同')
+        finite+=1
+    data=bytearray(raw);buffer=(ct.c_uint8*len(data)).from_buffer(data);before=bytes(data);overlap=ct.cast(ct.addressof(buffer)+32,ct.POINTER(Model))
+    if not d.jshc_mem_prepare(overlap,buffer,len(data)) or bytes(data)!=before:raise AssertionError('prepare重叠未保持原内容')
+    rejects+=1
+    storage=np.full(256,0x5a,dtype=np.uint8);addr=storage.ctypes.data;ptrmax=(1<<(8*ct.sizeof(ct.c_void_p)))-1
+    for source,target,n in ((0,addr,1),(addr,0,1),(addr,addr+1,16),(addr+1,addr,16),(addr,ct.addressof(m),1),(addr,ct.cast(m.blob,ct.c_void_p).value,1),(addr,addr,ptrmax//3+1),(ptrmax-1,addr,1)):
+        before=bytes(storage)
+        if not apply(source,target,n) or bytes(storage)!=before:raise AssertionError('非法IO未无写拒绝')
+        rejects+=1
+    k32=ct.WinDLL('kernel32',use_last_error=True);alloc=k32.VirtualAlloc;alloc.argtypes=[ct.c_void_p,ct.c_size_t,ct.c_uint32,ct.c_uint32];alloc.restype=ct.c_void_p
+    protect=k32.VirtualProtect;protect.argtypes=[ct.c_void_p,ct.c_size_t,ct.c_uint32,ct.POINTER(ct.c_uint32)];free=k32.VirtualFree;free.argtypes=[ct.c_void_p,ct.c_size_t,ct.c_uint32]
+    for n in (1,7,8,9,31,32,40,64,72,73,405,406,4096,65536,65537):
+        span=((3*n+4095)//4096)*4096;address=alloc(None,span+4096,0x3000,4)
+        if not address:raise OSError(ct.get_last_error())
+        try:
+            old=ct.c_uint32()
+            if not protect(address+span,4096,1,ct.byref(old)):raise OSError(ct.get_last_error())
+            source=address+span-3*n;values=rng.integers(0,256,3*n,dtype=np.uint8);gold=expected(values)
+            for threads in (1,4):
+                ct.memmove(source,values.ctypes.data,3*n);target=np.empty_like(values)
+                if apply(source,target.ctypes.data,n,1,threads) or not np.array_equal(target,gold):raise AssertionError('图像保护页输出不同')
+                if apply(source,source,n,1,threads) or ct.string_at(source,3*n)!=bytes(gold):raise AssertionError('图像保护页原地不同')
+                image_guards+=2
+        finally:
+            if not free(address,0,0x8000):raise OSError(ct.get_last_error())
+    # 完整256项palette的正向合同：最高四个ID不得被bases缓存覆盖。
+    legal=bytearray(raw);struct.pack_into('<I',legal,12,256)
+    last_base=struct.unpack_from('<I',legal,1056+2097152+12)[0];last_local=(len(legal)-1056-last_base)//16-1
+    struct.pack_into('<H',legal,1056+2097150,last_local);legal[-4:]=bytes((252,253,254,255));gold=bytearray()
+    for j in range(4):
+        color=bytes((11+37*j,22+23*j,33+13*j));legal[32+4*(252+j):36+4*(252+j)]=color+b'\x00';gold.extend(color)
+    holder=(ct.c_uint8*len(legal)).from_buffer(legal);model=Model()
+    if d.jshc_mem_prepare(ct.byref(model),holder,len(legal)):raise AssertionError('256项palette未接受')
+    values=np.array((252,255,255,253,255,255,254,255,255,255,255,255),dtype=np.uint8)
+    for kernel,threads in ((0,1),(1,1),(1,4)):
+        for same in (False,True):
+            target=values.copy() if same else np.empty_like(values)
+            if apply(target.ctypes.data if same else values.ctypes.data,target.ctypes.data,4,kernel,threads,model) or bytes(target)!=bytes(gold):raise AssertionError('最高四个合法palette颜色被覆盖')
+            finite+=1
+    forced=bytearray(raw);last_base=struct.unpack_from('<I',raw,1056+2097152+12)[0];last_id=(len(raw)-1056-last_base)//16-1
+    struct.pack_into('<H',forced,1056+2097150,last_id&65535)
+    for label,content in (('original',raw),('last_map_to_last_pool',bytes(forced))):
+        pages=(len(content)+4095)//4096;address=alloc(None,(pages+1)*4096,0x3000,4)
+        if not address:raise OSError(ct.get_last_error())
+        try:
+            old=ct.c_uint32()
+            if not protect(address+pages*4096,4096,1,ct.byref(old)):raise OSError(ct.get_last_error())
+            start=address+pages*4096-len(content);ct.memmove(start,content,len(content));model=Model()
+            if d.jshc_mem_prepare(ct.byref(model),start,len(content)):raise AssertionError('ROM末端准备失败')
+            values=np.full(3*73,255,dtype=np.uint8);gold=np.empty_like(values)
+            if c.jshc_mem_apply(ct.byref(model),values.ctypes.data_as(U8),gold.ctypes.data_as(U8),73):raise AssertionError('ROM末端C99失败')
+            if label=='last_map_to_last_pool':
+                palette=content[32+4*content[-1]:35+4*content[-1]]
+                if bytes(gold)!=palette*73:raise AssertionError('独立最后pool字节金标准不同')
+            for kernel,threads in ((0,1),(1,1),(1,4)):
+                for same in (False,True):
+                    target=values.copy() if same else np.empty_like(values)
+                    if apply(target.ctypes.data if same else values.ctypes.data,target.ctypes.data,73,kernel,threads,model) or not np.array_equal(target,gold):raise AssertionError('ROM末端输出不同')
+                    rom_guards+=1
+        finally:
+            if not free(address,0,0x8000):raise OSError(ct.get_last_error())
+    save(a.output/'results.json',dict(passed=True,purpose=__doc__,environment=env(),plan_sha256=sha(ROOT/'experiments/banked-dictionary-native-v1.json'),script_sha256=sha(__file__),libraries={str(x):sha(x) for x in (library,pure)},rom_sha256=sha(path),rom_bytes=len(raw),model_size=ct.sizeof(Model),resident=len(raw)+ct.sizeof(Model),finite=finite,refusals=rejects,image_guards=image_guards,rom_guards=rom_guards,forced_last_id=last_id,hashes=hashes,scope='Windows x64/GCC15.2；C99及桌面scalar/AVX2单四线程完整256^3；固定有限IO/格式拒绝/借用边界，另有图像及ROM末端保护页与最后map强制最后pool。未执行ARM实板或性能。'))
+    print(finite,rejects,image_guards,rom_guards)
+if __name__=='__main__':main()

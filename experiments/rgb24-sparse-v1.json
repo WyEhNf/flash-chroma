@@ -1,0 +1,49 @@
+{
+  "purpose": "第六独立阶段：通用节点RGB32→精确RGB24，owned uint32存储+guardword，AVX2单gather字节偏移。",
+  "source_sha256": {
+    "scripts/verify_compact_sparse.py": "917d27c8a4e30af1f18d914b8df15df6ed1952323fc1b3da9cab85665fbdaf64",
+    "experiments/channel-runtime/channel_runtime.h": "bba4f89f08e212c373c5e4dd04c6769f994862d98361ec8e3f25e4fd4dbde3ad",
+    "experiments/channel-runtime/channel_views.hpp": "429d082f455b7de78bb05a4b9efd2741155234bb37846b036f06069dffe22795",
+    "experiments/channel-runtime/channel_native.py": "cb1feb4c4b9b77dad1b3b2767191614467085ac53aa2f639555dbe5bc77170ec",
+    "cpp/include/jshc/lut.hpp": "11fe944f27b29be97bb5e3eef637f41385931bdf966cc1135aa206082b7a5fd0",
+    "scripts/verify_channel_coordinates.py": "a5bb12a19bd175bea47d5174fa9d087cbb1a4f53481c6a7f84684d6831045aab",
+    "python/lutlab/channel_coordinates.py": "4f94d034e09e062462e8b8586fe98551de1f77522ac732bcfa5d396d249c3983",
+    "python/lutlab/io.py": "44059b47abaf8b1cfcb9b192252f0b1dcbb7c8fc8fe6cf16f15f8b54a4c7e5d3",
+    "experiments/rgb24-sparse-runtime/channel_runtime.cpp": "2a9994a60ebd0643c39d7e830791c05b96b25e2ffe6b52f56849feaad773b148",
+    "experiments/rgb24-sparse-runtime/channel_avx2.cpp": "aa1e03f22e953a6e34fbf4f0ba438342450cbfc138977725d8ca683a24505bae",
+    "scripts/generate_rgb24_sparse.py": "7374fc8f08e0840fc091db9ff43e5defb9a374e898049df1491aadeb9168535a",
+    "scripts/build_rgb24_sparse.py": "18bc0646c384dbc5c12baa2d5a449ed2099d7e98bd3dfd64a49b511f68a230a5",
+    "scripts/bench_rgb24_sparse.py": "df01968c476cd79bc515f893324c45ed45588220728d361730f36dd95d79ec4b",
+    "scripts/verify_rgb24_sparse.py": "755983866d593146ddff3a39b09a634f98cc78de7102ff789ed82bad9586055a",
+    "scripts/verify_rgb24_probe.py": "e4ab6f2e0828472f4543ebc071bccf9bc63eb4f8347f75347d85391433909c29",
+    "scripts/check_compact_three_stage.py": "ff938cdb6d1a44b698936c2ea479724ccb981d7407474475542e65e27e6e9e4f",
+    "scripts/freeze_rgb24_sparse.py": "e87fd02011dcf2a0383839e1752e7454b0b5da4b10c141d65f6c019bb4d6152e"
+  },
+  "inputs": {
+    "core": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\build-channel-research\\libjshc_core.a",
+      "sha256": "64abb6eb38d929dc81c07b5a34be1408bbadecfee76fd31801cdfe94a0916ef6"
+    },
+    "avx2_object": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\avx2.o",
+      "sha256": "2edcc3ae0792294ebd59614c9634719869830cb839a8838c551987443afac3e4"
+    },
+    "specialized": {
+      "path": "F:\\Hackathon\\projects\\16-lut-color\\artifacts\\channel-native-specialized-v1\\jshc_channel_specialized.dll",
+      "sha256": "507b51a31421e3b2ed8b71d9140d79aac2e6cd7435be888754b8acf4bc497372"
+    }
+  },
+  "parent_compact_plan_sha256": "6a16a577eefe60648d72474c9df361625598ddc124332cde05c6d7db810c5e3c",
+  "cases": [
+    "cinema_a399_33cube",
+    "general_seed_2026102405_m17_18_25_33_first_extended"
+  ],
+  "protocol": "先256保护页节点probe、原有限1584与后补192三级u64合同、a399六配置完整域和一般四级完整域；全部通过后同场compact/specialized/78/80四worker各5完整百图，1/4线程及独立1/32句柄RSS。",
+  "gate": "完整及逐图输出精确不变；速度以同场三个参考端点最快者为分母，最劣worker按100/90/80/70/60/50分档；一般模型需证明直表未启用；失败控制不升级。",
+  "metrics": "真实capacity，独立1/32句柄RSS/峰；known freeze/loader payload只是已知对象/向量/文件载荷界，不是分配器/CRT/RSS总峰。",
+  "references": [
+    "https://www.intel.com/content/www/us/en/docs/cpp-compiler/developer-guide-reference/2021-8/intrinsics-for-gather-operations.html",
+    "https://clang.llvm.org/doxygen/avx2intrin_8h_source.html#l04981"
+  ],
+  "boundaries": "单gather依赖x86 AVX2 intrinsic字节地址Load32契约，不用普通不对齐int解引用；标量显式LE三字节读取。没有C99/整库big-endian认证，未量化节点或修改模型。"
+}

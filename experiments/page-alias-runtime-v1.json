@@ -1,0 +1,52 @@
+{
+  "purpose": "唯一页别名导出及API/回收/格式前置执行前冻结；不授权图像或吞吐。",
+  "source_sha256": {
+    "scripts/export_page_alias.py": "4c8121ab61a3d064d44338a2eefe0011112af88e5611b2d5dea24e01c4f974e0",
+    "scripts/page_alias_runtime.py": "34700710698092097c58adf7def337588fa15b0b9f28d1a76a369aa30e6f4b29",
+    "scripts/page_alias_front.py": "c496c315cd58f9b6657acc1c6d2ff4090bb2219aa7a6a385d72792492c14ec9d",
+    "scripts/freeze_page_alias_runtime.py": "64bd4bbf7041e9059347466d2d5d694886fbbc06376dbc7a522ffd9e6a208d8b",
+    "scripts/run_page_alias_front.py": "1e2f4057bacf5f21b0e0558dd5862bef8cc72349c220e6ec1efce2fca6929483",
+    "scripts/profile_page_alias.py": "aa7c08959dc7af2515f3202e78cafde253d16f1c0b16ab79302c51bb04d8c787",
+    "scripts/win_readonly_rom.py": "3ec0892acd472c5b44fb8d595698fcf2889693f5056bb6287115e532617aac16",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e",
+    "experiments/page-alias-runtime-design-v1.md": "4f8979f62da019393716b82465009414590d1a407847a2208ab49beda9e3bc0f",
+    "experiments/page-alias-census-v1.json": "f98d7c098f5d84b181d53dffa63c83e869cd29475e1df7b878e2c50fc8863d84"
+  },
+  "input_sha256": {
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll": "442bc4243920280480807e4e291dff3aa2ffbdb87a0edd4407affad90578c723",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\report\\data\\p16-page-alias-census-v1\\census-raw.zip": "973cfef122da53b04ab0e0143636c7223929f1a6721fd253662ad1c59c0876cb",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "original_rom": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-0.bin",
+  "original_rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+  "library": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-clang-store-build-v1\\jshc_memory_clang_store.dll",
+  "census_zip": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\report\\data\\p16-page-alias-census-v1\\census-raw.zip",
+  "census_support_sha256": "bfc96db68384a70c40c7df596b8d6a1fb1411a189d8059620b44e58b02dc3025",
+  "logical_id_sha256": "a020c67a0e8ce77e668e6c6d85206af53005923316b4778194637182b4cfaea0",
+  "format": {
+    "page_bytes": 4096,
+    "pages": 4096,
+    "unique_pages": 3082,
+    "header_page_bytes": 4096,
+    "header_bias": 3040,
+    "page_id_bytes": 16384,
+    "pool_offset": 20480,
+    "expected_alias_backing": 12644352,
+    "expected_aligned_backing": 16781312,
+    "model_bytes": 1056,
+    "owner_bytes": 48,
+    "model_view_span": 16781312,
+    "reserve_span": 16785408,
+    "guard_va": 4096
+  },
+  "protocol": "唯一固定导出后，原普通RO/同布局未去重RO/alias各一fresh；相同imports、原DLL、完整流式输入SHA与receipt校验。记录Python启动外部wall、全部前置及open/validation/prepare/touch/close阶段，PSAPI全计数、实际保护/regions/QueryWorkingSetEx；无像素完整域/百图/性能。之后唯一真实API/lifecycle/格式合同进程。",
+  "failure_protocol": "open/file_size/section/reserve各一次；split及map预定0/1/2048/4096和native prepare调用前失败；unmap4096/coalesce/release/close_section/close_file各一次显式重试；map2048+unmap2047双失败保留异常owner后显式重试。所有已创建部分均真实OS资源。任何预料外失败保留原件STOP，不修源重采；未回收owner在子进程等待status/retry显式指令，不让进程退出掩盖回收。",
+  "format_contract": "原容器、count1/256固定合法夹具，全部256palette与末ID；固定畸形字段/metadata首末ID/截断/多余/摘要/native count/缺失文件拒绝，关闭清零/不可重开/写共享拒绝；三种缺新API明确原RO fallback、不能授alias资格。",
+  "gate": "实际文件+48B必要owner+1056B原Model相对16779328至少净省1MiB，真实API/所有资源/保护/全blob摘要及格式合同全过，否则STOP。此阶段不以WS/private变化替代backing净收益，不授任何100..50吞吐档。",
+  "scope": "Windows独立loader，不改C99/AVX/旧DLL/数学；容量保留虚拟16MiB跨度；同进程ShareCount无PFN，unique backing不等实际唯一物理页；OS VAD/PTE与Python额外对象成本另列，零quota字段不表示无内核成本。"
+}

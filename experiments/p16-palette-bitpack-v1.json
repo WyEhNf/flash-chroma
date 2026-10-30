@@ -1,0 +1,14 @@
+{
+  "purpose": "独立于节点降位宽和ROM字典，先从模型完整输出分布量化palette，再筛查7/6/5/4bit随机访问ID实际打包的精度资格。",
+  "base_commit": "16ae431030a5c734a1485089c8b58d15b21902f6",
+  "model_sha256": "a399b72a2222acef815b6405ebd0132f94f1f3a4e4315f957e90b81f836744bb",
+  "rom_sha256": "146a5f283aaf5d895e4e375990166924b2fe9d6f6f092989f8023b8b8295acc5",
+  "cube_sha256": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+  "reference_sha256": "ec79ca618022293b2d2f5c832f1a8647c88e4994ce820664310e09c0f4bf5690",
+  "manifest_sha256": "10893812e0d3cecea7ba8b6bbf4700addd09927feed220149501def03c374f7c",
+  "bit_widths": [7, 6, 5, 4],
+  "algorithms": ["weighted_ward_centroid", "maximin_original_color"],
+  "fitting": "只使用已冻结a399模型输出palette及完整输入域频数；不读取gold或照片来拟合。Ward固定加权SSE合并至目标2^bits、输出整数四舍五入centroid；maximin从最常见色开始固定最远点，随后最近映射，不做Lloyd/位宽/阈值追加扫描。",
+  "accuracy_gate": "分别报告全域、100图合并、最劣单图mean/p99/max各比值；保留率min(1, baseline_error/candidate_error)，baseline零须仍零；100/90/80/70/60/50档。所有观测完成前不挑候选；低于任何最劣50%者不进入native性能。",
+  "limits": "先只读质量筛查。只有真正实现bitpacked decoder并验收的文件/容量才能算内存收益；逻辑2^24*bits/8不是实测吞吐或RSS。"
+}

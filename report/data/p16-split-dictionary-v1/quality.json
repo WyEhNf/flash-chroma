@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "purpose": "验证M16S完整域、有限IO、非法索引、图像保护页及强制map/pool末端。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "46b971e07a722a497de3e041f30570d82670734241a7b45cbcb8993fb081a2b4",
+  "script_sha256": "7b24b1354de6012bc509a769632bf4d7414d6a0140911424d6c52edcabae2ff6",
+  "libraries": {
+    "artifacts\\p16-split-dictionary-build-v1\\jshc_memory_split.dll": "c09b9053c75c44170b1c70436704cd56d5f1d8cd13d3dbdbcafd19ff5d208bb3",
+    "artifacts\\p16-split-dictionary-build-v1\\jshc_split_c99.dll": "a8992fa11714a7ade8dcd81e05f4cafead5aca94d84ac97a4293991e2659f78d"
+  },
+  "rom_sha256": "4846058639722811656bd93af7afb977e2dbad5918e6bdb502929cded5d74b1f",
+  "rom_bytes": 3952592,
+  "model_size": 1056,
+  "resident": 3953648,
+  "finite": 364,
+  "refusals": 24,
+  "image_guards": 60,
+  "rom_guards": 12,
+  "forced_last_id": 107706,
+  "hashes": {
+    "c99": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "scope": "Windows x64/GCC15.2；C99及桌面scalar/AVX2单四线程完整256^3；固定有限IO/格式拒绝/借用边界，另有图像及ROM末端保护页与最后map强制最后pool。未执行ARM实板或性能。"
+}

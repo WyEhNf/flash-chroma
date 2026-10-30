@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "purpose": "M16T八配置完整域、零pool/256palette/混合tag与图像及ROM双末端保护。",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OMP_DYNAMIC": "FALSE",
+      "OMP_WAIT_POLICY": "PASSIVE",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "plan_sha256": "ce6384ee8dcdc00516c0c5e324b46a01e31a3dd853065257a71bbe6d8a3ff06b",
+  "libraries": {
+    "artifacts\\p16-tagged-block16-build-v1\\jshc_memory_tag16.dll": "56a001549bdc0e42f585c347cf38a993bafd52a960edfe3a578419c0214ea242",
+    "artifacts\\p16-tagged-block16-build-v1\\jshc_tag16_c99.dll": "0efe033288155d2fa909a9cc969c288ce3f8da5d1829890c045b286927653fb8"
+  },
+  "rom_sha256": "b873b00d5b554c43f930d541c8e11e864dcabb1d9f55ff12c99b89ff35a114de",
+  "rom_bytes": 5915136,
+  "model_size": 1056,
+  "resident": 5916192,
+  "finite": 584,
+  "refusals": 64,
+  "image_guards": 144,
+  "rom_guards": 40,
+  "fixtures": {
+    "original": {
+      "bytes": 5915136,
+      "sha256": "b873b00d5b554c43f930d541c8e11e864dcabb1d9f55ff12c99b89ff35a114de",
+      "pool_bytes": 1719776,
+      "expected_sha256": "f1cfe2c102488f6ce6f441ed665ced2a63133d4ac1bcfba1975fb3254f75a184"
+    },
+    "last_map_to_last_pool": {
+      "bytes": 5915136,
+      "sha256": "15d20ec0d53526ad2d556120ac8c7d5165d047e1f62d023990216e49c0007947",
+      "pool_bytes": 1719776,
+      "expected_sha256": "f1cfe2c102488f6ce6f441ed665ced2a63133d4ac1bcfba1975fb3254f75a184"
+    },
+    "constant_zero_pool": {
+      "bytes": 4195360,
+      "sha256": "119a7b6d3da9adf3506bf9af68fd3878421db5ed4e3a357655dc1008e3e7c5b5",
+      "pool_bytes": 0,
+      "expected_sha256": "b3669d66a58507e4b8201c4d99f497bc7f7b4fe8522d2a63180610c2ddcf34e8"
+    },
+    "nonconstant_minimum_pool": {
+      "bytes": 4195376,
+      "sha256": "b397599a8ddeded119dd21ce2a376a220f8ccc643a213b965c7148b7728ade99",
+      "pool_bytes": 16,
+      "expected_sha256": "444a0425da67f0752c86a609425e5b7c444da9ee64c0090d3b476a173ff9bd07"
+    },
+    "mixed": {
+      "bytes": 4195376,
+      "sha256": "dd0231fcf4d24354a908f7bf6b1bc8a38e617513a3756993d41ae410ef01ff75",
+      "pool_bytes": 16,
+      "expected_sha256": "ad5d759ece46398ee769b30be184ef689a0cb22bcf89ad2bc560f0661d2c4929"
+    }
+  },
+  "hashes": {
+    "c99_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "c99_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "desktop_scalar_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_1_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4_outplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22",
+    "avx2_4_inplace": "3c9ce8d98d8db454ce9337c50c2ecadb8ba59485d6bc3e6a42e3cc1dfe307c22"
+  },
+  "quality_memory_before": {
+    "PeakWorkingSetSize": 36069376,
+    "WorkingSetSize": 36069376,
+    "PrivateUsage": 22716416,
+    "PeakPagefileUsage": 22716416
+  },
+  "quality_memory_after": {
+    "PeakWorkingSetSize": 93257728,
+    "WorkingSetSize": 91955200,
+    "PrivateUsage": 73981952,
+    "PeakPagefileUsage": 79310848
+  },
+  "scope": "Windows x64/GCC15.2；C99/scalar/AVX1/4各原地与分离8完整256^3。零pool全常量、256palette最高ID、全非恒定最小pool、混合lane、实际/强制最后pool均以独立序列化解释及ROM尾保护页验证。质量可与tail质量并行，无性能结论；峰值包括Python/NumPy/库/合成夹具，不是核心RAM；未执行WASM或实板。"
+}

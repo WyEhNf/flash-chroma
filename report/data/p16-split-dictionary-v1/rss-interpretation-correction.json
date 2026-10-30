@@ -1,0 +1,25 @@
+{
+  "purpose": "纠正31d84bd对RSS输入身份预检的错误解释，不改原始测量或冻结源",
+  "incorrect_claim": "原wrapper的sha会整块读取235929600B照片并污染RSS峰；第二组1MiB流式RSS修复该污染。",
+  "corrected_conclusion": "原study_memory_rom.sha已经使用hashlib.file_digest流式读取，没有所称整文件分配。第二组只是额外独立进程观察，不是污染修复，不重跑正式性能。",
+  "executed_source": {
+    "wrapper": "scripts/bench_split_dictionary.py",
+    "wrapper_sha256": "4f65161cb7d0c2e2645a2ef8a41ea33670ddb49017c89611944c19ecad47cf24",
+    "helper": "scripts/study_memory_rom.py",
+    "helper_sha256": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "implementation": "with Path(path).open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()",
+    "call_chain": "wrapper直接from study_memory_rom import sha；bench_memory_rom与bench_compact_dictionary及create也导入同一函数。RSS分支在setup前后计数后立即return，未到照片数组分配分支。",
+    "source_binding": "原measured-source.zip、冻结plan与32文件提交31d84bd的原字节审计已核这些执行源SHA；原封装不改写。"
+  },
+  "original_peak_working_set_bytes": {
+    "ref78": 132698112,
+    "ref80": 132751360,
+    "dict32": 41975808,
+    "avx2_24": 41041920,
+    "avx2_17": 39985152,
+    "avx2_split": 40087552,
+    "c99_split": 39981056
+  },
+  "unchanged": "精度、容量、正式七角色四worker五轮、A/A、全部失败判定及两组RSS原件均保持。第二组冻结计划/驱动中的错误动机作为历史保留，由本纠正覆盖解释。",
+  "scope": "Windows进程当前/峰值工作集包含Python/NumPy、导入群、运行库和流式预检；不称纯函数prepare峰值，不拼接两组绝对峰值。"
+}

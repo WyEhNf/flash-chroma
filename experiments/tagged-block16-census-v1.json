@@ -1,0 +1,16 @@
+{
+  "purpose": "只读tag普查前冻结唯一16B源与脚本；不运行统计或生成新ROM。",
+  "source_sha256": {
+    "scripts/profile_tagged_block16.py": "f26cd1b8669661f11ff6b59f9591d1ca5a9e8d376c8a2579f4bd05314a2a9289",
+    "scripts/freeze_tagged_block16_census.py": "2f5d6da7ae59c8e1cee9ff95824349206d028cd73ca973028137ac26e4e1cd07",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e"
+  },
+  "input_rom_path": "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-memory-rom-v2\\rom-4.bin",
+  "input_rom_sha256": "904f768b4729e1a71c8b03ddaa953b4ad183baee65498b6741068cbbc218ab22",
+  "block_bytes": 16,
+  "parameters": "只读一次，无块尺寸/tag布局/阈值/格式参数扫描。依据模型本身RGB恒定性，检查palette互异再使用unique≤230界。",
+  "outputs": "全1048576 map引用加权覆盖、unique覆盖、16777216色逻辑SHA、原/投影容量与增加、离线峰值；不生成新ROM、不读取gold/照片、不计时mapper。",
+  "decision": "先完整报告，一次普查后由root判断是否值得实现唯一M16T版本；非零覆盖不是速度通过，未实现容量不作为双底线候选。",
+  "scope": "当前只冻结普查；native/性能另等授权，保留旧负例，不改默认。"
+}

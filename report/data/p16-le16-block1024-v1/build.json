@@ -1,0 +1,120 @@
+{
+  "purpose": "单编译进程构建固定1024B块LE16 C99和AVX2，旧控制原字节复用。",
+  "plan_sha256": "0d829d42723357da55abfc113bfce8c246fe8dbe487d9d21080ee123e1dea968",
+  "source_sha256": {
+    "experiments/le16-block1024-runtime/channel_avx2_le16.cpp": "bff535877504c083fe662391ce22f4c2ac9b8b89f29ea0b658579734a6738be6",
+    "experiments/le16-block1024-runtime/generation.json": "a66a5eba0ee938ff7ed7825fff1d6b4957f14b65caef40662a0c0e8a18a645bc",
+    "experiments/le16-block1024-runtime/memory_parallel.cpp": "341f1c120bee580f3117ce5f6dc3e4f70b42d7819764928b96356f05bb0275fa",
+    "experiments/le16-block1024-runtime/memory_rom.c": "01e941a1b39f29d6117e012f8625592945ee33a28a1ca69d58e873cba5628e14",
+    "experiments/le16-block1024-runtime/memory_rom.h": "ce675f920f3b902f7011d20e795b15241e3e3ab7f233b51563bb984286955faf",
+    "scripts/generate_le16_block1024.py": "869364dfbd096261b8ae963dfb263cbf4fc48cfe22d176a40081a9348f99e433",
+    "scripts/export_le16_block1024.py": "732ab5cda776d2685e685a1c69d4adeda87f115335c72fb8dc797a6ada4d5fc0",
+    "scripts/build_le16_block1024.py": "64a6b5ecdcea1e51c2695a96cd7e8ba9a8da9cdaf45422b013fce942cba0565c",
+    "scripts/verify_le16_block1024.py": "794b0c3ce832184b957c09553319caa28800f4f70853fd0d627962fdb8473fa9",
+    "scripts/bench_le16_block1024.py": "71a01e712c72b1f94c4cbfe55c2d41670d862846aeb322ab8f60c8a2d1f02365",
+    "scripts/freeze_le16_block1024.py": "be015046b984d0f9192c90b06e4e37d4c200aba444466f8c326441f3d8de6d49",
+    "scripts/study_memory_rom.py": "e187e05a17748f2fffa2ab832e95e9501af0cf7ccfcb06a7a4aff8b0ec8c9f07",
+    "scripts/bench_memory_rom.py": "b8f42c581a1825cbf7e9e2808ebd5d2c82963088a7341dd4019019b3d8a27c7e"
+  },
+  "compiler_sha256": {
+    "E:/mingw64/bin/gcc.exe": "ef474cd5251d5d55e2de6af298273bf5892e3a097f2e62567646a463a5341efe",
+    "E:/mingw64/bin/g++.exe": "ebb478487f7dd90ae89c9afc36750e31afc48a9986109e1380723619f7d2272f"
+  },
+  "commands": [
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-O3",
+        "-std=c99",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-fstack-usage",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\le16-block1024-runtime\\memory_rom.c",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\memory_c.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/gcc.exe",
+        "-shared",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\memory_c.o",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\jshc_le16_1024_c99.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-DJSHC_MEM_AVX2=1",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\le16-block1024-runtime\\memory_parallel.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\memory_parallel.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fopenmp",
+        "-fstack-usage",
+        "-mavx2",
+        "-mtune=skylake",
+        "-ffp-contract=off",
+        "-c",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\experiments\\le16-block1024-runtime\\channel_avx2_le16.cpp",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\channel_avx2_le16.o"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "E:/mingw64/bin/g++.exe",
+        "-shared",
+        "-O3",
+        "-fopenmp",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\memory_c.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\memory_parallel.o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\channel_avx2_le16.o",
+        "-lwinpthread",
+        "-o",
+        "F:\\Hackathon\\worktrees\\p16-memory-20261023\\artifacts\\p16-le16-block1024-build-v1\\jshc_memory_le16_1024.dll"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "libraries": {
+    "jshc_le16_1024_c99.dll": "bc9d2d39fbc50c64994a535e274825e857220cce5a1253c1280072bd25b2770b",
+    "jshc_memory_le16_1024.dll": "69e2aa92be2f4a356438b58d0580e77f248a83b7c67e7bcd8fe5046b7bdaa0f8",
+    "jshc_memory_ref78.dll": "bac736cd9933c5a87a31909ba3652c204ee36ccf7915d1d2071f80637cd896ce",
+    "libgcc_s_seh-1.dll": "46c950eb21bfdef9a258447ecceb51c8dd9554efc4e8e38d0e0fc271cde9a21e",
+    "libgomp-1.dll": "fc7569276d33d23f55f143eb6723821ef2633c96cbb381c0f507b793d9585e88",
+    "libstdc++-6.dll": "2ed573d3a861418328b255bac4c1204b0ecc8c5358d013aec0ec8bf622f1f55f",
+    "libwinpthread-1.dll": "83c3ba979b53064528d67fa69eb2b285e9a5d525d6e52b40ed5ff02492deeb6e"
+  },
+  "scope": "C99无堆核心、旧逐像素算法；桌面仅像素TU AVX2且适配器OMP，无AVX512/native/Clang/ILP/store叠加。原1024块、78/80直接载入旧DLL。"
+}
