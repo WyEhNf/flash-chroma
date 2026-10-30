@@ -23,19 +23,24 @@ namespace fc_framework {
 constexpr std::size_t dense_nodes = std::size_t{256} * 256 * 256;
 constexpr std::size_t dense_values = dense_nodes * 3;
 enum class Grid { FrameworkStep, UniformRounded };
+enum class Interpolation { TetraQ16, TrilinearQ16 };
 struct FitOptions {
     Grid grid = Grid::UniformRounded;
     bool prove_structure = true;
+    // 自定义三轴只由LUT预处理生成；空数组保持原来的固定网格。
+    std::array<std::vector<unsigned>, 3> axes{};
 };
 
 struct Stage {
     unsigned m = 0;
     std::vector<std::uint8_t> blob;
+    std::vector<std::uint8_t> fractions;
+    Interpolation interpolation = Interpolation::TetraQ16;
     bool separable_proven = false;
     std::array<std::array<std::uint8_t, 256>, 3> curves{};
     std::size_t proof_nodes = 0;
-    std::size_t model_bytes() const noexcept { return blob.size(); }
-    std::size_t sidecar_bytes() const noexcept { return separable_proven ? 3u * 256u : 0u; }
+    std::size_t model_bytes() const noexcept { return blob.size() + fractions.size(); }
+    std::size_t sidecar_bytes() const noexcept { return fractions.size() + (separable_proven ? 3u * 256u : 0u); }
     const std::uint8_t* nodes_data() const noexcept {
         return blob.empty() ? nullptr : blob.data() + 16u + 12u * m + 3840u;
     }
@@ -85,17 +90,30 @@ inline Stage prepare_stage(const std::vector<std::uint16_t>& raw, unsigned m,
                 result.separable_proven = false;
         }
     }
-    std::array<unsigned, 33> grid{};
-    for (unsigned i = 0; i != m; ++i)
-        grid[i] = options.grid == Grid::FrameworkStep ? i * (256 / (m - 1))
-                                                    : (i * 255 + (m - 1) / 2) / (m - 1);
-    grid[m - 1] = 255;
+    std::array<std::array<unsigned, 33>, 3> grids{};
+    const bool custom = !options.axes[0].empty() || !options.axes[1].empty() || !options.axes[2].empty();
+    for (unsigned a = 0; a != 3; ++a) {
+        if (custom) {
+            const auto& axis = options.axes[a];
+            if (axis.size() != m || axis.front() != 0 || axis.back() != 255)
+                throw std::invalid_argument("自定义轴必须有m个整数节点并包含0和255");
+            for (unsigned i = 1; i != m; ++i) if (axis[i] <= axis[i-1] || axis[i] > 255)
+                throw std::invalid_argument("自定义轴必须严格递增且在RGB8域内");
+            std::copy(axis.begin(), axis.end(), grids[a].begin());
+        } else {
+            for (unsigned i = 0; i != m; ++i)
+                grids[a][i] = options.grid == Grid::FrameworkStep ? i * (256 / (m - 1))
+                    : (i * 255 + (m - 1) / 2) / (m - 1);
+            grids[a][m - 1] = 255;
+        }
+    }
     const std::size_t nodes_at = 16u + 12u * m + 3840u;
     result.blob.resize(nodes_at + std::size_t(m) * m * m * 3);
     auto& bytes = result.blob;
     bytes[0] = 'S'; bytes[1] = 'L'; bytes[2] = 'U'; bytes[3] = 'T';
     detail::put32(bytes, 4, 1); detail::put32(bytes, 8, m);
     for (unsigned axis = 0; axis != 3; ++axis) {
+        const auto& grid = grids[axis];
         for (unsigned i = 0; i != m; ++i) {
             const float value = static_cast<float>(grid[i]);
             std::uint32_t bits; std::memcpy(&bits, &value, 4);
@@ -113,12 +131,61 @@ inline Stage prepare_stage(const std::vector<std::uint16_t>& raw, unsigned m,
     for (unsigned r = 0; r != m; ++r) for (unsigned g = 0; g != m; ++g)
         for (unsigned b = 0; b != m; ++b) for (unsigned c = 0; c != 3; ++c)
             bytes[nodes_at + ((std::size_t(r) * m + g) * m + b) * 3 + c] =
-                detail::source(raw, grid[r], grid[g], grid[b], c);
+                detail::source(raw, grids[0][r], grids[1][g], grids[2][b], c);
     fc_core::fc_model checked{};
     if (fc_core::fc_model_init(&checked, {bytes.data(), bytes.size()}, {nullptr, 0}) != fc_core::FC_OK)
         throw std::runtime_error("稀疏模型序列化未通过运行库校验");
     return result;
 }
+
+namespace detail {
+inline fc_core::fc_bytes sidecar(const Stage& stage) noexcept {
+    return {stage.fractions.empty() ? nullptr : stage.fractions.data(), stage.fractions.size()};
+}
+inline fc_core::fc_model view(const Stage& stage) {
+    fc_core::fc_model result{};
+    if ((stage.interpolation != Interpolation::TetraQ16 && stage.interpolation != Interpolation::TrilinearQ16) ||
+        fc_core::fc_model_init(&result, {stage.blob.data(), stage.blob.size()}, sidecar(stage)) != fc_core::FC_OK || result.m != stage.m)
+        throw std::invalid_argument("精度模型的节点、坐标或插值类型非法");
+    return result;
+}
+inline std::uint32_t code(const std::uint8_t* c) noexcept {
+    return std::uint32_t(c[0]) | (std::uint32_t(c[1]) << 8) | (std::uint32_t(c[2]) << 16);
+}
+// 两种插值都在每一级末尾只舍入一次；三线性使用精确48位权重。
+inline std::uint32_t map(const fc_core::fc_model& m, Interpolation kind, std::uint32_t input) noexcept {
+    const unsigned colour[3] = {input & 255u, (input >> 8) & 255u, input >> 16};
+    const std::size_t stride[3] = {std::size_t(m.m)*m.m, m.m, 1};
+    const std::size_t base = m.index[colour[0]]*stride[0] + m.index[256+colour[1]]*stride[1] + m.index[512+colour[2]];
+    std::uint32_t output = 0;
+    for (unsigned c = 0; c != 3; ++c) {
+        const auto* table = m.sidecar.data ? m.sidecar.data + c*3072 : m.fraction_le;
+        std::uint32_t f[3];
+        for (unsigned a = 0; a != 3; ++a) f[a] = fc_core::fc_detail_read32(table + (a*256+colour[a])*4);
+        std::uint64_t sum = 0;
+        if (kind == Interpolation::TrilinearQ16) {
+            for (unsigned mask = 0; mask != 8; ++mask) {
+                std::size_t node = base; std::uint64_t weight = 1;
+                for (unsigned a = 0; a != 3; ++a) {
+                    const bool hi = (mask & (4u >> a)) != 0;
+                    node += hi ? stride[a] : 0; weight *= hi ? f[a] : 65536u-f[a];
+                }
+                sum += weight*m.nodes[node*3+c];
+            }
+            output |= std::uint32_t((sum+(std::uint64_t{1}<<47))>>48) << (c*8);
+        } else {
+            std::size_t d[3] = {stride[0],stride[1],1};
+            if(f[0]<f[1]){std::swap(f[0],f[1]);std::swap(d[0],d[1]);}
+            if(f[1]<f[2]){std::swap(f[1],f[2]);std::swap(d[1],d[2]);}
+            if(f[0]<f[1]){std::swap(f[0],f[1]);std::swap(d[0],d[1]);}
+            sum = std::uint64_t(65536-f[0])*m.nodes[base*3+c] + std::uint64_t(f[0]-f[1])*m.nodes[(base+d[0])*3+c]
+                + std::uint64_t(f[1]-f[2])*m.nodes[(base+d[0]+d[1])*3+c] + std::uint64_t(f[2])*m.nodes[(base+stride[0]+stride[1]+1)*3+c];
+            output |= std::uint32_t((sum+32768)>>16) << (c*8);
+        }
+    }
+    return output;
+}
+} // namespace detail
 
 struct Options {
     fc::Backend backend = fc::Backend::Auto;
@@ -136,7 +203,7 @@ struct Info {
     std::size_t model_bytes = 0, sidecar_bytes = 0, arena_bytes = 0, object_bytes = 0;
     std::size_t proof_nodes = 0;
     std::uint32_t palette_entries = 0;
-    // sidecar_bytes是object_bytes内有效曲线的子集，不应重复相加。
+    // sidecar_bytes含model_bytes中的分输出坐标及object_bytes内曲线，不重复相加。
 };
 
 class Chain {
@@ -149,6 +216,7 @@ public:
 
     fc::Status prepare(const std::array<const Stage*, 4>& stages, Options options = {}) {
         ready_ = false; info_ = {}; stages_ = {};
+        mixed_ = false;
         std::vector<std::uint8_t>().swap(arena_);
         if (options.threads != 1) return fc::Status::Unsupported;
         if (!options.block_pixels) return fc::Status::Range;
@@ -167,9 +235,12 @@ public:
             if (!stages[i]) return fc::Status::Null;
             const auto& stage = *stages[i];
             bundle.models[i] = {stage.blob.data(), stage.blob.size()};
-            const auto status = fc_core::fc_model_init(models_.data() + i, bundle.models[i], {nullptr, 0});
+            bundle.sidecars[i] = detail::sidecar(stage);
+            const auto status = fc_core::fc_model_init(models_.data() + i, bundle.models[i], bundle.sidecars[i]);
             if (status != fc_core::FC_OK) return static_cast<fc::Status>(status);
             if (stage.m != models_[i].m) return fc::Status::Format;
+            if (stage.interpolation != Interpolation::TetraQ16 && stage.interpolation != Interpolation::TrilinearQ16) return fc::Status::Format;
+            mixed_ = mixed_ || stage.interpolation == Interpolation::TrilinearQ16;
             pointers[i] = models_.data() + i;
             structured = structured && stage.separable_proven && stage.proof_nodes == dense_nodes;
             info_.model_bytes += stage.model_bytes();
@@ -192,6 +263,27 @@ public:
             info_.sidecar_bytes += 3 * 256;
             ready_ = true;
             return fc::Status::Ok;
+        }
+        if (mixed_) {
+            if (options.representation != fc::Representation::Sparse && options.representation != fc::Representation::DirectRGB24)
+                return fc::Status::Unsupported;
+            info_.representation = options.representation;
+            info_.backend = fc::Backend::Scalar;
+            if (options.representation == fc::Representation::DirectRGB24) {
+                const std::size_t bytes = dense_values + 4;
+                if (bytes > options.max_workspace_bytes) return fc::Status::Budget;
+                arena_.resize(bytes);
+                for (std::uint32_t input = 0; input != dense_nodes; ++input) {
+                    auto value = input;
+                    for (unsigned s = 0; s != 4; ++s) value = detail::map(models_[s],stages_[s]->interpolation,value);
+                    for(unsigned c=0;c!=3;++c)arena_[std::size_t(input)*3+c]=std::uint8_t(value>>(c*8));
+                }
+#if FLASH_CHROMA_ENABLE_AVX2
+                if (options.backend != fc::Backend::Scalar && (fc::available_backends() & 2u)) info_.backend=fc::Backend::Avx2;
+#endif
+                info_.arena_bytes=arena_.size();
+            }
+            ready_=true;return fc::Status::Ok;
         }
         fc::RuntimeConfig config;
         config.threads = 1; config.backend = options.backend;
@@ -222,6 +314,21 @@ public:
         if (detail::overlaps(output, bytes, this, sizeof(*this))) return fc::Status::Overlap;
         for (const Stage* stage : stages_)
             if (detail::overlaps(output, bytes, stage, sizeof(*stage))) return fc::Status::Overlap;
+        if (!info_.structured && mixed_) {
+            if(detail::overlaps(output,bytes,arena_.data(),arena_.size()))return fc::Status::Overlap;
+#if FLASH_CHROMA_ENABLE_AVX2
+            if(info_.representation==fc::Representation::DirectRGB24 && info_.backend==fc::Backend::Avx2){
+                fc::detail::direct_rgb24_run(arena_.data(),input,output,pixels);return fc::Status::Ok;
+            }
+#endif
+            for(std::size_t i=0;i<pixels;++i){
+                auto value=detail::code(input+3*i);
+                if(info_.representation==fc::Representation::DirectRGB24)value=detail::code(arena_.data()+std::size_t(value)*3);
+                else for(unsigned s=0;s<4;++s)value=detail::map(models_[s],stages_[s]->interpolation,value);
+                for(unsigned c=0;c<3;++c)output[3*i+c]=std::uint8_t(value>>(8*c));
+            }
+            return fc::Status::Ok;
+        }
         if (!info_.structured)
             return runtime_.apply(input, bytes, bytes, output, bytes, bytes, pixels, 1);
         const auto* r = composed_[0].data();
@@ -238,6 +345,7 @@ public:
     bool ready() const noexcept { return ready_; }
 private:
     bool ready_ = false;
+    bool mixed_ = false;
     Info info_{};
     std::array<const Stage*, 4> stages_{};
     std::array<fc_core::fc_model, 4> models_{};

@@ -47,8 +47,8 @@ def parse_config(value):
         raise ValueError('未知表示模式')
     if backend not in ('auto', 'scalar', 'avx2') or grid not in ('uniform', 'framework'):
         raise ValueError('未知后端或网格')
-    if fit not in ('sample', 'independent_ls', 'chain_ls'):
-        raise ValueError('fit必须是sample、independent_ls或chain_ls')
+    if fit not in ('sample', 'independent_ls', 'chain_ls', 'history'):
+        raise ValueError('fit必须是sample、independent_ls、chain_ls或history')
     return dict(id=name, m=int(size), mode=mode, backend=backend, grid=grid, fit=fit)
 
 

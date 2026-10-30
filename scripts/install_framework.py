@@ -164,8 +164,8 @@ void fc_arguments(int argc, char** argv) {
     }
     if (argc >= 8) {
         fc_fit_method = argv[7];
-        if (fc_fit_method != "sample" && fc_fit_method != "independent_ls" && fc_fit_method != "chain_ls")
-            throw std::runtime_error("拟合应为sample/independent_ls/chain_ls");
+        if (fc_fit_method != "sample" && fc_fit_method != "independent_ls" && fc_fit_method != "chain_ls" && fc_fit_method != "history")
+            throw std::runtime_error("拟合应为sample/independent_ls/chain_ls/history");
     }
     std::vector<std::string> seen;
     for (int i = positional_end; i < total; ++i) {
@@ -265,7 +265,7 @@ def generate_main(original):
 ''' + source[end:]
     source = once(source, 'int main(int argc, char** argv) {', '''int main(int argc, char** argv) {
     if (argc >= 2 && std::string(argv[1]) == "--help") {
-        std::puts("用法：main_flash_chroma.exe [data目录] [m或m1,m2,m3,m4] [auto|sparse|direct_u8|direct_u16|direct_rgb24] [auto|scalar|avx2] [uniform|framework] [图片数1..100] [sample|independent_ls|chain_ls]");
+        std::puts("用法：main_flash_chroma.exe [data目录] [m或m1,m2,m3,m4] [auto|sparse|direct_u8|direct_u16|direct_rgb24] [auto|scalar|avx2] [uniform|framework] [图片数1..100] [sample|independent_ls|chain_ls|history]");
         std::puts("默认：../data 33 auto auto uniform 4；单线程，所有拟合/准备仅使用LUT。auto完整证明结构后才启用精确曲线，否则回退稀疏四面体。");
         std::puts("追加偏好选项：--preference A,B,C（各0..1且非全零） --candidate-sizes '17;25;33' --candidate-modes sparse,direct_rgb24");
         std::puts("预算：--max-mean-error 完整RGB域均值 --max-pixel-error 完整RGB域最大误差 --max-ms-per-mp 合成输入毫秒/百万像素 --max-runtime-mib 自有常驻容量 --max-workspace-mib 工作区");
@@ -315,6 +315,15 @@ def generate_main(original):
             fc_sizes[i] = lut17[i].fc_stage->m;
         }
         fc_options = fc_selection->options;
+    } else if (fc_fit_method == "history") {
+        fc_framework::precision::Models sampled;
+        for (unsigned i = 0; i < 4; ++i) sampled[i] = *lut17[i].fc_stage;
+        fc_framework::precision::Report report;
+        fc_framework::precision::Options options;
+        options.progress = [](const std::string& step) { std::fprintf(stderr, "历史精度准备：%s\\n", step.c_str()); };
+        auto result = fc_framework::precision::migrate(luts_raw, sampled, report, options);
+        std::printf("HistoryReport=%s\\n", fc_framework::precision::json(report).c_str());
+        for (unsigned i = 0; i < 4; ++i) *lut17[i].fc_stage = std::move(result[i]);
     } else if (fc_fit_method == "independent_ls") {
         for (unsigned i = 0; i != 4; ++i) {
             fc_framework::FitReport report;
@@ -388,7 +397,9 @@ def generate_main(original):
 def amalgamate():
     """原核心与框架接入完整内嵌，部署只需一个hpp和框架main.cpp。"""
     names = ('include/flash_chroma.hpp', 'framework/flash_chroma_adapter.hpp', 'framework/framework_io.hpp',
-             'framework/fit_experiment.hpp', 'framework/fit_chain_experiment.hpp', 'framework/preference_selection.hpp')
+             'framework/fit_experiment.hpp', 'framework/fit_chain_experiment.hpp',
+             'framework/precision_geometry.hpp', 'framework/precision_search.hpp', 'framework/precision_fit.hpp',
+             'framework/precision_pipeline.hpp', 'framework/preference_selection.hpp')
     parts = ['// 由scripts/install_framework.py生成；源文件SHA见source-manifest.json。\n']
     for name in names:
         code = (ROOT / name).read_text(encoding='utf-8-sig')
@@ -398,8 +409,12 @@ def amalgamate():
             code = once(code, '#include "flash_chroma_adapter.hpp"', '// 框架接入已内嵌于上文。')
         if name.endswith('fit_chain_experiment.hpp'):
             code = once(code, '#include "fit_experiment.hpp"', '// 完整域求解器已内嵌于上文。')
-        if name.endswith('preference_selection.hpp'):
-            code = once(code, '#include "fit_chain_experiment.hpp"', '// 链求解器已内嵌于上文。')
+        dependencies = {'precision_geometry.hpp': 'fit_chain_experiment.hpp', 'precision_search.hpp': 'precision_geometry.hpp',
+                        'precision_fit.hpp': 'precision_search.hpp', 'precision_pipeline.hpp': 'precision_fit.hpp',
+                        'preference_selection.hpp': 'precision_pipeline.hpp'}
+        for target, dependency in dependencies.items():
+            if name.endswith('/' + target):
+                code = once(code, '#include "' + dependency + '"', '// 依赖已内嵌于上文。')
         parts.extend(['\n// ---- ' + name + ' ----\n', code, '\n'])
     return ''.join(parts), {name: digest(ROOT / name) for name in names}
 
@@ -430,7 +445,7 @@ def install(framework, output, compiler):
     [ValidateSet('auto','scalar','avx2')][string]$Backend = 'auto',
     [ValidateSet('uniform','framework')][string]$Grid = 'uniform',
     [ValidateRange(1,100)][int]$Count = 4,
-    [ValidateSet('sample','independent_ls','chain_ls')][string]$Fit = 'sample',
+    [ValidateSet('sample','independent_ls','chain_ls','history')][string]$Fit = 'sample',
     [string]$Preference = '',
     [string]$CandidateSizes = '17;25;33',
     [string]$CandidateModes = 'sparse,direct_rgb24',
@@ -489,6 +504,7 @@ try {
 .\\run.ps1 -GridSizes '17,25,33,33' -Mode sparse
 .\\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Backend auto
 .\\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Grid framework -Fit chain_ls
+.\\run.ps1 -GridSizes 33 -Mode direct_rgb24 -Grid framework -Fit history
 .\\run.ps1 -Preference '0.6,0.3,0.1' -Grid framework -Fit chain_ls -SelectionReport 'selection.json'
 .\\run.ps1 -Preference '0.2,0,0.8' -Grid framework -Fit chain_ls -MaxRuntimeMiB 2 -SelectionReport 'compact.json'
 ```
@@ -507,7 +523,9 @@ SelectionReport必须为新路径，成功或无可行候选均保存选择JSON�
 
 RGB24的AVX2执行核已补齐八路独立查表和64像素成块普通写出，保持同一LUT表、精度与内存需求。高级编译选项 `FLASH_CHROMA_RGB24_STREAMING=1` 可切流式写，`FLASH_CHROMA_RGB24_LEGACY=1` 用于旧gather回归；默认脚本使用普通写新核，不在图片之间重新测速选核。
 
-默认sample采样；independent_ls用全色域分别拟合各级，chain_ls固定前三层并针对原四级完整输出拟合末层。固定参数：正则1e-5、CG最多160轮/相对残差1e-8、整数精化最多8轮。实际全色域整数mean及SSE双门控失败会保留原模型，不读取测试图片挑选节点。完整域改善不保证每张照片改善；未知阈值时保持三档显式选择。DirectRGB24与相同拟合的Sparse逐字节等价，约多用48MiB缓存；U8/U16容量不足会非零退出。
+默认sample采样；independent_ls用全色域分别拟合各级，chain_ls固定前三层并针对原四级完整输出拟合末层。固定参数：正则1e-5、CG最多160轮/相对残差1e-8、整数精化最多8轮。实际全色域整数mean及SSE双门控失败会保留原模型，不读取测试图片挑选节点。完整域改善不保证每张照片改善。DirectRGB24与相同拟合的Sparse逐字节等价，约多用48MiB缓存；U8/U16容量不足会非零退出。
+
+history为显式历史精度候选档：在chain_ls固定锚点上尝试曲率/DP/误差网格、精确单调坐标、匹配三线性、box-QP/IRLS/尾部加权、四级真实整数RGB联合搜索及共享/分输出坐标，最后作minimax/p99/CVaR搜索和有限整数箱穷举。每次接受均核对原四LUT完整域mean/SSE/max/p99/CVaR，使用Q24均值和尾部证书；不会据照片修改模型。默认每级32节点、12坐标、1扫、DP24×24探针、2轮IRLS，准备可能耗时数分钟。输出HistoryReport或PreferenceReport包含各步接受/拒绝、质量与参数。混合容量可通过GridSizes或Preference的CandidateSizes指定；更细开关和双loss通过hpp中的precision::Options设置。混合三线性Sparse使用Scalar，RGB24可用AVX2，U8/U16不支持该组合。历史照片频数及Cinema成品不导入，新增分输出坐标按实际字节计入模型RAM。
 
 输出分配仍在原apply计时区内，四LUT联合准备显式位于允许的不计时预处理区。参考查表、量化和平均RGB欧氏差公式保留。默认处理4张，`-Count 100`要求对应data/image/1.bin..100.bin完整存在；图片必须是1024×768连续RGB8，不能把PNG改名传入。
 

@@ -95,6 +95,13 @@ def test_cli_legacy_positions_still_work_without_preference(argument_probe):
     assert not result['enabled'] and result['sizes'] == [17, 25, 33, 31] and result['threads'] == 1
 
 
+def test_cli_history_is_explicit_and_works_with_preference(argument_probe):
+    actual = argument_probe('33', 'direct_rgb24', 'auto', 'framework', '4', 'history',
+                            '--preference', '1,0,0', '--candidate-sizes', '33;17,25,33,33')
+    assert actual.returncode == 0, actual.stderr
+    assert json.loads(actual.stdout)['enabled']
+
+
 def test_cli_selection_report_preserves_existing_file_and_does_not_create_during_parse(argument_probe, tmp_path):
     report = tmp_path / 'existing-report.json'
     report.write_text('已有证据不得覆盖\n', encoding='utf-8')

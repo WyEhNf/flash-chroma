@@ -57,6 +57,8 @@ struct Coordinates {
     std::array<std::size_t, 8> delta{};
     unsigned m = 0;
     explicit Coordinates(const Stage& stage) : m(stage.m) {
+        if(stage.interpolation!=Interpolation::TetraQ16||!stage.fractions.empty())
+            throw std::invalid_argument("原始LS仅支持共享坐标四面体；分输出/三线性须使用precision拟合器");
         fc_core::fc_model checked{};
         if (fc_core::fc_model_init(&checked, {stage.blob.data(), stage.blob.size()}, {nullptr, 0}) != fc_core::FC_OK || checked.m != stage.m)
             throw std::invalid_argument("完整域拟合的初始Stage非法");
