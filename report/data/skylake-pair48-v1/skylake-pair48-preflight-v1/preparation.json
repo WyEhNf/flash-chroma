@@ -1,0 +1,121 @@
+{
+  "purpose": "只生成79独立源码和构建计划；不编译、不加载动态库、不执行像素或性能。",
+  "frozen": true,
+  "base_commit": "91b7c7359f938876d22fc7fc12fa7b2b0e02ebe0",
+  "plan": {
+    "path": "experiments/skylake-pair48-v1.json",
+    "sha256": "a31c77dc7fc966c3314b5e1eda585fd1d11e840050314a78e9eb689b6c85c180"
+  },
+  "generator": {
+    "path": "artifacts/skylake-pair48-preflight-v1/prepare.py",
+    "sha256": "79ee333a5432add275e40511fb1727f61ef23a2d0ea9e69958726326b0b3798c"
+  },
+  "parent_plan": {
+    "path": "experiments/skylake-andn-split-v1.json",
+    "sha256": "c62d97a402705692977250f0e626c9587a7190e97cf9a9b44f4d6a22840532d8"
+  },
+  "new_builds": 0,
+  "new_candidate_calls": 0,
+  "new_performance_calls": 0,
+  "source_entries": 71,
+  "candidate_files": [
+    {
+      "path": "experiments/skylake-pair48-runtime/aligned_table.hpp",
+      "sha256": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+      "parent_sha256": "e32e2da67100d71fc07c46a2d5584c626458b5a3bafca9776770ae27424358c5",
+      "same_bytes_as78": true
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/andn_inplace/channel_avx2.cpp",
+      "sha256": "dcaf3736e4823b0257af344b26c496f03e1c34c46e6f1ec14c0f23391b2792e5",
+      "parent_sha256": "dbb416074abf56734a2e894507c572b25e6a10bb30ee9409cbc359bb93fa336d",
+      "same_bytes_as78": false
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/andn_outplace/channel_avx2.cpp",
+      "sha256": "41cbbba03c58570f37469214c5bac08aeacfb8ce4aea9c9be59ae32a50734831",
+      "parent_sha256": "42422ecd00f044d4bd79e0636d1cb3755588c5a7b59ec31ef95c88460048fc1a",
+      "same_bytes_as78": false
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/channel_avx2.cpp",
+      "sha256": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+      "parent_sha256": "e0cb7f0539fdb5d7f35645978b1b2504dbf7e60c57e21acf8ae361cf1c343a30",
+      "same_bytes_as78": true
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/channel_runtime.cpp",
+      "sha256": "4811be08baedf1c461285f267d474816060ef438adb5a90759f117529e31da5d",
+      "parent_sha256": "1a36bbe0f4cc8ba5fe68ae5560309a90375028a04a5ce3124b7bd91b8613f80a",
+      "same_bytes_as78": false
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/channel_views.hpp",
+      "sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "parent_sha256": "dd1eb7d79a4d18b87b98db052b956ae67cec43aa1edd54303e90b8a7b171573c",
+      "same_bytes_as78": true
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/CMakeLists.txt",
+      "sha256": "0b77ccb566a7fa1f4528adb76107c8d7deabb0244ca45435caaff9b6bf7b1a1d",
+      "parent_sha256": "a175176515c10bec2e7d6f72e764dc0bbed803b07a9961337b69686dbd850e51",
+      "same_bytes_as78": false
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/outplace_bench.cpp",
+      "sha256": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+      "parent_sha256": "9d780ee714487570304f7799924d80bfbc13b68ba051efce0e5d3e8683926021",
+      "same_bytes_as78": true
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/reference_to.cpp",
+      "sha256": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+      "parent_sha256": "4a1d0c06a5c8a73f78289c376df31f26ebeb009d89aac2c252a922efdbdd1080",
+      "same_bytes_as78": true
+    },
+    {
+      "path": "experiments/skylake-pair48-runtime/suffix_cache.hpp",
+      "sha256": "485eb0e3aab504a31be392cfbd9d726b27e9919b93dc8678d68641f130eac8d1",
+      "parent_sha256": "c1c9ee47d768a6d5211f820d3641d60d2ddcb8a2ed045959ef2edf33d9e07787",
+      "same_bytes_as78": false
+    }
+  ],
+  "comparisons": {
+    "andn_inplace/channel_avx2.cpp": {
+      "outside_read_wide_equal_after_identity_rename": true,
+      "prefix_sha256": "e74f66db588901ca5a97b18c044b1bc6038bb141efa451cd6033eb8649627bfc",
+      "suffix_sha256": "373eb28d64420e7fd3cb5b6dd03e194dd8a90f3c9d3bf859436cefbea7684f92",
+      "parent_wide_sha256": "412c0006d29b53b5a5dfe7fca73dccc3d09212c125163f9bedc8f46cb70c1ca0",
+      "wide_input_offsets": [
+        0,
+        6,
+        12,
+        18
+      ],
+      "wide_input_bytes": 8,
+      "preserved_exact_tail_bytes": 24,
+      "barriers_per8": 2
+    },
+    "andn_outplace/channel_avx2.cpp": {
+      "outside_read_wide_equal_after_identity_rename": true,
+      "prefix_sha256": "e74f66db588901ca5a97b18c044b1bc6038bb141efa451cd6033eb8649627bfc",
+      "suffix_sha256": "44aafd072aae1535c51f593d648b9aacc165763b1eec5a5d70a7479b90166e31",
+      "parent_wide_sha256": "412c0006d29b53b5a5dfe7fca73dccc3d09212c125163f9bedc8f46cb70c1ca0",
+      "wide_input_offsets": [
+        0,
+        6,
+        12,
+        18
+      ],
+      "wide_input_bytes": 8,
+      "preserved_exact_tail_bytes": 24,
+      "barriers_per8": 2
+    }
+  },
+  "linear_fallback_unchanged": true,
+  "runtime_only_identity_and_revision_changed": true,
+  "source_diff": {
+    "path": "artifacts/skylake-pair48-preflight-v1/source-diff.patch",
+    "sha256": "68e1d5f14235bb960b075f775131db68ca56dcb7e4cf5cf5686271f0a26ae361"
+  }
+}
