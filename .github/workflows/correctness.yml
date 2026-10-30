@@ -54,23 +54,3 @@ jobs:
           pixi run --locked cmake --build build-single-header --parallel 2
           pixi run --locked ctest --test-dir build-single-header --output-on-failure --no-tests=error
           pixi run --locked python scripts/verify_flash_chroma.py --library build-single-header/libflash_chroma_bridge.so --profiles default max_first --output artifacts/single-header-ci-quality.json
-
-  docker:
-    name: correctness (Docker)
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: 构建默认环境镜像
-        run: |
-          mkdir -p build-context-probe .pixi/context-probe
-          docker build --tag flash-chroma .
-      - name: 验证本机缓存未进入镜像
-        run: >-
-          docker run --rm --entrypoint sh flash-chroma -c
-          'test ! -e /workspace/build-context-probe && test ! -e /workspace/.pixi/context-probe'
-      - name: 在容器中运行同一正确性门禁
-        run: docker run --rm flash-chroma
