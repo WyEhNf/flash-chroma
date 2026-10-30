@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-30",
+  "scope": "维护者新集成PR101读取与相关源码零差异确认；本Agent仅合并远端到开发分支，不执行PR合并",
+  "checks": {
+    "0": {
+      "status": "fulfilled",
+      "value": {
+        "chunk_id": "d6fbf4",
+        "wall_time_seconds": 1.766639,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "1": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/101",
+          "number": 101,
+          "state": "closed",
+          "merged": true,
+          "mergeable": true,
+          "draft": false,
+          "body": "## 阶段目标\n\n把仍以堆叠形式停留在 `codex/skylake-*`、`codex/p16-*` 等研究分支上的成果一次性并入 `main`，并保留原有提交与证据归档。\n\n## 变更范围\n\n本 PR 由 41 个研究分支按时间顺序合并而成，覆盖：\n\n- Skylake 性能研究链（#53–#85）：分块、缓存提示、通道差索引、调色板、线程联合、brick2、真实 RAW 工作流等。\n- WSL 内存预算与三代真实 RAW 首帧工作流（#85）。\n- p16 方向（#89–#100）：speed、tail、memory、AVX512、score candidate、单头运行库、studio UI、框架适配、RGB24 成块查表、策略审计。\n\n合并方式为 `merge --no-ff`，逐个保留原分支提交；共 229 个提交进入 `main`。\n\n## 冲突处理\n\n仅 `.gitattributes` 产生内容冲突（4 处：#90、#91、#92、#97）。处理方式为两侧证据规则段落取并集，未删除任何一侧的规则。\n\n## 相关记录\n\n- 41 个原始 PR 均无评论与审查线程（合并前逐项核对，结果为空）。\n- 开放 issue #7、#8 的正文最新核验称相关修复已随 PR #37 进入 `main`，本次未改动其内容。\n- 本 PR 不关闭上述原始 PR，其状态由后续步骤单独处理。\n\n## 验证计划\n\n- CI 默认门禁 `pixi run --locked test`：C++ 全 `2²⁴` 色域对照与全部 Python 契约测试。\n- CI 标量回退 `test-scalar`。\n- CI Docker 门禁。\n- CI 嵌入式 QEMU：Cortex-M3/FreeRTOS、RV32/FreeRTOS、Cortex-A53/Linux。\n\n## 已知限制\n\n- 合并结果只证明仓库可构建、契约测试通过，不代表官方阈值下的精度或性能结论。\n- 研究分支中的历史性能数字仍绑定各自机器、工具链与输入，不能跨环境比较。\n- `report/` 的体积随证据归档显著增长，合并后会明显增大仓库工作树。\n- `.gitattributes` 取并集后行数增加，属预期结果。\n",
+          "title": "集成：合并 R42–R100 研究栈并统一证据归档",
+          "base": "main",
+          "base_sha": "c7f7d0c4a42a3f296866195013a33910d45d7798",
+          "head": "integration/research-stack-20261030",
+          "head_sha": "c891df8a31109fba5de849772115029d0d97af61",
+          "head_repo_id": 1420743436,
+          "head_repo_full_name": "WyEhNf/flash-chroma",
+          "merge_commit_sha": "7811144ceb3fe5f2d81c76d370a06d1d89134f4e",
+          "user": {
+            "login": "Mooooonkrui",
+            "name": "Mooooonkrui",
+            "email": null,
+            "avatar_url": "https://avatars.githubusercontent.com/u/153734027?v=4",
+            "id": 153734027
+          },
+          "requested_reviewers": null,
+          "requested_team_reviewers": null,
+          "diff": null,
+          "comments": null,
+          "created_at": "2026-10-30T01:24:26Z",
+          "updated_at": "2026-10-30T01:28:56Z",
+          "closed_at": "2026-10-30T01:28:56Z",
+          "merged_at": "2026-10-30T01:28:56Z",
+          "commits": 229,
+          "changed_files": 5538,
+          "additions": 2950914,
+          "deletions": 0,
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/101",
+          "display_title": "集成：合并 R42–R100 研究栈并统一证据归档"
+        },
+        "isError": false
+      }
+    },
+    "2": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "comments": [],
+          "url": "https://github.com/WyEhNf/flash-chroma/pull/101",
+          "title": "WyEhNf/flash-chroma PR #101 comments",
+          "display_url": "https://github.com/WyEhNf/flash-chroma/pull/101",
+          "display_title": "WyEhNf/flash-chroma PR #101 comments"
+        },
+        "isError": false
+      }
+    },
+    "3": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "reviews": []
+        },
+        "isError": false
+      }
+    },
+    "4": {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Action completed."
+          }
+        ],
+        "structuredContent": {
+          "review_threads": []
+        },
+        "isError": false
+      }
+    }
+  }
+}
