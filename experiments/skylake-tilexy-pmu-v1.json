@@ -1,0 +1,122 @@
+{
+  "purpose": "40对54字节ID二维颜色分块的单次用户态计数；增量筛查1线程≤0.95、4线程≤1.05，整体墙钟3倍门槛不变",
+  "probe": {
+    "path": "artifacts/skylake-pmu-probe-v1/results.json",
+    "sha256": "201c353b7adff0e24b23002f8cf44e6dc647115c722004264b074b2322c24cc0"
+  },
+  "script": {
+    "path": "scripts/profile_skylake_tilexy_pmu.py",
+    "sha256": "74cf5d115e643999ff028bd21e4ad08ba6fdb6a1ef50a7d6fd867610d3f34dfd"
+  },
+  "pinning_probe": {
+    "path": "artifacts/skylake-pinned-openmp-v1/results.json",
+    "sha256": "ec48433022ce14e219840855bfcf419d7ac4d6b4cbba1c40fa4a8cc6e37eb2d6"
+  },
+  "models_plan": {
+    "path": "experiments/skylake-tilexy-v1.json",
+    "sha256": "dfe4bdf49b99a6fe98bbfbcb64fbe478328cd9cc00c44a82c3a1f396a018ffe9"
+  },
+  "cases": {
+    "reference40": {
+      "revision": 40,
+      "plan": {
+        "path": "experiments/skylake-batchspan-v1.json",
+        "sha256": "7a0bf316436d4a178d1721dd842567ed106d458bf6b5910c407474af26060bed"
+      },
+      "build": {
+        "path": "artifacts/skylake-batchspan-linux-build-v1/build.json",
+        "sha256": "1ae9e1806787ddbf22464f598c75ec647dc1df5d4d6bd88d8a60a0da6165f80b"
+      },
+      "full": {
+        "path": "artifacts/skylake-batchspan-linux-full-v1/results.json",
+        "sha256": "e412d02df80f22d2e026400038cb74f8518b88966bc00a5b1e1a4445c9b19a47"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-batchspan-linux-build-v1/libjshc_skylake_batchspan.so",
+        "sha256": "44716bb2e562fc6b661de5d2e14c37a799a86a5eefd6d93813640b324ec27bbc"
+      }
+    },
+    "tilexy54": {
+      "revision": 54,
+      "plan": {
+        "path": "experiments/skylake-tilexy-v1.json",
+        "sha256": "dfe4bdf49b99a6fe98bbfbcb64fbe478328cd9cc00c44a82c3a1f396a018ffe9"
+      },
+      "build": {
+        "path": "artifacts/skylake-tilexy-linux-build-v1/build.json",
+        "sha256": "fa816a13bdf3d8c7af6a2233873543cb19aa9b2a39672f6035e91c4895db1c3f"
+      },
+      "full": {
+        "path": "artifacts/skylake-tilexy-linux-full-v1/results.json",
+        "sha256": "6909e1bccb44a90325fcf7fe83fae373d33ceb6448ce30822ebcbac53634d712"
+      },
+      "build_role": "candidate",
+      "library": {
+        "path": "/mnt/f/Hackathon/projects/16-lut-color/artifacts/skylake-tilexy-linux-build-v1/libjshc_skylake_tilexy.so",
+        "sha256": "601f46c5e5abaf574106ea7948008681e79c8499961ff310f30ab6122d7a558d"
+      }
+    }
+  },
+  "cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "orders": [
+    {
+      "threads": 1,
+      "variants": [
+        "reference40",
+        "tilexy54"
+      ]
+    },
+    {
+      "threads": 4,
+      "variants": [
+        "tilexy54",
+        "reference40"
+      ]
+    }
+  ],
+  "photos": {
+    "path": "artifacts/skylake-server-matrix-v1/server-inputs/photos.rgb",
+    "sha256": "e13278cfc91c3411b3c242232239f9ea6fbda3bf5d18c3f17c41a4dedf57defd"
+  },
+  "driver": {
+    "path": "artifacts/skylake-domain-server-v2/artifacts/linux domain-v2/driver/libjshc_server_driver.so",
+    "sha256": "b9a37fa74a2b454a274a7a38c19a4e34546b495e288e549bbae5b6395c354b75"
+  },
+  "expected_output_sha256": "f3c0d9078bbcf069f33060a45021a28985b70c9616493ba9bea1ac2027858528",
+  "events": [
+    "cycles",
+    "instructions",
+    "cache_references",
+    "cache_misses"
+  ],
+  "counter_scope": "每个参与TID独立组，exclude_kernel/exclude_hv，启停与ct开销少量包含；running/enabled>=0.99才可解释",
+  "python_sources": [
+    "scripts/profile_skylake_tilexy_pmu.py",
+    "scripts/probe_skylake_pmu.py",
+    "scripts/pinned_openmp_support.py",
+    "scripts/paged_table_support.py",
+    "scripts/skylake_server_support.py",
+    "scripts/verify_skylake_linux_stdlib.py"
+  ],
+  "reference": "https://man7.org/linux/man-pages/man2/perf_event_open.2.html",
+  "limits": [
+    "不计墙钟，不替代已冻结ABBA性能",
+    "泛化cache计数与具体缓存层的映射依赖CPU/虚拟PMU，不冒充精确L3指标",
+    "不改系统权限/缓解，不安装工具",
+    "每配置一个预热与一个计数调用（共4+4），完整235MB输出SHA及保护区验证"
+  ],
+  "screen": {
+    "same_session_reference": 40,
+    "one_thread_cycle_ratio_max": 0.95,
+    "four_thread_cycle_ratio_max": 1.05,
+    "repetitions": 1,
+    "on_failure": "停止本版，不重复画像或整轮性能择优",
+    "goal_gate_unchanged": true
+  }
+}
